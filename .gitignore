@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+/Informe/Informe.toc
+/Informe/Informe.synctex.gz
+/Informe/Informe.out
+/Informe/Informe.log
+/Informe/Informe.aux
+/Informe/_static
