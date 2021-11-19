@@ -1,10 +1,12 @@
-from simulation import start
+from tokenizer import tokenize
 
 
 def main():
-    time = 3  # Tiempo que demora la simulacion de una vuelta
-    stop = False  # Reajustes en tiempo real
-    start(time, stop)
+    tokens = tokenize("if;point else point22; 22 3.4; point_1 point;\"AAA\"aaa\n123.0 _a.a")
+    print()
+    for token in tokens:
+        token.print_token()
+        print()
 
 
 if __name__ == '__main__':
