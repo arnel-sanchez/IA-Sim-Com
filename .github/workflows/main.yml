@@ -1,4 +1,4 @@
-name: Python execute
+name: Python Workflow
 
 on:
   push:
@@ -11,7 +11,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - with:
-          python-version: '3.x'
-      - run: python main.py
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.6'
+    - run: python my_script.py
