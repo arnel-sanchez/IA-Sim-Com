@@ -9,6 +9,8 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{array}
 \usepackage{mathtools} % para el modulo
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}%
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}%
@@ -18,6 +20,50 @@
 	filecolor=magenta,      
 	urlcolor=cyan,
 }
+
+\usepackage{listings}
+\definecolor{background}{rgb}{0.39, 0.40, 0.34}
+\definecolor{keywords}{rgb}{1.0, 0.0, 0.5}
+\definecolor{comments}{rgb}{0.75, 0.75, 0.75}
+\definecolor{strings}{rgb}{0.91, 0.84, 0.42}
+\definecolor{names}{rgb}{0.4, 1.0, 0.0}
+\definecolor{white}{rgb}{1.0, 1.0, 1.0}
+\definecolor{types}{rgb}{0.13, 0.67, 0.8}
+\definecolor{numbers}{rgb}{0.54, 0.17, 0.89}
+
+\lstdefinelanguage{PSharp}{
+	keywords={method, void},
+	keywordstyle=\color{keywords}\bfseries,
+	ndkeywords={int},
+	ndkeywordstyle=\color{types}\bfseries,
+	identifierstyle=\color{white},
+	sensitive=false,
+	emph={print},
+	emphstyle=\color{names},
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{comments}\ttfamily,
+	stringstyle=\color{strings}\ttfamily,
+	morestring=[b]',
+	morestring=[b]"
+}
+
+\lstset{
+	language=PSharp,
+	backgroundcolor=\color{background},
+	extendedchars=true,
+	basicstyle=\footnotesize\ttfamily,
+	showstringspaces=false,
+	showspaces=false,
+	numbers=left,
+	numberstyle=\footnotesize,
+	numbersep=9pt,
+	tabsize=2,
+	breaklines=true,
+	showtabs=false,
+	captionpos=b
+}
+
 
 \usepackage{amsthm} % para teoremas y lemas
 \usepackage{graphicx} % para imagenes
@@ -100,34 +146,7 @@
 	Sin embargo, durante la carrera las condiciones pueden variar y el Jefe Técnico será el encargado de señalar los ajustes necesarios que el piloto deberá hacer para mejorar su rendimiento. Dicho intercambio de información se hará al finalizar cada vuelta utilizando un lenguaje imperativo, mediante el uso de palabras claves para que el piloto no necesite analizar situaciones complejas y pueda concentrarse en pilotar de la forma mas eficiente posible.\par
 	De esta manera, la simulación de la carrera será dinámica, puesto que entre las vueltas podrán existir variaciones provocadas por los ajustes propuestos por el Jefe Técnico, el cuál podrá ser una persona o una IA.\par
 	
-\section{Breve enumeración de algunas funciones del lenguaje}
-	\begin{enumerate}
-		\item Instrucciones aritméticas
-		\begin{verbatim}
-			speed++;
-			speed--;
-		\end{verbatim}
-		\item Instrucciones condicionales
-		\begin{verbatim}
-			if (isRain) then 
-			{
-					goToPaddock;
-					speed--;
-					changeMotorcycle;
-					speed++;
-			}
-			else
-			{
-					speed++;
-			}
-		\end{verbatim}
-		\item Instrucciones cíclicas
-		\begin{verbatim}
-			while(laps > 20)
-			{
-					speed++;
-			}
-		\end{verbatim}
-	\end{enumerate}
+\section{Definición del Lenguaje}
+	\include{DefiniciónDelLenguaje.tex}
 \end{document}
 
