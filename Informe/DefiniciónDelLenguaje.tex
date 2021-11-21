@@ -1,0 +1,207 @@
+\subsection{Introducción a PSharp (P)}
+	\subsubsection{Hello world!}
+	
+		\begin{lstlisting}[language={PSharp}, label={Hello World!}]
+			method void main() {
+				print("Hello World!");
+			}
+		\end{lstlisting}	
+		Los archivos de P\# suelen tener la extensión de archivo .pys.
+		
+		
+	\subsubsection{Estructura del Programa}
+		Los conceptos organizativos clave en P\# son los programas y los miembros. Los programas P\# constan de uno o más archivos fuente. Los programas declaran miembros. Los métodos y propiedades son ejemplos de miembros.
+		
+	\subsubsection{Tipos y Variables}
+		\begin{center}
+			\begin{tabular}{| c | c | m{5cm} | }
+				\hline
+				Categoría & Tipo & Descripción \\ \hline
+				\multirow{3}{*}{Tipos por Valor} & \multirow{3}{*}{Tipos Simples} & * Entero con signo: int \\
+				 &  & * Punto flotante IEEE: double \\
+				 &  & * Booleanos: bool \\ \hline
+				\multirow{3}{*}{Tipos por Referencia} & Tipos que aceptan valores NULL & * Extensiones de todos los demás tipos de valor con un valor nulo \\
+				 & \multirow{2}{*}{Tipos de matrices} & * Unidimensionales y multidimensionales, por ejemplo, int [] e int [,] \\
+				 &  & * Cadenas Unicode: string \\ \hline
+			\end{tabular}
+		\end{center}
+	\subsubsection{Análisis Léxico}
+		\textbf{input}\par
+		: input\_element* new\_line\par
+		| directive\par
+		;\par
+		
+		\textbf{input\_element}\par
+		: whitespace\par
+		| comment\par
+		| token\par
+		;\par
+		
+		\underline{\textbf{Terminadores de línea}}\par
+		\textbf{new\_line}\par
+		: '<Caracter de retorno (U+000D)>'\par
+		| '<Caracter de avance de línea (U+000A)>'\par
+		;\par
+		
+		\textbf{whitespace}\par
+		: '<Cualquier personaje con clase Unicode Zs>'\par
+		| '<Caracter de tabulación horizontal (U+0009)>'\par
+		;\par
+		
+		\underline{\textbf{Comentarios}}\par
+		\textbf{comment}\par
+		: '\#' comment\_section '\#'\par
+		;\par
+		
+		\underline{\textbf{Tokens}}\par
+		\textbf{token}\par
+		: identifier\par
+		| keyword\par
+		| literal\par
+		| operator\_or\_punctuator\par
+		;\par
+		
+		\underline{\textbf{Identificadores}}\par
+		\textbf{identifier}\par
+		: '<Un identificador que no es una palabra clave>'\par
+		| identifier\_start\_character identifier\_part\_character*\par
+		;\par
+		
+		\textbf{identifier\_start\_character}\par
+		: letter\_character\par
+		| '<Caracter guión bajo (U+005F)>'\par
+		;\par
+		
+		\textbf{identifier\_part\_character}\par
+		: letter\_character\par
+		| decimal\_digit\par
+		| '<Caracter guión bajo (U+005F)>'\par
+		;\par
+		
+		\textbf{letter\_character}\par
+		: uppercase\_letter\_character\par
+		| lowercase\_letter\_character\par
+		;\par
+		
+		\textbf{uppercase\_letter\_character}\par
+		: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H'\par 
+		| 'I' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q'\par 
+		| 'R' | 'S' | 'T' | 'V' | 'X' | 'Y' | 'Z'\par    
+		;\par
+		
+		\textbf{lowercase\_letter\_character}\par
+		: 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h'\par 
+		| 'i' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q'\par
+		| 'r' | 's' | 't' | 'v' | 'x' | 'y' | 'z'\par
+		;\par
+		
+		\textbf{decimal\_digit}\par
+		: '0' | '1' | '2' | '3' | '4'\par 
+		| '5' | '6' | '7' | '8' | '9'\par
+		;\par
+		
+		\underline{\textbf{Palabras Claves}}\par
+		\textbf{keyword}\par             
+		: 'bool'\par
+		| 'break'\par
+		| 'continue'\par 
+		| 'double'\par
+		| 'elif'\par
+		| 'else'\par
+		| 'false'\par
+		| 'if'\par
+		| 'include'\par
+		| 'int'\par
+		| 'method'\par
+		| 'null'\par
+		| 'return'\par
+		| 'string'\par
+		| 'true'\par
+		| 'void'\par
+		| 'while'\par
+		;\par
+		
+		\underline{\textbf{Literales}}\par
+		\textbf{literal}\par
+		: boolean\_literal\par
+		| integer\_literal\par
+		| double\_literal\par
+		| string\_literal\par
+		| null\_literal\par
+		;\par
+		
+		\underline{\textbf{Literales Booleanos}}\par
+		\textbf{boolean\_literal}\par
+		: 'true'\par
+		| 'false'\par
+		;\par
+		
+		\underline{\textbf{Literales Enteros}}\par
+		\textbf{integer\_literal}\par
+		: decimal\_digit\par
+		;\par
+		
+		\underline{\textbf{Literales flotantes}}\par
+		\textbf{double\_literal}\par
+		: decimal\_digit+ '.' decimal\_digit+\par
+		;\par
+		
+		\underline{\textbf{Literales de Cadenas}}\par
+		\textbf{string\_literal}\par
+		: '\"' string\_literal\_character* '\"'\par
+		;\par
+		
+		\textbf{string\_literal\_character}\par
+		: '<Cualquier caracter, excepto " (U+0022)'\par
+		;\par
+		
+		\underline{\textbf{Literales Nulos}}\par
+		\textbf{null\_literal}\par
+		: 'null'\par
+		;\par
+		
+		\underline{\textbf{Operadores y signos de puntuación}}\par		
+		\textbf{operator\_or\_punctuator}\par
+		: '\{'  |\par
+		  '\}'  |\par
+	  	  '['  |\par
+	  	  ']'  |\par
+	  	  '('  |\par
+	  	  ')'  |\par
+	  	  '.'  |\par
+	  	  ','  |\par       
+		  ':'  |\par
+		  ';'  |\par
+		  '+'  |\par
+		  '-'  |\par
+		  '*'  |\par
+		  '/'  |\par
+		  '\%' |\par
+		  '**' |\par  
+		  '!'  |\par
+		  '='  |\par
+		  '<'  |\par
+		  '>'  |\par
+		  '\&\&' |\par
+		  '||' |\par
+		  '==' |\par 
+		  '!=' |\par
+		  '<=' |\par
+		  '>=' |\par
+		  '+=' |\par
+		  '-=' |\par
+		  '*=' |\par
+		  '/=' |\par
+		  '\%=' |\par 
+		  '**=' |\par
+		  '\&\&=' |\par
+		  '||=' |\par
+		  '\^='\par
+		;\par
+		
+		\underline{\textbf{Directivas}}\par
+		\textbf{directive}\par
+		: 'include' file\_name ';'\par
+		;\par
+		
+		
