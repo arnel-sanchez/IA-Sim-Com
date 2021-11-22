@@ -24,7 +24,7 @@
 				 &  & Booleanos: bool \\ \cline{3-3}
 				 &  & Cadenas Unicode: string \\ \cline{2-3}
 				 & Tipos que aceptan valores NULL & Extensiones de todos los demás tipos de valor con un valor nulo \\ \hline
-				 Tipos por Referencia & Tipos de matrices & Unidimensionales y multidimensionales, por ejemplo, int [] e int [,] \\ \hline
+				 Tipos por Referencia & Tipos de matrices & Unidimensionales, por ejemplo, int [] \\ \hline
 			\end{tabular}
 		\end{center}
 	\subsubsection{Expresiones}
@@ -44,7 +44,7 @@
 				& x ** y & Exponenciación \\ \hline
 				\multirow{2}{*}{Aditiva} & x + y & Adición y concatenación de strings \\ \cline{2-3}
 				& x - y & Substracción \\ \hline
-				\multirow{4}{*}{Relacionales y de Pruebas} & x < y & Menor que \\ \cline{2-3} 
+				\multirow{4}{*}{Relacionales} & x < y & Menor que \\ \cline{2-3} 
 				& x > y & Mayor que \\ \cline{2-3}
 				& x <= y & Menor o igual que \\ \cline{2-3} 
 				& x >= y & Mayor o igual que \\ \hline
@@ -52,15 +52,15 @@
 			    & x != y & Distinto \\ \hline 
 			    Condicionales AND & x \&\& y & Evalúa y si y sólo si x es verdadera \\ \hline
 			    Condicionales OR & x || y & Evalúa y si y sólo si x es falsa \\ \hline
-			    Condicionales XOR & x \^ y & \\ \hline
-			    \multirow{2}{*}{Asignación o función anónima} & x = y & Asignación \\ \cline{2-3}
-			    & x op= y & Asignación compuesta; los operadores admitidos son *= /= \%= **= += -= \&\&= ||= \^= \\ \hline
+			    Condicionales XOR & x \textasciicircum{} y & \\ \hline
+			    \multirow{2}{*}{Asignación} & x = y & Asignación \\ \cline{2-3}
+			    & x op= y & Asignación compuesta; los operadores admitidos son *= /= \%= **= += -= \&\&= ||= \textasciicircum{}= \\ \hline
 			\end{tabular}
 		\end{center}
 	\subsubsection{Declaraciones}
 		Las acciones de un programa se expresan mediante declaraciones. P\# admite varios tipos diferentes de declaraciones, algunas de las cuales se definen en términos de declaraciones integradas.
 		
-		Un \textbf{bloque} permite escribir múltiples declaraciones en contextos donde se permite una sola declaración. Un bloque consta de una lista de declaraciones escritas entre los delimitadores{y}.
+		Un \textbf{bloque} permite escribir múltiples declaraciones en contextos donde se permite una sola declaración. Un bloque consta de una lista de declaraciones escritas entre los delimitadores\{y\}.
 		
 		La \textbf{declaración de inclusión} se utiliza para obtener y luego disponer de un recurso.
 		
@@ -68,7 +68,7 @@
 			include test;
 		\end{lstlisting}
 		
-		Las \textbf{declaraciones de declaración} se utilizan para declarar variables.
+		Las sentencias de \textbf{declaración} se utilizan para declarar variables, valga la redundancia.
 		
 		\begin{lstlisting}[language={PSharp}]
 			method void example() {
@@ -128,7 +128,7 @@
 		\end{lstlisting}
 		
 	\subsubsection{Tipos}
-		Los \textbf{tipos} son los elementos más importantes de P\#. Un tipo es una estructura de bloques compuesta por acciones (métodos). Un tipo proporciona una definición para casos de, por ejemplo, motociclistas o motocicletas. Su declaración comienza con un encabezado que especifica qué tipo se va a crear y el nombre que se le dará a esta instancia. El encabezado va seguido del cuerpo del tipo, que consiste en una lista de declaraciones de miembros escritas entre los delimitadores {y}.
+		Los \textbf{tipos} son los elementos más importantes de P\#. Un tipo es una estructura de bloques compuesta por acciones (métodos). Un tipo proporciona una definición para casos de, por ejemplo, motociclistas o motocicletas. Su declaración comienza con un encabezado que especifica qué tipo se va a crear y el nombre que se le dará a esta instancia. El encabezado va seguido del cuerpo del tipo, que consiste en una lista de declaraciones de miembros escritas entre los delimitadores\{y\}.
 		
 		\begin{lstlisting}[language={PSharp}]
 			rider Rossi() {
@@ -279,9 +279,7 @@
 		| 'speed'\par
 		| 'temperature'\par
 		| 'skill'\par
-		| 'tyres'\par
-		;
-		
+		| 'tyres'\par		
 		;\par
 		
 		\underline{\textbf{Literales}}\par
@@ -325,46 +323,46 @@
 		
 		\underline{\textbf{Operadores y signos de puntuación}}\par		
 		\textbf{operator\_or\_punctuator}\par
-		: '\{'  |\par
-		  '\}'  |\par
-	  	  '['  |\par
-	  	  ']'  |\par
-	  	  '('  |\par
-	  	  ')'  |\par
-	  	  '.'  |\par
-	  	  ','  |\par       
-		  ':'  |\par
-		  ';'  |\par
-		  '+'  |\par
-		  '-'  |\par
-		  '*'  |\par
-		  '/'  |\par
-		  '\%' |\par
-		  '**' |\par  
-		  '!'  |\par
-		  '='  |\par
-		  '<'  |\par
-		  '>'  |\par
-		  '\&\&' |\par
-		  '||' |\par
-		  '==' |\par 
-		  '!=' |\par
-		  '<=' |\par
-		  '>=' |\par
-		  '+=' |\par
-		  '-=' |\par
-		  '*=' |\par
-		  '/=' |\par
-		  '\%=' |\par 
-		  '**=' |\par
-		  '\&\&=' |\par
-		  '||=' |\par
-		  '\^='\par
+		: '\{' \par
+		| '\}' \par
+		| '[' \par
+		| ']' \par
+		| '(' \par
+	  	| ')' \par
+	  	| '.' \par
+	  	| ',' \par  
+		| ':' \par
+		| ';' \par
+		| '+' \par
+		| '-' \par
+		| '*' \par
+		| '/' \par
+		| '\%' \par
+		| '**' \par
+		| '!' \par
+		| '=' \par
+		| '<' \par
+		| '>' \par
+		| '\&\&' \par
+		| '||' \par
+		| '==' \par
+		| '!=' \par
+		| '<=' \par
+		| '>=' \par
+		| '+=' \par
+		| '-=' \par
+		| '*=' \par
+		| '/=' \par
+		| '\%=' \par
+		| '**=' \par
+		| '\&\&=' \par
+		| '||=' \par
+		| '\textasciicircum{}=' \par
 		;\par
 		
 		\underline{\textbf{Directivas}}\par
 		\textbf{directive}\par
-		: 'include' file\_name ';'\par
+		: 'include' '<Nombre\_del\_archivo.pys>' ';'\par
 		;\par
 		
 		
