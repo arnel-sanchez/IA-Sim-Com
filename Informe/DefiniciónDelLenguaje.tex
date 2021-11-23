@@ -1,30 +1,177 @@
 \subsection{Introducción a PSharp (P)}
 	\subsubsection{Hello world!}
 	
-		\begin{lstlisting}[language={PSharp}, label={Hello World!}]
+		\begin{lstlisting}[language={PSharp}]
 			method void main() {
 				print("Hello World!");
 			}
 		\end{lstlisting}	
-		Los archivos de P\# suelen tener la extensión de archivo .pys.
+		Los archivos de P\# suelen tener la extensión de archivo .pys.\par
 		
+		P\# permite almacenar el texto fuente de un programa en varios archivos fuente. Cuando se compila un programa P\# de varios archivos, todos los archivos de origen se procesan juntos y los archivos de origen pueden hacer referencia libremente entre sí; conceptualmente, es como si todos los archivos de origen estuvieran concatenados en un archivo grande antes de ser procesados.		
 		
 	\subsubsection{Estructura del Programa}
-		Los conceptos organizativos clave en P\# son los programas y los miembros. Los programas P\# constan de uno o más archivos fuente. Los programas declaran miembros. Los métodos y propiedades son ejemplos de miembros.
+		Los conceptos organizativos clave en P\# son programas, tipos y miembros. Los programas P\# constan de uno o más archivos fuente. Los programas declaran tipos y miembros. Las motocicletas y los motociclistas son ejemplos de tipos. Los métodos y propiedades son ejemplos de miembros.
 		
 	\subsubsection{Tipos y Variables}
+		Hay dos tipos de tipos en P\#: tipos de valor y tipos de referencia. Las variables de tipos de valor contienen directamente sus datos, mientras que las variables de tipos de referencia almacenan referencias a sus datos. Con los tipos de referencia, es posible que dos variables hagan referencia al mismo objeto y, por lo tanto, las operaciones en una variable afecten al objeto al que hace referencia la otra variable. Con los tipos de valor, cada una de las variables tiene su propia copia de los datos, y no es posible que las operaciones en una afecten a la otra.\par
 		\begin{center}
 			\begin{tabular}{| c | c | m{5cm} | }
 				\hline
 				Categoría & Tipo & Descripción \\ \hline
-				\multirow{3}{*}{Tipos por Valor} & \multirow{3}{*}{Tipos Simples} & * Entero con signo: int \\
-				 &  & * Punto flotante IEEE: double \\
-				 &  & * Booleanos: bool \\ \hline
-				\multirow{3}{*}{Tipos por Referencia} & Tipos que aceptan valores NULL & * Extensiones de todos los demás tipos de valor con un valor nulo \\
-				 & \multirow{2}{*}{Tipos de matrices} & * Unidimensionales y multidimensionales, por ejemplo, int [] e int [,] \\
-				 &  & * Cadenas Unicode: string \\ \hline
+				\multirow{5}{*}{Tipos por Valor} & \multirow{4}{*}{Tipos Simples} & Entero con signo: int \\ \cline{3-3}
+				 &  & Punto flotante IEEE: double \\ \cline{3-3}
+				 &  & Booleanos: bool \\ \cline{3-3}
+				 &  & Cadenas Unicode: string \\ \cline{2-3}
+				 & Tipos que aceptan valores NULL & Extensiones de todos los demás tipos de valor con un valor nulo \\ \hline
+				 Tipos por Referencia & Tipos de matrices & Unidimensionales, por ejemplo, int [] \\ \hline
 			\end{tabular}
 		\end{center}
+	\subsubsection{Expresiones}
+		Las expresiones se construyen a partir de operandos y operadores. Los operadores de una expresión indican qué operaciones aplicar a los operandos. Los ejemplos de operadores incluyen +, -, * y /. Los ejemplos de operandos incluyen literales, variables y expresiones.\par
+		\begin{center}
+			\begin{tabular}{| c | c | m{5cm} | }
+				\hline
+				Categoría & Expresión & Descripción \\ \hline
+				\multirow{2}{*}{Primaria} & x(...) & Invocación de método \\ \cline{2-3}
+				& x[...] & Acceso a matrices e indexadores \\ \hline
+				\multirow{3}{*}{Unaria} & +x & Identidad \\ \cline{2-3}
+				& -x & Negación \\ \cline{2-3}
+				& !x & Negación lógica \\ \hline
+				\multirow{4}{*}{Multiplicativa} & x * y & Multiplicación \\ \cline{2-3}
+				& x / y & División \\ \cline{2-3}
+				& x \% y & Resto \\ \cline{2-3} 
+				& x ** y & Exponenciación \\ \hline
+				\multirow{2}{*}{Aditiva} & x + y & Adición y concatenación de strings \\ \cline{2-3}
+				& x - y & Substracción \\ \hline
+				\multirow{4}{*}{Relacionales} & x < y & Menor que \\ \cline{2-3} 
+				& x > y & Mayor que \\ \cline{2-3}
+				& x <= y & Menor o igual que \\ \cline{2-3} 
+				& x >= y & Mayor o igual que \\ \hline
+			    \multirow{2}{*}{Igualdad} & x == y & Igual \\ \cline{2-3} 
+			    & x != y & Distinto \\ \hline 
+			    Condicionales AND & x \&\& y & Evalúa y si y sólo si x es verdadera \\ \hline
+			    Condicionales OR & x || y & Evalúa y si y sólo si x es falsa \\ \hline
+			    Condicionales XOR & x \textasciicircum{} y & \\ \hline
+			    \multirow{2}{*}{Asignación} & x = y & Asignación \\ \cline{2-3}
+			    & x op= y & Asignación compuesta; los operadores admitidos son *= /= \%= **= += -= \&\&= ||= \textasciicircum{}= \\ \hline
+			\end{tabular}
+		\end{center}
+	\subsubsection{Declaraciones}
+		Las acciones de un programa se expresan mediante declaraciones. P\# admite varios tipos diferentes de declaraciones, algunas de las cuales se definen en términos de declaraciones integradas.
+		
+		Un \textbf{bloque} permite escribir múltiples declaraciones en contextos donde se permite una sola declaración. Un bloque consta de una lista de declaraciones escritas entre los delimitadores\{y\}.
+		
+		La \textbf{declaración de inclusión} se utiliza para obtener y luego disponer de un recurso.
+		
+		\begin{lstlisting}[language={PSharp}]
+			include test;
+		\end{lstlisting}
+		
+		Las sentencias de \textbf{declaración} se utilizan para declarar variables, valga la redundancia.
+		
+		\begin{lstlisting}[language={PSharp}]
+			method void example() {
+				int a = 1;
+			}
+		\end{lstlisting}
+	
+		Las \textbf{declaraciones de expresión} se utilizan para evaluar expresiones. Las expresiones que se pueden usar como declaraciones incluyen invocaciones de métodos, asignaciones que usan = y los operadores de asignación compuesta.
+		
+		\begin{lstlisting}[language={PSharp}]
+			method void example() {
+				int a = 1;
+				print(a + 2);
+			}
+		\end{lstlisting}
+	
+		La \textbf{instrucción de selección} se utiliza para seleccionar una de varias declaraciones posibles para su ejecución en función del valor de alguna expresión. Este es el caso de la sentencia \textbf{if}.
+		
+		\begin{lstlisting}[language={PSharp}]
+			method void example(int a) {
+				if (a < 5) {
+					print(a);
+				}
+				else {
+					print(a % 5);
+				}
+			}
+		\end{lstlisting}
+		
+		La \textbf{instrucción de iteración} se utiliza para ejecutar repetidamente una instrucción incorporada. Este es el caso de la instrucción \textbf{while}.
+		
+		\begin{lstlisting}[language={PSharp}]
+			method void example(int a) {
+				while (a > 5) {
+					print(a);
+					a -= 1;
+				}
+			}
+		\end{lstlisting}
+		
+		Las \textbf{sentencias de salto} se utilizan para transferir el control. En este grupo están las declaraciones de \textbf{break}, \textbf{continue} y \textbf{return}.
+		
+		\begin{lstlisting}[language={PSharp}]
+			method int example() {
+				while (true) {
+					x = input()
+					if (x == "x") {
+						continue;
+					}
+					elif (x == "") {
+						break;
+					}
+					print(x);
+				}
+				return 0;
+			}
+		\end{lstlisting}
+		
+	\subsubsection{Tipos}
+		Los \textbf{tipos} son los elementos más importantes de P\#. Un tipo es una estructura de bloques compuesta por acciones (métodos). Un tipo proporciona una definición para casos de, por ejemplo, motociclistas o motocicletas. Su declaración comienza con un encabezado que especifica qué tipo se va a crear y el nombre que se le dará a esta instancia. El encabezado va seguido del cuerpo del tipo, que consiste en una lista de declaraciones de miembros escritas entre los delimitadores\{y\}.
+		
+		\begin{lstlisting}[language={PSharp}]
+			rider Rossi() {
+				method int example() {    
+					return 0;
+				}
+				
+				method void curves() {    
+					...
+				}
+				...
+			}
+		\end{lstlisting}
+	\subsubsection{Métodos}
+		Un \textbf{método} es un miembro que implementa un cálculo o acción que se puede realizar por tipo. Los métodos tienen una lista (posiblemente vacía) de \textbf{parámetros}, que representan valores o referencias de variables pasadas al método, y un tipo de retorno, que especifica el tipo de valor calculado y devuelto por el método. El tipo de retorno de un método es nulo si no devuelve un valor.
+		
+	\subsubsection{Parámetros}
+		Los \textbf{parámetros} se utilizan para pasar valores o referencias de variables a métodos. Los parámetros de un método obtienen sus valores reales de los \textbf{argumentos} que se especifican cuando se invoca el método. Las modificaciones de un valor de parámetro no afectan el argumento que se pasó para el parámetro.
+			
+	\subsubsection{Cuerpo del método y variables locales}
+		El cuerpo de un método especifica las declaraciones que se ejecutarán cuando se invoca el método. El cuerpo de un método puede declarar variables que son específicas de la invocación del método. Estas variables se denominan variables locales. Una declaración de variable local especifica un nombre de tipo, un nombre de variable y un valor inicial.
+		
+	\subsubsection{Operadores}
+		Un \textbf{operador} es un miembro que define el significado de aplicar un operador de expresión particular. Se pueden definir tres tipos de operadores: operadores unarios y operadores binarios.\par
+	
+		\textbf{Operadores Unarios:}
+		\begin{lstlisting}[language={PSharp}]
+			!true;
+		\end{lstlisting}
+		
+		\textbf{Operadores Binarios:}
+		\begin{lstlisting}[language={PSharp}]
+			3+5;
+			true && false;
+		\end{lstlisting}
+	
+	\subsubsection{Matrices}
+		Una matriz es una estructura de datos que contiene una serie de variables a las que se accede a través de índices calculados. Las variables contenidas en una matriz, también llamadas elementos de la matriz, son todas del mismo tipo, y este tipo se denomina tipo de elemento de la matriz. Los tipos de matriz son tipos de referencia y la declaración de una variable de matriz simplemente reserva espacio para una referencia a una instancia de matriz. Los índices de los elementos de una matriz van de 0 a longitud - 1.
+		
+		\begin{lstlisting}[language={PSharp}]
+			int[] a = [1, 2, 3, 4, 5];
+		\end{lstlisting}
+	
 	\subsubsection{Análisis Léxico}
 		\textbf{input}\par
 		: input\_element* new\_line\par
@@ -119,6 +266,20 @@
 		| 'true'\par
 		| 'void'\par
 		| 'while'\par
+		
+		| 'motorcycle'\par
+		| 'rider'\par
+		| 'track'\par
+		| 'weather'\par
+		
+		| 'angle'\par
+		| 'brakes'\par
+		| 'lap'\par
+		| 'length'\par
+		| 'speed'\par
+		| 'temperature'\par
+		| 'skill'\par
+		| 'tyres'\par		
 		;\par
 		
 		\underline{\textbf{Literales}}\par
@@ -162,46 +323,46 @@
 		
 		\underline{\textbf{Operadores y signos de puntuación}}\par		
 		\textbf{operator\_or\_punctuator}\par
-		: '\{'  |\par
-		  '\}'  |\par
-	  	  '['  |\par
-	  	  ']'  |\par
-	  	  '('  |\par
-	  	  ')'  |\par
-	  	  '.'  |\par
-	  	  ','  |\par       
-		  ':'  |\par
-		  ';'  |\par
-		  '+'  |\par
-		  '-'  |\par
-		  '*'  |\par
-		  '/'  |\par
-		  '\%' |\par
-		  '**' |\par  
-		  '!'  |\par
-		  '='  |\par
-		  '<'  |\par
-		  '>'  |\par
-		  '\&\&' |\par
-		  '||' |\par
-		  '==' |\par 
-		  '!=' |\par
-		  '<=' |\par
-		  '>=' |\par
-		  '+=' |\par
-		  '-=' |\par
-		  '*=' |\par
-		  '/=' |\par
-		  '\%=' |\par 
-		  '**=' |\par
-		  '\&\&=' |\par
-		  '||=' |\par
-		  '\^='\par
+		: '\{' \par
+		| '\}' \par
+		| '[' \par
+		| ']' \par
+		| '(' \par
+	  	| ')' \par
+	  	| '.' \par
+	  	| ',' \par  
+		| ':' \par
+		| ';' \par
+		| '+' \par
+		| '-' \par
+		| '*' \par
+		| '/' \par
+		| '\%' \par
+		| '**' \par
+		| '!' \par
+		| '=' \par
+		| '<' \par
+		| '>' \par
+		| '\&\&' \par
+		| '||' \par
+		| '==' \par
+		| '!=' \par
+		| '<=' \par
+		| '>=' \par
+		| '+=' \par
+		| '-=' \par
+		| '*=' \par
+		| '/=' \par
+		| '\%=' \par
+		| '**=' \par
+		| '\&\&=' \par
+		| '||=' \par
+		| '\textasciicircum{}=' \par
 		;\par
 		
 		\underline{\textbf{Directivas}}\par
 		\textbf{directive}\par
-		: 'include' file\_name ';'\par
+		: 'include' '<Nombre\_del\_archivo.pys>' ';'\par
 		;\par
 		
 		
