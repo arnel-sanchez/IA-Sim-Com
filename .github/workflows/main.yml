@@ -20,4 +20,4 @@ jobs:
     - name: Install Dependencies
       run: python -m pip install --upgrade pip
     - name: Run Test
-      run: cd ./Proyecto/tester && python -m unittest 'tester.py'
+      run: cd ./Proyecto/tester && python -m unittest 'test_tokenizer.py'
