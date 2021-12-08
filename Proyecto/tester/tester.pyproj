@@ -22,6 +22,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="test_parser.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="test_tokenizer.py">
       <SubType>Code</SubType>
     </Compile>
