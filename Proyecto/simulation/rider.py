@@ -18,8 +18,8 @@ def default_riders():
     motorcycles = default_motorcycles()
     bagnaia = Rider("Francesco Bagnaia", 1, motorcycles["ducati"])
     binder = Rider("Brad Binder", 2, motorcycles["ktm"])
-    espargaro = Rider("Aleix EspargarÃ³", 3, motorcycles["aprilia"])
-    marquez = Rider("Marc MÃ¡rquez", 4, motorcycles["honda"])
+    espargaro = Rider("Aleix Espargaró", 3, motorcycles["aprilia"])
+    marquez = Rider("Marc Márquez", 4, motorcycles["honda"])
     mir = Rider("Joan Mir", 5, motorcycles["suzuki"])
     quartararo = Rider("Fabio Quartararo", 6, motorcycles["yamaha"])
     return {"bagnaia": bagnaia, "binder": binder, "espargaro": espargaro, "marquez": marquez, "mir": mir,

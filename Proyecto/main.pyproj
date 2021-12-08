@@ -1,0 +1,54 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>c48dd51b-f23d-4e79-b6b7-9f111bb9ff8c</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>main.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>main</Name>
+    <RootNamespace>main</RootNamespace>
+    <TestFramework>unittest</TestFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="compilation\assignments.py" />
+    <Compile Include="compilation\errors.py" />
+    <Compile Include="compilation\nodes.py" />
+    <Compile Include="compilation\operators.py" />
+    <Compile Include="compilation\parser.py" />
+    <Compile Include="compilation\tokenizer.py" />
+    <Compile Include="compilation\tokens.py" />
+    <Compile Include="main.py" />
+    <Compile Include="simulation\crew_chief.py" />
+    <Compile Include="simulation\motorcycle.py" />
+    <Compile Include="simulation\pilot.py" />
+    <Compile Include="simulation\race.py" />
+    <Compile Include="simulation\rider.py" />
+    <Compile Include="simulation\simulator.py" />
+    <Compile Include="simulation\track.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="compilation\" />
+    <Folder Include="simulation\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>

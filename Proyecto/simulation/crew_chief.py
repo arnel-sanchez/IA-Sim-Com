@@ -19,8 +19,8 @@ def default_crew_chiefs():
     carchedi = CrewChief("Frankie Carchedi", 1, pilots["mir"])
     gabbarini = CrewChief("Christian Gabbarini", 2, pilots["bagnaia"])
     gubellini = CrewChief("Diego Gubellini", 3, pilots["quartararo"])
-    hernandez = CrewChief("Santi Hernández", 4, pilots["marquez"])
-    jimenez = CrewChief("Antonio Jiménez", 5, pilots["espargaro"])
-    madrid = CrewChief("Andrés Madrid", 6, pilots["binder"])
+    hernandez = CrewChief("Santi Hernandez", 4, pilots["marquez"])
+    jimenez = CrewChief("Antonio Jimenez", 5, pilots["espargaro"])
+    madrid = CrewChief("Andres Madrid", 6, pilots["binder"])
     return {"carchedi": carchedi, "gabbarini": gabbarini, "gubellini": gubellini, "hernandez": hernandez,
             "jimenez": jimenez, "madrid": madrid}

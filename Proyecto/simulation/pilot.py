@@ -18,8 +18,8 @@ def default_pilots():
     motorcycles = default_motorcycles()
     bagnaia = Pilot("Francesco Bagnaia", 1, motorcycles["ducati"])
     binder = Pilot("Brad Binder", 2, motorcycles["ktm"])
-    espargaro = Pilot("Aleix Espargaró", 3, motorcycles["aprilia"])
-    marquez = Pilot("Marc Márquez", 4, motorcycles["honda"])
+    espargaro = Pilot("Aleix Espargaro", 3, motorcycles["aprilia"])
+    marquez = Pilot("Marc Marquez", 4, motorcycles["honda"])
     mir = Pilot("Joan Mir", 5, motorcycles["suzuki"])
     quartararo = Pilot("Fabio Quartararo", 6, motorcycles["yamaha"])
     return {"bagnaia": bagnaia, "binder": binder, "espargaro": espargaro, "marquez": marquez, "mir": mir,
