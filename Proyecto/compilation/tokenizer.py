@@ -4,12 +4,13 @@ from compilation.errors import UnknownCharacterError, UnexpectedCharacterError, 
 
 class Tokenizer:
     def __init__(self):
-        self.keywords = dict([("bool", TokenType.T_BOOL), ("break", TokenType.T_BOOL), ("continue", TokenType.T_BOOL),
-                              ("double", TokenType.T_DOUBLE), ("elif", TokenType.T_ELIF), ("else", TokenType.T_ELSE),
-                              ("false", TokenType.T_FALSE), ("if", TokenType.T_IF), ("include", TokenType.T_FALSE),
-                              ("int", TokenType.T_INT), ("method", TokenType.T_METHOD), ("null", TokenType.T_BOOL),
-                              ("return", TokenType.T_STRING), ("string", TokenType.T_STRING),
-                              ("true", TokenType.T_TRUE), ("void", TokenType.T_WHILE), ("while", TokenType.T_WHILE)])
+        self.keywords = dict([("bool", TokenType.T_BOOL), ("break", TokenType.T_BREAK),
+                              ("continue", TokenType.T_CONTINUE), ("double", TokenType.T_DOUBLE),
+                              ("elif", TokenType.T_ELIF), ("else", TokenType.T_ELSE), ("false", TokenType.T_FALSE),
+                              ("if", TokenType.T_IF), ("include", TokenType.T_INCLUDE), ("int", TokenType.T_INT),
+                              ("method", TokenType.T_METHOD), ("null", TokenType.T_NULL),
+                              ("return", TokenType.T_RETURN), ("string", TokenType.T_STRING),
+                              ("true", TokenType.T_TRUE), ("void", TokenType.T_VOID), ("while", TokenType.T_WHILE)])
         self.operators = dict([("=", TokenType.T_ASSIGN), ("==", TokenType.T_EQ_REL),
                                ("!", TokenType.T_NEG_OP), ("!=", TokenType.T_NEQ_REL),
                                ("+", TokenType.T_ADD_OP), ("+=", TokenType.T_ADD_AS),
@@ -148,13 +149,13 @@ class Tokenizer:
         self.f_pointer -= 1
 
     def operator(self, token: str, op: TokenType):
-        while self.f_pointer < len(self.input_text):
-            token += self.input_text[self.f_pointer + 1]
+        while self.f_pointer + 1 < len(self.input_text):
+            self.f_pointer += 1
+            token += self.input_text[self.f_pointer]
             new_opt = self.operators.get(token)
             if not new_opt:
                 break
             op = new_opt
-            self.f_pointer += 1
         self.tokens.append(Token(op, self.line, self.column))
         self.f_pointer -= 1
 
