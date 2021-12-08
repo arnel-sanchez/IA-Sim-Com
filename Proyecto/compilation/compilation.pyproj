@@ -2,16 +2,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>159ecfe8-9850-43ca-8093-f7e1d294aa18</ProjectGuid>
+    <ProjectGuid>1dc36b44-4b46-4001-8715-19cb0ad3d699</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test_tokenizer.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>tester</Name>
-    <RootNamespace>tester</RootNamespace>
-    <TestFramework>unittest</TestFramework>
+    <Name>compilation</Name>
+    <RootNamespace>compilation</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,21 +22,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="test_tokenizer.py">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\compilation\compilation.pyproj">
-      <Name>compilation</Name>
-      <Project>{1dc36b44-4b46-4001-8715-19cb0ad3d699}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\simulation\simulation.pyproj">
-      <Name>simulation</Name>
-      <Project>{a0083ccd-1cdb-4c03-a63b-17b04f531d3f}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+    <Compile Include="assignments.py" />
+    <Compile Include="errors.py" />
+    <Compile Include="nodes.py" />
+    <Compile Include="operators.py" />
+    <Compile Include="parser.py" />
+    <Compile Include="tokenizer.py" />
+    <Compile Include="tokens.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
