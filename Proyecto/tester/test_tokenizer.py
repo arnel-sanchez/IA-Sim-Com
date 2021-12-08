@@ -1,7 +1,9 @@
 import unittest
 import sys
-path=sys.path[0].removesuffix("\\tester")
-sys.path.append(path)
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
 from compilation.tokenizer import Tokenizer
 from compilation.tokens import TokenType, Token
 
