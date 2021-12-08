@@ -15,5 +15,9 @@ jobs:
     - uses: actions/setup-python@v2
       with:
         python-version: '3.6'
-    - run: python ./Proyecto/main.py
-    - run: python -m unittest ./Proyecto/tester/tester.py
+    - name: Run Project
+      run: python ./Proyecto/main.py
+    - name: Install Dependencies
+      run: python -m pip install --upgrade pip
+    - name: Run Test
+      run: cd ./Proyecto/tester && python -m unittest discover -s -p 'tester.py'
