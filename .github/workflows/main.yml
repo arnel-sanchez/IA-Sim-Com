@@ -16,3 +16,4 @@ jobs:
       with:
         python-version: '3.6'
     - run: python ./Proyecto/main.py
+    - run: python -m unittest ./Proyecto/tester/tester.py
