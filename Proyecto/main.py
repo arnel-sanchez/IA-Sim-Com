@@ -3,10 +3,11 @@ from simulation.simulator import start
 import os
 import sys
 from pynput import keyboard
+from time import sleep
 
 def test_simulation():
     print("\n\nSIMULACION:")
-    time = 3  # Tiempo que demora la simulacion de una vuelta
+    time = 1  # Tiempo que demora la simulacion de una vuelta
     stop = False  # Reajustes en tiempo real
     start(time, stop)
 
@@ -17,14 +18,12 @@ def print_welcome():
     print("Para Salir del Simulador Presione [E]")
 
 def print_new_simulation():
-    clear_console()
     print("Para Iniciar Nueva Simulacion Presione [N]")
     print("Para Salir del Simulador Presione [E]")
 
 def main():
     print_welcome()
-    while(True):
-        keyboard.Listener(key).run()
+    keyboard.Listener(key).run()
 
 def key(tecla):
     if tecla == keyboard.KeyCode.from_char('n'):
@@ -41,6 +40,7 @@ def new_simulation():
 def exit():
     clear_console()
     print("Simulaciones terminadas")
+    sleep(3)
     sys.exit()
 
 def clear_console():
