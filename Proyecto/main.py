@@ -1,6 +1,7 @@
 from compilation.tokenizer import Tokenizer
 from simulation.simulator import start
-import sys
+from os import name, system
+from sys import exit
 from pynput import keyboard
 
 
