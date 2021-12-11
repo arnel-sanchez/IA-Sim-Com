@@ -33,7 +33,7 @@ class Tokenizer:
         self.tokens = []
         self.error = None
 
-    def tokenize(self, file: str, input_text: str) -> [TokenType]:
+    def tokenize(self, file: str, input_text: str) -> [Token]:
         self.input_text = input_text
         self.f_pointer = 0
         self.s_pointer = 0
