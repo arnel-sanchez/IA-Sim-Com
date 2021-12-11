@@ -36,46 +36,50 @@ class TokenType(Enum):
 
     T_ID = 25  # variables
 
-    T_ADD_OP = 26  # +
-    T_SUB_OP = 27  # -
-    T_NEG_OP = 28  # !
-    T_MUL_OP = 29  # *
-    T_DIV_OP = 30  # /
-    T_MOD_OP = 31  # %
-    T_EXP_OP = 32  # **
+    T_S_VALUE = 26  # some string value
+    T_I_VALUE = 27  # some int value
+    T_D_VALUE = 28  # some double value
 
-    T_EQ_REL = 33  # ==
-    T_NEQ_REL = 34  # !=
+    T_ADD_OP = 29  # +
+    T_SUB_OP = 30  # -
+    T_NEG_OP = 31  # !
+    T_MUL_OP = 32  # *
+    T_DIV_OP = 33  # /
+    T_MOD_OP = 34  # %
+    T_EXP_OP = 35  # **
 
-    T_LESS_REL = 35  # <
-    T_LEQ_REL = 36  # <=
-    T_GREAT_REL = 37  # >
-    T_GREQ_REL = 38  # >=
+    T_EQ_REL = 36  # ==
+    T_NEQ_REL = 37  # !=
 
-    T_AND_OP = 39  # &&
-    T_OR_OP = 40  # ||
-    T_XOR_OP = 41  # ^
+    T_LESS_REL = 38  # <
+    T_LEQ_REL = 39  # <=
+    T_GREAT_REL = 41  # >
+    T_GREQ_REL = 41  # >=
 
-    T_ASSIGN = 42  # =
-    T_ADD_AS = 43  # +=
-    T_SUB_AS = 44  # -=
-    T_MUL_AS = 45  # *=
-    T_DIV_AS = 46  # /=
-    T_MOD_AS = 47  # %=
-    T_EXP_AS = 48  # **=
+    T_AND_OP = 42  # &&
+    T_OR_OP = 43  # ||
+    T_XOR_OP = 44  # ^
 
-    T_AND_AS = 49  # &&=
-    T_OR_AS = 50  # ||=
-    T_XOR_AS = 51  # ^=
+    T_ASSIGN = 45  # =
+    T_ADD_AS = 46  # +=
+    T_SUB_AS = 47  # -=
+    T_MUL_AS = 48  # *=
+    T_DIV_AS = 49  # /=
+    T_MOD_AS = 50  # %=
+    T_EXP_AS = 51  # **=
 
-    T_DOT = 52  # .
-    T_COMMA = 53  # ,
-    T_COLON = 54  # :
+    T_AND_AS = 52  # &&=
+    T_OR_AS = 53  # ||=
+    T_XOR_AS = 54  # ^=
 
-    T_CARRIAGE = 55  # \r
-    T_NEWLINE = 56  # \n
+    T_DOT = 55  # .
+    T_COMMA = 56  # ,
+    T_COLON = 57  # :
 
-    T_INVALID = 57
+    T_CARRIAGE = 58  # \r
+    T_NEWLINE = 59  # \n
+
+    T_INVALID = 60  # invalid token
 
 
 class Token:
