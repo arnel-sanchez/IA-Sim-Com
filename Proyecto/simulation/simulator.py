@@ -18,8 +18,8 @@ def start(time: int, stop: bool):
         print("{}:".format(i))
         i += 1
         crew_chiefs[cc].print_crew_chief()
-        crew_chiefs[cc].pilot.print_pilot()
-        crew_chiefs[cc].pilot.motorcycle.print_motorcycle()
+        crew_chiefs[cc].rider.print_rider()
+        crew_chiefs[cc].rider.motorcycle.print_motorcycle()
         print()
 
     print("\nInicio de la carrera\n")
