@@ -15,7 +15,6 @@ def test_tokenizer():
         for token in tokens:
             print(token)
 
-
 def test_simulation():
     print("\n\nSIMULACION:")
     time = 3  # Tiempo que demora la simulacion de una vuelta

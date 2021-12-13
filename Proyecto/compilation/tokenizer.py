@@ -33,7 +33,7 @@ class Tokenizer:
         self.tokens = []
         self.error = None
 
-    def tokenize(self, file: str, input_text: str) -> [TokenType]:
+    def tokenize(self, file: str, input_text: str) -> [Token]:
         self.input_text = input_text
         self.f_pointer = 0
         self.s_pointer = 0
@@ -108,7 +108,7 @@ class Tokenizer:
             if self.input_text[self.f_pointer] == char:
                 break
             token += self.input_text[self.f_pointer]
-        self.tokens.append(Token(TokenType.T_COMMENT if char == '#' else TokenType.T_STRING, self.line, self.column,
+        self.tokens.append(Token(TokenType.T_COMMENT if char == '#' else TokenType.T_S_VALUE, self.line, self.column,
                                  token))
 
     def number(self, file: str):
@@ -129,9 +129,9 @@ class Tokenizer:
                                                   self.column + self.f_pointer - self.s_pointer)
             return
         if double:
-            self.tokens.append(Token(TokenType.T_DOUBLE, self.line, self.column, float(token)))
+            self.tokens.append(Token(TokenType.T_D_VALUE, self.line, self.column, float(token)))
         else:
-            self.tokens.append(Token(TokenType.T_INT, self.line, self.column, int(token)))
+            self.tokens.append(Token(TokenType.T_I_VALUE, self.line, self.column, int(token)))
         self.f_pointer -= 1
 
     def alpha(self):
