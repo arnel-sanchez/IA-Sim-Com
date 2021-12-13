@@ -6,11 +6,9 @@ from pynput import keyboard
 from time import sleep
 
 
-def test_simulation():
-    print("\n\nSIMULACION:")
-    time = 1  # Tiempo que demora la simulacion de una vuelta
-    stop = False  # Reajustes en tiempo real
-    start(time, stop)
+def main():
+    print_welcome()
+    keyboard.Listener(key).run()
 
 
 def print_welcome():
@@ -20,14 +18,12 @@ def print_welcome():
     print("Para Salir del Simulador Presione [E]")
 
 
-def print_new_simulation():
-    print("Para Iniciar Nueva Simulacion Presione [N]")
-    print("Para Salir del Simulador Presione [E]")
+def clear_console():
+    if name == "ce" or name == "nt" or name == "dos":
+        system("cls")
+    elif name == "posix":
+        system("clear")
 
-
-def main():
-    print_welcome()
-    keyboard.Listener(key).run()
 
 def key(tecla):
     if tecla == keyboard.KeyCode.from_char('n'):
@@ -43,17 +39,23 @@ def new_simulation():
     test_simulation()
 
 
+def test_simulation():
+    print("\n\nSIMULACION:")
+    time = 1  # Tiempo que demora la simulacion de una vuelta
+    stop = False  # Reajustes en tiempo real
+    start(time, stop)
+
+
+def print_new_simulation():
+    print("Para Iniciar Nueva Simulacion Presione [N]")
+    print("Para Salir del Simulador Presione [E]")
+
+
 def exit_():
     clear_console()
     print("Simulaciones terminadas")
     sleep(3)
     exit(0)
-
-def clear_console():
-    if name == "ce" or name == "nt" or name == "dos":
-        system("cls")
-    elif name == "posix":
-        system("clear")
 
 
 if __name__ == '__main__':
