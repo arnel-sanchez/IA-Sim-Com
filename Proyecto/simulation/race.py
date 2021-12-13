@@ -1,7 +1,7 @@
 from enum import Enum
 
 from simulation.track import Track, default_tracks
-from simulation.pilot import default_pilots
+from simulation.rider import default_riders
 
 
 class Weather(Enum):
@@ -29,9 +29,9 @@ class Weather(Enum):
 
 
 class Race:
-    def __init__(self, track: Track, pilots: list, weather: Weather = Weather.Sunny, laps: int = 20):
+    def __init__(self, track: Track, riders: list, weather: Weather = Weather.Sunny, laps: int = 20):
         self.track = track
-        self.pilots = pilots
+        self.riders = riders
         self.weather = weather
         self.laps = laps
 
@@ -40,8 +40,8 @@ def race():
     tracks = default_tracks()
     misano = tracks["misano"]
 
-    pilots = default_pilots()
+    riders = default_riders()
 
     weather = Weather.Sunny
 
-    return Race(misano, pilots, weather)
+    return Race(misano, riders, weather)
