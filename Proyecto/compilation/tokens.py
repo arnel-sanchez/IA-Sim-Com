@@ -20,6 +20,8 @@ class TokenType(Enum):
     T_TRUE = 13  # true
     T_FALSE = 14  # false
 
+    T_ARRAY = 61#
+
     T_IF = 15  # if
     T_ELIF = 16  # elif
     T_ELSE = 17  # else
@@ -80,7 +82,10 @@ class TokenType(Enum):
     T_CARRIAGE = 59  # \r
     T_NEWLINE = 60  # \n
 
-    T_INVALID = 61  # invalid token
+    T_RIDER = 62
+    T_MOTORCYCLE = 63
+
+    T_INVALID = 100  # invalid token
 
 
 class Token:
