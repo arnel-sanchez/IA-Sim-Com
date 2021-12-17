@@ -1,7 +1,8 @@
 from compilation.tokenizer import Tokenizer
 from simulation.simulator import start
 
-from compilation.parser import split_lines, Parser
+from compilation.utils import split_lines
+from compilation.parser import Parser
 
 
 def test_compilation():
@@ -19,7 +20,7 @@ def test_compilation():
 
     lines = split_lines(tokens)
     parser = Parser()
-    parser.mask(lines)
+    parser.parse(lines)
     x = 0
 
 

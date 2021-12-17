@@ -1,5 +1,5 @@
 from compilation.tokens import TokenType, Token
-from compilation.errors import UnknownCharacterError, UnexpectedCharacterError, UnbalancedBracketsError
+from compilation.errors import Error, UnknownCharacterError, UnexpectedCharacterError, UnbalancedBracketsError
 
 
 class Tokenizer:
@@ -33,7 +33,7 @@ class Tokenizer:
         self.tokens = []
         self.error = None
 
-    def tokenize(self, file: str, input_text: str) -> [Token]:
+    def tokenize(self, file: str, input_text: str) -> ([Token], Error):
         self.input_text = input_text
         self.f_pointer = 0
         self.s_pointer = 0

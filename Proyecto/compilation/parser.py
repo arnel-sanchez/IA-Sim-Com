@@ -1,40 +1,10 @@
 from compilation.tokens import Token, TokenType
-
-
-def split_lines(tokens: [Token]) -> [[TokenType]]:
-    t_pointer = 0
-    current_line = []
-    lines = []
-    while t_pointer < len(tokens):
-        if tokens[t_pointer].token_type == (TokenType.T_IF or TokenType.T_ELIF or TokenType.T_ELSE or
-                                            TokenType.T_WHILE or TokenType.T_METHOD):
-            t_pointer = loop(tokens, t_pointer, current_line, TokenType.T_OPEN_BRACE)
-        elif tokens[t_pointer].token_type == TokenType.T_CLOSE_BRACE:
-            lines.append(current_line)
-            current_line = [tokens[t_pointer]]
-            t_pointer += 1
-            if t_pointer < len(tokens) and tokens[t_pointer].token_type == (TokenType.T_ELIF or TokenType.T_ELSE):
-                t_pointer = loop(tokens, t_pointer, current_line, TokenType.T_OPEN_BRACE)
-        else:
-            t_pointer = loop(tokens, t_pointer, current_line, TokenType.T_SEMICOLON)
-        lines.append(current_line)
-        current_line = []
-    return lines
-
-
-def loop(tokens: [Token], t_pointer: int, current_line: [Token], comparator: TokenType):
-    while t_pointer < len(tokens):
-        current_line.append(tokens[t_pointer])
-        if tokens[t_pointer].token_type == comparator:
-            return t_pointer + 1
-        t_pointer += 1
-    return t_pointer
+from compilation.utils import Region
+from compilation.errors import Error
 
 
 class Parser:
     def __init__(self):
-        self.errores = []
-        self.variables = dict()  # Scope de variables
         self.producciones = {"L": [["D", TokenType.T_SEMICOLON], ["@"], [TokenType.T_CLOSE_BRACE, "N"],
                                    ["W", TokenType.T_SEMICOLON], [TokenType.T_METHOD, "R"],
                                    ["F", TokenType.T_ID, TokenType.T_OPEN_BRACE]],
@@ -117,9 +87,7 @@ class Parser:
                        "?": [], "Ñ": [],
                        "^": []}  # Aqui guardamos los terminales que pertenecen al Follow de cada no terminal
         self.pendiente_follow = []  # Los elementos de esta lista tendran una forma "A,B" lo que significa que todo lo que pertenece al Follow de A tambien pertenece al Folow de B
-        self.estados = []  # Aqui guardamos los estados en forma de string , de forma que si el ultimo estado de la lista es el estado en el que estoy y si no hay estados en la lista ent estamos fuera de cualquier ambito del programa
         self.matriz = [[None for _ in range(len(self.terminales))] for _ in range(len(self.no_terminales))]
-        self.first_producciones_calculado = False  # Esta variable booleana me sirve calcular los first restantes que luego me hacen falta para los Follows
         self.lista_producciones = [["L", "D", TokenType.T_SEMICOLON], ["L", "@"], ["L", TokenType.T_CLOSE_BRACE, "N"],
                                    ["L", "W", TokenType.T_SEMICOLON], ["L", TokenType.T_METHOD, "R"],
                                    ["L", "F", TokenType.T_ID, TokenType.T_OPEN_BRACE],
@@ -166,99 +134,105 @@ class Parser:
                                     TokenType.T_OPEN_BRACKET, "X", "J", TokenType.T_CLOSE_BRACKET],
                                    ["^", TokenType.T_DOUBLE, TokenType.T_ID, TokenType.T_ASSIGN,
                                     TokenType.T_OPEN_BRACKET, "E", "U", TokenType.T_CLOSE_BRACKET]]
+        self.first_producciones_calculado = False  # Esta variable booleana me sirve calcular los first restantes que luego me hacen falta para los Follows
         self.hacer_first("L")
         self.first_producciones_calculado = True
         self.calcular_first_restantes()
         self.hacer_follow()
         self.completar_follows()
         self.construir_tabla_LL()
+        self.error = None
+        #self.variables = dict()  # Scope de variables
+
         # los terminales de la gramatica son estos que guardamos en el diccionario Terminales junto a las variables
         # y funciones que se guardan a medida que se crean en el diccionario Variables ,con su tipo , si se guarda una funcion
         # se guardaria primero los tipos de los parametros de dicha funcion y luego el tipo de retorno.
 
     # def parsing(tokens:[Token]))
 
-    def hacer_first(self, cadena):
+    def hacer_first(self, cadena: str):
         if self.first.keys().isdisjoint(cadena):
             self.first[cadena] = []
         i = 0
-        for pr in self.producciones[cadena]:
+        for prod in self.producciones[cadena]:
             if not self.first_producciones_calculado:
-                self.first.setdefault(self.key(pr), [])
-            if self.no_terminales.count(pr[i]) == 1:
-                self.hacer_first(pr[i])
-                self.first[cadena].extend(self.first[pr[i]])
-                if not self.first_producciones_calculado and len(pr) > 1:
-                    self.first[self.key(pr)].extend(self.first[pr[i]])
-                while self.se_va_en_epsilon(pr[i]) and i < len(pr):
+                self.first[self.key(prod)] = []
+            if self.no_terminales.count(prod[i]) == 1:
+                self.hacer_first(prod[i])
+                self.first[cadena] += self.first[prod[i]]
+                if not self.first_producciones_calculado and len(prod) > 1:
+                    self.first[self.key(prod)] += self.first[prod[i]]
+                while self.se_va_en_epsilon(prod[i]):
                     i += 1
-                    if i == len(pr):
+                    if i == len(prod):
                         break
-                    if self.no_terminales.count(pr[i]) == 1:
-                        self.hacer_first(pr[i])
-                        self.first[cadena].extend(self.first[pr[i]])
+                    if self.no_terminales.count(prod[i]) == 1:
+                        self.hacer_first(prod[i])
+                        self.first[cadena] += self.first[prod[i]]
                         if not self.first_producciones_calculado:
-                            self.first[self.key(pr)].extend(self.first[pr[i]])
+                            self.first[self.key(prod)] += self.first[prod[i]]
                     else:
-                        self.first[cadena].append(pr[i])
+                        self.first[cadena].append(prod[i])
                         break
                 i = 0
             else:
-                if self.first[cadena].count(pr[i]) == 0:
-                    self.first[cadena].append(pr[i])
+                if self.first[cadena].count(prod[i]) == 0:
+                    self.first[cadena].append(prod[i])
                 if not self.first_producciones_calculado:
-                    self.first[self.key(pr)].append(pr[i])
+                    self.first[self.key(prod)].append(prod[i])
+
+    @staticmethod
+    def key(produccion: list) -> str:
+        prod_str = ""
+        for i in range(len(produccion)):
+            prod_str += "'" + produccion[i].name + "'" if isinstance(produccion[i], TokenType) else produccion[i]
+        return prod_str
 
     def se_va_en_epsilon(self, no_terminal) -> bool:
-        if self.no_terminales.count(no_terminal) == 1:
-            for pr in self.producciones[no_terminal]:
-                j = 0
-                len_produccion = len(pr)
-                while j < len_produccion:
-                    if self.se_va_en_epsilon(pr[j]):
-                        j += 1
-                    else:
+        if self.no_terminales.count(no_terminal) != 1:
+            return no_terminal == "e"
+        else:
+            for prod in self.producciones[no_terminal]:
+                i = 0
+                while i < len(prod):
+                    if not self.se_va_en_epsilon(prod[i]):
                         break
-                if j == len(pr):
+                    i += 1
+                if i == len(prod):
                     return True
             return False
-        else:
-            return no_terminal == "e"
-        # return True
 
     def calcular_first_restantes(self):
-        for x in self.no_terminales:
-            if self.first.keys().isdisjoint(x):
-                self.hacer_first(x)
+        for nt in self.no_terminales:
+            if self.first.keys().isdisjoint(nt):
+                self.hacer_first(nt)
 
     def hacer_follow(self):
         terminales_para_follow = list()  # Aqui voy teniendo los posibles terminales que pueden pertenecer al follow de los no terminales que voy revisando
-        for pr in self.lista_producciones:
+        for prod in self.lista_producciones:
             terminales_para_follow.clear()
             existe_ultimo_terminal = True  # Esta variable es para identificar los casos en que lo ultimo que me queda en mi produccion pueda ser un No terminal y por lo tanto el Follow de la cabeza de la produccion sera subconjunyto del Follow del no terminal
-            i = (len(pr) - 1)
-            while i >= 1:
-                if self.no_terminales.count(pr[i]) == 1:
+            for i in range(len(prod) - 1, 0, -1):
+                if self.no_terminales.count(prod[i]) == 1:
                     if len(terminales_para_follow) > 0:
-                        self.follow[pr[i]] = list(set(self.follow[pr[i]] + terminales_para_follow))
+                        self.follow[prod[i]] = list(set(self.follow[prod[i]] + terminales_para_follow))
                     if existe_ultimo_terminal:
-                        self.pendiente_follow.append("{},{}".format(pr[0], pr[i]))
-                    if self.se_va_en_epsilon(pr[i]):
-                        terminales_para_follow.extend(self.first[pr[i]])
-                        if terminales_para_follow.count(pr[i]) == 1:
+                        self.pendiente_follow.append("{},{}".format(prod[0], prod[i]))
+                    if self.se_va_en_epsilon(prod[i]):
+                        terminales_para_follow += self.first[prod[i]]
+                        if terminales_para_follow.count(prod[i]) == 1:
                             terminales_para_follow.remove("e")
                     else:
                         terminales_para_follow.clear()
-                        terminales_para_follow.extend(self.first[pr[i]])
-                        if terminales_para_follow.count(pr[i]) == 1:
+                        terminales_para_follow += self.first[prod[i]]
+                        if terminales_para_follow.count(prod[i]) == 1:
                             terminales_para_follow.remove("e")
                         existe_ultimo_terminal = False
                 else:
                     existe_ultimo_terminal = False
                     terminales_para_follow.clear()
-                    if pr[i] != "e" and terminales_para_follow.count(pr[i]) == 0:
-                        terminales_para_follow.append(pr[i])
-                i -= 1
+                    if prod[i] != "e" and terminales_para_follow.count(prod[i]) == 0:
+                        terminales_para_follow.append(prod[i])
 
     def completar_follows(self):
         for follow in self.pendiente_follow:
@@ -266,85 +240,87 @@ class Parser:
 
     def construir_tabla_LL(self):
         fila = 0
-        for x in self.no_terminales:
+        for nt in self.no_terminales:
             columna = 0
-            for y in self.terminales:
-                i = 0
-                if y != "e":
-                    while i < len(self.producciones[x]):
-                        esta = self.first.get(self.key(self.producciones[x][i]), "NoEsta")
-                        if esta != "NoEsta":
-                            if self.first[self.key(self.producciones[x][i])].count(y) > 0:
-                                self.matriz[fila][columna] = self.producciones[x][i]
-                                break
-                        i += 1
+            for t in self.terminales:
+                if t != "e":
+                    for i in range(len(self.producciones[nt])):
+                        esta = self.first.get(self.key(self.producciones[nt][i]), "NoEsta")
+                        if esta != "NoEsta" and self.first[self.key(self.producciones[nt][i])].count(t) > 0:
+                            self.matriz[fila][columna] = self.producciones[nt][i]
+                            break
+                if self.follow[nt].count(t) > 0 and self.se_va_en_epsilon(nt) and self.matriz[fila][columna] is None:
+                    self.matriz[fila][columna] = "e"
                 columna += 1
-            if self.follow[x].count(y) > 0 and self.se_va_en_epsilon(x) and self.matriz[fila][columna] is None:
-                self.matriz[fila][columna] = "e"
             fila += 1
 
     def parsear(self, line, i, cadena):
+        self.error = None
+        estados = []  # Aqui guardamos los estados en forma de string , de forma que si el ultimo estado de la lista es el estado en el que estoy y si no hay estados en la lista ent estamos fuera de cualquier ambito del programa
         for termino in cadena:
             if i < len(line):
                 if i == 0:
-                    if len(self.estados) != 0:
-                        estado = self.estados[len(self.estados) - 1]
-                        if estado == "EnTipo":
-                            if line[i].token_type == (TokenType.T_WHILE or TokenType.T_IF or TokenType.T_ELIF or
-                                                      TokenType.T_ELSE):
-                                self.errores.append("Error")
+                    if len(estados) != 0:
+                        estado = estados[- 1]
+                        if estado == Region.R_TYPE:
+                            if line[i].token_type != (TokenType.T_METHOD and TokenType.T_CLOSE_BRACE):
+                                self.error = Error("Error", "", "", 0, 0)
                                 break
-                        elif estado == "EnRegion":
-                            if line[i].token_type == TokenType.T_METHOD:
-                                self.errores.append("Error")
+                        elif estado == Region.R_IF or estado == Region.R_ELIF or estado == Region.R_ELSE:
+                            if line[i].token_type == (TokenType.T_METHOD or TokenType.T_RETURN or TokenType.T_BREAK or
+                                                      TokenType.T_CONTINUE or TokenType.T_MOTORCYCLE or
+                                                      TokenType.T_RIDER):
+                                self.error = Error("Error", "", "", 0, 0)
+                                break
+                        elif estado == Region.R_WHILE:
+                            if line[i].token_type == (TokenType.T_METHOD or TokenType.T_RETURN or
+                                                      TokenType.T_MOTORCYCLE or TokenType.T_RIDER):
+                                self.error = Error("Error", "", "", 0, 0)
                                 break
                 if termino == line[i].token_type:
-                    if line[i].token_type == (TokenType.T_WHILE or TokenType.T_IF or TokenType.T_ELIF or
-                                              TokenType.T_ELSE):
-                        self.estados.append("EnRegionWhile")
+                    if line[i].token_type == (TokenType.T_RIDER or TokenType.T_MOTORCYCLE):
+                        estados.append(Region.R_TYPE)
+                    elif line[i].token_type == TokenType.T_METHOD:
+                        estados.append(Region.R_METHOD)
+                    elif line[i].token_type == TokenType.T_WHILE:
+                        estados.append(Region.R_WHILE)
                     elif line[i].token_type == TokenType.T_IF:
-                        self.estados.append("EnRegionIF")
+                        estados.append(Region.R_IF)
                     elif line[i].token_type == TokenType.T_ELIF:
-                        self.estados.pop()
-                        self.estados.append("EnRegionElif")
+                        if estados[- 1] == (Region.R_IF or Region.R_ELIF):
+                            estados.pop()
+                            estados.append(Region.R_ELIF)
+                        else:
+                            self.error = Error("", "", "", 0, 0)
+                            break
                     elif line[i].token_type == TokenType.T_ELSE:
-                        self.estados.pop()
-                        self.estados.append("EnRegionElse")
-                    elif line[i].token_type == (TokenType.T_RIDER or TokenType.T_MOTORCYCLE):
-                        self.estados.append(
-                            "EnRegionTipo")  # Aqui falta agregar-----------------cuando es dentro de un tipo
+                        if estados[- 1] == (Region.R_IF or Region.R_ELIF):
+                            estados.pop()
+                            estados.append(Region.R_ELSE)
+                        else:
+                            self.error = Error("", "", "", 0, 0)
+                            break
                     elif line[i].token_type == TokenType.T_CLOSE_BRACE:
-                        if self.estados[len(self.estados) - 1] != ("EnRegionIF" and "EnRegionElif"):
-                            self.estados.pop()
+                        if i + 1 == len(line) or estados[- 1] != (Region.R_IF and Region.R_ELIF):
+                            estados.pop()
                     i += 1
                     continue
                 elif isinstance(termino, TokenType):
-                    self.errores.append("New Error")
-                    return
+                    self.error = Error("", "", "", 0, 0)
+                    break
                 indice_nt = self.no_terminales.index(termino)
                 indice_t = self.terminales.index(line[i].token_type)
                 if self.matriz[indice_nt][indice_t] != (None and "e"):
                     self.parsear(line, i, self.matriz[indice_nt][indice_t])
-                    if len(self.errores) > 0:
-                        return
+                    if self.error is not None:
+                        break
                 elif self.matriz[indice_nt][indice_t] != "e":
-                    self.errores.append("Error")  # Aqui debemos agregar el error , con ello la linea y la columna que fue para posteriormente comunicarselo al usuario
-                    return
+                    self.error = Error("", "", "", 0, 0)  # Aqui debemos agregar el error , con ello la linea y la columna que fue para posteriormente comunicarselo al usuario
+                    break
             else:
                 break
 
-    # Debemos crear el Parser en nuestro main.py y llamar al metodo Parsea Que se encarga de Parsear las Lineas que tenemos
-    def key(self, pr):
-        produccion = ""
-        i = 0
-        while i < len(pr):
-            if isinstance(pr[i], TokenType):
-                produccion += "'" + pr[i].name + "'"
-            else:
-                produccion += pr[i]
-            i += 1
-        return produccion
-
-    def mask(self, lines: [[Token]]):
+    def parse(self, lines: [[Token]]) -> Error:
         for line in lines:
             self.parsear(line, 0, "L")
+        return self.error
