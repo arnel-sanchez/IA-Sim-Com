@@ -1,9 +1,9 @@
-from compilation.tokenizer import Tokenizer
-from simulation.simulator import start
-from os import name, system
-from sys import exit
 from pynput import keyboard
+from os import name, system
 from time import sleep
+from sys import exit
+
+from simulation.simulator import start
 
 
 def main():

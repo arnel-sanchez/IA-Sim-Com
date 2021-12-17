@@ -1,11 +1,13 @@
 from compilation.tokenizer import Tokenizer
 from simulation.simulator import start
 
+from compilation.parser import split_lines, Parser
 
-def test_tokenizer():
+
+def test_compilation():
     print("\nCOMPILACION:\n")
     tokenizer = Tokenizer()
-    file, text = "console", "if;point else point22; 22 3.4; point_1 point;\"AAA\"aaa\n123.0 _a.a"
+    file, text = "console", "point else point22; 22 3.4; point_1 point;\"AAA\"aaa\nif;123.0 _a.a"
     print(text)
     tokens, error = tokenizer.tokenize(file, text)
     print()
@@ -14,6 +16,11 @@ def test_tokenizer():
     else:
         for token in tokens:
             print(token)
+
+    lines = split_lines(tokens)
+    parser = Parser()
+    parser.mask(lines)
+    x = 0
 
 
 def test_simulation():
@@ -24,8 +31,8 @@ def test_simulation():
 
 
 def main():
-    test_tokenizer()
-    test_simulation()
+    test_compilation()
+    #test_simulation()
 
 
 if __name__ == '__main__':

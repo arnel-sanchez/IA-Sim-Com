@@ -42,14 +42,7 @@ class Parser:
                                    [TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN, "B"],
                                    [TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN, "X"],
                                    [TokenType.T_DOUBLE, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
-                                   [TokenType.T_ARRAY, TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "G", "M", TokenType.T_CLOSE_BRACKET],
-                                   [TokenType.T_ARRAY, TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "B", "Y", TokenType.T_CLOSE_BRACKET],
-                                   [TokenType.T_ARRAY, TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "X", "J", TokenType.T_CLOSE_BRACKET],
-                                   [TokenType.T_ARRAY, TokenType.T_DOUBLE, TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "E", "U", TokenType.T_CLOSE_BRACKET],
+                                   [TokenType.T_ARRAY, "^"],
                                    [TokenType.T_ID, "Ñ"]],
                              "T": [[TokenType.T_STRING], [TokenType.T_INT], [TokenType.T_DOUBLE], [TokenType.T_BOOL]],
                              "R": [["K", TokenType.T_ID, TokenType.T_OPEN_PAREN, "P", TokenType.T_CLOSE_PAREN,
@@ -58,7 +51,7 @@ class Parser:
                              "P": [["T", TokenType.T_ID, "N"], ["e"]],
                              "~": [[TokenType.T_COMMA, "T", TokenType.T_ID, "N"], ["e"]],
                              "@": [[TokenType.T_IF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
-                                   TokenType.T_OPEN_BRACE],
+                                    TokenType.T_OPEN_BRACE],
                                    [TokenType.T_WHILE, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE]],
                              "N": [[TokenType.T_ELSE, TokenType.T_OPEN_BRACE],
@@ -89,7 +82,16 @@ class Parser:
                              "E": [["e"]],
                              "B": [["e"]],
                              "G": [["e"]],
-                             "S": [["e"]]}  # Faltan las expresiones double , int y las condicionales
+                             "S": [["e"]],
+                             "^": [[TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN, TokenType.T_OPEN_BRACKET,
+                                    "G", "M", TokenType.T_CLOSE_BRACKET],
+                                   [TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN, TokenType.T_OPEN_BRACKET,
+                                    "B", "Y", TokenType.T_CLOSE_BRACKET],
+                                   [TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN, TokenType.T_OPEN_BRACKET,
+                                    "X", "J", TokenType.T_CLOSE_BRACKET],
+                                   [TokenType.T_DOUBLE, TokenType.T_ID, TokenType.T_ASSIGN, TokenType.T_OPEN_BRACKET,
+                                    "E", "U",
+                                    TokenType.T_CLOSE_BRACKET]]}  # Faltan las expresiones double , int y las condicionales
         self.terminales = [TokenType.T_SEMICOLON, TokenType.T_OPEN_PAREN, TokenType.T_CLOSE_PAREN,
                            TokenType.T_OPEN_BRACKET, TokenType.T_CLOSE_BRACKET, TokenType.T_OPEN_BRACE,
                            TokenType.T_CLOSE_BRACE, TokenType.T_COMMENT, TokenType.T_STRING, TokenType.T_INT,
@@ -107,12 +109,13 @@ class Parser:
                            TokenType.T_CONTINUE, TokenType.T_BREAK, TokenType.T_RETURN, TokenType.T_RIDER,
                            TokenType.T_MOTORCYCLE]
         self.no_terminales = ["L", "D", "I", "E", "M", "Y", "J", "U", "N", "@", "R", "K", "T", "P", "W", "S", "F", "V",
-                              "A", "Z", "#", "H", "O", "Q", "C", "B", "G", "X", "~", "$", "?", "Ñ"]
+                              "A", "Z", "#", "H", "O", "Q", "C", "B", "G", "X", "~", "$", "?", "Ñ", "^"]
         self.first = dict()  # Guardamos los terminales que pertenecen al First de cada produccion posible de nuestra gramatica
         self.follow = {"L": [], "D": [], "I": [], "E": [], "M": [], "Y": [], "J": [], "U": [], "N": [], "@": [],
                        "R": [], "K": [], "T": [], "P": [], "W": [], "S": [], "F": [], "V": [], "A": [], "Z": [],
                        "#": [], "H": [], "O": [], "Q": [], "C": [], "B": [], "G": [], "X": [], "~": [], "$": [],
-                       "?": [], "Ñ": []}  # Aqui guardamos los terminales que pertenecen al Follow de cada no terminal
+                       "?": [], "Ñ": [],
+                       "^": []}  # Aqui guardamos los terminales que pertenecen al Follow de cada no terminal
         self.pendiente_follow = []  # Los elementos de esta lista tendran una forma "A,B" lo que significa que todo lo que pertenece al Follow de A tambien pertenece al Folow de B
         self.estados = []  # Aqui guardamos los estados en forma de string , de forma que si el ultimo estado de la lista es el estado en el que estoy y si no hay estados en la lista ent estamos fuera de cualquier ambito del programa
         self.matriz = [[None for _ in range(len(self.terminales))] for _ in range(len(self.no_terminales))]
@@ -124,14 +127,7 @@ class Parser:
                                    ["D", TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN, "B"],
                                    ["D", TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN, "X"],
                                    ["D", TokenType.T_DOUBLE, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
-                                   ["D", TokenType.T_ARRAY, TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "G", "M", TokenType.T_CLOSE_BRACKET],
-                                   ["D", TokenType.T_ARRAY, TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "B", "Y", TokenType.T_CLOSE_BRACKET],
-                                   ["D", TokenType.T_ARRAY, TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "X", "J", TokenType.T_CLOSE_BRACKET],
-                                   ["D", TokenType.T_ARRAY, TokenType.T_DOUBLE, TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "E", "U", TokenType.T_CLOSE_BRACKET],
+                                   ["D", TokenType.T_ARRAY, "^"],
                                    ["D", TokenType.T_ID, "Ñ"], ["T", TokenType.T_STRING], ["T", TokenType.T_INT],
                                    ["T", TokenType.T_DOUBLE], ["T", TokenType.T_BOOL],
                                    ["R", "K", TokenType.T_ID, TokenType.T_OPEN_PAREN,
@@ -160,7 +156,16 @@ class Parser:
                                    ["M", TokenType.T_COMMA, "G", "M"], ["Y", "e"], ["Y", TokenType.T_COMMA, "B", "Y"],
                                    ["J", "e"], ["J", TokenType.T_COMMA, "X", "J"], ["U", "e"],
                                    ["U", TokenType.T_COMMA, "E", "U"], ["X", TokenType.T_ID, "A"],
-                                   ["X", TokenType.T_S_VALUE]]
+                                   ["X", TokenType.T_S_VALUE], ["E", "e"], ["B", "e"], ["G", "e"], ["S", "e"],
+                                   ["S", TokenType.T_OR_OP, "G"], ["S", TokenType.T_AND_OP, "G"],
+                                   ["^", TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN,
+                                    TokenType.T_OPEN_BRACKET, "G", "M", TokenType.T_CLOSE_BRACKET],
+                                   ["^", TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN,
+                                    TokenType.T_OPEN_BRACKET, "B", "Y", TokenType.T_CLOSE_BRACKET],
+                                   ["^", TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN,
+                                    TokenType.T_OPEN_BRACKET, "X", "J", TokenType.T_CLOSE_BRACKET],
+                                   ["^", TokenType.T_DOUBLE, TokenType.T_ID, TokenType.T_ASSIGN,
+                                    TokenType.T_OPEN_BRACKET, "E", "U", TokenType.T_CLOSE_BRACKET]]
         self.hacer_first("L")
         self.first_producciones_calculado = True
         self.calcular_first_restantes()
@@ -171,7 +176,7 @@ class Parser:
         # y funciones que se guardan a medida que se crean en el diccionario Variables ,con su tipo , si se guarda una funcion
         # se guardaria primero los tipos de los parametros de dicha funcion y luego el tipo de retorno.
 
-    #def parsing(tokens:[Token]))
+    # def parsing(tokens:[Token]))
 
     def hacer_first(self, cadena):
         if self.first.keys().isdisjoint(cadena):
@@ -219,7 +224,7 @@ class Parser:
             return False
         else:
             return no_terminal == "e"
-        #return True
+        # return True
 
     def calcular_first_restantes(self):
         for x in self.no_terminales:
@@ -229,29 +234,35 @@ class Parser:
     def hacer_follow(self):
         terminales_para_follow = list()  # Aqui voy teniendo los posibles terminales que pueden pertenecer al follow de los no terminales que voy revisando
         for pr in self.lista_producciones:
+            terminales_para_follow.clear()
             existe_ultimo_terminal = True  # Esta variable es para identificar los casos en que lo ultimo que me queda en mi produccion pueda ser un No terminal y por lo tanto el Follow de la cabeza de la produccion sera subconjunyto del Follow del no terminal
             i = (len(pr) - 1)
             while i >= 1:
                 if self.no_terminales.count(pr[i]) == 1:
                     if len(terminales_para_follow) > 0:
-                        self.follow[pr[i]].extend(terminales_para_follow)
+                        self.follow[pr[i]] = list(set(self.follow[pr[i]] + terminales_para_follow))
                     if existe_ultimo_terminal:
                         self.pendiente_follow.append("{},{}".format(pr[0], pr[i]))
                     if self.se_va_en_epsilon(pr[i]):
                         terminales_para_follow.extend(self.first[pr[i]])
+                        if terminales_para_follow.count(pr[i]) == 1:
+                            terminales_para_follow.remove("e")
                     else:
                         terminales_para_follow.clear()
                         terminales_para_follow.extend(self.first[pr[i]])
+                        if terminales_para_follow.count(pr[i]) == 1:
+                            terminales_para_follow.remove("e")
                         existe_ultimo_terminal = False
                 else:
                     existe_ultimo_terminal = False
                     terminales_para_follow.clear()
-                    terminales_para_follow.append(pr[i])
+                    if pr[i] != "e" and terminales_para_follow.count(pr[i]) == 0:
+                        terminales_para_follow.append(pr[i])
                 i -= 1
 
     def completar_follows(self):
         for follow in self.pendiente_follow:
-            self.follow[follow[2]].extend(self.follow[follow[0]])
+            self.follow[follow[2]] = list(self.follow[follow[2]] + self.follow[follow[0]])
 
     def construir_tabla_LL(self):
         fila = 0
@@ -268,6 +279,8 @@ class Parser:
                                 break
                         i += 1
                 columna += 1
+            if self.follow[x].count(y) > 0 and self.se_va_en_epsilon(x) and self.matriz[fila][columna] is None:
+                self.matriz[fila][columna] = "e"
             fila += 1
 
     def parsear(self, line, i, cadena):
@@ -298,22 +311,29 @@ class Parser:
                         self.estados.pop()
                         self.estados.append("EnRegionElse")
                     elif line[i].token_type == (TokenType.T_RIDER or TokenType.T_MOTORCYCLE):
-                        self.estados.append("EnRegionTipo")  # Aqui falta agregar-----------------cuando es dentro de un tipo
+                        self.estados.append(
+                            "EnRegionTipo")  # Aqui falta agregar-----------------cuando es dentro de un tipo
                     elif line[i].token_type == TokenType.T_CLOSE_BRACE:
                         if self.estados[len(self.estados) - 1] != ("EnRegionIF" and "EnRegionElif"):
                             self.estados.pop()
                     i += 1
                     continue
+                elif isinstance(termino, TokenType):
+                    self.errores.append("New Error")
+                    return
                 indice_nt = self.no_terminales.index(termino)
                 indice_t = self.terminales.index(line[i].token_type)
                 if self.matriz[indice_nt][indice_t] != (None and "e"):
                     self.parsear(line, i, self.matriz[indice_nt][indice_t])
+                    if len(self.errores) > 0:
+                        return
                 elif self.matriz[indice_nt][indice_t] != "e":
                     self.errores.append("Error")  # Aqui debemos agregar el error , con ello la linea y la columna que fue para posteriormente comunicarselo al usuario
+                    return
             else:
                 break
 
-# Debemos crear el Parser en nuestro main.py y llamar al metodo Parsea Que se encarga de Parsear las Lineas que tenemos
+    # Debemos crear el Parser en nuestro main.py y llamar al metodo Parsea Que se encarga de Parsear las Lineas que tenemos
     def key(self, pr):
         produccion = ""
         i = 0
@@ -328,5 +348,3 @@ class Parser:
     def mask(self, lines: [[Token]]):
         for line in lines:
             self.parsear(line, 0, "L")
-
-
