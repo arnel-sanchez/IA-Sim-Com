@@ -11,7 +11,7 @@ class TokenType(Enum):
     T_CLOSE_BRACE = 6  # '}'
     T_COMMENT = 7  # '#'
 
-    T_STRING = 8  # "string"
+    T_STRING = 8  # string
     T_INT = 9  # int
     T_DOUBLE = 10  # double
     T_BOOL = 11  # bool
@@ -82,8 +82,8 @@ class TokenType(Enum):
     T_CARRIAGE = 59  # \r
     T_NEWLINE = 60  # \n
 
-    T_RIDER = 62
-    T_MOTORCYCLE = 63
+    T_RIDER = 62  # rider
+    T_MOTORCYCLE = 63  # motorcycle
 
     T_INVALID = 100  # invalid token
 
