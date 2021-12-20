@@ -5,8 +5,7 @@ from unittest import TestCase, main
 
 SCRIPT_DIR = dirname(abspath(__file__))
 path.append(dirname(SCRIPT_DIR))
-from compilation.tokenizer import Tokenizer
-from compilation.tokens import TokenType, Token
+from compilation.tokenizer import Tokenizer, TokenType, Token
 
 
 class TestTokenizer(TestCase):

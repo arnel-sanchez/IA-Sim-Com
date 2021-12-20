@@ -15,12 +15,12 @@ class TokenType(Enum):
     T_INT = 9  # int
     T_DOUBLE = 10  # double
     T_BOOL = 11  # bool
+    T_ARRAY = 61#
+
     T_NULL = 12  # null
 
     T_TRUE = 13  # true
     T_FALSE = 14  # false
-
-    T_ARRAY = 61#
 
     T_IF = 15  # if
     T_ELIF = 16  # elif
@@ -43,9 +43,10 @@ class TokenType(Enum):
     T_I_VALUE = 28  # some int value
     T_D_VALUE = 29  # some double value
 
+    T_NEG_OP = 32  # !
     T_ADD_OP = 30  # +
     T_SUB_OP = 31  # -
-    T_NEG_OP = 32  # !
+
     T_MUL_OP = 33  # *
     T_DIV_OP = 34  # /
     T_MOD_OP = 35  # %

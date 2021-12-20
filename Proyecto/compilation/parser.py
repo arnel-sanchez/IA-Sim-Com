@@ -1,5 +1,4 @@
-from compilation.tokens import Token, TokenType
-from compilation.utils import Region
+from compilation.utils import TokenType, Token, Region
 from compilation.errors import Error
 
 
@@ -264,18 +263,18 @@ class Parser:
                         estado = estados[- 1]
                         if estado == Region.R_TYPE:
                             if line[i].token_type != (TokenType.T_METHOD and TokenType.T_CLOSE_BRACE):
-                                self.error = Error("Error", "", "", 0, 0)
+                                self.error = Error("Error", "", "", 0, 0)#
                                 break
                         elif estado == Region.R_IF or estado == Region.R_ELIF or estado == Region.R_ELSE:
                             if line[i].token_type == (TokenType.T_METHOD or TokenType.T_RETURN or TokenType.T_BREAK or
                                                       TokenType.T_CONTINUE or TokenType.T_MOTORCYCLE or
                                                       TokenType.T_RIDER):
-                                self.error = Error("Error", "", "", 0, 0)
+                                self.error = Error("Error", "", "", 0, 0)#
                                 break
                         elif estado == Region.R_WHILE:
                             if line[i].token_type == (TokenType.T_METHOD or TokenType.T_RETURN or
                                                       TokenType.T_MOTORCYCLE or TokenType.T_RIDER):
-                                self.error = Error("Error", "", "", 0, 0)
+                                self.error = Error("Error", "", "", 0, 0)#
                                 break
                 if termino == line[i].token_type:
                     if line[i].token_type == (TokenType.T_RIDER or TokenType.T_MOTORCYCLE):
@@ -291,14 +290,14 @@ class Parser:
                             estados.pop()
                             estados.append(Region.R_ELIF)
                         else:
-                            self.error = Error("", "", "", 0, 0)
+                            self.error = Error("", "", "", 0, 0)#
                             break
                     elif line[i].token_type == TokenType.T_ELSE:
                         if estados[- 1] == (Region.R_IF or Region.R_ELIF):
                             estados.pop()
                             estados.append(Region.R_ELSE)
                         else:
-                            self.error = Error("", "", "", 0, 0)
+                            self.error = Error("", "", "", 0, 0)#
                             break
                     elif line[i].token_type == TokenType.T_CLOSE_BRACE:
                         if i + 1 == len(line) or estados[- 1] != (Region.R_IF and Region.R_ELIF):
@@ -306,7 +305,7 @@ class Parser:
                     i += 1
                     continue
                 elif isinstance(termino, TokenType):
-                    self.error = Error("", "", "", 0, 0)
+                    self.error = Error("", "", "", 0, 0)#
                     break
                 indice_nt = self.no_terminales.index(termino)
                 indice_t = self.terminales.index(line[i].token_type)
@@ -315,7 +314,7 @@ class Parser:
                     if self.error is not None:
                         break
                 elif self.matriz[indice_nt][indice_t] != "e":
-                    self.error = Error("", "", "", 0, 0)  # Aqui debemos agregar el error , con ello la linea y la columna que fue para posteriormente comunicarselo al usuario
+                    self.error = Error("", "", "", 0, 0)#Aqui debemos agregar el error , con ello la linea y la columna que fue para posteriormente comunicarselo al usuario
                     break
             else:
                 break
