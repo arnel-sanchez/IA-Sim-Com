@@ -1,24 +1,24 @@
 from compilation.ast.operations import Node, is_error, is_bool, Error
+from compilation.ast.nodes import Bool, Token, TokenType
 
 
 class Conditional(Node):
-    def __init__(self, variables: dict, condition: Node, body: Node, next_cond: Node = None):
-        super().__init__(variables)
+    def __init__(self, condition: Node, body: Node, next_cond: Node = None):
         self.condition = condition
         self.body = body
         self.next_cond = next_cond
 
-    def eval(self):
-        value = self.condition.eval()
+    def eval(self, variables: dict):
+        value = self.condition.eval(variables)
         if is_error(value):
             return value
         if not is_bool(value):
             return Error("Error", "", "", 0, 0)#
         if value:
-            return self.body.eval()
+            return self.body.eval(variables)
         if self.next_cond is not None:
-            return self.next_cond.eval()
-        return Error("Error", "", "", 0, 0)#
+            return self.next_cond.eval(variables)
+        return None
 
     def __repr__(self):
         return "{}({}, {}){}".format(self.type, self.condition, self.body,
@@ -29,27 +29,27 @@ class Conditional(Node):
         return "CONDITIONAL"
 
 
-class IfCond(Conditional):
-    def __init__(self, variables: dict, condition: Node, body: Node, next_cond: Conditional):
-        super().__init__(variables, condition, body, next_cond)
-
-    @staticmethod
-    def type() -> str:
-        return "IF"
-
-
 class ElifCond(Conditional):
-    def __init__(self, variables: dict, condition: Node, body: Node, next_cond: Conditional):
-        super().__init__(variables, condition, body, next_cond)
+    def __init__(self, condition: Node, body: Node, next_cond: Conditional = None):
+        super().__init__(condition, body, next_cond)
 
     @staticmethod
     def type() -> str:
         return "ELIF"
 
 
-class ElseCond(Conditional):
-    def __init__(self, variables: dict, condition: Node, body: Node):
-        super().__init__(variables, condition, body)
+class IfCond(Conditional):
+    def __init__(self, condition: Node, body: Node, next_cond: ElifCond = None):
+        super().__init__(condition, body, next_cond)
+
+    @staticmethod
+    def type() -> str:
+        return "IF"
+
+
+class ElseCond(ElifCond):
+    def __init__(self, body: Node):
+        super().__init__(Bool(Token(TokenType.T_TRUE, -1, -1)), body)
 
     @staticmethod
     def type() -> str:

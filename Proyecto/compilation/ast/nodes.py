@@ -3,10 +3,7 @@ from compilation.errors import Error
 
 
 class Node:
-    def __init__(self, variables: dict):
-        self.variables = variables
-
-    def eval(self):
+    def eval(self, variables: dict):
         return None
 
     def __repr__(self):
@@ -14,15 +11,14 @@ class Node:
 
 
 class Simple(Node):
-    def __init__(self, variables: dict, token: Token):
-        super().__init__(variables)
+    def __init__(self, token: Token):
         self.token = token
 
-    def eval(self):
+    def eval(self, variables: dict):
         return self.token.value
 
     def __repr__(self):
-        return "{}({})".format(self.type(), self.eval())
+        return "{}({})".format(self.type(), self.eval({}))
 
     @staticmethod
     def type() -> str:
@@ -30,10 +26,10 @@ class Simple(Node):
 
 
 class String(Simple):
-    def __init__(self, variables: dict, token: Token):
-        super().__init__(variables, token)
+    def __init__(self, token: Token):
+        super().__init__(token)
         if token.token_type != TokenType.T_S_VALUE:
-            self.token.value = Error("Error", "", "", 0, 0)#
+            raise Exception#
 
     @staticmethod
     def type() -> str:
@@ -41,15 +37,15 @@ class String(Simple):
 
 
 class Number(Simple):
-    def __init__(self, variables: dict, token: Token):
-        super().__init__(variables, token)
+    def __init__(self, token: Token):
+        super().__init__(token)
 
 
 class Int(Number):
-    def __init__(self, variables: dict, token: Token):
-        super().__init__(variables, token)
+    def __init__(self, token: Token):
+        super().__init__(token)
         if token.token_type != TokenType.T_I_VALUE:
-            self.token.value = Error("Error", "", "", 0, 0)#
+            raise Exception#
 
     @staticmethod
     def type() -> str:
@@ -57,10 +53,10 @@ class Int(Number):
 
 
 class Double(Number):
-    def __init__(self, variables: dict, token: Token):
-        super().__init__(variables, token)
+    def __init__(self, token: Token):
+        super().__init__(token)
         if token.token_type != TokenType.T_D_VALUE:
-            self.token.value = Error("Error", "", "", 0, 0)#
+            raise Exception#
 
     @staticmethod
     def type() -> str:
@@ -68,10 +64,13 @@ class Double(Number):
 
 
 class Bool(Simple):
-    def __init__(self, variables: dict, token: Token):
-        super().__init__(variables, token)
+    def __init__(self, token: Token):
+        super().__init__(token)
         if token.token_type != (TokenType.T_TRUE and TokenType.T_FALSE):
-            self.token.value = Error("Error", "", "", 0, 0)#
+            raise Exception#
+
+    def eval(self, variables: dict):
+        return True if self.token.token_type == TokenType.T_TRUE else False
 
     @staticmethod
     def type() -> str:
@@ -79,12 +78,12 @@ class Bool(Simple):
 
 
 class Null(Simple):
-    def __init__(self, variables: dict, token: Token):
-        super().__init__(variables, token)
+    def __init__(self, token: Token):
+        super().__init__(token)
         if token.token_type != TokenType.T_NULL:
-            self.token.value = Error("Error", "", "", 0, 0)#
+            raise Exception#
 
-    def eval(self):
+    def eval(self, variables: dict):
         return None
 
     @staticmethod
@@ -93,16 +92,18 @@ class Null(Simple):
 
 
 class Id(Simple):
-    def __init__(self, variables: dict, token: Token):
-        super().__init__(variables, token)
+    def __init__(self, token: Token):
+        super().__init__(token)
         if token.token_type != TokenType.T_ID:
-            self.token.value = Error("Error", "", "", 0, 0)#
+            raise Exception#
 
     def id(self):
         return self.token.value
 
-    def eval(self):
-        value = self.variables.get(self.id())
+    def eval(self, variables: dict):
+        if variables is None:
+            raise Exception#
+        value = variables.get(self.id())
         if value is None:
             return Error("Error", "", "", 0, 0)#
         return value

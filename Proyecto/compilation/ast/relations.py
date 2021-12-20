@@ -3,8 +3,8 @@ from compilation.ast.nodes import Node
 
 
 class Rel(BinOp):
-    def __init__(self, variables: dict, left_node: Node, right_node: Node):
-        super().__init__(variables, left_node, right_node)
+    def __init__(self, left_node: Node, right_node: Node):
+        super().__init__(left_node, right_node)
 
     def operation(self, left, right):
         return same_type(left, right) and self.op(left, right)
@@ -19,8 +19,8 @@ class Rel(BinOp):
 
 
 class EqRel(Rel):
-    def __init__(self, variables: dict, left_node: Node, right_node: Node):
-        super().__init__(variables, left_node, right_node)
+    def __init__(self, left_node: Node, right_node: Node):
+        super().__init__(left_node, right_node)
 
     @staticmethod
     def op(left, right):
@@ -32,8 +32,8 @@ class EqRel(Rel):
 
 
 class NeqRel(Rel):
-    def __init__(self, variables: dict, left_node: Node, right_node: Node):
-        super().__init__(variables, left_node, right_node)
+    def __init__(self, left_node: Node, right_node: Node):
+        super().__init__(left_node, right_node)
 
     @staticmethod
     def op(left, right):
@@ -45,8 +45,8 @@ class NeqRel(Rel):
 
 
 class LessRel(Rel):
-    def __init__(self, variables: dict, left_node: Node, right_node: Node):
-        super().__init__(variables, left_node, right_node)
+    def __init__(self, left_node: Node, right_node: Node):
+        super().__init__(left_node, right_node)
 
     @staticmethod
     def op(left, right):
@@ -58,8 +58,8 @@ class LessRel(Rel):
 
 
 class LeqRel(Rel):
-    def __init__(self, variables: dict, left_node: Node, right_node: Node):
-        super().__init__(variables, left_node, right_node)
+    def __init__(self, left_node: Node, right_node: Node):
+        super().__init__(left_node, right_node)
 
     @staticmethod
     def op(left, right):
@@ -71,8 +71,8 @@ class LeqRel(Rel):
 
 
 class GreatRel(Rel):
-    def __init__(self, variables: dict, left_node: Node, right_node: Node):
-        super().__init__(variables, left_node, right_node)
+    def __init__(self, left_node: Node, right_node: Node):
+        super().__init__(left_node, right_node)
 
     @staticmethod
     def op(left, right):
@@ -84,8 +84,8 @@ class GreatRel(Rel):
 
 
 class GreqRel(Rel):
-    def __init__(self, variables: dict, left_node: Node, right_node: Node):
-        super().__init__(variables, left_node, right_node)
+    def __init__(self, left_node: Node, right_node: Node):
+        super().__init__(left_node, right_node)
 
     @staticmethod
     def op(left, right):
