@@ -1,19 +1,19 @@
 from compilation.ast.nodes import Error, Node
 
 
-def is_error(value):
+def is_error(value: Error) -> bool:
     return isinstance(value, Error)
 
 
-def is_number(value):
+def is_number(value) -> bool:
     return isinstance(value, int) or isinstance(value, float)
 
 
-def is_bool(value):
+def is_bool(value: bool) -> bool:
     return isinstance(value, bool)
 
 
-def same_type(value_1, value_2):
+def same_type(value_1, value_2) -> bool:
     return isinstance(value_1, type(value_2))
 
 
@@ -24,7 +24,7 @@ class Op(Node):
     def eval(self, variables: dict):
         return None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{}({})".format(self.type(), self.right_node)
 
     @staticmethod
@@ -73,7 +73,7 @@ class NegOp(IdOp):
         super().__init__(node)
 
     @staticmethod
-    def operation(value):
+    def operation(value: bool):
         if not is_bool(value):
             return Error("Error", "", "", 0, 0)#
         return not value
@@ -100,7 +100,7 @@ class BinOp(Op):
     def operation(self, left, right):
         return None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{}({}, {})".format(self.type(), self.left_node, self.right_node)
 
     @staticmethod
@@ -222,8 +222,8 @@ class BoolOp(BinOp):
         self.op(left, right)
 
     @staticmethod
-    def op(left, right):
-        return None
+    def op(left: bool, right: bool) -> bool:
+        return False
 
     @staticmethod
     def type() -> str:
@@ -235,7 +235,7 @@ class AndOp(BoolOp):
         super().__init__(left_node, right_node)
 
     @staticmethod
-    def op(left, right):
+    def op(left: bool, right: bool) -> bool:
         return left and right
 
     @staticmethod
@@ -248,7 +248,7 @@ class OrOp(BoolOp):
         super().__init__(left_node, right_node)
 
     @staticmethod
-    def op(left, right):
+    def op(left: bool, right: bool) -> bool:
         return left or right
 
     @staticmethod
@@ -261,7 +261,7 @@ class XorOp(BoolOp):
         super().__init__(left_node, right_node)
 
     @staticmethod
-    def op(left, right):
+    def op(left: bool, right: bool) -> bool:
         return left ^ right
 
     @staticmethod

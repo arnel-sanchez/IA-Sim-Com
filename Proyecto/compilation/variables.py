@@ -2,6 +2,22 @@ from enum import Enum
 
 
 class VariableType(Enum):
+    STRING = 0
+    INT = 1
+    DOUBLE = 2
+    BOOL = 3
+    ARRAY = 4
+
+
+class Variable:
+    def __init__(self, var_id: str, var_type: VariableType, value):
+        self.id = var_id
+        self.type = var_type
+        self.value = value
+
+
+class MethodType(Enum):
+    VOID = 0
     STRING = 1
     INT = 2
     DOUBLE = 3
@@ -9,20 +25,9 @@ class VariableType(Enum):
     ARRAY = 5
 
 
-class Variable:
-    def __init__(self, var_type: VariableType, var_id: str, value):
-        self.type = var_type
-        self.id = var_id
-        self.value = value
-
-
-class MethodType(VariableType):
-    VOID = 6
-
-
 class Method:
-    def __init__(self, method_type: MethodType, method_id: str, args: list, body):##Ver que se pone en body
-        self.type = method_type
+    def __init__(self, method_id: str, method_type: MethodType, args: list, body=None):##Ver que se pone en body
         self.id = method_id
+        self.type = method_type
         self.args = args
         self.body = body

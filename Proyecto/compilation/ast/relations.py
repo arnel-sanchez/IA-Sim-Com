@@ -6,11 +6,11 @@ class Rel(BinOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    def operation(self, left, right):
+    def operation(self, left, right) -> bool:
         return same_type(left, right) and self.op(left, right)
 
     @staticmethod
-    def op(left, right):
+    def op(left, right) -> bool:
         return False
 
     @staticmethod
@@ -23,7 +23,7 @@ class EqRel(Rel):
         super().__init__(left_node, right_node)
 
     @staticmethod
-    def op(left, right):
+    def op(left, right) -> bool:
         return left == right
 
     @staticmethod
@@ -36,7 +36,7 @@ class NeqRel(Rel):
         super().__init__(left_node, right_node)
 
     @staticmethod
-    def op(left, right):
+    def op(left, right) -> bool:
         return left != right
 
     @staticmethod
@@ -49,7 +49,7 @@ class LessRel(Rel):
         super().__init__(left_node, right_node)
 
     @staticmethod
-    def op(left, right):
+    def op(left, right) -> bool:
         return left < right
 
     @staticmethod
@@ -62,7 +62,7 @@ class LeqRel(Rel):
         super().__init__(left_node, right_node)
 
     @staticmethod
-    def op(left, right):
+    def op(left, right) -> bool:
         return left <= right
 
     @staticmethod
@@ -75,7 +75,7 @@ class GreatRel(Rel):
         super().__init__(left_node, right_node)
 
     @staticmethod
-    def op(left, right):
+    def op(left, right) -> bool:
         return left > right
 
     @staticmethod
@@ -88,7 +88,7 @@ class GreqRel(Rel):
         super().__init__(left_node, right_node)
 
     @staticmethod
-    def op(left, right):
+    def op(left, right) -> bool:
         return left >= right
 
     @staticmethod

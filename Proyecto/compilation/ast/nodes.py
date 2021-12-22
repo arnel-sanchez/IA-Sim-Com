@@ -6,7 +6,7 @@ class Node:
     def eval(self, variables: dict):
         return None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "NODE()"
 
 
@@ -17,7 +17,7 @@ class Simple(Node):
     def eval(self, variables: dict):
         return self.token.value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{}({})".format(self.type(), self.eval({}))
 
     @staticmethod
@@ -69,7 +69,7 @@ class Bool(Simple):
         if token.token_type != (TokenType.T_TRUE and TokenType.T_FALSE):
             raise Exception#
 
-    def eval(self, variables: dict):
+    def eval(self, variables: dict) -> bool:
         return True if self.token.token_type == TokenType.T_TRUE else False
 
     @staticmethod
@@ -108,5 +108,5 @@ class Id(Simple):
             return Error("Error", "", "", 0, 0)#
         return value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "ID({})".format(self.id())

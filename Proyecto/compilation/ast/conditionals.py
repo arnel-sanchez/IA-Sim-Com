@@ -20,7 +20,7 @@ class Conditional(Node):
             return self.next_cond.eval(variables)
         return None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{}({}, {}){}".format(self.type, self.condition, self.body,
                                      "_{}".format(self.next_cond) if self.next_cond is not None else "")
 
