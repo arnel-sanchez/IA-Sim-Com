@@ -8,8 +8,7 @@ def is_string(value: str) -> bool:
 
 
 class Assign(Node):
-    def __init__(self, variables: dict, id_node: Id, expression: Node):
-        super().__init__(variables)
+    def __init__(self, id_node: Id, expression: Node):
         self.id_node = id_node
         self.expression = expression
 
@@ -28,7 +27,7 @@ class Assign(Node):
         return value
 
     def __repr__(self):
-        return "{}_ASSIGN({})".format(self.type(), self.id_node)
+        return "{}_ASSIGN({}, {})".format(self.type(), self.id_node, self.expression)
 
     @staticmethod
     def type() -> str:
@@ -36,8 +35,8 @@ class Assign(Node):
 
 
 class StringAssign(Assign):
-    def __init__(self, variables: dict, id_node: Id, expression: Node):
-        super().__init__(variables, id_node, expression)
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
 
     @staticmethod
     def review(variables: dict, var_id: str, value: str):
@@ -53,8 +52,8 @@ class StringAssign(Assign):
 
 
 class IntAssign(Assign):
-    def __init__(self, variables: dict, id_node: Id, expression: Node):
-        super().__init__(variables, id_node, expression)
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
 
     @staticmethod
     def review(variables: dict, var_id: str, value):
@@ -70,8 +69,8 @@ class IntAssign(Assign):
 
 
 class DoubleAssign(Assign):
-    def __init__(self, variables: dict, id_node: Id, expression: Node):
-        super().__init__(variables, id_node, expression)
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
 
     @staticmethod
     def review(variables: dict, var_id: str, value):
@@ -87,8 +86,8 @@ class DoubleAssign(Assign):
 
 
 class BoolAssign(Assign):
-    def __init__(self, variables: dict, id_node: Id, expression: Node):
-        super().__init__(variables, id_node, expression)
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
 
     @staticmethod
     def review(variables: dict, var_id: str, value):
@@ -104,8 +103,8 @@ class BoolAssign(Assign):
 
 
 class ArrayAssign(Assign):
-    def __init__(self, variables: dict, id_node: Id, expression: Node):
-        super().__init__(variables, id_node, expression)
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
 
     @staticmethod
     def review(variables: dict, var_id: str, value):
@@ -118,3 +117,187 @@ class ArrayAssign(Assign):
     @staticmethod
     def type() -> str:
         return "D"
+
+
+class OpAs(Assign):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    def __repr__(self):
+        return "{}_AS({}, {})".format(self.type(), self.id_node, self.expression)
+
+    @staticmethod
+    def type() -> str:
+        return "OP"
+
+
+class AddAs(OpAs):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    @staticmethod
+    def review(variables: dict, var_id: str, value):
+        if not same_type(variables[var_id], value):
+            raise Exception#
+        variables[var_id] += value
+        return variables[var_id]
+
+    @staticmethod
+    def type() -> str:
+        return "ADD"
+
+
+class ArAs(OpAs):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    def review(self, variables: dict, var_id: str, value):
+        if not is_number(variables[var_id]):
+            return Error("Error", "", "", 0, 0)  #
+        if not is_number(value):
+            return Error("Error", "", "", 0, 0)  #
+        return self.operation(variables, var_id, value)
+
+    @staticmethod
+    def operation(variables: dict, var_id: str, value):
+        return variables[var_id]
+
+    @staticmethod
+    def type() -> str:
+        return "AR"
+
+
+class SubAs(ArAs):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    @staticmethod
+    def operation(variables: dict, var_id: str, value):
+        variables[var_id] -= value
+        return variables[var_id]
+
+    @staticmethod
+    def type() -> str:
+        return "SUB"
+
+
+class MulAs(OpAs):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    @staticmethod
+    def review(variables: dict, var_id: str, value):
+        variables[var_id] *= value
+        return variables[var_id]
+
+    @staticmethod
+    def type() -> str:
+        return "MUL"
+
+
+class DivAs(ArAs):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    @staticmethod
+    def operation(variables: dict, var_id: str, value):
+        if value == 0:
+            return Error("Error", "", "", 0, 0)#
+        variables[var_id] /= value
+        return variables[var_id]
+
+    @staticmethod
+    def type() -> str:
+        return "DIV"
+
+
+class ModAs(DivAs):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    @staticmethod
+    def operation(variables: dict, var_id: str, value):
+        if value == 0:
+            return Error("Error", "", "", 0, 0)#
+        variables[var_id] %= value
+        return variables[var_id]
+
+    @staticmethod
+    def type() -> str:
+        return "MOD"
+
+
+class ExpAs(ArAs):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    @staticmethod
+    def operation(variables: dict, var_id: str, value):
+        variables[var_id] **= value
+        return variables[var_id]
+
+    @staticmethod
+    def type() -> str:
+        return "EXP"
+
+
+class BoolAs(OpAs):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    def operation(self, variables: dict, var_id: str, value):
+        if not is_bool(variables[var_id]):
+            return Error("Error", "", "", 0, 0)#
+        if not is_bool(value):
+            return Error("Error", "", "", 0, 0)#
+        return self.op(variables, var_id, value)
+
+    @staticmethod
+    def op(variables: dict, var_id: str, value):
+        return variables[var_id]
+
+    @staticmethod
+    def type() -> str:
+        return "BOOL"
+
+
+class AndAs(BoolAs):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    @staticmethod
+    def op(variables: dict, var_id: str, value):
+        variables[var_id] &= value
+        return variables[var_id]
+
+    @staticmethod
+    def type() -> str:
+        return "AND"
+
+
+class OrAs(BoolAs):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    @staticmethod
+    def op(variables: dict, var_id: str, value):
+        variables[var_id] |= value
+        return variables[var_id]
+
+    @staticmethod
+    def type() -> str:
+        return "OR"
+
+
+class XorAs(BoolAs):
+    def __init__(self, id_node: Id, expression: Node):
+        super().__init__(id_node, expression)
+
+    @staticmethod
+    def op(variables: dict, var_id: str, value):
+        variables[var_id] ^= value
+        return variables[var_id]
+
+    @staticmethod
+    def type() -> str:
+        return "XOR"
