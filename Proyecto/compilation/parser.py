@@ -1,5 +1,6 @@
 from compilation.utils import TokenType, Token, Region
 from compilation.errors import Error
+from compilation.tokens import Token
 
 
 class Parser:

@@ -1,5 +1,12 @@
+from os.path import dirname, abspath
+from sys import path
 from unittest import TestCase, main
 
+
+SCRIPT_DIR = dirname(abspath(__file__))
+path.append(dirname(SCRIPT_DIR))
+from compilation.tokenizer import Tokenizer, TokenType, Token
+from compilation.parser import Parser
 
 class TestParser(TestCase):
     def test_A(self):

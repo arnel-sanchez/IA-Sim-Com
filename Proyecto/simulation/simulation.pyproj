@@ -24,7 +24,6 @@
   <ItemGroup>
     <Compile Include="crew_chief.py" />
     <Compile Include="motorcycle.py" />
-    <Compile Include="pilot.py" />
     <Compile Include="race.py" />
     <Compile Include="rider.py" />
     <Compile Include="simulator.py" />

@@ -22,13 +22,21 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="assignments.py" />
+    <Compile Include="ast\assignments.py" />
+    <Compile Include="ast\conditionals.py" />
+    <Compile Include="ast\initializations.py" />
+    <Compile Include="ast\nodes.py" />
+    <Compile Include="ast\operations.py" />
+    <Compile Include="ast\relations.py" />
     <Compile Include="errors.py" />
-    <Compile Include="nodes.py" />
-    <Compile Include="operators.py" />
     <Compile Include="parser.py" />
     <Compile Include="tokenizer.py" />
     <Compile Include="tokens.py" />
+    <Compile Include="utils.py" />
+    <Compile Include="variables.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ast\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
