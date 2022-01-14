@@ -22,12 +22,15 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="agent.py" />
     <Compile Include="crew_chief.py" />
-    <Compile Include="motorcycle.py" />
+    <Compile Include="environment.py" />
+    <Compile Include="bike.py" />
     <Compile Include="race.py" />
     <Compile Include="rider.py" />
     <Compile Include="simulator.py" />
     <Compile Include="track.py" />
+    <Compile Include="weather.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

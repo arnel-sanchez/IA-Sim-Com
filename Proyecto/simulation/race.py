@@ -1,47 +1,11 @@
-from enum import Enum
-
-from simulation.track import Track, default_tracks
-from simulation.rider import default_riders
-
-
-class Weather(Enum):
-    Sunny = 0
-    Cloudy = 1
-    Rainy = 2
-    Windy = 3
-    Foggy = 4
-    Snowy = 5
-
-    def print_weather(self):
-        print("Clima: ", end="")
-        if self.value == 0:
-            print("Soleado")
-        elif self.value == 1:
-            print("Nublado")
-        elif self.value == 2:
-            print("Lluvioso")
-        elif self.value == 3:
-            print("Ventoso")
-        elif self.value == 4:
-            print("Neblinoso")
-        else:
-            print("Nevado")
-
+from simulation.agent import Agent
+from simulation.environment import Environment
 
 class Race:
-    def __init__(self, track: Track, riders: list, weather: Weather = Weather.Sunny, laps: int = 20):
-        self.track = track
-        self.riders = riders
-        self.weather = weather
-        self.laps = laps
+    def __init__(self, agent: Agent, environment: Environment):
+        self.agent = agent
+        self.environment = environment
 
 
-def race():
-    tracks = default_tracks()
-    misano = tracks["misano"]
-
-    riders = default_riders()
-
-    weather = Weather.Sunny
-
-    return Race(misano, riders, weather)
+    def race():
+        return
