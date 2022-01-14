@@ -23,14 +23,32 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="agent.py" />
-    <Compile Include="crew_chief.py" />
     <Compile Include="environment.py" />
     <Compile Include="bike.py" />
     <Compile Include="race.py" />
     <Compile Include="rider.py" />
+    <Compile Include="SetOffClasses\Bikes\aprilia.py" />
+    <Compile Include="SetOffClasses\Bikes\ducati.py" />
+    <Compile Include="SetOffClasses\Bikes\honda.py" />
+    <Compile Include="SetOffClasses\Bikes\ktm.py" />
+    <Compile Include="SetOffClasses\Bikes\suzuki.py" />
+    <Compile Include="SetOffClasses\Bikes\yamaha.py" />
+    <Compile Include="SetOffClasses\Riders\aleix_espargaro.py" />
+    <Compile Include="SetOffClasses\Riders\brad_binder.py" />
+    <Compile Include="SetOffClasses\Riders\fabio_quartararo.py" />
+    <Compile Include="SetOffClasses\Riders\joan_mir.py" />
+    <Compile Include="SetOffClasses\Riders\marc_marquez.py" />
+    <Compile Include="SetOffClasses\Riders\pecco_bagnaia.py" />
+    <Compile Include="SetOffClasses\Tracks\misano.py" />
     <Compile Include="simulator.py" />
     <Compile Include="track.py" />
     <Compile Include="weather.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SetOffClasses\" />
+    <Folder Include="SetOffClasses\Bikes\" />
+    <Folder Include="SetOffClasses\Riders\" />
+    <Folder Include="SetOffClasses\Tracks\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
