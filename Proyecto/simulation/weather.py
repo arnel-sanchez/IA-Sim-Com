@@ -1,10 +1,12 @@
+from enum import Enum
+
 class Weather_Status(Enum):
     Sunny = 0
     Cloudy = 1
     Rainy = 2
 
 class Weather:
-    def __init__(self, weather_status : Weather_Status = None, wind, temperature, visibility, humidity):
+    def __init__(self, wind, temperature, visibility, humidity, weather_status : Weather_Status = None):
         self.weather_status = weather_status
         self.wind = wind
         self.temperature = temperature
@@ -37,24 +39,24 @@ class Weather:
 
     def change_weather_status(self, new_weather_status : Weather_Status = None):
         if new_weather_status == 0:
-            self.humidity--
-            self.visibility++
-            self.temperature++
+            self.humidity-=1
+            self.visibility+=1
+            self.temperature+=1
             self.weather_status = new_weather_status
         elif new_weather_status == 1:
             if self.weather_status == 2:
                 self.weather_status = new_weather_status
-                self.humidity--
-                self.visibility++
-                self.temperature++
+                self.humidity-=1
+                self.visibility+=1
+                self.temperature+=1
             else:
-                self.visibility--
-                self.temperature--
+                self.visibility-=1
+                self.temperature-=1
                 self.weather_status = new_weather_status
         elif new_weather_status == 2:
-            self.humidity++
-            self.visibility--
-            self.temperature--
+            self.humidity+=1
+            self.visibility-=1
+            self.temperature-=1
             self.weather_status = new_weather_status
 
     def print(self):

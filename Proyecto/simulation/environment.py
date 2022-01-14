@@ -1,7 +1,7 @@
 from simulation.track import Track
 from simulation.weather import Weather
 
-class environment:
+class Environment:
     def __init__(self, track: Track, weather: Weather):
         self.track = track
         self.weather = weather

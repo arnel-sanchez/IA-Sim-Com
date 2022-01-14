@@ -18,8 +18,8 @@ class Bike:
         self.brakes = brakes
         self.chassis_stiffness = chassis_stiffness
 
-    def change_tires(self, tyres: Tyres):
-        self.tyres = tyres
+    def change_tires(self, tires: Tires):
+        self.tires = tires
 
     def change_chassis_stiffness(self, chassis_stiffness):
         self.chassis_stiffness = chassis_stiffness

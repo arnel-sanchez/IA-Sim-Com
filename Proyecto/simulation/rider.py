@@ -15,7 +15,7 @@ class Rider:
         self.probability_of_falling_off_the_motorcycle = probability_of_falling_off_the_motorcycle
 
     def add_experience(self):
-        self.experience_with_the_bike++
+        self.experience_with_the_bike+=1
 
     def print(self):
         print("Piloto: {}".format(self.name))
