@@ -1,13 +1,7 @@
-from compilation.errors import Error
-<<<<<<< Updated upstream
-=======
-from compilation.utils import TokenType, Token
-from compilation.enums import Region,EstadoDAST,VariableType,MethodType
 from compilation.ast.nodes import *
 from compilation.ast.relations import *
 from compilation.ast.assignments import *
 from compilation.ast.operations import *
->>>>>>> Stashed changes
 
 
 def normaliza(typevar):
