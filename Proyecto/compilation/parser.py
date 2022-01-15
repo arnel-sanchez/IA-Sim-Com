@@ -1,8 +1,10 @@
+from compilation.errors import Error
+from compilation.utils import TokenType, Token
+from compilation.enums import Region,EstadoDAST,VariableType,MethodType
 from compilation.ast.nodes import *
 from compilation.ast.relations import *
 from compilation.ast.assignments import *
 from compilation.ast.operations import *
-
 
 def normaliza(typevar):
         if typevar==VariableType.INT:
