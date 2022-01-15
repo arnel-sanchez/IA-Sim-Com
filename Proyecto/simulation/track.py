@@ -1,10 +1,6 @@
-
-
 class Track:
-    def __init__(self, name: str = "Misano"):
+    def __init__(self, name, length, curves, straight):
         self.name = name
-
-
-def default_tracks():
-    misano = Track("Misano")
-    return {"misano": misano}
+        self.length = length
+        self.curves = curves
+        self.straight = straight

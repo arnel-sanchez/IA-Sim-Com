@@ -1,26 +1,21 @@
-from simulation.motorcycle import Motorcycle, default_motorcycles
-
+from simulation.bike import Bike
 
 class Rider:
-    def __init__(self, name: str = "Valentino Rossi", aggressiveness: int = 10, motorcycle: Motorcycle = None):
+    def __init__(self, name, skill, cornering, step_by_line):
         self.name = name
-        self.aggressiveness = aggressiveness
-        self.motorcycle = motorcycle
+        self.skill = skill
+        self.cornering = cornering
+        self.step_by_line = step_by_line
+        self.experience_with_the_bike = 0
+        self.probability_of_falling_off_the_motorcycle = 0
 
-    def assign_motorcycle(self, motorcycle: Motorcycle):
-        self.motorcycle = motorcycle
+    def assign_bike(self, bike: Bike, experience, probability_of_falling_off_the_motorcycle):
+        self.bike = bike
+        self.experience_with_the_bike = experience
+        self.probability_of_falling_off_the_motorcycle = probability_of_falling_off_the_motorcycle
 
-    def print_rider(self):
+    def add_experience(self):
+        self.experience_with_the_bike+=1
+
+    def print(self):
         print("Piloto: {}".format(self.name))
-
-
-def default_riders():
-    motorcycles = default_motorcycles()
-    bagnaia = Rider("Francesco Bagnaia", 1, motorcycles["ducati"])
-    binder = Rider("Brad Binder", 2, motorcycles["ktm"])
-    espargaro = Rider("Aleix Espargaro", 3, motorcycles["aprilia"])
-    marquez = Rider("Marc Marquez", 4, motorcycles["honda"])
-    mir = Rider("Joan Mir", 5, motorcycles["suzuki"])
-    quartararo = Rider("Fabio Quartararo", 6, motorcycles["yamaha"])
-    return {"bagnaia": bagnaia, "binder": binder, "espargaro": espargaro, "marquez": marquez, "mir": mir,
-            "quartararo": quartararo}
