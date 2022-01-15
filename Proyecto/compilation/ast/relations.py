@@ -1,6 +1,7 @@
 from compilation.ast.operations import BinOp
 from compilation.ast.nodes import Node
 
+
 class Rel(BinOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)

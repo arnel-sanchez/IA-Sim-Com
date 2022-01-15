@@ -1,5 +1,7 @@
-class Context:    
-    variables=dict()
+
+
+class Context:
+    variables = dict()
     funciones=dict()
     errors=list()
     contextPadre = None 
