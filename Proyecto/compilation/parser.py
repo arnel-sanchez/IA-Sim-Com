@@ -1,24 +1,53 @@
-from compilation.utils import TokenType, Token, Region
 from compilation.errors import Error
+<<<<<<< Updated upstream
+=======
+from compilation.utils import TokenType, Token
+from compilation.enums import Region,EstadoDAST,VariableType,MethodType
+from compilation.ast.nodes import *
+from compilation.ast.relations import *
+from compilation.ast.assignments import *
+from compilation.ast.operations import *
+>>>>>>> Stashed changes
 
+
+def normaliza(typevar):
+        if typevar==VariableType.INT:
+          return "int"
+        if typevar==VariableType.BOOL:
+          return "bool"
+        if typevar==VariableType.DOUBLE:
+          return "double"
+        if typevar==VariableType.STRING:
+          return "str"
+
+def is_number(type) -> bool:
+    if type=="int" or type==float:
+        return True
+    else :
+        return False
 
 class Parser:
     def __init__(self):
+        self.estados = []  # Aqui guardamos los estados en forma de string , de forma que si el ultimo estado de la lista es el estado en el que estoy y si no hay estados en la lista ent estamos fuera de cualquier ambito del programa
+        self.context=Context()
+        self.i=0
+        self.estadoDAST= EstadoDAST.EnProgram
+        self.nodoactual=Program()  #Este sera el nodo en el que estoy parado cuando estoy construyendo el AST
+        self.nodopararecorrerast=self.nodoactual
         self.producciones = {"L": [["D", TokenType.T_SEMICOLON], ["@"], [TokenType.T_CLOSE_BRACE, "N"],
                                    ["W", TokenType.T_SEMICOLON], [TokenType.T_METHOD, "R"],
-                                   ["F", TokenType.T_ID, TokenType.T_OPEN_BRACE]],
-                             "D": [[TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN, "G"],
-                                   [TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN, "B"],
-                                   [TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN, "X"],
+                                   ["F", TokenType.T_ID, TokenType.T_OPEN_BRACE],[TokenType.T_ID, "I","E",TokenType.T_SEMICOLON]],
+                             "D": [[TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
+                                   [TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
+                                   [TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
                                    [TokenType.T_DOUBLE, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
-                                   [TokenType.T_ARRAY, "^"],
-                                   [TokenType.T_ID, "Ñ"]],
+                                   [TokenType.T_ARRAY, "^"]],
                              "T": [[TokenType.T_STRING], [TokenType.T_INT], [TokenType.T_DOUBLE], [TokenType.T_BOOL]],
                              "R": [["K", TokenType.T_ID, TokenType.T_OPEN_PAREN, "P", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE]],
                              "K": [["T"], [TokenType.T_VOID]],
-                             "P": [["T", TokenType.T_ID, "N"], ["e"]],
-                             "~": [[TokenType.T_COMMA, "T", TokenType.T_ID, "N"], ["e"]],
+                             "P": [["T", TokenType.T_ID, "~"], ["e"]],
+                             "~": [[TokenType.T_COMMA, "T", TokenType.T_ID, "~"], ["e"]],
                              "@": [[TokenType.T_IF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE],
                                    [TokenType.T_WHILE, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
@@ -26,41 +55,27 @@ class Parser:
                              "N": [[TokenType.T_ELSE, TokenType.T_OPEN_BRACE],
                                    [TokenType.T_ELIF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE], ["e"]],
-                             "W": [[TokenType.T_CONTINUE], [TokenType.T_BREAK], [TokenType.T_RETURN]],
+                             "W": [[TokenType.T_CONTINUE], [TokenType.T_BREAK], [TokenType.T_RETURN,"E"]],
                              "F": [[TokenType.T_RIDER], [TokenType.T_MOTORCYCLE]],
-                             "A": [[TokenType.T_OPEN_PAREN, "Z", TokenType.T_CLOSE_PAREN], ["e"]],
-                             "Z": [["#", "$"]],
-                             "$": [["e"], [TokenType.T_COMMA, "Z"]],
-                             "#": [["E"], ["X"], ["B"], ["G"]],
-                             "H": [["e"], ["O", "E"]],
-                             "O": [[TokenType.T_ADD_OP], [TokenType.T_SUB_OP], [TokenType.T_MUL_OP],
-                                   [TokenType.T_DIV_OP], [TokenType.T_MOD_OP], [TokenType.T_EXP_OP]],
-                             "?": [["e"], ["O", "B"]],
-                             "I": [[TokenType.T_ADD_AS], [TokenType.T_SUB_AS], [TokenType.T_DIV_AS],
-                                   [TokenType.T_MUL_AS], [TokenType.T_MOD_AS], [TokenType.T_EXP_AS]],
-                             "V": [["B"], ["E"]],
-                             "Ñ": [["I", "V"], [TokenType.T_ASSIGN, "#"]],
-                             "Q": [[TokenType.T_EQ_REL], [TokenType.T_NEQ_REL]],
+                             "A": [[TokenType.T_OPEN_PAREN, "Z"
+                                    , TokenType.T_CLOSE_PAREN], ["e"]],
+                             "Z": [["e"],["E","U"]],
+                             "I": [[TokenType.T_ASSIGN],[TokenType.T_ADD_AS], [TokenType.T_SUB_AS], [TokenType.T_DIV_AS],
+                                   [TokenType.T_MUL_AS], [TokenType.T_MOD_AS], [TokenType.T_EXP_AS],[TokenType.T_AND_AS],[TokenType.T_OR_AS],[TokenType.T_XOR_AS]],
+                             "Q": [[TokenType.T_S_VALUE],[TokenType.T_I_VALUE],[TokenType.T_D_VALUE],[TokenType.T_TRUE],[TokenType.T_FALSE],[TokenType.T_ID,"A"]],
                              "C": [[TokenType.T_GREQ_REL], [TokenType.T_GREAT_REL], [TokenType.T_LESS_REL],
-                                   [TokenType.T_LEQ_REL], ["Q"]],
-                             "M": [["e"], [TokenType.T_COMMA, "G", "M"]],
-                             "Y": [["e"], [TokenType.T_COMMA, "B", "Y"]],
-                             "J": [["e"], [TokenType.T_COMMA, "X", "J"]],
+                                   [TokenType.T_LEQ_REL],[TokenType.T_EQ_REL], [TokenType.T_NEQ_REL]],
+                             "M": [["Q"], [TokenType.T_OPEN_PAREN, "E", TokenType.T_CLOSE_PAREN]],
+                             "Y": [["e"], [TokenType.T_MUL_OP, "M", "Y"],[TokenType.T_DIV_OP, "M", "Y"],[TokenType.T_MOD_OP, "M", "Y"],[TokenType.T_EXP_OP, "M", "Y"]],
+                             "J": [["e"], ["C", "E", "S"]],
                              "U": [["e"], [TokenType.T_COMMA, "E", "U"]],
-                             "X": [[TokenType.T_ID, "A"], [TokenType.T_S_VALUE]],
-                             "E": [["e"]],
-                             "B": [["e"]],
-                             "G": [["e"]],
-                             "S": [["e"]],
-                             "^": [[TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN, TokenType.T_OPEN_BRACKET,
-                                    "G", "M", TokenType.T_CLOSE_BRACKET],
-                                   [TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN, TokenType.T_OPEN_BRACKET,
-                                    "B", "Y", TokenType.T_CLOSE_BRACKET],
-                                   [TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN, TokenType.T_OPEN_BRACKET,
-                                    "X", "J", TokenType.T_CLOSE_BRACKET],
-                                   [TokenType.T_DOUBLE, TokenType.T_ID, TokenType.T_ASSIGN, TokenType.T_OPEN_BRACKET,
-                                    "E", "U",
-                                    TokenType.T_CLOSE_BRACKET]]}  # Faltan las expresiones double , int y las condicionales
+                             "X": [[TokenType.T_ADD_OP, "B","X"], [TokenType.T_SUB_OP,"B","X"],["e"]],
+                             "E": [["B","X"]],
+                             "B": [["M","Y"]],
+                             "G": [["E","J"]],
+                             "S": [["e"],[TokenType.T_OR_OP,"G"],[TokenType.T_AND_OP,"G"]],
+                             "^": [["T", TokenType.T_ID, TokenType.T_ASSIGN, TokenType.T_OPEN_BRACKET,
+                                    "E", "U", TokenType.T_CLOSE_BRACKET]]} 
         self.terminales = [TokenType.T_SEMICOLON, TokenType.T_OPEN_PAREN, TokenType.T_CLOSE_PAREN,
                            TokenType.T_OPEN_BRACKET, TokenType.T_CLOSE_BRACKET, TokenType.T_OPEN_BRACE,
                            TokenType.T_CLOSE_BRACE, TokenType.T_COMMENT, TokenType.T_STRING, TokenType.T_INT,
@@ -77,65 +92,61 @@ class Parser:
                            TokenType.T_I_VALUE, TokenType.T_D_VALUE, TokenType.T_ARRAY, TokenType.T_VOID,
                            TokenType.T_CONTINUE, TokenType.T_BREAK, TokenType.T_RETURN, TokenType.T_RIDER,
                            TokenType.T_MOTORCYCLE]
-        self.no_terminales = ["L", "D", "I", "E", "M", "Y", "J", "U", "N", "@", "R", "K", "T", "P", "W", "S", "F", "V",
-                              "A", "Z", "#", "H", "O", "Q", "C", "B", "G", "X", "~", "$", "?", "Ñ", "^"]
+        self.no_terminales = ["L", "D", "I", "E", "M", "Y", "J", "U", "N", "@", "R", "K", "T", "P", "W", "S", "F",
+                              "A", "Z", "Q", "C", "B", "G", "X", "~", "^"]
         self.first = dict()  # Guardamos los terminales que pertenecen al First de cada produccion posible de nuestra gramatica
         self.follow = {"L": [], "D": [], "I": [], "E": [], "M": [], "Y": [], "J": [], "U": [], "N": [], "@": [],
-                       "R": [], "K": [], "T": [], "P": [], "W": [], "S": [], "F": [], "V": [], "A": [], "Z": [],
-                       "#": [], "H": [], "O": [], "Q": [], "C": [], "B": [], "G": [], "X": [], "~": [], "$": [],
-                       "?": [], "Ñ": [],
-                       "^": []}  # Aqui guardamos los terminales que pertenecen al Follow de cada no terminal
+                       "R": [], "K": [], "T": [], "P": [], "W": [], "S": [], "F": [], "A": [], "Z": [],
+                        "Q": [], "C": [], "B": [], "G": [], "X": [], "~": [],
+                       "^": []}
+                                
+        self.completafollow = {"L": [], "D": [], "I": [], "E": [], "M": [], "Y": [], "J": [], "U": [], "N": [], "@": [],
+                       "R": [], "K": [], "T": [], "P": [], "W": [], "S": [], "F": [], "A": [], "Z": [],
+                        "Q": [], "C": [], "B": [], "G": [], "X": [], "~": [],
+                       "^": []} 
+                                    # Aqui guardamos los terminales que pertenecen al Follow de cada no terminal
         self.pendiente_follow = []  # Los elementos de esta lista tendran una forma "A,B" lo que significa que todo lo que pertenece al Follow de A tambien pertenece al Folow de B
         self.matriz = [[None for _ in range(len(self.terminales))] for _ in range(len(self.no_terminales))]
         self.lista_producciones = [["L", "D", TokenType.T_SEMICOLON], ["L", "@"], ["L", TokenType.T_CLOSE_BRACE, "N"],
                                    ["L", "W", TokenType.T_SEMICOLON], ["L", TokenType.T_METHOD, "R"],
-                                   ["L", "F", TokenType.T_ID, TokenType.T_OPEN_BRACE],
-                                   ["D", TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN, "G"],
-                                   ["D", TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN, "B"],
-                                   ["D", TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN, "X"],
+                                   ["L", "F", TokenType.T_ID, TokenType.T_OPEN_BRACE],["L", TokenType.T_ID, "I","E",TokenType.T_SEMICOLON],
+                                   ["D", TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
+                                   ["D", TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
+                                   ["D", TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
                                    ["D", TokenType.T_DOUBLE, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
                                    ["D", TokenType.T_ARRAY, "^"],
-                                   ["D", TokenType.T_ID, "Ñ"], ["T", TokenType.T_STRING], ["T", TokenType.T_INT],
+                                   ["T", TokenType.T_STRING], ["T", TokenType.T_INT],
                                    ["T", TokenType.T_DOUBLE], ["T", TokenType.T_BOOL],
                                    ["R", "K", TokenType.T_ID, TokenType.T_OPEN_PAREN,
                                     "P", TokenType.T_CLOSE_PAREN, TokenType.T_OPEN_BRACE], ["K", "T"],
-                                   ["K", TokenType.T_VOID], ["P", "T", TokenType.T_ID, "N"], ["P", "e"],
-                                   ["~", TokenType.T_COMMA, "T", TokenType.T_ID, "N"], ["~", "e"],
+                                   ["K", TokenType.T_VOID], ["P", "T", TokenType.T_ID, "~"], ["P", "e"],
+                                   ["~", TokenType.T_COMMA, "T", TokenType.T_ID, "~"], ["~", "e"],
                                    ["@", TokenType.T_IF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE],
                                    ["@", TokenType.T_WHILE, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE], ["N", TokenType.T_ELSE, TokenType.T_OPEN_BRACE],
                                    ["N", TokenType.T_ELIF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE], ["N", "e"], ["W", TokenType.T_CONTINUE],
-                                   ["W", TokenType.T_BREAK], ["W", TokenType.T_RETURN], ["F", TokenType.T_RIDER],
+                                   ["W", TokenType.T_BREAK], ["W", TokenType.T_RETURN,"E"], ["F", TokenType.T_RIDER],
                                    ["F", TokenType.T_MOTORCYCLE],
                                    ["A", TokenType.T_OPEN_PAREN, "Z", TokenType.T_CLOSE_PAREN], ["A", "e"],
-                                   ["Z", "#", "$"], ["$", "e"], ["$", TokenType.T_COMMA, "Z"], ["#", "E"], ["#", "X"],
-                                   ["#", "B"], ["#", "G"], ["H", "e"], ["H", "O", "E"], ["O", TokenType.T_ADD_OP],
-                                   ["O", TokenType.T_SUB_OP], ["O", TokenType.T_MUL_OP], ["O", TokenType.T_DIV_OP],
-                                   ["O", TokenType.T_MOD_OP], ["O", TokenType.T_EXP_OP], ["?", "e"], ["?", "O", "B"],
+                                   ["Z", "e"],["Z", "E","U"],["I",TokenType.T_ASSIGN],
                                    ["I", TokenType.T_ADD_AS], ["I", TokenType.T_SUB_AS], ["I", TokenType.T_DIV_AS],
                                    ["I", TokenType.T_MUL_AS], ["I", TokenType.T_MOD_AS], ["I", TokenType.T_EXP_AS],
-                                   ["V", "B"], ["V", "E"], ["Ñ", "I", "V"], ["Ñ", TokenType.T_ASSIGN, "#"],
-                                   ["Q", TokenType.T_EQ_REL], ["Q", TokenType.T_NEQ_REL], ["C", TokenType.T_GREQ_REL],
+                                   ["I",TokenType.T_AND_AS],["I",TokenType.T_OR_AS],["I",TokenType.T_XOR_AS],
+                                   ["Q",TokenType.T_S_VALUE],["Q",TokenType.T_I_VALUE],["Q",TokenType.T_D_VALUE],["Q",TokenType.T_TRUE],
+                                   ["Q",TokenType.T_FALSE],["Q",TokenType.T_ID,"A"], ["C", TokenType.T_GREQ_REL],
                                    ["C", TokenType.T_GREAT_REL], ["C", TokenType.T_LESS_REL],
-                                   ["C", TokenType.T_LEQ_REL], ["C", "Q"], ["M", "e"],
-                                   ["M", TokenType.T_COMMA, "G", "M"], ["Y", "e"], ["Y", TokenType.T_COMMA, "B", "Y"],
-                                   ["J", "e"], ["J", TokenType.T_COMMA, "X", "J"], ["U", "e"],
-                                   ["U", TokenType.T_COMMA, "E", "U"], ["X", TokenType.T_ID, "A"],
-                                   ["X", TokenType.T_S_VALUE], ["E", "e"], ["B", "e"], ["G", "e"], ["S", "e"],
+                                   ["C", TokenType.T_LEQ_REL],["C",TokenType.T_EQ_REL], ["C",TokenType.T_NEQ_REL], ["M","Q"], ["M",TokenType.T_OPEN_PAREN, "E", TokenType.T_CLOSE_PAREN],
+                                   ["Y","e"], ["Y",TokenType.T_MUL_OP, "M", "Y"],["Y",TokenType.T_DIV_OP, "M", "Y"],["Y",TokenType.T_MOD_OP, "M", "Y"],["Y",TokenType.T_EXP_OP, "M", "Y"],
+                                   ["J", "e"], ["J", "C", "E", "S"], ["U", "e"],
+                                   ["U", TokenType.T_COMMA, "E", "U"],["X",TokenType.T_ADD_OP, "B","X"], ["X",TokenType.T_SUB_OP,"B","X"],
+                                   ["X","e"], ["E", "B","X"], ["B", "M","Y"], ["G", "E","J"], ["S", "e"],
                                    ["S", TokenType.T_OR_OP, "G"], ["S", TokenType.T_AND_OP, "G"],
-                                   ["^", TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "G", "M", TokenType.T_CLOSE_BRACKET],
-                                   ["^", TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "B", "Y", TokenType.T_CLOSE_BRACKET],
-                                   ["^", TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "X", "J", TokenType.T_CLOSE_BRACKET],
-                                   ["^", TokenType.T_DOUBLE, TokenType.T_ID, TokenType.T_ASSIGN,
+                                   ["^", "T", TokenType.T_ID, TokenType.T_ASSIGN,
                                     TokenType.T_OPEN_BRACKET, "E", "U", TokenType.T_CLOSE_BRACKET]]
         self.first_producciones_calculado = False  # Esta variable booleana me sirve calcular los first restantes que luego me hacen falta para los Follows
         self.hacer_first("L")
-        self.first_producciones_calculado = True
         self.calcular_first_restantes()
         self.hacer_follow()
         self.completar_follows()
@@ -154,13 +165,13 @@ class Parser:
             self.first[cadena] = []
         i = 0
         for prod in self.producciones[cadena]:
-            if not self.first_producciones_calculado:
-                self.first[self.key(prod)] = []
+         
+            self.first[self.key(prod)] = []
             if self.no_terminales.count(prod[i]) == 1:
                 self.hacer_first(prod[i])
                 self.first[cadena] += self.first[prod[i]]
-                if not self.first_producciones_calculado and len(prod) > 1:
-                    self.first[self.key(prod)] += self.first[prod[i]]
+                if len(prod) > 1:
+                 self.first[self.key(prod)] += self.first[prod[i]]
                 while self.se_va_en_epsilon(prod[i]):
                     i += 1
                     if i == len(prod):
@@ -168,8 +179,7 @@ class Parser:
                     if self.no_terminales.count(prod[i]) == 1:
                         self.hacer_first(prod[i])
                         self.first[cadena] += self.first[prod[i]]
-                        if not self.first_producciones_calculado:
-                            self.first[self.key(prod)] += self.first[prod[i]]
+                        self.first[self.key(prod)] += self.first[prod[i]]
                     else:
                         self.first[cadena].append(prod[i])
                         break
@@ -184,7 +194,7 @@ class Parser:
     def key(produccion: list) -> str:
         prod_str = ""
         for i in range(len(produccion)):
-            prod_str += "'" + produccion[i].name + "'" if isinstance(produccion[i], TokenType) else produccion[i]
+            prod_str += "'" + produccion[i].name + "'" if isinstance(produccion[i], TokenType) else  produccion[i]
         return prod_str
 
     def se_va_en_epsilon(self, no_terminal) -> bool:
@@ -216,7 +226,8 @@ class Parser:
                     if len(terminales_para_follow) > 0:
                         self.follow[prod[i]] = list(set(self.follow[prod[i]] + terminales_para_follow))
                     if existe_ultimo_terminal:
-                        self.pendiente_follow.append("{},{}".format(prod[0], prod[i]))
+                        if prod[0]!=prod[i] and self.pendiente_follow.count("{},{}".format(prod[0], prod[i]))==0:
+                         self.pendiente_follow.append("{},{}".format(prod[0], prod[i])) 
                     if self.se_va_en_epsilon(prod[i]):
                         terminales_para_follow += self.first[prod[i]]
                         if terminales_para_follow.count(prod[i]) == 1:
@@ -233,9 +244,19 @@ class Parser:
                     if prod[i] != "e" and terminales_para_follow.count(prod[i]) == 0:
                         terminales_para_follow.append(prod[i])
 
+    def AjustaFollows(self,cabeza,ultimoterminal):
+       if cabeza!=ultimoterminal:
+        for x in self.completafollow[ultimoterminal]:
+            self.follow[x] = list(self.follow[x] + self.follow[cabeza])
+            self.AjustaFollows(cabeza,x)
+
     def completar_follows(self):
         for follow in self.pendiente_follow:
             self.follow[follow[2]] = list(self.follow[follow[2]] + self.follow[follow[0]])
+            self.completafollow[follow[0]]+= follow[2]
+            self.AjustaFollows(follow[0],follow[2])
+
+         
 
     def construir_tabla_LL(self):
         fila = 0
@@ -253,64 +274,81 @@ class Parser:
                 columna += 1
             fila += 1
 
-    def parsear(self, line, i, cadena):
-        self.error = None
-        estados = []  # Aqui guardamos los estados en forma de string , de forma que si el ultimo estado de la lista es el estado en el que estoy y si no hay estados en la lista ent estamos fuera de cualquier ambito del programa
+    def parsear(self, line, cadena):        
+        self.error = None      
         for termino in cadena:
-            if i < len(line):
-                if i == 0:
-                    if len(estados) != 0:
-                        estado = estados[- 1]
+            
+            if self.i < len(line):
+                if self.i == 0:
+                    if len(self.estados) != 0:
+                        estado = self.estados[- 1]
                         if estado == Region.R_TYPE:
-                            if line[i].token_type != (TokenType.T_METHOD and TokenType.T_CLOSE_BRACE):
+                            if line[self.i].token_type != (TokenType.T_METHOD and TokenType.T_CLOSE_BRACE):
                                 self.error = Error("Error", "", "", 0, 0)#
                                 break
                         elif estado == Region.R_IF or estado == Region.R_ELIF or estado == Region.R_ELSE:
-                            if line[i].token_type == (TokenType.T_METHOD or TokenType.T_RETURN or TokenType.T_BREAK or
+                            if line[self.i].token_type == (TokenType.T_METHOD or TokenType.T_RETURN or TokenType.T_BREAK or
                                                       TokenType.T_CONTINUE or TokenType.T_MOTORCYCLE or
                                                       TokenType.T_RIDER):
                                 self.error = Error("Error", "", "", 0, 0)#
                                 break
                         elif estado == Region.R_WHILE:
-                            if line[i].token_type == (TokenType.T_METHOD or TokenType.T_RETURN or
+                            if line[self.i].token_type == (TokenType.T_METHOD or TokenType.T_RETURN or
                                                       TokenType.T_MOTORCYCLE or TokenType.T_RIDER):
                                 self.error = Error("Error", "", "", 0, 0)#
                                 break
-                if termino == line[i].token_type:
-                    if line[i].token_type == (TokenType.T_RIDER or TokenType.T_MOTORCYCLE):
-                        estados.append(Region.R_TYPE)
-                    elif line[i].token_type == TokenType.T_METHOD:
-                        estados.append(Region.R_METHOD)
-                    elif line[i].token_type == TokenType.T_WHILE:
-                        estados.append(Region.R_WHILE)
-                    elif line[i].token_type == TokenType.T_IF:
-                        estados.append(Region.R_IF)
-                    elif line[i].token_type == TokenType.T_ELIF:
-                        if estados[- 1] == (Region.R_IF or Region.R_ELIF):
-                            estados.pop()
-                            estados.append(Region.R_ELIF)
+                if termino == line[self.i].token_type:
+                    if line[self.i].token_type == (TokenType.T_RIDER or TokenType.T_MOTORCYCLE):
+                        self.estados.append(Region.R_TYPE)
+                    elif line[self.i].token_type == TokenType.T_METHOD:
+                        self.estados.append(Region.R_METHOD)
+                    elif line[self.i].token_type == TokenType.T_WHILE:
+                        self.estados.append(Region.R_WHILE)
+                    elif line[self.i].token_type == TokenType.T_IF:
+                        self.estados.append(Region.R_IF)
+                    elif line[self.i].token_type == TokenType.T_ELIF:
+                        if self.estados[- 1] == (Region.R_IF or Region.R_ELIF):
+                            self.estados.pop()
+                            self.estados.append(Region.R_ELIF)
                         else:
                             self.error = Error("", "", "", 0, 0)#
                             break
-                    elif line[i].token_type == TokenType.T_ELSE:
-                        if estados[- 1] == (Region.R_IF or Region.R_ELIF):
-                            estados.pop()
-                            estados.append(Region.R_ELSE)
+                    elif line[self.i].token_type == TokenType.T_ELSE:
+                        if self.estados[- 1] == (Region.R_IF or Region.R_ELIF):
+                            self.estados.pop()
+                            self.estados.append(Region.R_ELSE)
                         else:
                             self.error = Error("", "", "", 0, 0)#
                             break
-                    elif line[i].token_type == TokenType.T_CLOSE_BRACE:
-                        if i + 1 == len(line) or estados[- 1] != (Region.R_IF and Region.R_ELIF):
-                            estados.pop()
-                    i += 1
+                    elif line[self.i].token_type == TokenType.T_CLOSE_BRACE:
+                        if self.i + 1 == len(line) or self.estados[- 1] != (Region.R_IF and Region.R_ELIF):
+                            self.estados.pop()
+                    
+                    self.EligeTipoDdeclaracion(termino,line[self.i],line)
+                    self.i += 1
                     continue
                 elif isinstance(termino, TokenType):
                     self.error = Error("", "", "", 0, 0)#
                     break
                 indice_nt = self.no_terminales.index(termino)
-                indice_t = self.terminales.index(line[i].token_type)
-                if self.matriz[indice_nt][indice_t] != (None and "e"):
-                    self.parsear(line, i, self.matriz[indice_nt][indice_t])
+                indice_t = self.terminales.index(line[self.i].token_type)
+                
+                
+                self.EligeTipoDdeclaracion(termino,line[self.i],line)
+                if self.matriz[indice_nt][indice_t] != None  :
+                    if self.matriz[indice_nt][indice_t]!="e":
+                     self.parsear(line, self.matriz[indice_nt][indice_t])
+                    if self.estadoDAST==EstadoDAST.EnExpresionAssign and termino!="A" and termino!="U" and termino!="Z":
+                         self.nodoactual.nododreconocimiento.refreshAST()
+                         if self.nodoactual.noderaiz.ast!= None:
+                             self.RectificaEstado()
+                             if not isinstance(self.nodoactual.padre,ReturnNode): 
+                              self.nodoactual=self.nodoactual.padre
+                             else:
+                                 self.nodoactual=self.nodoactual.padre.padre
+                         elif self.nodoactual.nododreconocimiento.padre!=None:
+                            self.nodoactual.nododreconocimiento= self.nodoactual.nododreconocimiento.padre
+                    
                     if self.error is not None:
                         break
                 elif self.matriz[indice_nt][indice_t] != "e":
@@ -318,8 +356,420 @@ class Parser:
                     break
             else:
                 break
-
+    
     def parse(self, lines: [[Token]]) -> Error:
         for line in lines:
-            self.parsear(line, 0, "L")
+            self.parsear(line, "L")
+            self.i=0
         return self.error
+    
+    def CreaNododProgram(self,lenline,termino,token):
+        if termino=="D":
+            nuevonodo = D_Assign()
+            self.nodoactual.statements.append(nuevonodo)
+            nuevonodo.padre=self.nodoactual
+            self.nodoactual=nuevonodo
+            self.estadoDAST=EstadoDAST.EnAsignacion
+        elif termino==TokenType.T_METHOD:
+            nuevonodo= Def_Fun()
+            self.nodoactual.statements.append(nuevonodo)
+            nuevonodo.padre=self.nodoactual
+            self.nodoactual=nuevonodo
+            self.estadoDAST=EstadoDAST.EnFuncion
+        elif termino== (TokenType.T_RIDER or TokenType.T_MOTORCYCLE):
+            nuevonodo= DefineTipoEspecial()
+            self.nodoactual.statments.append(nuevonodo)
+            if termino == TokenType.T_RIDER:
+                otronodo=RiderInit() 
+                nuevonodo.statments.append(otronodo)                
+            else:
+                otronodo=MotoInit() 
+                nuevonodo.statments.append(otronodo)
+            self.nodoactual=nuevonodo
+            self.estadoDAST=EstadoDAST.EnTipoEspecial
+        elif termino== TokenType.T_IF :
+            nuevonodo= IfCond()
+            self.nodoactual.statements.append(nuevonodo)
+            nuevonodo.padre=self.nodoactual
+            self.nodoactual=nuevonodo
+            self.estadoDAST=EstadoDAST.EnCondicionIf
+        elif termino == TokenType.T_WHILE :
+            nuevonodo = WhileCond()
+            self.nodoactual.statments.append(nuevonodo)
+            self.nodoactual=nodonuevo
+            self.estadoDAST=EstadoDAST.EnWhile
+        elif termino == TokenType.T_RETURN or termino == TokenType.T_BREAK or termino == TokenType.T_CONTINUE :
+            nuevonodo = ReturnNode()
+            nuevonodo.padre=self.nodoactual            
+            self.nodoactual.statements.append(nuevonodo)
+            
+            if termino == TokenType.T_RETURN:
+                 nuevonodo.type="return"                 
+                 self.nodoactual=nuevonodo
+                 nodoparaExpression=Expression()
+                 nodoparaExpression.padre=self.nodoactual
+                 self.nodoactual.expr=nodoparaExpression
+                 self.nodoactual=nodoparaExpression
+                 self.estadoDAST=EstadoDAST.EnExpresionAssign
+
+            elif termino == TokenType.T_BREAK:
+                nuevonodo.type="break"
+            else:
+                nuevonodo.type="continue"                        
+            
+        elif termino == TokenType.T_ID :
+            nuevonodo = Redefinition()
+            self.nodoactual.statements.append(nuevonodo)
+            nuevonodo.padre=self.nodoactual
+            self.nodoactual=nuevonodo
+            self.nodoactual.id=token.value
+            self.estadoDAST=EstadoDAST.EnRedefinition
+        elif termino == TokenType.T_CLOSE_BRACE :
+            self.nodoactual= self.nodoactual.padre
+            if isinstance(self.nodoactual,IfCond):
+              if self.i+1 == lenline:
+                   self.nodoactual=self.nodoactual.padre
+                   self.estadoDAST=EstadoDAST.EnProgram
+              else:
+               self.estadoDAST=EstadoDAST.EnCondicionIf
+            if isinstance(self.nodoactual,Def_Fun) or isinstance(self.nodoactual,WhileCond):
+              self.nodoactual=self.nodoactual.padre
+              self.estadoDAST=EstadoDAST.EnProgram
+        
+
+    def EligeTipoDdeclaracion(self,termino,token:Token,line):
+        if self.estadoDAST==EstadoDAST.EnAsignacion:
+            self.CreaNododAsignacion(termino,token)
+        elif self.estadoDAST==EstadoDAST.EnExpresionAssign:
+            self.CreaNododExpresion(termino,token,line)
+        elif self.estadoDAST==EstadoDAST.EnProgram:
+            self.CreaNododProgram(len(line),termino,token)
+        elif self.estadoDAST==EstadoDAST.EnCondicionIf:
+            self.CreaNododIf(termino,token)
+        elif self.estadoDAST==EstadoDAST.EnFuncion:
+            self.CreaNododFuncion(termino,token)
+        elif self.estadoDAST==EstadoDAST.EnArgsdFuncion:
+            self.CreaArgsdfun(termino,token)
+        elif self.estadoDAST==EstadoDAST.EnRedefinition:
+            self.CreanodoDredefinition(termino,token)
+        elif self.estadoDAST==EstadoDAST.Condicion:
+            self.CreaNodoCondicion(termino,token)
+        elif self.estadoDAST==EstadoDAST.EnWhile:
+            self.CreaNododIf(termino,token)
+        elif self.estadoDAST==EstadoDAST.LlamadoAfuncion:
+            self.CreanodoCall(termino,token)
+  
+    
+    def CreaNododAsignacion(self,termino,token:Token):
+        if termino==TokenType.T_INT :
+            self.nodoactual.typevar=VariableType.INT
+        elif termino==TokenType.T_BOOL :
+            self.nodoactual.typevar=VariableType.BOOL
+        elif termino==TokenType.T_DOUBLE :
+            self.nodoactual.typevar=VariableType.DOUBLE
+        elif termino==TokenType.T_ID :
+             self.nodoactual.id = token.value
+        elif termino==TokenType.T_ASSIGN :
+           nuevonodo=Expression()
+           if not self.nodoactual.isarray:
+            self.estadoDAST=EstadoDAST.EnExpresionAssign
+            self.nodoactual.expr=nuevonodo
+            nuevonodo.padre=self.nodoactual
+            self.nodoactual=self.nodoactual.expr
+           else :
+             self.nodoactual.arrayvalue.append(nuevonodo)
+             self.estadoDAST=EstadoDAST.EnExpresionAssign
+             nuevonodo.padre=self.nodoactual
+             self.nodoactual= nuevonodo
+
+        elif termino==TokenType.T_STRING:
+            self.nodoactual.typevar=VariableType.STRING
+        elif termino==TokenType.T_ARRAY:
+            self.nodoactual.isarray=True
+        elif termino==TokenType.T_COMMA:
+            nuevonodo=Expression()
+            self.nodoactual.arrayvalue.append(nuevonodo)
+            self.estadoDAST=EstadoDAST.EnExpresionAssign
+            nuevonodo.padre=self.nodoactual
+            self.nodoactual= nuevonodo
+        elif termino==TokenType.T_SEMICOLON :
+            self.estadoDAST=EstadoDAST.EnProgram
+            self.nodoactual= self.nodoactual.padre
+
+
+    def CreanodoCall(self,termino,token:Token):
+        if termino=="E":
+            nuevonodo= NodeE()
+            nuevonodo.padre=self.nodoactual.nododreconocimiento
+            self.nodoactual.nododreconocimiento.args.append(nuevonodo)
+            self.nodoactual.nododreconocimiento=nuevonodo
+            self.estadoDAST=EstadoDAST.EnExpresionAssign
+
+            
+    def CreaArgsdfun(self,termino,token:Token):
+        if termino==TokenType.T_INT :
+            self.nodoactual.args.append([VariableType.INT])
+        if termino==TokenType.T_ID :
+            self.nodoactual.args[len(self.nodoactual.args)-1].append(token.value)
+        elif termino==TokenType.T_BOOL :
+            self.nodoactual.args.append([VariableType.BOOL])
+        elif termino==TokenType.T_DOUBLE :
+            self.nodoactual.args.append([VariableType.DOUBLE])
+        elif termino==TokenType.T_STRING:
+            self.nodoactual.args.append([VariableType.STRING])
+        elif termino==TokenType.T_CLOSE_PAREN:
+            self.estadoDAST=EstadoDAST.EnFuncion
+
+    def CreanodoDredefinition(self,termino,token:Token):
+        if termino==TokenType.T_ASSIGN :
+            nuevonodo=Assign(self.nodoactual.id)
+        elif termino==TokenType.T_ADD_AS :
+            nuevonodo=AddAs(self.nodoactual.id)
+        elif termino==TokenType.T_SUB_AS :
+            nuevonodo=SubAs(self.nodoactual.id)
+        elif termino==TokenType.T_MUL_AS :
+            nuevonodo=MulAs(self.nodoactual.id)
+        elif termino==TokenType.T_DIV_AS :
+            nuevonodo=DivAs(self.nodoactual.id)
+        elif termino==TokenType.T_MOD_AS :
+            nuevonodo=ModAs(self.nodoactual.id)
+        elif termino==TokenType.T_EXP_AS :
+            nuevonodo=ExpAs(self.nodoactual.id)
+        elif termino==TokenType.T_AND_AS :
+            nuevonodo=AndAs(self.nodoactual.id)
+        elif termino==TokenType.T_OR_AS :
+            nuevonodo=OrAs(self.nodoactual.id)
+        elif termino==TokenType.T_XOR_AS :
+            nuevonodo=XorAs(self.nodoactual.id)
+        elif termino==TokenType.T_SEMICOLON :
+            self.estadoDAST=EstadoDAST.EnProgram
+            self.nodoactual= self.nodoactual.padre
+            return
+        if termino!="I":
+         self.nodoactual.op=nuevonodo
+         self.estadoDAST=EstadoDAST.EnExpresionAssign
+         nodoexpression=Expression()
+         self.nodoactual.expr=nodoexpression
+         nodoexpression.padre=self.nodoactual
+         self.nodoactual=self.nodoactual.expr
+
+    def CreaNododFuncion(self,termino,token:Token):
+        if termino == TokenType.T_INT  :
+            self.nodoactual.typefun= MethodType.INT
+        elif termino==TokenType.T_BOOL :
+            self.nodoactual.typefun= MethodType.BOOL
+        elif termino==TokenType.T_DOUBLE :
+            self.nodoactual.typefun= MethodType.DOUBLE
+        elif termino==TokenType.T_STRING:
+            self.nodoactual.typefun= MethodType.STRING
+        elif termino==TokenType.T_ARRAY:
+           self.nodoactual.typefun= MethodType.ARRAY
+        elif termino==TokenType.T_VOID:
+           self.nodoactual.typefun= MethodType.VOID
+        elif termino==TokenType.T_ID :
+           self.nodoactual.idfun=token.value
+           self.estadoDAST=EstadoDAST.EnArgsdFuncion
+        elif termino==TokenType.T_OPEN_BRACE :
+            nodonuevo= Program()
+            nodonuevo.padre=self.nodoactual
+            self.nodoactual.body=nodonuevo
+            self.nodoactual=nodonuevo
+            self.nodoactual.isfuncion=True
+            self.estadoDAST=EstadoDAST.EnProgram
+            
+    def CreaNododIf(self,termino,token:Token):
+           if termino == TokenType.T_OPEN_BRACE:
+               nuevonodo=Program()
+               nuevonodo.padre=self.nodoactual
+               self.nodoactual.body=nuevonodo
+               self.nodoactual=nuevonodo
+               self.estadoDAST=EstadoDAST.EnProgram
+           elif termino==TokenType.T_OPEN_PAREN:
+               self.estadoDAST=EstadoDAST.Condicion
+               nuevonodo= Condition()
+               nuevonodo.padre=self.nodoactual
+               self.nodoactual=nuevonodo
+           elif termino==TokenType.T_ELIF: 
+               nuevonodo = IfCond() 
+               nuevonodo.padre=self.nodoactual
+               self.nodoactual.nodoelse=nuevonodo
+               self.nodoactual=nuevonodo  
+           elif termino==TokenType.T_ELSE:
+               nuevonodo = Program() 
+               nuevonodo.padre=self.nodoactual
+               self.nodoactual.nodoelse=nuevonodo
+               self.nodoactual=nuevonodo
+               self.estadoDAST=EstadoDAST.EnProgram
+
+    def CreaNodoCondicion(self,termino,token:Token):
+         if termino==TokenType.T_EQ_REL:
+             self.nodoactual.comparador=EqRel(self.nodoactual.expression1,self.nodoactual.expression2)
+             nuevonodo=Expression()
+             self.nodoactual.expression2 = nuevonodo
+             nuevonodo.padre=self.nodoactual
+             self.nodoactual=nuevonodo
+             self.nodoactual.noderaiz=self.nodoactual.nododreconocimiento
+             self.estadoDAST=EstadoDAST.EnExpresionAssign
+         elif termino==TokenType.T_NEQ_REL:
+             self.nodoactual.comparador=NeqRel(self.nodoactual.expression1,self.nodoactual.expression2)
+             nuevonodo=Expression()
+             self.nodoactual.expression2= nuevonodo
+             nuevonodo.padre=self.nodoactual
+             self.nodoactual=nuevonodo
+             self.nodoactual.noderaiz=self.nodoactual.nododreconocimiento
+             self.estadoDAST=EstadoDAST.EnExpresionAssign
+         elif termino==TokenType.T_LESS_REL:
+             self.nodoactual.comparador=LessRel(self.nodoactual.expression1,self.nodoactual.expression2)
+             nuevonodo=Expression()
+             self.nodoactual.expression2= nuevonodo
+             nuevonodo.padre=self.nodoactual
+             self.nodoactual=nuevonodo
+             self.nodoactual.noderaiz=self.nodoactual.nododreconocimiento
+             self.estadoDAST=EstadoDAST.EnExpresionAssign
+         elif termino==TokenType.T_LEQ_REL:
+             self.nodoactual.comparador=LeqRel(self.nodoactual.expression1,self.nodoactual.expression2)
+             nuevonodo=Expression()
+             self.nodoactual.expression2= nuevonodo
+             nuevonodo.padre=self.nodoactual
+             self.nodoactual=nuevonodo
+             self.nodoactual.noderaiz=self.nodoactual.nododreconocimiento
+             self.estadoDAST=EstadoDAST.EnExpresionAssign
+         elif termino==TokenType.T_GREAT_REL:
+             self.nodoactual.comparador=GreatRel(self.nodoactual.expression1,self.nodoactual.expression2)
+             nuevonodo=Expression()
+             self.nodoactual.expression2= nuevonodo
+             nuevonodo.padre=self.nodoactual
+             self.nodoactual=nuevonodo
+             self.nodoactual.noderaiz=self.nodoactual.nododreconocimiento
+             self.estadoDAST=EstadoDAST.EnExpresionAssign
+         elif termino==TokenType.T_GREQ_REL:
+             self.nodoactual.comparador=GreqRel(self.nodoactual.expression1,self.nodoactual.expression2)
+             nuevonodo=Expression()
+             self.nodoactual.expression2= nuevonodo
+             nuevonodo.padre=self.nodoactual
+             self.nodoactual=nuevonodo
+             self.nodoactual.noderaiz=self.nodoactual.nododreconocimiento
+             self.estadoDAST=EstadoDAST.EnExpresionAssign
+         elif termino=="E":                       
+             nuevonodo=Expression()
+             self.nodoactual.expression1= nuevonodo
+             nuevonodo.padre=self.nodoactual
+             self.nodoactual=nuevonodo
+             self.nodoactual.noderaiz=self.nodoactual.nododreconocimiento
+             self.estadoDAST=EstadoDAST.EnExpresionAssign
+         elif termino==TokenType.T_CLOSE_PAREN or termino==TokenType.T_OR_OP or termino==TokenType.T_AND_OP or termino==TokenType.T_XOR_OP:
+              self.nodoactual.padre.conditions.append(self.nodoactual)
+              if termino==TokenType.T_CLOSE_PAREN:
+                     self.estadoDAST=EstadoDAST.EnCondicionIf
+                     self.nodoactual=self.nodoactual.padre
+              else :
+
+                  if termino==TokenType.T_OR_OP :
+                   self.nodoactual.padre.operadoresbinarios.append(OrOp(None,None))
+                  elif termino==TokenType.T_AND_OP:
+                   self.nodoactual.padre.operadoresbinarios.append(AndOp(None,None))
+                  elif termino==TokenType.T_XOR_OP:
+                   self.nodoactual.padre.operadoresbinarios.append(XorOp(None,None))
+                  nodopadre=self.nodoactual.padre
+                  self.estadoDAST=EstadoDAST.EnExpresionAssign
+                  self.nodoactual= Condition()
+                  self.nodoactual.padre=nodopadre
+
+                  nuevonodo=Expression()
+                  self.nodoactual.expression1 = nuevonodo
+                  nuevonodo.padre=self.nodoactual
+                  self.nodoactual=nuevonodo
+                  self.nodoactual.noderaiz=self.nodoactual.nododreconocimiento
+            
+
+
+    def CreaNododExpresion(self,termino,token:Token,line):
+        
+      if termino!="G"  :
+        
+       # if termino==TokenType.T_CLOSE_BRACKET and line[self.i-1]==TokenType.T_ASSIGN:
+            
+        if termino==TokenType.T_ADD_OP:
+            nuevonodo=NodeAdd()
+        elif termino==TokenType.T_SUB_OP:
+            nuevonodo=NodeSub()
+        elif termino==TokenType.T_MUL_OP:
+            nuevonodo=NodeMult()
+        elif termino==TokenType.T_DIV_OP:
+            nuevonodo=NodeDiv()
+        elif termino==TokenType.T_MOD_OP:
+            nuevonodo=NodeMod()
+        elif termino==TokenType.T_EXP_OP:
+            nuevonodo=NodeExp()
+        elif termino==TokenType.T_COMMA:
+             if isinstance (self.nodoactual.padre,Def_Fun):
+              self.estadoDAST=EstadoDAST.LlamadoAfuncion
+             
+             return
+        elif termino=="B":
+            nuevonodo=NodeB()            
+        elif termino=="M":
+            nuevonodo=NodeM()            
+        elif termino=="E":
+           nuevonodo=NodeE()           
+        elif termino=="X":
+           nuevonodo=NodeX() 
+        elif termino=="Y":
+           nuevonodo=NodeY() 
+        elif termino=="e":
+            nuevonodo=Nodepsilon()
+        elif termino=="Q":
+            nuevonodo=NodeQ()
+        elif termino==TokenType.T_OPEN_PAREN or termino==TokenType.T_CLOSE_PAREN:
+            if termino==TokenType.T_CLOSE_PAREN and isinstance(self.nodoactual.nododreconocimiento,FunCall):
+                self.nodoactual.nododreconocimiento = self.nodoactual.nododreconocimiento.padre 
+                return
+            else :
+             nuevonodo=Nodepsilon()
+        elif termino== TokenType.T_D_VALUE or termino==TokenType.T_I_VALUE or termino==TokenType.T_S_VALUE or termino==TokenType.T_FALSE or termino==TokenType.T_TRUE  :
+            nuevonodo=Val(token)
+        elif termino==TokenType.T_ID:
+            if len(line)-1==self.i:
+                nuevonodo=Variable(token)
+            elif line[self.i+1].token_type==TokenType.T_OPEN_PAREN:
+                 nuevonodo=FunCall()
+                 nuevonodo.id= token.value
+                 self.estadoDAST=EstadoDAST.LlamadoAfuncion
+            else:  
+                 nuevonodo=Variable(token)
+        if termino!=TokenType.T_OPEN_BRACKET:
+          if isinstance(self.nodoactual.nododreconocimiento,NodeE) and isinstance(nuevonodo,NodeE) :
+            self.nodoactual.nododreconocimiento=nuevonodo
+            self.nodoactual.noderaiz=nuevonodo
+          elif termino!="A" and termino!="Z" and termino!="U":
+            nuevonodo.padre=self.nodoactual.nododreconocimiento
+            self.nodoactual.nododreconocimiento.hijos.append(nuevonodo)
+            if termino == "E" or termino=="B" or termino=="M"or termino=="X" or termino=="Y" or termino=="Q" or isinstance(nuevonodo,FunCall) :
+             self.nodoactual.nododreconocimiento=nuevonodo
+
+    def RectificaEstado(self):
+       if isinstance(self.nodoactual.padre,Condition):
+         self.estadoDAST=EstadoDAST.Condicion # Metodo para subir en el ast
+       elif isinstance(self.nodoactual.padre,D_Assign) :
+            self.estadoDAST=EstadoDAST.EnAsignacion   
+       elif isinstance(self.nodoactual.padre,Redefinition) :
+            self.estadoDAST=EstadoDAST.EnRedefinition
+         # Metodo para subir en el ast   
+       elif isinstance(self.nodoactual.padre,Program):
+         self.estadoDAST=EstadoDAST.EnProgram # Metodo para subir en el ast
+       elif isinstance(self.nodoactual.padre,ReturnNode):
+         self.estadoDAST=EstadoDAST.EnProgram 
+
+    
+         
+    def validaAST(self):
+        for statement in self.nodopararecorrerast.statements:
+            if not statement.validate(self.context):
+                return False
+        return True
+
+    def checktypes(self):
+        for statement in self.nodopararecorrerast.statements:
+            if not statement.checktype(self.context):
+                return False
+        return True
