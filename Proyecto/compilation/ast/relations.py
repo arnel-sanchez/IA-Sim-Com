@@ -1,6 +1,5 @@
-from compilation.ast.operations import BinOp, same_type
+from compilation.ast.operations import BinOp
 from compilation.ast.nodes import Node
-
 
 class Rel(BinOp):
     def __init__(self, left_node: Node, right_node: Node):
@@ -8,6 +7,13 @@ class Rel(BinOp):
 
     def operation(self, left, right) -> bool:
         return same_type(left, right) and self.op(left, right)
+
+    def checktype(self, context):
+        if self.right_node==None and self.left_node.checktype(context)=="bool" :
+              return True     
+        if self.left_node.checktype(context) == self.right_node.checktype(context):
+           return True
+        return False
 
     @staticmethod
     def op(left, right) -> bool:
