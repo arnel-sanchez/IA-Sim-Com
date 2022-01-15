@@ -15,7 +15,7 @@ class Context:
                  context=self.contextPadre
                  funContain = context.funciones.get(idfun,"NoEsta")
                  if funContain != "NoEsta":
-                     return context.funciones[idvar][0]
+                     return context.funciones[idfun][0]
 
     def gettypevar(self,idvar:str):
        Esta= self.variables.get(idvar,"NoEsta")
