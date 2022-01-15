@@ -1,4 +1,6 @@
-class Mir:
+from simulation.rider import Rider
+
+class Mir(Rider):
     def __init__(self):
         self.name = "Joan Mir"
         self.skill = 9

@@ -1,4 +1,6 @@
-class Misano:
+from simulation.track import Track
+
+class Misano(Track):
     def __init__(self):
         self.name = "Misano"
         self.length = 4226
