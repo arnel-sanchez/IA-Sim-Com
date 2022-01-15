@@ -1,5 +1,20 @@
 from compilation.ast.nodes import Node ,Error
 
+def is_error(value: Error) -> bool:
+    return isinstance(value, Error)
+
+
+def is_number(value) -> bool:
+    return isinstance(value, int) or isinstance(value, float)
+
+
+def is_bool(value: bool) -> bool:
+    return isinstance(value, bool)
+
+
+def same_type(value_1, value_2) -> bool:
+    return isinstance(value_1, type(value_2))
+
 class Op(Node):
     def __init__(self, right_node: Node):
         self.right_node = right_node
