@@ -9,39 +9,35 @@ from operations import *
 
 
 class Statement(Node):
+    def type() -> str:
+        return "STATEMENT"
 
-  def type() -> str:
-        return "Statment"
 
 class Program(Node): 
     def __init__(self):
-      self.isfuncion:bool=False
-      self.statements: list()=[]
-      self.padre:Node=None
-      self.listaDReturns:list()=[]
+        self.isfuncion = False
+        self.statements = []
+        self.padre = None
+        self.listaDReturns = []
 
-    def validate(self,context:Context):
+    def validate(self, context: Context):
         for dec in self.statements:
             if not dec.validate(context):
                 return False
-
-
         return True
     
-    def checktype(self,context:Context):        
-           countReturn=0
-           for statement in self.statements:   
-               if isinstance(statement,ReturnNode):
-                   countReturn+=1
-               if not statement.checktype(context):
-                   return False
-           return True
-        
+    def checktype(self, context: Context):
+        countReturn = 0
+        for statement in self.statements:
+            if isinstance(statement, ReturnNode):
+                countReturn += 1
+            if not statement.checktype(context):
+                return False
+        return True
 
     @staticmethod
     def type() -> str:
         return "Program"
-    statements= list()
 
 
 class NodeE(Node):

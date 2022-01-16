@@ -8,15 +8,14 @@ from compilation.ast.operations import *
 
 
 def normaliza(typevar):
-        if typevar==VariableType.INT:
-          return "int"
-        if typevar==VariableType.BOOL:
-          return "bool"
-        if typevar==VariableType.DOUBLE:
-          return "double"
-        if typevar==VariableType.STRING:
-          return "str"
-
+    if typevar == VariableType.INT:
+        return "int"
+    if typevar == VariableType.BOOL:
+        return "bool"
+    if typevar == VariableType.DOUBLE:
+        return "double"
+    if typevar == VariableType.STRING:
+        return "str"
 
 
 class Parser:

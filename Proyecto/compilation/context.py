@@ -52,14 +52,15 @@ class Context:
          if funContain != "NoEsta" and args==funContain:
              return True
          else :
-             context=self.contextPadre
+             context = self.contextPadre
              while context is not None:
                  funContain = context.funciones.get(fun,"NoEsta")
                  if funContain != "NoEsta" and args==funContain:
                      return True
                  context=context.contextPadre
              return False
-    def define_fun(self,fun:str,type:MethodType,args:list())->bool :
+
+    def define_fun(self,fun:str,type:MethodType,args:list)->bool :
         funContain = self.funciones.get(fun,"NoEsta")
         if funContain != "NoEsta":
             self.errors.append("ya existe una funcion con este nombre en este contexto")
@@ -67,6 +68,7 @@ class Context:
         else:
             self.funciones.setdefault(fun,[type,len(args)])
         return True
+
     def define_var(self,var:str,type:VariableType)->bool :
         varContain = self.variables.get(var,"NoEsta")
         if varContain != "NoEsta":
@@ -75,8 +77,8 @@ class Context:
         else:
             self.variables.setdefault(var,type)
         return True
+
     def crearnuevocontexto(self) :
           nuevocontext=Context()
           nuevocontext.contextPadre=self
-
           return nuevocontext
