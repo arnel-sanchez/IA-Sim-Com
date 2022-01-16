@@ -1,6 +1,5 @@
-from compilation.context import Context
-from compilation.errors import Error
-from compilation.enums import *
+from compilation.ast.nodes import Error, Node
+#from compilation.context import Context
 
 
 def is_error(value: Error) -> bool:
@@ -19,26 +18,6 @@ def same_type(value_1, value_2) -> bool:
     return isinstance(value_1, type(value_2))
 
 
-def normaliza(typevar):
-        if typevar==VariableType.INT or MethodType.INT:
-          return "int"
-        if typevar==VariableType.BOOL or MethodType.BOOL:
-          return "bool"
-        if typevar==VariableType.DOUBLE or MethodType.DOUBLE:
-          return "double"
-        if typevar==VariableType.STRING or MethodType.STRING:
-          return "str"
-        if typevar==MethodType.VOID:
-            return "void"
-
-class Node:
-    def eval(self, variables: dict):
-        return None
-
-    def __repr__(self) -> str:
-        return "NODE()"
-
-
 class Op(Node):
     def __init__(self, right_node: Node):
         self.right_node = right_node
@@ -54,25 +33,76 @@ class Op(Node):
         return "OP"
 
 
+class IdOp(Op):
+    def __init__(self, node: Node):
+        super().__init__(node)
+
+    def eval(self, variables: dict):
+        value = self.right_node.eval(variables)
+        if is_error(value):
+            return value
+        return self.operation(value)
+
+    @staticmethod
+    def operation(value):
+        if not is_number(value):
+            return Error("Error", "", "", 0, 0)#
+        return value
+
+    @staticmethod
+    def type() -> str:
+        return "ID_OP"
+
+
+class RevOp(IdOp):
+    def __init__(self, node: Node):
+        super().__init__(node)
+
+    @staticmethod
+    def operation(value):
+        if not is_number(value):
+            return Error("Error", "", "", 0, 0)#
+        return - value
+
+    @staticmethod
+    def type() -> str:
+        return "REV"
+
+
+class NegOp(IdOp):
+    def __init__(self, node: Node):
+        super().__init__(node)
+
+    @staticmethod
+    def operation(value: bool):
+        if not is_bool(value):
+            return Error("Error", "", "", 0, 0)#
+        return not value
+
+    @staticmethod
+    def type() -> str:
+        return "NEG"
+
+
 class BinOp(Op):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(right_node)
         self.left_node = left_node
 
-    def validate(self,context:Context):
+    def validate(self, context: Context):
         return self.left_node.validate(context) and self.right_node.validate(context)
 
-    def checktype(self,context:Context):
-        typeLeft= self.left_node.checktype(context)
-        typeRight=self.right_node.checktype(context)
+    def checktype(self,context: Context):
+        typeLeft = self.left_node.checktype(context)
+        typeRight = self.right_node.checktype(context)
         if is_number(typeLeft) and is_number(typeRight):
-           if typeLeft==typeRight :
-             if typeLeft=="int":
-                return "int"
-             else :
-                 return "double"
-           else :
-               return "double"
+            if typeLeft == typeRight:
+                if typeLeft == "int":
+                    return "int"
+                else:
+                    return "double"
+            else:
+                return "double"
 
     def eval(self, variables: dict):
         left = self.left_node.eval(variables)
@@ -140,6 +170,7 @@ class SubOp(ArOp):
     def type() -> str:
         return "SUB"
 
+
 class MulOp(BinOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
@@ -150,6 +181,7 @@ class MulOp(BinOp):
     @staticmethod
     def type() -> str:
         return "MUL"
+
 
 class DivOp(ArOp):
     def __init__(self, left_node: Node, right_node: Node):
@@ -169,7 +201,6 @@ class DivOp(ArOp):
 class ModOp(DivOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
-            
 
     @staticmethod
     def op(left, right):
@@ -180,6 +211,7 @@ class ModOp(DivOp):
     @staticmethod
     def type() -> str:
         return "MOD"
+
 
 class ExpOp(ArOp):
     def __init__(self, left_node: Node, right_node: Node):
