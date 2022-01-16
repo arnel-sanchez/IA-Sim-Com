@@ -1,17 +1,12 @@
 from compilation.tokens import Token, TokenType
 from compilation.errors import Error
 
-class Node:
+from tokens import Token, TokenType
+from errors import Error
+from context import Context
+from enums import *
+from operations import *
 
-    def eval(self, variables: dict):
-        return None
-
-    def __repr__(self) -> str:
-        return "NODE()"
-       
-class Call(Node):
-     def __init__(self,token:Token):
-      self.id=token.value
 
 class Statement(Node):
 
@@ -43,28 +38,36 @@ class Program(Node):
            return True
         
 
-        
-
-
     @staticmethod
     def type() -> str:
         return "Program"
     statements= list()
 
-    def validate():
-        for dec in statments:
-            if not dec.validate():
-                return False
+
+class NodeE(Node):
+    def __init__(self):    
+     self.padre = None
+     self.hijos = list() 
+     self.ast=None
+
+    def refreshAST(self):
+     if len(self.hijos)>0:
+        self.ast = self.hijos[1].ast 
+
+    def checktype(self,context:Context):
+        return self.ast.checktype(context)
+
+    def validate(self,context:Context):
+        if not self.ast.validate(context):
+           return False
         return True
-    
-    @staticmethod
-    def type() -> str:
-        return "Program"
+
 
 class Expression(Node):
     def __init__(self):
          self.nododreconocimiento= NodeE()
          self.noderaiz=NodeE()
+         self.noderaiz=self.nododreconocimiento
 
     def checktype(self,context:Context):
         return self.noderaiz.checktype(context)
@@ -150,24 +153,7 @@ class Redefinition(Statement):
      @staticmethod
      def type() -> str:
         return "Redef"
-     def __init__(self):
-       self.id=None
-       self.op=None
-       self.expr:Expression=None
 
-     def validate(self, context: Context) -> bool:
-         if not self.expr.validate():
-             return False 
-         
-         if not context.check_var(self.id):
-              return False
-         
-         return True
-
-
-     @staticmethod
-     def type() -> str:
-        return "Redef"
 
 class Def_Fun(Statement):
     typefun: MethodType
@@ -178,7 +164,7 @@ class Def_Fun(Statement):
     
 
     def validate(self, context : Context) -> bool:
-        self.nuevocontext= context.crearnuevocontexto()
+        self.nuevocontext = context.crearnuevocontexto()
 
         for arg in self.args:
            if not self.nuevocontext.define_var(arg[1],arg[0]):
@@ -187,7 +173,7 @@ class Def_Fun(Statement):
         if not self.body.validate(self.nuevocontext):
             return False
 
-        self.nuevocontext.define_fun(idfun,typefun,args)
+        context.define_fun(self.idfun,self.typefun,self.args)
 
     def checktype(self,context:Context):
         return self.body.checktype(self.nuevocontext)
@@ -234,14 +220,12 @@ class IfCond(Statement):
         for condition in self.conditions:
              if not condition.validate(context):
                  return False
-         
-        self.nuevocontexto=context.crearnuevocontexto()
 
-        if not self.body.validate(self.nuevocontexto):
+        if not self.body.validate(context):
             return False
 
         if self.nodoelse!=None:
-          if not self.nodoelse.validate(self.nuevocontexto):
+          if not self.nodoelse.validate(context):
             return False
         return True
 
@@ -250,11 +234,11 @@ class IfCond(Statement):
             if  not condition.checktype(context):
                 return False
         
-        if not self.body.checktype(self.nuevocontexto):
+        if not self.body.checktype(context):
             return False
         
         if self.nodoelse!=None:
-          if not self.nodoelse.checktype(self.nuevocontexto):
+          if not self.nodoelse.checktype(context):
             return False
 
         
@@ -316,23 +300,7 @@ class WhileCond(Statement):
     def type() -> str:
         return "While"
          
-class NodeE(Node):
-    def __init__(self):    
-     self.padre = None
-     self.hijos = list() 
-     self.ast=None
 
-    def refreshAST(self):
-     if len(self.hijos)>0:
-        self.ast = self.hijos[1].ast 
-
-    def checktype(self,context:Context):
-        return self.ast.checktype(context)
-
-    def validate(self,context:Context):
-        if not self.ast.validate(context):
-           return False
-        return True
 
 class NodeB(Node):
    def __init__(self):
@@ -460,6 +428,8 @@ class NodeY:
              else:
                 self.ast = self.padre.hijos[0].ast
 
+
+                
 class NodeQ(Node):
     def __init__(self):
     
@@ -525,8 +495,9 @@ class Variable(Node):
         return "Variable"
 
 class FunCall(Node):
-    id: str
-    args:list()=[]
+    def __init__(self):  
+     self.id: str is None
+     self.args:list()=[]
 
 
     def validate (self,context:Context)->bool:

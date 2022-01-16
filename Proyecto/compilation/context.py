@@ -1,32 +1,36 @@
+from compilation.enums import *
 
-
-class Context:
-    variables = dict()
-    funciones=dict()
-    errors=list()
-    contextPadre = None 
+class Context:    
+    def __init__(self):
+     self.variables=dict()
+     self.funciones=dict()
+     self.errors=list()
+     self.contextPadre = None 
 
     def gettypefun(self,idfun):
        Esta= self.funciones.get(idfun,"NoEsta")
-       if Esta!="Noesta":
+       if Esta!="NoEsta":
            return self.funciones[idfun][0]
        else:
-           while self.contextPadre!=None:
-                 context=self.contextPadre
+           context = self.contextPadre
+           while context is not None:
                  funContain = context.funciones.get(idfun,"NoEsta")
                  if funContain != "NoEsta":
                      return context.funciones[idfun][0]
+                 context=context.contextPadre
+
 
     def gettypevar(self,idvar:str):
        Esta= self.variables.get(idvar,"NoEsta")
-       if Esta!="Noesta":
+       if Esta !="NoEsta":
            return self.variables[idvar]
        else:
-           while self.contextPadre!=None:
-                 context=self.contextPadre
+           context = self.contextPadre
+           while context is not None:
                  varContain = context.variables.get(idvar,"NoEsta")
                  if varContain != "NoEsta":
                      return context.variables[idvar]
+                 context=context.contextPadre
 
 
     def check_var(self,var:str)->bool :
@@ -34,11 +38,13 @@ class Context:
          if varContain != "NoEsta":
              return True
          else :
-             while self.contextPadre!=None:
-                 context=self.contextPadre
+
+             context=self.contextPadre
+             while context is not None:
                  varContain = context.variables.get(var,"NoEsta")
                  if varContain != "NoEsta":
                      return True
+                 context=context.contextPadre
              return False
 
     def check_fun(self,fun:str,args:int)->bool :
@@ -46,11 +52,12 @@ class Context:
          if funContain != "NoEsta" and args==funContain:
              return True
          else :
-             while self.contextPadre!=Null:
-                 context=self.contextPadre
+             context=self.contextPadre
+             while context is not None:
                  funContain = context.funciones.get(fun,"NoEsta")
                  if funContain != "NoEsta" and args==funContain:
                      return True
+                 context=context.contextPadre
              return False
     def define_fun(self,fun:str,type:MethodType,args:list())->bool :
         funContain = self.funciones.get(fun,"NoEsta")

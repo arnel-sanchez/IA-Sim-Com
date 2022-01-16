@@ -1,4 +1,6 @@
-from compilation.ast.nodes import Node ,Error
+from compilation.context import Context
+from compilation.errors import Error
+from compilation.enums import *
 
 def is_error(value: Error) -> bool:
     return isinstance(value, Error)
@@ -14,6 +16,25 @@ def is_bool(value: bool) -> bool:
 
 def same_type(value_1, value_2) -> bool:
     return isinstance(value_1, type(value_2))
+
+def normaliza(typevar):
+        if typevar==VariableType.INT or MethodType.INT:
+          return "int"
+        if typevar==VariableType.BOOL or MethodType.BOOL:
+          return "bool"
+        if typevar==VariableType.DOUBLE or MethodType.DOUBLE:
+          return "double"
+        if typevar==VariableType.STRING or MethodType.STRING:
+          return "str"
+        if typevar==MethodType.VOID:
+            return "void"
+
+class Node:
+    def eval(self, variables: dict):
+        return None
+
+    def __repr__(self) -> str:
+        return "NODE()"
 
 class Op(Node):
     def __init__(self, right_node: Node):

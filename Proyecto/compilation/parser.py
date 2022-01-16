@@ -1,10 +1,11 @@
 from compilation.errors import Error
-from compilation.utils import TokenType, Token
+from compilation.tokens import TokenType, Token
 from compilation.enums import Region,EstadoDAST,VariableType,MethodType
 from compilation.ast.nodes import *
 from compilation.ast.relations import *
 from compilation.ast.assignments import *
 from compilation.ast.operations import *
+
 
 def normaliza(typevar):
         if typevar==VariableType.INT:
@@ -16,11 +17,7 @@ def normaliza(typevar):
         if typevar==VariableType.STRING:
           return "str"
 
-def is_number(type) -> bool:
-    if type=="int" or type==float:
-        return True
-    else :
-        return False
+
 
 class Parser:
     def __init__(self):
@@ -32,7 +29,7 @@ class Parser:
         self.nodopararecorrerast=self.nodoactual
         self.producciones = {"L": [["D", TokenType.T_SEMICOLON], ["@"], [TokenType.T_CLOSE_BRACE, "N"],
                                    ["W", TokenType.T_SEMICOLON], [TokenType.T_METHOD, "R"],
-                                   ["F", TokenType.T_ID, TokenType.T_OPEN_BRACE],[TokenType.T_ID, "I","E",TokenType.T_SEMICOLON]],
+                                   ["F", TokenType.T_ID, TokenType.T_OPEN_BRACE],[TokenType.T_ID,"H",TokenType.T_SEMICOLON]],
                              "D": [[TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
                                    [TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
                                    [TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
@@ -71,7 +68,10 @@ class Parser:
                              "G": [["E","J"]],
                              "S": [["e"],[TokenType.T_OR_OP,"G"],[TokenType.T_AND_OP,"G"]],
                              "^": [["T", TokenType.T_ID, TokenType.T_ASSIGN, TokenType.T_OPEN_BRACKET,
-                                    "E", "U", TokenType.T_CLOSE_BRACKET]]} 
+                                    "E", "U", TokenType.T_CLOSE_BRACKET]],
+                             "H": [[ "I","E"],[TokenType.T_OPEN_PAREN, "Z"
+                                    ,TokenType.T_CLOSE_PAREN]]} 
+                                  
         self.terminales = [TokenType.T_SEMICOLON, TokenType.T_OPEN_PAREN, TokenType.T_CLOSE_PAREN,
                            TokenType.T_OPEN_BRACKET, TokenType.T_CLOSE_BRACKET, TokenType.T_OPEN_BRACE,
                            TokenType.T_CLOSE_BRACE, TokenType.T_COMMENT, TokenType.T_STRING, TokenType.T_INT,
@@ -89,23 +89,23 @@ class Parser:
                            TokenType.T_CONTINUE, TokenType.T_BREAK, TokenType.T_RETURN, TokenType.T_RIDER,
                            TokenType.T_MOTORCYCLE]
         self.no_terminales = ["L", "D", "I", "E", "M", "Y", "J", "U", "N", "@", "R", "K", "T", "P", "W", "S", "F",
-                              "A", "Z", "Q", "C", "B", "G", "X", "~", "^"]
+                              "A", "Z", "Q", "C", "B", "G", "X", "~", "^","H"]
         self.first = dict()  # Guardamos los terminales que pertenecen al First de cada produccion posible de nuestra gramatica
         self.follow = {"L": [], "D": [], "I": [], "E": [], "M": [], "Y": [], "J": [], "U": [], "N": [], "@": [],
                        "R": [], "K": [], "T": [], "P": [], "W": [], "S": [], "F": [], "A": [], "Z": [],
                         "Q": [], "C": [], "B": [], "G": [], "X": [], "~": [],
-                       "^": []}
+                       "^": [],"H": []}
                                 
         self.completafollow = {"L": [], "D": [], "I": [], "E": [], "M": [], "Y": [], "J": [], "U": [], "N": [], "@": [],
                        "R": [], "K": [], "T": [], "P": [], "W": [], "S": [], "F": [], "A": [], "Z": [],
                         "Q": [], "C": [], "B": [], "G": [], "X": [], "~": [],
-                       "^": []} 
+                       "^": [], "H":[]} 
                                     # Aqui guardamos los terminales que pertenecen al Follow de cada no terminal
         self.pendiente_follow = []  # Los elementos de esta lista tendran una forma "A,B" lo que significa que todo lo que pertenece al Follow de A tambien pertenece al Folow de B
         self.matriz = [[None for _ in range(len(self.terminales))] for _ in range(len(self.no_terminales))]
         self.lista_producciones = [["L", "D", TokenType.T_SEMICOLON], ["L", "@"], ["L", TokenType.T_CLOSE_BRACE, "N"],
                                    ["L", "W", TokenType.T_SEMICOLON], ["L", TokenType.T_METHOD, "R"],
-                                   ["L", "F", TokenType.T_ID, TokenType.T_OPEN_BRACE],["L", TokenType.T_ID, "I","E",TokenType.T_SEMICOLON],
+                                   ["L", "F", TokenType.T_ID, TokenType.T_OPEN_BRACE],["L", TokenType.T_ID, "H",TokenType.T_SEMICOLON],
                                    ["D", TokenType.T_BOOL, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
                                    ["D", TokenType.T_INT, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
                                    ["D", TokenType.T_STRING, TokenType.T_ID, TokenType.T_ASSIGN, "E"],
@@ -140,7 +140,8 @@ class Parser:
                                    ["X","e"], ["E", "B","X"], ["B", "M","Y"], ["G", "E","J"], ["S", "e"],
                                    ["S", TokenType.T_OR_OP, "G"], ["S", TokenType.T_AND_OP, "G"],
                                    ["^", "T", TokenType.T_ID, TokenType.T_ASSIGN,
-                                    TokenType.T_OPEN_BRACKET, "E", "U", TokenType.T_CLOSE_BRACKET]]
+                                    TokenType.T_OPEN_BRACKET, "E", "U", TokenType.T_CLOSE_BRACKET], ["H","I","E"],["H",TokenType.T_OPEN_PAREN, "Z"
+                                    ,TokenType.T_CLOSE_PAREN]]
         self.first_producciones_calculado = False  # Esta variable booleana me sirve calcular los first restantes que luego me hacen falta para los Follows
         self.hacer_first("L")
         self.calcular_first_restantes()
@@ -310,14 +311,14 @@ class Parser:
                             self.error = Error("", "", "", 0, 0)#
                             break
                     elif line[self.i].token_type == TokenType.T_ELSE:
-                        if self.estados[- 1] == (Region.R_IF or Region.R_ELIF):
+                        if self.estados[- 1] == Region.R_IF or self.estados[- 1] ==Region.R_ELIF:
                             self.estados.pop()
                             self.estados.append(Region.R_ELSE)
                         else:
                             self.error = Error("", "", "", 0, 0)#
                             break
                     elif line[self.i].token_type == TokenType.T_CLOSE_BRACE:
-                        if self.i + 1 == len(line) or self.estados[- 1] != (Region.R_IF and Region.R_ELIF):
+                        if self.i + 1 == len(line) or (self.estados[- 1] != Region.R_IF and self.estados[- 1] != Region.R_ELIF):
                             self.estados.pop()
                     
                     self.EligeTipoDdeclaracion(termino,line[self.i],line)
@@ -334,7 +335,7 @@ class Parser:
                 if self.matriz[indice_nt][indice_t] != None  :
                     if self.matriz[indice_nt][indice_t]!="e":
                      self.parsear(line, self.matriz[indice_nt][indice_t])
-                    if self.estadoDAST==EstadoDAST.EnExpresionAssign and termino!="A" and termino!="U" and termino!="Z":
+                    if self.estadoDAST==EstadoDAST.EnExpresionAssign and termino!="A" and termino!="U" and termino!="Z" and termino!="H":
                          self.nodoactual.nododreconocimiento.refreshAST()
                          if self.nodoactual.noderaiz.ast!= None:
                              self.RectificaEstado()
@@ -359,7 +360,7 @@ class Parser:
             self.i=0
         return self.error
     
-    def CreaNododProgram(self,lenline,termino,token):
+    def CreaNododProgram(self,line,termino,token):
         if termino=="D":
             nuevonodo = D_Assign()
             self.nodoactual.statements.append(nuevonodo)
@@ -414,16 +415,25 @@ class Parser:
                 nuevonodo.type="continue"                        
             
         elif termino == TokenType.T_ID :
-            nuevonodo = Redefinition()
-            self.nodoactual.statements.append(nuevonodo)
-            nuevonodo.padre=self.nodoactual
-            self.nodoactual=nuevonodo
-            self.nodoactual.id=token.value
-            self.estadoDAST=EstadoDAST.EnRedefinition
+          if self.i+1<len(line):
+           if line[self.i+1].token_type== TokenType.T_OPEN_PAREN:
+               nuevonodo= FunCall()
+               nuevonodo.id= token.value
+               nuevonodo.padre=self.nodoactual
+               self.nodoactual.statements.append(nuevonodo)
+               self.nodoactual=nuevonodo
+               self.estadoDAST=EstadoDAST.LlamadoAfuncion
+           else: 
+                 nuevonodo = Redefinition()
+                 self.nodoactual.statements.append(nuevonodo)
+                 nuevonodo.padre=self.nodoactual
+                 self.nodoactual=nuevonodo
+                 self.nodoactual.id=token.value
+                 self.estadoDAST=EstadoDAST.EnRedefinition
         elif termino == TokenType.T_CLOSE_BRACE :
             self.nodoactual= self.nodoactual.padre
             if isinstance(self.nodoactual,IfCond):
-              if self.i+1 == lenline:
+              if self.i+1 == len(line):
                    self.nodoactual=self.nodoactual.padre
                    self.estadoDAST=EstadoDAST.EnProgram
               else:
@@ -439,7 +449,7 @@ class Parser:
         elif self.estadoDAST==EstadoDAST.EnExpresionAssign:
             self.CreaNododExpresion(termino,token,line)
         elif self.estadoDAST==EstadoDAST.EnProgram:
-            self.CreaNododProgram(len(line),termino,token)
+            self.CreaNododProgram(line,termino,token)
         elif self.estadoDAST==EstadoDAST.EnCondicionIf:
             self.CreaNododIf(termino,token)
         elif self.estadoDAST==EstadoDAST.EnFuncion:
@@ -495,10 +505,17 @@ class Parser:
 
     def CreanodoCall(self,termino,token:Token):
         if termino=="E":
-            nuevonodo= NodeE()
-            nuevonodo.padre=self.nodoactual.nododreconocimiento
-            self.nodoactual.nododreconocimiento.args.append(nuevonodo)
-            self.nodoactual.nododreconocimiento=nuevonodo
+            
+            if isinstance(self.nodoactual,Expression):
+             nuevonodo=NodeE()
+             nuevonodo.padre=self.nodoactual.nododreconocimiento
+             self.nodoactual.nododreconocimiento.args.append(nuevonodo)
+             self.nodoactual.nododreconocimiento=nuevonodo
+            else:
+             nuevonodo= Expression()
+             nuevonodo.padre=self.nodoactual
+             self.nodoactual.args.append(nuevonodo)
+             self.nodoactual=nuevonodo
             self.estadoDAST=EstadoDAST.EnExpresionAssign
 
             
@@ -541,11 +558,12 @@ class Parser:
             self.estadoDAST=EstadoDAST.EnProgram
             self.nodoactual= self.nodoactual.padre
             return
-        if termino!="I":
+        if termino!="I" and termino!="H":
          self.nodoactual.op=nuevonodo
          self.estadoDAST=EstadoDAST.EnExpresionAssign
          nodoexpression=Expression()
          self.nodoactual.expr=nodoexpression
+         self.nodoactual.op.expression=nodoexpression
          nodoexpression.padre=self.nodoactual
          self.nodoactual=self.nodoactual.expr
 
@@ -698,9 +716,9 @@ class Parser:
         elif termino==TokenType.T_EXP_OP:
             nuevonodo=NodeExp()
         elif termino==TokenType.T_COMMA:
-             if isinstance (self.nodoactual.padre,Def_Fun):
-              self.estadoDAST=EstadoDAST.LlamadoAfuncion
-             
+             self.estadoDAST=EstadoDAST.LlamadoAfuncion
+             if isinstance(self.nodoactual.padre,FunCall):
+                 self.nodoactual=self.nodoactual.padre
              return
         elif termino=="B":
             nuevonodo=NodeB()            
@@ -717,9 +735,12 @@ class Parser:
         elif termino=="Q":
             nuevonodo=NodeQ()
         elif termino==TokenType.T_OPEN_PAREN or termino==TokenType.T_CLOSE_PAREN:
-            if termino==TokenType.T_CLOSE_PAREN and isinstance(self.nodoactual.nododreconocimiento,FunCall):
-                self.nodoactual.nododreconocimiento = self.nodoactual.nododreconocimiento.padre 
+            if termino==TokenType.T_CLOSE_PAREN and isinstance(self.nodoactual,FunCall) :
+                self.nodoactual = self.nodoactual.padre
                 return
+            elif termino==TokenType.T_CLOSE_PAREN and isinstance(self.nodoactual.nododreconocimiento,FunCall):
+                  self.nodoactual.nododreconocimiento = self.nodoactual.nododreconocimiento.padre 
+                  return
             else :
              nuevonodo=Nodepsilon()
         elif termino== TokenType.T_D_VALUE or termino==TokenType.T_I_VALUE or termino==TokenType.T_S_VALUE or termino==TokenType.T_FALSE or termino==TokenType.T_TRUE  :
@@ -733,7 +754,7 @@ class Parser:
                  self.estadoDAST=EstadoDAST.LlamadoAfuncion
             else:  
                  nuevonodo=Variable(token)
-        if termino!=TokenType.T_OPEN_BRACKET:
+        if termino!=TokenType.T_OPEN_BRACKET and termino!="U":
           if isinstance(self.nodoactual.nododreconocimiento,NodeE) and isinstance(nuevonodo,NodeE) :
             self.nodoactual.nododreconocimiento=nuevonodo
             self.nodoactual.noderaiz=nuevonodo
@@ -755,6 +776,8 @@ class Parser:
          self.estadoDAST=EstadoDAST.EnProgram # Metodo para subir en el ast
        elif isinstance(self.nodoactual.padre,ReturnNode):
          self.estadoDAST=EstadoDAST.EnProgram 
+       elif isinstance(self.nodoactual.padre,FunCall):
+         self.estadoDAST=EstadoDAST.LlamadoAfuncion
 
     
          
