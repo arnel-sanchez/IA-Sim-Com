@@ -2,6 +2,7 @@ from compilation.ast.operations import Node
 from compilation.ast.nodes import Error
 from compilation.variables import VariableType
 
+
 class Assign(Node):
     def __init__(self, id_node: Node):
         self.id_node = id_node
