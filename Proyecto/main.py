@@ -76,7 +76,8 @@ def test_simulation():
     t = Misano()
     environment = Environment(Track(t.name, t.length, t.sections), Weather(5, 8, 10, 3, Weather_Status.Cloudy))
     race = Race(5, agent, environment)
-    Simulator.start(time, stop, race)
+    s = Simulator()
+    s.start(time, stop, race)
 
 
 def main():
