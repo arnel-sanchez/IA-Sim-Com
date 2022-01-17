@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class Tires(Enum):
     Slick_Soft = 0
     Slick_Medium = 1
@@ -17,6 +16,7 @@ class Bike:
         self.tires = tires
         self.brakes = brakes
         self.chassis_stiffness = chassis_stiffness
+        self.acceleration = 69.444
 
     def change_tires(self, tires: Tires):
         self.tires = tires
