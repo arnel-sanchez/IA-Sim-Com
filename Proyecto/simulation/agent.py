@@ -7,7 +7,7 @@ class Agent:
         self.rider = rider
         self.bike = bike
         self.speed = 0
-        self.aceleration = 0
+        self.acceleration = 0
         self.time_lap = 0
 
     def print():

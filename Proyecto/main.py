@@ -54,7 +54,6 @@ def test_simulation():
     b = Bagnaia()
     d = Ducati()
     agent.append(Agent(Rider(b.name, b.skill, b.cornering, b.step_by_line), Bike(d.brand, d.max_speed, d.weight)))
-    '''
     m = Mir()
     s = Suzuki()
     agent.append(Agent(Rider(m.name, m.skill, m.cornering, m.step_by_line), Bike(s.brand, s.max_speed, s.weight)))
@@ -70,7 +69,6 @@ def test_simulation():
     bi = Binder()
     k = KTM()
     agent.append(Agent(Rider(bi.name, bi.skill, bi.cornering, bi.step_by_line), Bike(k.brand, k.max_speed, k.weight)))
-    '''
 
 
     t = Misano()
