@@ -22,25 +22,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="compilation\assignments.py" />
-    <Compile Include="compilation\errors.py" />
-    <Compile Include="compilation\nodes.py" />
-    <Compile Include="compilation\operators.py" />
-    <Compile Include="compilation\parser.py" />
-    <Compile Include="compilation\tokenizer.py" />
-    <Compile Include="compilation\tokens.py" />
     <Compile Include="main.py" />
-    <Compile Include="simulation\crew_chief.py" />
-    <Compile Include="simulation\motorcycle.py" />
-    <Compile Include="simulation\pilot.py" />
-    <Compile Include="simulation\race.py" />
-    <Compile Include="simulation\rider.py" />
-    <Compile Include="simulation\simulator.py" />
-    <Compile Include="simulation\track.py" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="compilation\" />
-    <Folder Include="simulation\" />
+    <Compile Include="start.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

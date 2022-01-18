@@ -1,4 +1,6 @@
 from simulation.environment import Environment
+from numpy.random import random
+from numpy.random import randint
 
 class Race:
     def __init__(self, laps, agents, environment: Environment):
@@ -31,3 +33,9 @@ class Race:
 
     def ranking(self):
         self.agents.sort(key=lambda agent : agent.time_lap)
+
+    def continuous_variable_generator(self):
+        return random()
+
+    def discrete_variable_generator(self):
+        return randint(1, 10)

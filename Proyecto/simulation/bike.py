@@ -17,6 +17,7 @@ class Bike:
         self.brakes = brakes
         self.chassis_stiffness = chassis_stiffness
         self.acceleration = 69.444
+        self.probability_of_the_motorcycle_breaking_down = 0.1
 
     def change_tires(self, tires: Tires):
         self.tires = tires
