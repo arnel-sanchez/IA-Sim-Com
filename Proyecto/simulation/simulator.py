@@ -16,7 +16,7 @@ class Simulator:
             for section in race.environment.track.sections:
                 for agent in race.agents:
                     if self.overcome_an_obstacle(section, agent, race.environment):
-                        print("Obstaculo {} superado".format(section[0]))
+                        print("Obstaculo {} superado por el piloto {}".format(section[0],agent.rider.name))
                     else:
                         race.agents.remove(agent)
             if race.change_lap():
