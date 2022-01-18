@@ -11,16 +11,23 @@ class Race:
     def change_lap(self):
         self.current_lap+=1
         if self.current_lap == self.laps:
-            print("\nUltima vuelta\n")
-            self.ranking()
+            print("\nCarrera terimnada\n")
+            self.print_ranking()
             return True
+        elif self.current_lap == self.laps-1:
+            print("\nUltima vuelta\n")
+            self.print_ranking()
+            return False
         else:
             print("\nVuelta {}\n".format(self.current_lap))
-            self.ranking()
+            self.print_ranking()
             return False
 
-    def ranking(self):
+    def print_ranking(self):
         i = 1
         for x in self.rank:
             print("{}: {}".format(i, x.rider.name))
             i+=1
+
+    def ranking(self):
+        self.agents.sort(key=lambda agent : agent.time_lap)

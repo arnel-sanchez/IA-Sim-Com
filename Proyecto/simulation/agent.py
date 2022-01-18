@@ -18,4 +18,3 @@ class Agent_actions(Enum):
     Brake = 1
     Bend = 2
     Go_to_the_pits = 3
-    #Advance = 4
