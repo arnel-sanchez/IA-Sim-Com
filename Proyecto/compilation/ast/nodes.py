@@ -1,8 +1,25 @@
+from enum import Enum
+
 from compilation.tokens import Token, TokenType
 from compilation.errors import Error
 
 
+class NodeType(Enum):
+    STRING = 0
+    INT = 1
+    DOUBLE = 2
+    BOOL = 3
+    ARRAY = 4
+    OTHER = 5
+
+
 class Node:
+    def validate(self, variables: dict):
+        return True
+
+    #def type(self) -> NodeType:
+     #   return NodeType.OTHER
+
     def eval(self, variables: dict):
         return None
 
@@ -13,9 +30,6 @@ class Node:
 class Simple(Node):
     def __init__(self, token: Token):
         self.token = token
-
-    def validate(self, variables: dict):
-        return True
 
     def eval(self, variables: dict):
         return self.token.value
@@ -31,8 +45,11 @@ class Simple(Node):
 class String(Simple):
     def __init__(self, token: Token):
         super().__init__(token)
-        if token.token_type != TokenType.T_S_VALUE:
-            raise Exception#
+
+    def validate(self, variables: dict):
+        if self.token.token_type != TokenType.T_S_VALUE:
+            return Error("Error", "", "", 0, 0)#
+        return True
 
     @staticmethod
     def type() -> str:
@@ -47,8 +64,11 @@ class Number(Simple):
 class Int(Number):
     def __init__(self, token: Token):
         super().__init__(token)
-        if token.token_type != TokenType.T_I_VALUE:
-            raise Exception#
+
+    def validate(self, variables: dict):
+        if self.token.token_type != TokenType.T_I_VALUE:
+            return Error("Error", "", "", 0, 0)#
+        return True
 
     @staticmethod
     def type() -> str:
@@ -58,8 +78,11 @@ class Int(Number):
 class Double(Number):
     def __init__(self, token: Token):
         super().__init__(token)
-        if token.token_type != TokenType.T_D_VALUE:
-            raise Exception#
+
+    def validate(self, variables: dict):
+        if self.token.token_type != TokenType.T_D_VALUE:
+            return Error("Error", "", "", 0, 0)  #
+        return True
 
     @staticmethod
     def type() -> str:
@@ -69,8 +92,11 @@ class Double(Number):
 class Bool(Simple):
     def __init__(self, token: Token):
         super().__init__(token)
-        if token.token_type != (TokenType.T_TRUE and TokenType.T_FALSE):
-            raise Exception#
+
+    def validate(self, variables: dict):
+        if self.token.token_type != (TokenType.T_TRUE and TokenType.T_FALSE):
+            return Error("Error", "", "", 0, 0)  #
+        return True
 
     def eval(self, variables: dict) -> bool:
         return True if self.token.token_type == TokenType.T_TRUE else False
@@ -83,8 +109,11 @@ class Bool(Simple):
 class Null(Simple):
     def __init__(self, token: Token):
         super().__init__(token)
-        if token.token_type != TokenType.T_NULL:
-            raise Exception#
+
+    def validate(self, variables: dict):
+        if self.token.token_type != TokenType.T_NULL:
+            return Error("Error", "", "", 0, 0)  #
+        return True
 
     def eval(self, variables: dict):
         return None
@@ -105,17 +134,16 @@ class Id(Simple):
 
     def validate(self, variables: dict):
         if variables is None:
-            return False
+            return Error("Error", "", "", 0, 0)#
         value = variables.get(self.id())
-        return value is not None
+        if value is None:
+            return Error("Error", "", "", 0, 0)#
+        return True
 
     def eval(self, variables: dict):
         if variables is None:
             raise Exception#
-        value = variables.get(self.id())
-        if value is None:
-            return Error("Error", "", "", 0, 0)#
-        return value
+        return variables.get(self.id())
 
     def __repr__(self) -> str:
         return "ID({})".format(self.id())

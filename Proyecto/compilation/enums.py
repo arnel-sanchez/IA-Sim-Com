@@ -24,20 +24,3 @@ class EstadoDAST(Enum):
     Condicion = 10
     LlamadoAfuncion = 11
     CreandoArray = 12
-
-
-class VariableType(Enum):
-    STRING = 0
-    INT = 1
-    DOUBLE = 2
-    BOOL = 3
-    ARRAY = 4
-
-
-class MethodType(Enum):
-    VOID = 0
-    STRING = 1
-    INT = 2
-    DOUBLE = 3
-    BOOL = 4
-    ARRAY = 5

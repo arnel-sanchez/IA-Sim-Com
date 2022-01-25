@@ -8,10 +8,13 @@ class Init(Node):
     def __init__(self, id_node: Id):
         self.id_node = id_node
 
+    def validate(self, variables: dict):
+        if variables.keys().__contains__(self.id_node.id()):
+            return Error("Error", "", "", 0, 0)#
+        return True
+
     def eval(self, variables: dict):
         var_id = self.id_node.id()
-        if variables.keys().__contains__(var_id):
-            return Error("Error", "", "", 0, 0)#
         variables[var_id] = self.default(var_id)
         return self.id_node
 

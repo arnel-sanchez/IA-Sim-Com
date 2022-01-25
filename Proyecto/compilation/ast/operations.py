@@ -1,5 +1,5 @@
 from compilation.ast.nodes import Error, Node
-#from compilation.context import Context
+from compilation.context import Context
 
 
 def is_error(value: Error) -> bool:
