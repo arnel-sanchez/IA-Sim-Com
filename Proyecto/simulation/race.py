@@ -9,6 +9,9 @@ class Race:
         self.laps = laps
         self.current_lap = 0
         self.rank = agents
+        
+        for agent in agents:
+            agent.update_agent_initial_parameters(self.environment.weather, self.environment.track.sections[0])
 
     def change_lap(self):
         self.current_lap+=1

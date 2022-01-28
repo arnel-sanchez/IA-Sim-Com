@@ -25,7 +25,6 @@ from simulation.SetOffClasses.Riders.brad_binder import Binder
 
 from simulation.SetOffClasses.Tracks.misano import Misano
 from simulation.track import Track
-from simulation.weather import Cardinals_Points, Weather, Weather_Status
 
 def test_compilation():
     print("\nCOMPILACION:\n")
@@ -73,7 +72,7 @@ def test_simulation():
     '''
 
     t = Misano()
-    environment = Environment(Track(t.name, t.length, t.sections), Weather(5, 10, 5, 3, Cardinals_Points.North, Weather_Status.Cloudy))
+    environment = Environment(Track(t.name, t.length, t.sections))
     race = Race(5, agent, environment)
     s = Simulator()
     s.start(time, stop, race)
