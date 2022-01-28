@@ -619,9 +619,6 @@ class Agent:
         else:
             return 0
 
-    def normal_distribution(x, mu, sigma):
-        return np.exp( -1 * ( (x-mu) ** 2) / ( 2 * (sigma ** 2)) ) / (sqrt( 2 * np.pi ) * sigma)
-
 class Agent_actions(Enum):
     Speed_up = 0
     Brake = 1
