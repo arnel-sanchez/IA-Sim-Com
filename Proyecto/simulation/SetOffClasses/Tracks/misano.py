@@ -6,6 +6,13 @@ class Misano(Track):
     def __init__(self):
         self.name = "Misano"
         self.length = 4226
+        '''
+        Posición 0: Nombre de la Sección
+        Posición 1: Longitud de la sección en metros
+        Posición 2: Velocidad Máxima permisible de la sección
+        Posición 3: Punto Cardinal hacia donde está orientada la sección
+        Posición 4: Tipo de Sección
+        '''
         self.sections = [
             ("recta1", 265.5411, 263.9, Cardinals_Points.Southwest, Track_Type.Straight),
             ("curva1", 64.37376, 118.4, Cardinals_Points.West, Track_Type.Curve),
