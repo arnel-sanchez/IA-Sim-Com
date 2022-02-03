@@ -1,4 +1,6 @@
-class Quartararo:
+from simulation.rider import Rider
+
+class Quartararo(Rider):
     def __init__(self):
         self.name = "Fabio Quartararo"
         self.skill = 9

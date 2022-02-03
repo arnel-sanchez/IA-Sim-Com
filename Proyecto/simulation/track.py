@@ -1,6 +1,5 @@
 class Track:
-    def __init__(self, name, length, curves, straight):
+    def __init__(self, name, length, sections):
         self.name = name
         self.length = length
-        self.curves = curves
-        self.straight = straight
+        self.sections = sections
