@@ -1,7 +1,7 @@
 from simulation.bike import Bike
 
 class Rider:
-    def __init__(self, name, skill, cornering, step_by_line):
+    def __init__(self, name, cornering, step_by_line):
         self.name = name
         self.cornering = cornering
         self.step_by_line = step_by_line
