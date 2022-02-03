@@ -5,13 +5,16 @@ from simulation.rider import Rider
 
 
 class Init(Node):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         self.id_node = id_node
+
+    def validate(self, variables: dict):
+        if variables.keys().__contains__(self.id_node.id()):
+            return Error("Error", "", "", 0, 0)#
+        return True
 
     def eval(self, variables: dict):
         var_id = self.id_node.id()
-        if variables.keys().__contains__(var_id):
-            return Error("Error", "", "", 0, 0)#
         variables[var_id] = self.default(var_id)
         return self.id_node
 
@@ -41,7 +44,7 @@ class StringInit(Init):
 
 
 class IntInit(Init):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -54,7 +57,7 @@ class IntInit(Init):
 
 
 class DoubleInit(Init):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -67,7 +70,7 @@ class DoubleInit(Init):
 
 
 class BoolInit(Init):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -80,7 +83,7 @@ class BoolInit(Init):
 
 
 class ArrayInit(Init):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -93,7 +96,7 @@ class ArrayInit(Init):
 
 
 class MethodInit(Init):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -106,7 +109,7 @@ class MethodInit(Init):
 
 
 class StringMInit(MethodInit):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -119,7 +122,7 @@ class StringMInit(MethodInit):
 
 
 class IntMInit(MethodInit):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -132,7 +135,7 @@ class IntMInit(MethodInit):
 
 
 class DoubleMInit(MethodInit):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -145,7 +148,7 @@ class DoubleMInit(MethodInit):
 
 
 class BoolMInit(MethodInit):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -158,7 +161,7 @@ class BoolMInit(MethodInit):
 
 
 class ArrayMInit(MethodInit):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -173,7 +176,7 @@ class ArrayMInit(MethodInit):
 
 
 class TypeInit(Init):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -186,7 +189,7 @@ class TypeInit(Init):
 
 
 class MotoInit(TypeInit):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod
@@ -199,7 +202,7 @@ class MotoInit(TypeInit):
 
 
 class RiderInit(Init):
-    def __init__(self, id_node: Id):
+    def __init__(self, id_node):
         super().__init__(id_node)
 
     @staticmethod

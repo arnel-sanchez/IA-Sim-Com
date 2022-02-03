@@ -17,16 +17,16 @@ class Variable:
 
 
 class MethodType(Enum):
-    VOID = 0
-    STRING = 1
-    INT = 2
-    DOUBLE = 3
-    BOOL = 4
-    ARRAY = 5
+    STRING = 0
+    INT = 1
+    DOUBLE = 2
+    BOOL = 3
+    ARRAY = 4
+    VOID = 5
 
 
 class Method:
-    def __init__(self, method_id: str, method_type: MethodType, args: list, body=None):##Ver que se pone en body
+    def __init__(self, method_id: str, method_type: MethodType, args: list, body: list):
         self.id = method_id
         self.type = method_type
         self.args = args

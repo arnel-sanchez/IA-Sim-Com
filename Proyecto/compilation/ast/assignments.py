@@ -1,6 +1,7 @@
-from compilation.ast.operations import Node, is_error, is_number, is_bool
-from compilation.ast.nodes import Id, Error
-from compilation.variables import VariableType
+from compilation.ast.nodes import *
+from compilation.enums import VariableType
+from compilation.ast.complex import Expression, normaliza
+from compilation.context import Context
 
 
 def is_string(value: str) -> bool:
@@ -8,18 +9,27 @@ def is_string(value: str) -> bool:
 
 
 class Assign(Node):
-    def __init__(self, id_node: Id, expression: Node):
-        self.id_node = id_node
-        self.expression = expression
+    def __init__(self, idnode: Node):
+        self.idnode = idnode
+        self.expression:Expression = None
+        self.token=None
 
-    def eval(self, variables: dict):
-        var_id = self.id_node.id()
-        if not variables.keys().__contains__(var_id):
-            return Error("Error", "", "", 0, 0)#
-        value = self.expression.eval(variables)
-        if is_error(value):
-            return value
-        return self.review(variables, var_id, value)
+    def checktype(self,context:Context):
+        
+        checkexpr=self.expression.checktype(context)
+        if isinstance(checkexpr,CheckTypesError):            
+            checkexpr.line=self.token.line
+            checkexpr.column=self.token.column
+            return checkexpr
+
+        if checkexpr==normaliza(context.gettypevar(self.idnode)):
+            return True
+        else :
+           return CheckTypesError("the expression to be assigned is not of the same type as the variable","",self.token.line,self.token.column)
+
+    def eval(self,context:Context):
+       return self.expression.eval(context)
+        
 
     @staticmethod
     def review(variables: dict, var_id: str, value):
@@ -33,95 +43,32 @@ class Assign(Node):
     def type() -> str:
         return "U"
 
-
-class StringAssign(Assign):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
-
-    @staticmethod
-    def review(variables: dict, var_id: str, value: str):
-        if variables[var_id].var_type != VariableType.STRING:
-            raise Exception#
-        if not is_string(value):
-            return Error("Error", "", "", 0, 0)#
-        return super().review(variables, var_id, value)
-
-    @staticmethod
-    def type() -> str:
-        return "S"
-
-
-class IntAssign(Assign):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
-
-    @staticmethod
-    def review(variables: dict, var_id: str, value):
-        if variables[var_id].var_type != VariableType.INT:
-            raise Exception#
-        if not is_number(value):
-            return Error("Error", "", "", 0, 0)#
-        return super().review(variables, var_id, int(value))
-
-    @staticmethod
-    def type() -> str:
-        return "I"
-
-
-class DoubleAssign(Assign):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
-
-    @staticmethod
-    def review(variables: dict, var_id: str, value):
-        if variables[var_id].var_type != VariableType.DOUBLE:
-            raise Exception#
-        if not is_number(value):
-            return Error("Error", "", "", 0, 0)#
-        return super().review(variables, var_id, float(value))
-
-    @staticmethod
-    def type() -> str:
-        return "D"
-
-
-class BoolAssign(Assign):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
-
-    @staticmethod
-    def review(variables: dict, var_id: str, value):
-        if variables[var_id].var_type != VariableType.DOUBLE:
-            raise Exception#
-        if not is_bool(value):
-            return Error("Error", "", "", 0, 0)#
-        return super().review(variables, var_id, value)
-
-    @staticmethod
-    def type() -> str:
-        return "D"
-
-
-class ArrayAssign(Assign):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
-
-    @staticmethod
-    def review(variables: dict, var_id: str, value):
-        if variables[var_id].var_type != VariableType.DOUBLE:
-            raise Exception#
-        if not isinstance(value, list):
-            return Error("Error", "", "", 0, 0)#
-        return super().review(variables, var_id, value)
-
-    @staticmethod
-    def type() -> str:
-        return "D"
-
-
 class OpAs(Assign):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
+        self.token=None
+    
+    def checktype(self,context:Context):
+        
+        checkexpr=self.expression.checktype(context)
+        if isinstance(checkexpr,CheckTypesError):
+            checkexpr.line=self.token.line
+            checkexpr.column=self.token.column
+            return checkexpr
+
+        if normaliza(context.gettypevar(self.idnode))=="int":
+            if checkexpr=="int":
+                return True
+            else:
+                return CheckTypesError("the induced type of the expression is different from the type of the variable","",self.token.line,self.token.column)
+        elif normaliza(context.gettypevar(self.idnode))=="double":
+            if checkexpr=="int" or checkexpr=="double":
+                return True
+            else:
+                return CheckTypesError("The induced type of the expression is not a number","",self.token.line,self.token.column)
+        else:
+            return CheckTypesError("It is incorrect to apply this operation on this type of variables","",self.token.line,self.token.column)
 
     def __repr__(self):
         return "{}_AS({}, {})".format(self.type(), self.id_node, self.expression)
@@ -130,26 +77,25 @@ class OpAs(Assign):
     def type() -> str:
         return "OP"
 
-
 class AddAs(OpAs):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
-
-    @staticmethod
-    def review(variables: dict, var_id: str, value):
-        if not same_type(variables[var_id], value):
-            raise Exception#
-        variables[var_id] += value
-        return variables[var_id]
-
-    @staticmethod
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
+     
+    def eval(self,context:Context):
+        if context.variables[self.idnode].typevar==VariableType.INT:
+          return (int)(context.variables[self.idnode].expr + self.expression.eval(context))
+        else:
+            return (float)(context.variables[self.idnode].expr + self.expression.eval(context))
+   
     def type() -> str:
         return "ADD"
 
 
 class ArAs(OpAs):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
 
     def review(self, variables: dict, var_id: str, value):
         if not is_number(variables[var_id]):
@@ -168,13 +114,18 @@ class ArAs(OpAs):
 
 
 class SubAs(ArAs):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
 
-    @staticmethod
-    def operation(variables: dict, var_id: str, value):
-        variables[var_id] -= value
-        return variables[var_id]
+
+
+
+    def eval(self,context:Context):
+        if context.variables[self.idnode].typevar==VariableType.INT:
+          return (int)(context.variables[self.idnode].expr - self.expression.eval(context))
+        else:
+            return (float)(context.variables[self.idnode].expr - self.expression.eval(context))
 
     @staticmethod
     def type() -> str:
@@ -182,13 +133,16 @@ class SubAs(ArAs):
 
 
 class MulAs(OpAs):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
 
-    @staticmethod
-    def review(variables: dict, var_id: str, value):
-        variables[var_id] *= value
-        return variables[var_id]
+    
+    def eval(self,context:Context):
+        if context.variables[self.idnode].typevar==VariableType.INT:
+          return (int)(context.variables[self.idnode].expr * self.expression.eval(context))
+        else:
+            return (float)(context.variables[self.idnode].expr * self.expression.eval(context))
 
     @staticmethod
     def type() -> str:
@@ -196,15 +150,23 @@ class MulAs(OpAs):
 
 
 class DivAs(ArAs):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
 
-    @staticmethod
-    def operation(variables: dict, var_id: str, value):
-        if value == 0:
-            return Error("Error", "", "", 0, 0)#
-        variables[var_id] /= value
-        return variables[var_id]
+
+   
+    def eval(self,context:Context):
+          nododDivision=self.expression.eval(context)
+          if nododDivision==0:
+              return "Error"  #OJO
+          elif context.variables[self.idnode].typevar==VariableType.INT: 
+                return (int)(context.variables[self.idnode].expr / nododDivision)
+          else:
+              return (float)(context.variables[self.idnode].expr / nododDivision)
+
+             
+          
 
     @staticmethod
     def type() -> str:
@@ -212,15 +174,20 @@ class DivAs(ArAs):
 
 
 class ModAs(DivAs):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
 
-    @staticmethod
-    def operation(variables: dict, var_id: str, value):
-        if value == 0:
-            return Error("Error", "", "", 0, 0)#
-        variables[var_id] %= value
-        return variables[var_id]
+    def eval(self,context:Context):
+          nododDivision=self.expression.eval(context)
+          if nododDivision==0:
+              return "Error"  #OJO
+          elif context.variables[self.idnode].typevar==VariableType.INT: 
+                return (int)(context.variables[self.idnode].expr % nododDivision)
+          else:
+              return (float)(context.variables[self.idnode].expr % nododDivision)
+
+
 
     @staticmethod
     def type() -> str:
@@ -228,13 +195,34 @@ class ModAs(DivAs):
 
 
 class ExpAs(ArAs):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
+        self.token=None
 
-    @staticmethod
-    def operation(variables: dict, var_id: str, value):
-        variables[var_id] **= value
-        return variables[var_id]
+    def checktype(self,context:Context):
+        
+        checkexpr=self.expression.checktype(context)
+        if isinstance(checkexpr,CheckTypesError):
+            checkexpr.line=self.token.line
+            checkexpr.column=self.token.column
+            return checkexpr
+
+        if normaliza(context.gettypevar(self.idnode))=="int" or normaliza(context.gettypevar(self.idnode))=="double":
+              if checkexpr=="int":
+                  return True
+              else:
+                  return CheckTypesError("the exponent must be an integer","",self.token.line,self.token.column)
+        else:
+            return CheckTypesError("incorrect variable type for power operation","",self.token.line,self.token.column)
+
+    
+    def eval(self,context:Context):
+          exponente=self.expression.eval(context)  
+          if context.variables[self.idnode].typevar==VariableType.INT: 
+                return (int)(context.variables[self.idnode].expr ** exponente)
+          else:
+              return (float)(context.variables[self.idnode].expr ** exponente)
 
     @staticmethod
     def type() -> str:
@@ -242,19 +230,24 @@ class ExpAs(ArAs):
 
 
 class BoolAs(OpAs):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
+        self.token=None
 
-    def operation(self, variables: dict, var_id: str, value):
-        if not is_bool(variables[var_id]):
-            return Error("Error", "", "", 0, 0)#
-        if not is_bool(value):
-            return Error("Error", "", "", 0, 0)#
-        return self.op(variables, var_id, value)
+    def checktype(self,context:Context):
+        
+        checkexpr=self.expression.checktype(context)
+        if isinstance(checkexpr,CheckTypesError):
+            checkexpr.line=self.token.line
+            checkexpr.column=self.token.column
+            return checkexpr
 
-    @staticmethod
-    def op(variables: dict, var_id: str, value):
-        return variables[var_id]
+        if checkexpr==normaliza(context.gettypevar(self.idnode)):
+            return True
+        else :
+            return CheckTypesError("the expression to be assigned is not of the same type as the variable","",self.token.line,self.token.column)
+
 
     @staticmethod
     def type() -> str:
@@ -262,13 +255,13 @@ class BoolAs(OpAs):
 
 
 class AndAs(BoolAs):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
 
-    @staticmethod
-    def op(variables: dict, var_id: str, value):
-        variables[var_id] &= value
-        return variables[var_id]
+    
+    def eval(self,context:Context):
+        return context.variables[self.idnode].expr & self.expression.eval(context) 
 
     @staticmethod
     def type() -> str:
@@ -276,13 +269,12 @@ class AndAs(BoolAs):
 
 
 class OrAs(BoolAs):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
 
-    @staticmethod
-    def op(variables: dict, var_id: str, value):
-        variables[var_id] |= value
-        return variables[var_id]
+    def eval(self,context:Context):
+        return context.variables[self.idnode].expr | self.expression.eval(context)
 
     @staticmethod
     def type() -> str:
@@ -290,13 +282,13 @@ class OrAs(BoolAs):
 
 
 class XorAs(BoolAs):
-    def __init__(self, id_node: Id, expression: Node):
-        super().__init__(id_node, expression)
+    def __init__(self, id_node: Node):
+        self.idnode=id_node
+        self.expression:Expression = None
 
-    @staticmethod
-    def op(variables: dict, var_id: str, value):
-        variables[var_id] ^= value
-        return variables[var_id]
+    
+    def eval(self,context:Context):
+        return context.variables[self.idnode].expr ^ self.expression.eval(context)
 
     @staticmethod
     def type() -> str:
