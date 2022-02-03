@@ -17,7 +17,7 @@ class Cardinals_Points(Enum):
     Northeast = 7
 
 class Weather:
-    def __init__(self, temperature, visibility, wind_intensity, humidity, wind : Cardinals_Points, weather_status : Weather_Status):
+    def __init__(self, temperature, visibility, wind_intensity, humidity, wind: Cardinals_Points, weather_status: Weather_Status):
         self.weather_status = weather_status
         self.wind = wind
         self.temperature = temperature

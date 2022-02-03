@@ -564,8 +564,9 @@ class Agent:
                 else:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.1
 
-    def select_action(self, section, race):
-        ans = action()
+    def select_action(self, section, race, weather):
+        ans = action(section[4].name, self.bike.tires.name, weather.weather_status.name, weather.humidity)
+        return Agent_actions(ans).name
 
         if self.speed >= section[2]:
             return Agent_actions.Brake
@@ -592,8 +593,8 @@ class Agent:
             return False
         return True
 
-    def overcome_an_obstacle(self, section, race):
-        if self.select_action(section, race) == Agent_actions.SpeedUp:
+    def overcome_an_obstacle(self, section, race, weather):
+        if self.select_action(section, race, weather) == Agent_actions.SpeedUp:
             self.select_aceleration(section, race, Agent_actions.SpeedUp)
             vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
             t = (vf - self.speed)/self.acceleration
@@ -605,7 +606,7 @@ class Agent:
             else:
                 race.agents.remove(self)
 
-        elif self.select_action(section, race) == Agent_actions.Brake :
+        elif self.select_action(section, race, weather) == Agent_actions.Brake :
             self.select_aceleration(section, race, Agent_actions.Brake)
             vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
             t = (vf - self.speed)/self.acceleration
