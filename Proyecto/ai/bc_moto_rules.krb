@@ -4,20 +4,20 @@
 rain_1
     use select_type(Rain)
     when
-        moto_facts.rain(True)
+        moto_facts.rainy(True)
 
 
 rain_2
     use select_type(Rain)
     when
-        moto_facts.rain(False)
+        moto_facts.rainy(False)
         moto_facts.humidity(True)
 
 
 slick
     use select_type(Slick)
     when
-        moto_facts.rain(False)
+        moto_facts.rainy(False)
         moto_facts.humidity(False)
 
 

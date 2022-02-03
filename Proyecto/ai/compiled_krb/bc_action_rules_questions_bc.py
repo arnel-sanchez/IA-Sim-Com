@@ -113,21 +113,28 @@ def pits(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('action_questions', 'tires', context,
+        with engine.prove('action_facts', 'tires', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
             assert x_1 is None, \
               "bc_action_rules_questions.pits: got unexpected plan from when clause 1"
-            with engine.prove('action_questions', 'humidity', context,
+            with engine.prove('action_facts', 'rainy', context,
                               (rule.pattern(1),)) \
               as gen_2:
               for x_2 in gen_2:
                 assert x_2 is None, \
                   "bc_action_rules_questions.pits: got unexpected plan from when clause 2"
                 if context.lookup_data('ans_1') == context.lookup_data('ans_2'):
-                  rule.rule_base.num_bc_rule_successes += 1
-                  yield
+                  with engine.prove('action_facts', 'humidity', context,
+                                    (rule.pattern(2),)) \
+                    as gen_4:
+                    for x_4 in gen_4:
+                      assert x_4 is None, \
+                        "bc_action_rules_questions.pits: got unexpected plan from when clause 4"
+                      if context.lookup_data('ans_1') == context.lookup_data('ans_3'):
+                        rule.rule_base.num_bc_rule_successes += 1
+                        yield
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -137,34 +144,35 @@ def populate(engine):
   
   bc_rule.bc_rule('turn', This_rule_base, 'select_action',
                   turn, None,
-                  (pattern.pattern_literal('Turn'),),
+                  (pattern.pattern_literal(0),),
                   (),
                   (pattern.pattern_literal(True),))
   
   bc_rule.bc_rule('speed_up', This_rule_base, 'select_action',
                   speed_up, None,
-                  (pattern.pattern_literal('Speed_Up'),),
+                  (pattern.pattern_literal(1),),
                   (),
                   (pattern.pattern_literal(3),))
   
   bc_rule.bc_rule('stay', This_rule_base, 'select_action',
                   stay, None,
-                  (pattern.pattern_literal('Stay'),),
+                  (pattern.pattern_literal(2),),
                   (),
                   (pattern.pattern_literal(2),))
   
   bc_rule.bc_rule('brake', This_rule_base, 'select_action',
                   brake, None,
-                  (pattern.pattern_literal('Brake'),),
+                  (pattern.pattern_literal(3),),
                   (),
                   (pattern.pattern_literal(1),))
   
   bc_rule.bc_rule('pits', This_rule_base, 'select_action',
                   pits, None,
-                  (pattern.pattern_literal('Pits'),),
+                  (pattern.pattern_literal(6),),
                   (),
                   (contexts.variable('ans_1'),
-                   contexts.variable('ans_2'),))
+                   contexts.variable('ans_2'),
+                   contexts.variable('ans_3'),))
 
 
 Krb_filename = '..\\bc_action_rules_questions.krb'
@@ -181,4 +189,6 @@ Krb_lineno_map = (
     ((116, 121), (31, 31)),
     ((122, 127), (32, 32)),
     ((128, 128), (33, 33)),
+    ((129, 134), (34, 34)),
+    ((135, 135), (35, 35)),
 )

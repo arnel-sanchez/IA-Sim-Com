@@ -3,4 +3,5 @@
 speed(3)
 curve(True)
 tires(True)
-humidity(True)
+rainy(False)
+humidity(False)

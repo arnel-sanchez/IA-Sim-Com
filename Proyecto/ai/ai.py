@@ -4,8 +4,8 @@ from pyke import knowledge_engine
 
 
 def moto():
+    # edit_moto()
     engine = restart()
-    #edit_moto()
     engine.activate("bc_moto_rules")
     tires = [[], []]
     with engine.prove_goal("bc_moto_rules.select_type($select)") as gen:
@@ -23,12 +23,14 @@ def moto():
 def restart():
     if exists("compiled_krb"):
         rmtree("compiled_krb")
+    if exists("ai/compiled_krb"):
+        rmtree("ai/compiled_krb")
     engine = knowledge_engine.engine(__file__)
     engine.reset()
     return engine
 
 
-def edit_moto():
+def edit_moto(self):
     facts = open("moto_facts.kfb", "w")
     facts.write("# moto_facts.kfb\n\n")
     facts.write("rain(True)\n")
@@ -38,22 +40,27 @@ def edit_moto():
     facts.close()
 
 
-def action():
+def action():#section_type, tires, weather, humidity):
+    #edit_action(section_type, tires, weather, humidity)
     engine = restart()
-    #edit_action()
+    #engine.assert_("action_facts", "speed", ("2", ))
     engine.activate("bc_action_rules")
+    #x = engine.prove_1_goal("bc_action_rules.select_action($select)")
     actions = []
     with engine.prove_goal("bc_action_rules.select_action($select)") as gen:
         for ans, plan in gen:
             actions.append(int(ans["select"]))
-    return sum(actions)
+    print(sum(actions))#return sum(actions)
 
 
-def edit_action():
-    facts = open("action_facts.kfb", "w")
+def edit_action(section_type, tires, weather, humidity):
+    facts = open("ai/action_facts.kfb", "w")
     facts.write("# action_facts.kfb\n\n")
     facts.write("speed(3)\n")
-    facts.write("curve(True)\n")
-    facts.write("tires(True)\n")
-    facts.write("humidity(True)\n")
+    facts.write("curve({})\n".format(True if section_type == "Curve" else False))
+    facts.write("tires({})\n".format(True if tires.__contains__("Slick") else False))
+    facts.write("rainy({})\n".format(True if weather.__contains__("Rainy") else False))
+    facts.write("humidity({})\n".format(True if humidity > 6 else False))
     facts.close()
+
+action()

@@ -2,32 +2,34 @@
 
 
 turn
-    use select_action(Turn)
+    use select_action(0)
     when
         action_questions.curve(True)
 
 
 speed_up
-    use select_action(Speed_Up)
+    use select_action(1)
     when
         action_questions.speed(3)
 
 
 stay
-    use select_action(Stay)
+    use select_action(2)
     when
         action_questions.speed(2)
 
 
 brake
-    use select_action(Brake)
+    use select_action(3)
     when
         action_questions.speed(1)
 
 
 pits
-    use select_action(Pits)
+    use select_action(6)
     when
-        action_questions.tires($ans_1)
-        action_questions.humidity($ans_2)
+        action_facts.tires($ans_1)
+        action_facts.rainy($ans_2)
         check $ans_1 == $ans_2
+        action_facts.humidity($ans_3)
+        check $ans_1 == $ans_3

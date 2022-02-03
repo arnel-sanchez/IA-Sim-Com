@@ -22,7 +22,13 @@ tires($ans)
 	$ans = yn
 
 
+rainy($ans)
+    Is it raining now?
+	---
+	$ans = yn
+
+
 humidity($ans)
-	Is it very humid today?
+	Is it very humid now?
 	---
 	$ans = yn

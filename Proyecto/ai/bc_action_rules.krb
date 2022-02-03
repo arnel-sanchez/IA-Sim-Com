@@ -29,5 +29,7 @@ pits
     use select_action(6)
     when
         action_facts.tires($ans_1)
-        action_facts.humidity($ans_2)
+        action_facts.rainy($ans_2)
         check $ans_1 == $ans_2
+        action_facts.humidity($ans_3)
+        check $ans_1 == $ans_3

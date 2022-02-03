@@ -1,7 +1,7 @@
 # moto_questions.kqb
 
 
-rain($ans)
+rainy($ans)
 	Is it raining today?
 	---
 	$ans = yn

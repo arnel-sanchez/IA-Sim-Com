@@ -17,7 +17,7 @@ def rain_1(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('moto_questions', 'rain', context,
+        with engine.prove('moto_questions', 'rainy', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
@@ -41,7 +41,7 @@ def rain_2(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('moto_questions', 'rain', context,
+        with engine.prove('moto_questions', 'rainy', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
@@ -71,7 +71,7 @@ def slick(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('moto_questions', 'rain', context,
+        with engine.prove('moto_questions', 'rainy', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
