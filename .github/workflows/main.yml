@@ -18,6 +18,7 @@ jobs:
     - name: Install Dependencies
       run: python -m pip install --upgrade pip
     - run: python -m pip install pynput
+    - run: python -m pip install numpy
     - name: Run Project
       run: python ./Proyecto/main.py
     - name: Run Test

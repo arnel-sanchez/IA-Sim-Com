@@ -1,9 +1,13 @@
 from compilation.tokenizer import Tokenizer
 from compilation.utils import split_lines
 from compilation.parser import *
-from simulation.simulator import start
+from simulation.bike import Bike, Tires
+from simulation.environment import Environment
+from simulation.rider import Rider
+from simulation.simulator import Simulator
 from simulation.race import Race
 from simulation.agent import Agent
+
 from simulation.SetOffClasses.Bikes.ducati import Ducati
 from simulation.SetOffClasses.Riders.pecco_bagnaia import Bagnaia
 from simulation.SetOffClasses.Bikes.yamaha import Yamaha
@@ -21,7 +25,6 @@ from simulation.SetOffClasses.Riders.brad_binder import Binder
 
 from simulation.SetOffClasses.Tracks.misano import Misano
 from simulation.track import Track
-from simulation.weather import Weather, Weather_Status
 
 def test_compilation():
     print("\nCOMPILACION:\n")
@@ -62,7 +65,8 @@ def test_simulation():
     agent = []
     b = Bagnaia()
     d = Ducati()
-    agent.append(Agent(Rider(b.name, b.skill, b.cornering, b.step_by_line), Bike(d.brand, d.max_speed, d.weight)))
+    agent.append(Agent(Rider(b.name, b.skill, b.cornering, b.step_by_line), Bike(d.brand, d.max_speed, d.weight, Tires.Slick_Soft)))
+    '''
     m = Mir()
     s = Suzuki()
     agent.append(Agent(Rider(m.name, m.skill, m.cornering, m.step_by_line), Bike(s.brand, s.max_speed, s.weight)))
@@ -78,13 +82,13 @@ def test_simulation():
     bi = Binder()
     k = KTM()
     agent.append(Agent(Rider(bi.name, bi.skill, bi.cornering, bi.step_by_line), Bike(k.brand, k.max_speed, k.weight)))
-
-
+    '''
 
     t = Misano()
-    environment = Environment(Track(t.name, t.length, t.curves, t.straight), Weather(5, 8, 10, 3, Weather_Status.Cloudy))
+    environment = Environment(Track(t.name, t.length, t.sections))
     race = Race(5, agent, environment)
-    start(time, stop, race)
+    s = Simulator()
+    s.start(time, stop, race)
 
 
 def main():
