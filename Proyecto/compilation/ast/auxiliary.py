@@ -122,42 +122,4 @@ class NodeEpsilon(Node):
     def __init__(self):
         self.padre = None
 
-    @staticmethod
-    def type() -> str:
-        return "EXP"
-
-
-class NodeMult(Node):
-    @staticmethod
-    def type() -> str:
-        return "MUL"
-
-
-class NodeDiv(Node):
-    @staticmethod
-    def type() -> str:
-        return "DIV"
-
-
-class NodeMod(Node):
-    @staticmethod
-    def type() -> str:
-        return "MOD"
-
-
-class NodeExp(Node):
-    @staticmethod
-    def type() -> str:
-        return "EXP"
-
-
-class NodeAdd(Node):
-    @staticmethod
-    def type() -> str:
-        return "ADD"
-
-
-class NodeSub(Node):
-    @staticmethod
-    def type() -> str:
-        return "SUB"
+ 

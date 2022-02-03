@@ -1,24 +1,23 @@
 from compilation.ast.operations import BinOp, same_type
 from compilation.ast.nodes import Node
-
+from compilation.context import Context
+from compilation.errors import CheckTypesError
 
 class Rel(BinOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
-
-    def operation(self, left, right) -> bool:
-        return same_type(left, right) and self.op(left, right)
+        
 
     def checktype(self, context):
-        if self.right_node is None and self.left_node.checktype(context) == "bool":
-            return True
-        if self.left_node.checktype(context) == self.right_node.checktype(context):
-            return True
-        return False
-
-    @staticmethod
-    def op(left, right) -> bool:
-        return False
+        checkexpr1=self.left_node.checktype(context)
+        if isinstance(checkexpr1,CheckTypesError):
+            return checkexpr1
+        checkexpr2=self.right_node.checktype(context)
+        if isinstance(checkexpr2,CheckTypesError):
+            return checkexpr2     
+        if checkexpr1 == checkexpr2:
+           return True
+        return CheckTypesError("cannot compare expressions with different types","","","")
 
     @staticmethod
     def type() -> str:
@@ -29,9 +28,12 @@ class EqRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    @staticmethod
-    def op(left, right) -> bool:
-        return left == right
+    
+    def eval(self,context:Context):
+        if self.left_node.eval(context)==self.right_node.eval(context):
+            return True
+        else:
+          return False
 
     @staticmethod
     def type() -> str:
@@ -42,9 +44,11 @@ class NeqRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    @staticmethod
-    def op(left, right) -> bool:
-        return left != right
+    def eval(self,context:Context):
+        if self.left_node.eval(context)!=self.right_node.eval(context):
+            return True
+        else:
+          return False
 
     @staticmethod
     def type() -> str:
@@ -55,9 +59,11 @@ class LessRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    @staticmethod
-    def op(left, right) -> bool:
-        return left < right
+    def eval(self,context:Context):
+        if self.left_node.eval(context)<self.right_node.eval(context):
+            return True
+        else:
+          return False
 
     @staticmethod
     def type() -> str:
@@ -68,9 +74,11 @@ class LeqRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    @staticmethod
-    def op(left, right) -> bool:
-        return left <= right
+    def eval(self,context:Context):
+        if self.left_node.eval(context)<=self.right_node.eval(context):
+            return True
+        else:
+          return False
 
     @staticmethod
     def type() -> str:
@@ -81,9 +89,11 @@ class GreatRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    @staticmethod
-    def op(left, right) -> bool:
-        return left > right
+    def eval(self,context:Context):
+        if self.left_node.eval(context)>self.right_node.eval(context):
+            return True
+        else:
+          return False
 
     @staticmethod
     def type() -> str:
@@ -94,9 +104,11 @@ class GreqRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    @staticmethod
-    def op(left, right) -> bool:
-        return left >= right
+    def eval(self,context:Context):
+        if self.left_node.eval(context)>=self.right_node.eval(context):
+            return True
+        else:
+          return False
 
     @staticmethod
     def type() -> str:

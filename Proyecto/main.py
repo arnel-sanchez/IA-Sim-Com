@@ -1,6 +1,6 @@
 from compilation.tokenizer import Tokenizer
 from compilation.utils import split_lines
-from compilation.parser import Parser
+from compilation.parser import *
 from simulation.simulator import start
 
 
@@ -19,7 +19,20 @@ def test_compilation():
 
     lines = split_lines(tokens)
     parser = Parser()
-    parser.parse(lines)
+    if parser.parse(lines)==True:
+        validation=parser.validaAST()
+        if validation==True:
+            checktype=parser.checktypes()
+            if checktype==True:
+                  Parse.execute()
+            else:
+                print(checktype.__repr__())
+        else:
+             print(validation.__repr__())
+    
+    else:
+       print(parser.error.__repr__())
+
     x = 0
 
 

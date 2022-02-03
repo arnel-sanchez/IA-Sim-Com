@@ -1,6 +1,5 @@
 from compilation.ast.nodes import Token, TokenType, Node
 from compilation.context import Context
-from compilation.variables import VariableType, MethodType
 from compilation.ast.auxiliary import NodeE
 
 
