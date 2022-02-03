@@ -1,0 +1,48 @@
+# bc_moto_rules.krb
+
+
+rain_1
+    use select_type(Rain)
+    when
+        moto_facts.rain(True)
+
+
+rain_2
+    use select_type(Rain)
+    when
+        moto_facts.rain(False)
+        moto_facts.humidity(True)
+
+
+slick
+    use select_type(Slick)
+    when
+        moto_facts.rain(False)
+        moto_facts.humidity(False)
+
+
+soft
+    use select_tires(Soft)
+    when
+        moto_facts.windy(True)
+        moto_facts.wind_direction(3)
+
+
+medium_1
+    use select_tires(Medium)
+    when
+        moto_facts.windy(False)
+
+
+medium_2
+    use select_tires(Medium)
+    when
+        moto_facts.windy(True)
+        moto_facts.wind_direction(2)
+
+
+hard
+    use select_tires(Hard)
+    when
+        moto_facts.windy(True)
+        moto_facts.wind_direction(1)

@@ -4,6 +4,8 @@ from enum import Enum
 from math import pow
 from math import sqrt
 from simulation.weather import Cardinals_Points
+from ai.ai import action
+
 
 class Agent:
     def __init__(self, rider: Rider, bike: Bike):
@@ -563,10 +565,12 @@ class Agent:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.1
 
     def select_action(self, section, race):
+        ans = action()
+
         if self.speed >= section[2]:
             return Agent_actions.Brake
         else:
-            return Agent_actions.Speed_up
+            return Agent_actions.SpeedUp
 
     def select_aceleration(self, section, race, action):
         if action == Agent_actions.Brake:
@@ -589,8 +593,8 @@ class Agent:
         return True
 
     def overcome_an_obstacle(self, section, race):
-        if self.select_action(section, race) == Agent_actions.Speed_up :
-            self.select_aceleration(section, race, Agent_actions.Speed_up)
+        if self.select_action(section, race) == Agent_actions.SpeedUp:
+            self.select_aceleration(section, race, Agent_actions.SpeedUp)
             vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
             t = (vf - self.speed)/self.acceleration
             self.time_lap += t
@@ -625,15 +629,17 @@ class Agent:
         else:
             return 0
 
+
 class Agent_actions(Enum):
-    Speed_up = 0
-    Brake = 1
-    Bend = 2
-    Go_to_the_pits = 3
-    Brake_Bend = 4
-    Speed_up_Bend = 5
-    Speed_up_Go_to_the_pits = 6
-    Brake_Go_to_the_pits = 7
-    Bend_Go_to_the_pits = 8
-    Brake_Bend_Go_to_the_pits = 9
-    Speed_up_Bend_Go_to_the_pits = 10
+    SpeedUp = 0
+    KeepSpeed = 1
+    Brake = 2
+    SpeedUp_Turn = 3
+    KeepSpeed_Turn = 4
+    Brake_Turn = 5
+    SpeedUp_Pits = 6
+    KeepSpeed_Pits = 7
+    Brake_Pits = 8
+    SpeedUp_Turn_Pits = 9
+    KeepSpeed_Turn_Pits = 10
+    Brake_Turn_Pits = 11
