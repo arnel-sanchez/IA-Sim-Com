@@ -564,11 +564,15 @@ class Agent:
 
     def select_action(self, section, race):
         if self.speed >= section[2]:
-            self.acceleration = (-1) * self.bike.acceleration/race.discrete_variable_generator()
             return Agent_actions.Brake
         else:
-            self.acceleration = self.bike.acceleration/race.discrete_variable_generator()
             return Agent_actions.Speed_up
+
+    def select_aceleration(self, section, race, action):
+        if action == Agent_actions.Brake:
+            self.acceleration = (-1) * self.bike.acceleration/race.discrete_variable_generator()
+        else:
+            self.acceleration = self.bike.acceleration/race.discrete_variable_generator()
 
     def status_analysis(self, section, race):
         prob = race.continuous_variable_generator()
@@ -586,6 +590,7 @@ class Agent:
 
     def overcome_an_obstacle(self, section, race):
         if self.select_action(section, race) == Agent_actions.Speed_up :
+            self.select_aceleration(section, race, Agent_actions.Speed_up)
             vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
             t = (vf - self.speed)/self.acceleration
             self.time_lap += t
@@ -597,6 +602,7 @@ class Agent:
                 race.agents.remove(self)
 
         elif self.select_action(section, race) == Agent_actions.Brake :
+            self.select_aceleration(section, race, Agent_actions.Brake)
             vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
             t = (vf - self.speed)/self.acceleration
             self.time_lap += t
