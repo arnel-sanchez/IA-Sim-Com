@@ -1,0 +1,6 @@
+# moto_facts.kfb
+
+rain(True)
+humidity(False)
+windy(True)
+wind_direction(3)

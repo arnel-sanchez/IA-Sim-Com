@@ -1,0 +1,28 @@
+# moto_questions.kqb
+
+
+rain($ans)
+	Is it raining today?
+	---
+	$ans = yn
+
+
+humidity($ans)
+	Is it very humid today?
+	---
+	$ans = yn
+
+
+windy($ans)
+	Is it windy today?
+	---
+	$ans = yn
+
+
+wind_direction($ans)
+	Wind direction:
+	---
+	$ans = select_1
+		1: Front
+		2: Side
+		3: Back

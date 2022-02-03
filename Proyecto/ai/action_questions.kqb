@@ -1,0 +1,28 @@
+# action_questions.kqb
+
+
+speed($ans)
+	How is the maximum speed compared to the final speed?
+	---
+	$ans = select_1
+		1: Higher
+		2: Same
+		3: Lower
+
+
+curve($ans)
+	Is it a curve?
+	---
+	$ans = yn
+
+
+tires($ans)
+	Are the tires slick?
+	---
+	$ans = yn
+
+
+humidity($ans)
+	Is it very humid today?
+	---
+	$ans = yn
