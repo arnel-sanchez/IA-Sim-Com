@@ -1,12 +1,6 @@
 # bc_action_rules_questions.krb
 
 
-turn
-    use select_action(0)
-    when
-        action_questions.curve(True)
-
-
 speed_up
     use select_action(1)
     when
@@ -23,6 +17,12 @@ brake
     use select_action(3)
     when
         action_questions.speed(1)
+
+
+turn
+    use select_action(0)
+    when
+        action_questions.curve(True)
 
 
 pits
