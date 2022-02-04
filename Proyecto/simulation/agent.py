@@ -4,8 +4,7 @@ from enum import Enum
 from math import pow
 from math import sqrt
 from simulation.weather import Cardinals_Points
-from ai.ai import edit_action
-import subprocess
+from ai.ai import edit_action, call_ai
 
 
 class Agent:
@@ -570,7 +569,7 @@ class Agent:
 
     def select_action(self, section, race, weather):
         edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
-        ans = int(subprocess.check_output('python ai/action.py').decode("utf-8")[0])
+        ans = call_ai("python ai/action.py")
         return Agent_actions(ans)
 
     def select_aceleration(self, section, race, action):
@@ -594,7 +593,8 @@ class Agent:
         return True
 
     def overcome_an_obstacle(self, section, race, weather):
-        if self.select_action(section, race, weather) == Agent_actions.SpeedUp:
+        action = self.select_action(section, race, weather)
+        if action == Agent_actions.SpeedUp:
             self.select_aceleration(section, race, Agent_actions.SpeedUp)
             vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
             t = (vf - self.speed)/self.acceleration
@@ -606,7 +606,7 @@ class Agent:
             else:
                 race.agents.remove(self)
 
-        elif self.select_action(section, race, weather) == Agent_actions.Brake :
+        elif action == Agent_actions.Brake:
             self.select_aceleration(section, race, Agent_actions.Brake)
             vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
             t = (vf - self.speed)/self.acceleration

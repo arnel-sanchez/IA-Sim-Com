@@ -1,7 +1,6 @@
-import subprocess
 from enum import Enum
 from simulation.environment import Environment
-from ai.ai import edit_moto
+from ai.ai import edit_moto, call_ai
 
 
 class Tires(Enum):
@@ -26,7 +25,7 @@ class Bike:
 
     def select_configuration(self, environment: Environment):
         edit_moto(environment.weather)
-        ans = int(subprocess.check_output('python ai/moto.py').decode("utf-8")[0])
+        ans = call_ai("python ai/moto.py")
         self.change_tires(Tires(ans))
 
     def change_tires(self, tires: Tires):
