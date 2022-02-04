@@ -84,7 +84,7 @@ class TokenType(Enum):
     T_NEWLINE = 60  # \n
 
     T_RIDER = 62  # rider
-    T_MOTORCYCLE = 63  # motorcycle
+    T_BIKE = 63  # bike
 
     T_INVALID = 100  # invalid token
 
