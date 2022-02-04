@@ -594,7 +594,7 @@ class Agent:
         return True
 
     def overcome_an_obstacle(self, section, race, weather):
-        if self.select_action(section, race, weather) == Agent_actions.SpeedUp:
+        if self.select_action(section, weather) == Agent_actions.SpeedUp:
             self.select_aceleration(section, race, Agent_actions.SpeedUp)
             vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
             t = (vf - self.speed)/self.acceleration
@@ -606,7 +606,7 @@ class Agent:
             else:
                 race.agents.remove(self)
 
-        elif self.select_action(section, race, weather) == Agent_actions.Brake :
+        elif self.select_action(section, weather) == Agent_actions.Brake :
             self.select_aceleration(section, race, Agent_actions.Brake)
             vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
             t = (vf - self.speed)/self.acceleration

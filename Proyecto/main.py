@@ -68,7 +68,7 @@ def test_simulation():
     rider = Rider(b.name, b.cornering, b.step_by_line)
     bike = Bike(d.brand, d.max_speed, d.weight)
     bike.select_configuration(environment)
-    agents.append(Agent(rider, bike, ))
+    agents.append(Agent(rider, bike, True, True, True))
     '''
     m = Mir()
     s = Suzuki()
