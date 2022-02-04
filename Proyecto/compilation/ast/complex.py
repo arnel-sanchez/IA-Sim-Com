@@ -175,7 +175,7 @@ class D_Assign(Statement):
         if not self.isarray:
             if not self.expr.validate(context):
                 return False
-            if not context.define_var(self.id, self.typevar):
+            if not context.define_var(self.id, self.typevar,self.token):
                 return False
         else:
             for expresion in self.arrayvalue:
@@ -253,7 +253,7 @@ class Def_Fun(Statement):
     def validate(self, context: Context) -> bool:
         self.nuevocontext = context.crearnuevocontexto()
         for arg in self.args:
-            if not self.nuevocontext.define_var(arg[1], arg[0]):
+            if not self.nuevocontext.define_var(arg[1], arg[0],self.token):
                 return False
         if not self.body.validate(self.nuevocontext):
             return False

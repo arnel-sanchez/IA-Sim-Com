@@ -257,7 +257,7 @@ class TypeSpecial(Statement):
              assign.id=var[0]
              assign.expr=var[2]
              assign.typevar=var[1]
-             self.nuevocontext.define_var(var[0],assign)
+             self.nuevocontext.define_var(var[0],assign,self.token)
         
     def refreshContext(self,dict):    
        keys=dict.keys()
