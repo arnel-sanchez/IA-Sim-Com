@@ -204,40 +204,85 @@ class TypeSpecial(Statement):
      self.id=None
      self.padre=None
      self.funciones=[]
-     self.context:Context=None
+     self.nuevocontext:Context=None
+     self.functionsOfRiders=["select_aceleration","select_action"]
+     self.functionsOfMotorcicles=["select_configuration"]
+     self.token=None
 
     def validate(self,context:Context):
-
+       self.nuevocontext = context.crearnuevocontexto()  
+       self.addvars()
+       
+       #Hay que agregarle las variables de las motos o los pilotos
        for function in self.funciones:
-           validationfun=function.validate(context)
+          
+           if isinstance(self,MotorcicleNode):
+              if self.functionsOfMotorcicles.count(function.idfun)!=0:
+                 self.functionsOfMotorcicles.remove(function.idfun)
+              else:
+                  return IncorrectCallError("the method was already defined or it is not valid to define a method with this name in this context","",self.token.line,self.token.column)
+           elif isinstance(self,RiderNode):
+               if self.functionsOfRiders.count(function.idfun)!=0:
+                   self.functionsOfRiders.remove(function.idfun)
+               else:
+                    return IncorrectCallError("the method was already defined or it is not valid to define a method with this name in this context","",self.token.line,self.token.column)
+           validationfun=function.validate(self.nuevocontext)
            if not isinstance(validationfun,bool):
                return validationfun
-
+         
        return True
 
-    def checktype(context:Context):
+    def checktype(self,context:Context):
         for function in self.funciones:
+            if normaliza(context.enfuncion.typefun)!="int" and isinstance(self,RiderNode):
+              return  CheckTypesError("error in the return value of the function","",self.token.line,self.token.column)
+            if normaliza(context.enfuncion.typefun)!="void" and isinstance(self,MotorcicleNode):
+              return  CheckTypesError("error in the return value of the function","",self.token.line,self.token.column) 
             checktypefunction=function.checktype(context)
             if isinstance(checktypefunction,CheckTypesError):
                return checktypefunction
 
         return True
 
+    def addvars(self):
+        if isinstance(self,RiderNode):
+            listvar=self.varsforRiders
+        else:
+            listvar=self.varsforBikes
+
+        for var in listvar:
+             assign=D_Assign()
+             assign.id=var[0]
+             assign.expr=var[2]
+             assign.typevar=var[1]
+             self.nuevocontext.define_var(var[0],assign)
+        
+    def refreshContext(self,dict):    
+       keys=dict.keys()
+       for key in keys:
+            if self.nuevocontext.variables.keys().count(key)==1:
+                self.nuevocontext.variables[key].expr=dict[key]
+ 
+
 class MotorcicleNode(TypeSpecial):
    def __init__(self):  
      self.id=None
      self.padre=None
      self.funciones=[]
-     self.context:Context=None
-
-
+     self.nuevocontext:Context=None
+     self.varsforBikes=[["brand",VariableType.STRING,"Honda"],["max_speed",VariableType.INT,0],["weight",VariableType.INT,0],["brakes",VariableType.INT,5],["chassis_stiffness",VariableType.INT,8],["acceleration",VariableType.INT,69.444],["probability_of_the_motorcycle_breaking_down",VariableType.DOUBLE,0.000001],["probability_of_exploding_tires",VariableType.DOUBLE,0.000001]]
+     self.functionsOfMotorcicles=["select_configuration"]
+     self.token=None
 
 class RiderNode(TypeSpecial):
    def __init__(self):
      self.id=None
      self.padre=None
      self.funciones=[]
-     self.context:Context=None
+     self.nuevocontext:Context=None
+     self.varsforRiders=[["speed",VariableType.DOUBLE,0],["aceleration",VariableType.DOUBLE,0],["time_lap",VariableType.DOUBLE,0]]
+     self.functionsOfRiders=["select_aceleration","select_action"]
+     self.token=None
 
 
 class NodeE(Node):#@@

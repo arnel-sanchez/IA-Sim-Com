@@ -15,6 +15,8 @@ class Parser:
         self.estados = []  # Aqui guardamos los estados en forma de string , de forma que si el ultimo estado de la lista es el estado en el que estoy y si no hay estados en la lista ent estamos fuera de cualquier ambito del programa
         self.context=Context()
         self.i=0
+        self.Riders={}
+        self.Motorcicles={}
         self.estadoDAST= EstadoDAST.EnProgram
         self.nodoactual=Program()  #Este sera el nodo en el que estoy parado cuando estoy construyendo el AST
         self.nodopararecorrerast=self.nodoactual
@@ -354,8 +356,7 @@ class Parser:
             else:
                 break
 
-        if self.error==None and len(self.estados)>0:
-            self.error= UnbalancedBracketsError("An end of region was expected","",line[len(line)-1].line, line[len(line)-1].column+ len(line[len(line)-1].value))
+        
 
     
     def parse(self, lines: [[Token]]) -> Error:
@@ -364,6 +365,8 @@ class Parser:
             self.i=0
             if self.error!=None:
               return self.error
+        if self.error==None and len(self.estados)>0:
+           self.error= UnbalancedBracketsError("An end of region was expected","",line[len(line)-1].line, line[len(line)-1].column+ len(line[len(line)-1].value))
         return True
     
     def CreaNododProgram(self,line,termino,token):
@@ -383,9 +386,12 @@ class Parser:
             self.estadoDAST=EstadoDAST.EnFuncion
         elif termino== TokenType.T_RIDER or  termino==TokenType.T_MOTORCYCLE:
             if termino == TokenType.T_RIDER:
-                nuevonodo=RiderNode()               
+                nuevonodo=RiderNode()
+                nuevonodo.token=token               
             else:
+                
                 nuevonodo=MotorcicleNode()
+                nuevonodo.token=token
             nuevonodo.padre=self.nodoactual
             self.nodoactual.statements.append(nuevonodo)
             self.nodoactual=nuevonodo
@@ -826,3 +832,11 @@ class Parser:
 
     def execute(self):
         self.nodopararecorrerast.eval(self.context)
+
+
+    def LoadRidersAndBikes(self):
+        for statement in self.nodopararecorrerast.statements:
+            if isinstance(statement,RiderNode):
+                self.Riders.setupdate(statement.id,statement)
+            elif isinstance(statement,MotorcicleNode):
+                self.Motorcicles.setupdate(statement.id,statement)
