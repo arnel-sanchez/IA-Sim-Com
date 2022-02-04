@@ -1,5 +1,5 @@
 from compilation.tokens import Token, TokenType
-from compilation.errors import Error
+from compilation.errors import *
 from compilation.context import Context
 from compilation.enums import *
 
