@@ -17,7 +17,7 @@ class Agent:
         self.time_lap = 0
         self.flag_configuration = flag_configuration
         self.flag_action = flag_action
-        self.flag_aceleration
+        self.flag_aceleration = flag_aceleration
 
     def update_agent_initial_parameters(self, weather, section):
         if self.bike.chassis_stiffness > 5:
