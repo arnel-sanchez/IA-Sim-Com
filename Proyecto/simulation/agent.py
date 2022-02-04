@@ -568,7 +568,7 @@ class Agent:
                 else:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.1
 
-    def select_action(self, section, race, weather):
+    def select_action(self, section, weather):
         edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
         ans = int(subprocess.check_output('python ai/action.py').decode("utf-8")[0])
         return Agent_actions(ans)

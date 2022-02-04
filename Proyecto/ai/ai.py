@@ -4,7 +4,7 @@ from pyke import knowledge_engine
 
 
 def edit_moto(weather):
-    facts = open("ai/moto_facts.kfb", "w")
+    facts = open("./ai/moto_facts.kfb", "w")
     facts.write("# moto_facts.kfb\n\n")
     facts.write("rainy({})\n".format(True if weather.weather_status.name.__contains__("Rainy") else False))
     facts.write("humidity({})\n".format(True if weather.humidity > 6 else False))
@@ -29,10 +29,10 @@ def moto():
 
 
 def restart(rules: str):
-    if exists("compiled_krb"):
-        rmtree("compiled_krb")
-    if exists("ai/compiled_krb"):
-        rmtree("ai/compiled_krb")
+    if exists("./compiled_krb"):
+        rmtree("./compiled_krb")
+    if exists("./ai/compiled_krb"):
+        rmtree("./ai/compiled_krb")
     engine = knowledge_engine.engine(__file__)
     engine.reset()
     engine.activate(rules)
@@ -40,7 +40,7 @@ def restart(rules: str):
 
 
 def edit_action(speed, bike_max_speed, section_max_speed, section_type, tires, weather):
-    facts = open("ai/action_facts.kfb", "w")
+    facts = open("./ai/action_facts.kfb", "w")
     facts.write("# action_facts.kfb\n\n")
     if speed > bike_max_speed or speed > section_max_speed:
         speed_cmp = 1
