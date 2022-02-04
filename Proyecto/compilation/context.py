@@ -12,7 +12,11 @@ class Context:
      self.enwhile=None
 
     def evalAttribute(self,idvar):
-        self.variables[idvar].expr=self.variables[idvar].expr.noderaiz.eval(self)
+        evalexpr=self.variables[idvar].expr.noderaiz.eval(self)
+        if not isinstance(evalexpr,RuntimeError):
+           self.variables[idvar].value=evalexpr
+        else:
+            return evalexpr
 
     def getFunction(self,id):
          funContain = self.funciones.get(id,"NoEsta")
@@ -28,31 +32,24 @@ class Context:
             
         
 
-    def getvalueAttribute(self,var):
+    def getvalueAttribute(self,var,token):
          if self.variables.get(var,"NoEsta")!="NoEsta":
-              return self.variables[var].expr
+            if self.variables[var].value!=None:  
+              return self.variables[var].value
+            else:
+                return RuntimeError("local variable {} referenced before assignment".format(var),"",token.line,token.column)
          else:
              
              context=self.contextPadre
              while context!=None :
                   if context.variables.get(var,"NoEsta")!="NoEsta":
-                    retorno = context.variables[var].expr
+                    retorno = context.variables[var].value
+                    if retorno!=None:  
+                        return retorno
+                    else:
+                       return RuntimeError("local variable {} referenced before assignment".format(var),"",token.line,token.column)
                     return retorno
                   context=context.padre
-     
-    def getvaluefunction(idfun,args):
-         context=self
-         if self.funciones.get(idfun,"NoEsta")!="NoEsta":
-                funcion=self.funciones[idfun]
-         else:
-             context=self.padre
-             while context!=null :
-                  if context.funciones.get(var,"NoEsta")!="NoEsta":
-                    funcion = context.funciones[idfun]
-                    break
-                  context=context.padre
-
-         return funcion.eval(args,context)
 
          
     def gettypefun(self,idfun):

@@ -168,6 +168,8 @@ class Program(Node):
               
            if not isinstance(statement,ReturnNode):       
                  evaluation=statement.eval(context)
+                 if isinstance(evaluation,RuntimeError):
+                    return evaluation
                  if evaluation!=None:
                     if evaluation=="break"or evaluation=="continue":
                            return evaluation
@@ -285,7 +287,7 @@ class RiderNode(TypeSpecial):
      self.token=None
 
 
-class NodeE(Node):#@@
+class NodeE(Node):
     def __init__(self):    
      self.padre = None
      self.hijos = list() 
@@ -369,14 +371,14 @@ class D_Assign(Statement):
             return True
 
     def eval(self,context:Context):
-      context.evalAttribute(self.id)
+      return context.evalAttribute(self.id)
     
 
     @staticmethod
     def type() -> str:
         return "DecAssign"
 
-class ReturnNode(Statement): #  Mirar El Chequeo de tipos
+class ReturnNode(Statement): 
     def __init__(self):
       self.type=""
       self.expr:Expression= Expression()
@@ -447,7 +449,10 @@ class Redefinition(Statement):
           return self.op.checktype(context)         
      
      def eval(self,context:Context):
-         context.variables[self.id].expr=self.op.eval(context)
+         evaloper=self.op.eval(context)
+         if isinstance(evaloper,RuntimeError):
+             return evaloper
+         context.variables[self.id].value=evaloper
 
      @staticmethod
      def type() -> str:
@@ -496,9 +501,12 @@ class Def_Fun(Statement):
       keys=list(self.nuevocontext.variables.keys())
       index=0
       for arg in args:
-          self.nuevocontext.variables[keys[index]].expr=arg.eval(context)
-          index+=1
-      
+          evalexpression=arg.eval(context)
+          if not isinstance(evalexpression,RuntimeError):
+             self.nuevocontext.variables[keys[index]].value=evalexpression
+             index+=1
+          else:
+              return evalexpression
       return self.body.eval(self.nuevocontext)
 
     @staticmethod
@@ -602,11 +610,16 @@ class IfCond(Statement):
     def eval(self,context:Context):
         resultvalue:bool=None
         resultante=self.conditions[0].eval(context)
+        if isinstance(resultante,RuntimeError):
+            return resultante
         index=1
 
         while index<len(self.conditions):
                self.operadoresbinarios[index-1].left_node=resultante
-               self.operadoresbinarios[index-1].right_node=self.conditions[index].eval(context)
+               evalcond=self.conditions[index].eval(context)
+               if isinstance(evalcond,RuntimeError):
+                  return evalcond
+               self.operadoresbinarios[index-1].right_node=evalcond
                resultante=self.operadoresbinarios[index-1].eval(context)
                index+=1                              
 
@@ -658,11 +671,16 @@ class WhileCond(Statement):
     def eval(self,context:Context):
         resultvalue:bool=None
         resultante=self.conditions[0].eval(context)
+        if isinstance(resultante,RuntimeError):
+            return resultante
         index=1
 
         while index<len(self.conditions):
                self.operadoresbinarios[index-1].left_node=resultante
-               self.operadoresbinarios[index-1].right_node=self.conditions[index].eval(context)
+               evalexpr= self.conditions[index].eval(context)
+               if isinstance(evalexpr,RuntimeError):
+                   return evalexpr
+               self.operadoresbinarios[index-1].right_node=evalexpr
                resultante=self.operadoresbinarios[index-1].eval(context)
                index+=1                              
 
@@ -813,15 +831,15 @@ class Val(Node):#@@
     def type() -> str:
         return "EXP"
 
-class Variable(Node):  #@@
+class Variable(Node):
     def __init__(self,token:Token):
         self.idvar= token.value
         self.token=token
 
-    def validate(self,context:Context): #@@
+    def validate(self,context:Context): 
         return context.check_var(self.idvar,self.token)
 
-    def checktype (self,context:Context):#@@
+    def checktype (self,context:Context):
         type =context.gettypevar(self.idvar)
         if type==VariableType.INT:
           return "int"
@@ -833,7 +851,7 @@ class Variable(Node):  #@@
           return "str"
 
     def eval(self,context:Context):
-        return context.getvalueAttribute(self.idvar)
+        return context.getvalueAttribute(self.idvar,self.token)
 
 
     @staticmethod
@@ -848,7 +866,7 @@ class FunCall(Node):
      self.args:list()=[]
      self.token=None
 
-    def validate (self,context:Context)->bool: #@@
+    def validate (self,context:Context)->bool: 
        for expr in self.args:
            validationexpr=expr.validate(context)
            if not isinstance(validationexpr,bool):
