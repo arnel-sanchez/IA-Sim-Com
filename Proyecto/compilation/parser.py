@@ -42,7 +42,7 @@ class Parser:
                                    [TokenType.T_ELIF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE], ["e"]],
                              "W": [[TokenType.T_CONTINUE], [TokenType.T_BREAK], [TokenType.T_RETURN,"E"]],
-                             "F": [[TokenType.T_RIDER], [TokenType.T_MOTORCYCLE]],
+                             "F": [[TokenType.T_RIDER], [TokenType.T_BIKE]],
                              "A": [[TokenType.T_OPEN_PAREN, "Z"
                                     , TokenType.T_CLOSE_PAREN], ["e"]],
                              "Z": [["e"],["E","U"]],
@@ -81,7 +81,7 @@ class Parser:
                            TokenType.T_CARRIAGE, TokenType.T_NEWLINE, TokenType.T_INVALID, TokenType.T_S_VALUE,
                            TokenType.T_I_VALUE, TokenType.T_D_VALUE, TokenType.T_ARRAY, TokenType.T_VOID,
                            TokenType.T_CONTINUE, TokenType.T_BREAK, TokenType.T_RETURN, TokenType.T_RIDER,
-                           TokenType.T_MOTORCYCLE]
+                           TokenType.T_BIKE]
         self.no_terminales = ["L", "D", "I", "E", "M", "Y", "J", "U", "N", "@", "R", "K", "T", "P", "W", "S", "F",
                               "A", "Z", "Q", "C", "B", "G", "X", "~", "^","H","O"]
         self.first = dict()  # Guardamos los terminales que pertenecen al First de cada produccion posible de nuestra gramatica
@@ -118,7 +118,7 @@ class Parser:
                                    ["N", TokenType.T_ELIF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE], ["N", "e"], ["W", TokenType.T_CONTINUE],
                                    ["W", TokenType.T_BREAK], ["W", TokenType.T_RETURN,"E"], ["F", TokenType.T_RIDER],
-                                   ["F", TokenType.T_MOTORCYCLE],
+                                   ["F", TokenType.T_BIKE],
                                    ["A", TokenType.T_OPEN_PAREN, "Z", TokenType.T_CLOSE_PAREN], ["A", "e"],
                                    ["Z", "e"],["Z", "E","U"],["I",TokenType.T_ASSIGN],
                                    ["I", TokenType.T_ADD_AS], ["I", TokenType.T_SUB_AS], ["I", TokenType.T_DIV_AS],
@@ -278,15 +278,15 @@ class Parser:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "", line[self.i].line, line[self.i].column)#
                                 return False
                         elif estado == Region.R_IF or estado == Region.R_ELIF or estado == Region.R_ELSE:
-                            if line[self.i].token_type == TokenType.T_METHOD or line[self.i].token_type ==TokenType.T_MOTORCYCLE or line[self.i].token_type ==TokenType.T_RIDER:
+                            if line[self.i].token_type == TokenType.T_METHOD or line[self.i].token_type ==TokenType.T_BIKE or line[self.i].token_type ==TokenType.T_RIDER:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "", line[self.i].line, line[self.i].column)#
                                 return False
                         elif estado == Region.R_WHILE:
-                            if line[self.i].token_type == TokenType.T_METHOD or line[self.i].token_type == TokenType.T_MOTORCYCLE or line[self.i].token_type == TokenType.T_RIDER:
+                            if line[self.i].token_type == TokenType.T_METHOD or line[self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_RIDER:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "", line[self.i].line, line[self.i].column)#
                                 return False
                         elif estado == Region.R_METHOD:
-                            if line[self.i].token_type == TokenType.T_METHOD or line[self.i].token_type == TokenType.T_MOTORCYCLE or line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_CONTINUE or line[self.i].token_type == TokenType.T_BREAK:
+                            if line[self.i].token_type == TokenType.T_METHOD or line[self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_CONTINUE or line[self.i].token_type == TokenType.T_BREAK:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "", line[self.i].line, line[self.i].column)#
                                 return False
                 
@@ -296,7 +296,7 @@ class Parser:
                                 return False
 
                 if termino == line[self.i].token_type:
-                    if line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_MOTORCYCLE:
+                    if line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_BIKE:
                         self.estados.append(Region.R_TYPE)
                     elif line[self.i].token_type == TokenType.T_METHOD:
                         self.estados.append(Region.R_METHOD)
@@ -384,7 +384,7 @@ class Parser:
             nuevonodo.padre=self.nodoactual
             self.nodoactual=nuevonodo
             self.estadoDAST=EstadoDAST.EnFuncion
-        elif termino== TokenType.T_RIDER or  termino==TokenType.T_MOTORCYCLE:
+        elif termino== TokenType.T_RIDER or  termino==TokenType.T_BIKE:
             if termino == TokenType.T_RIDER:
                 nuevonodo=RiderNode()
                 nuevonodo.token=token               
