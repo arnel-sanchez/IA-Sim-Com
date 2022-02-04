@@ -365,8 +365,7 @@ class Parser:
             self.i=0
             if self.error!=None:
               return self.error
-        if self.error==None and len(self.estados)>0:
-           self.error= UnbalancedBracketsError("An end of region was expected","",line[len(line)-1].line, line[len(line)-1].column+ len(line[len(line)-1].value))
+        
         return True
     
     def CreaNododProgram(self,line,termino,token):
