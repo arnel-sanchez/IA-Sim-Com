@@ -25,7 +25,7 @@ from simulation.SetOffClasses.Tracks.misano import Misano
 from simulation.track import Track
 
 
-def test_compilation():
+def compilation():
     print("\nCOMPILACION:\n")
     tokenizer = Tokenizer()
     file, text = "console", "point else point22; 22 3.4; point_1 point;\"AAA\"aaa\nif;123.0 _a.a"
@@ -57,7 +57,7 @@ def test_compilation():
     x = 0
 
 
-def test_simulation():
+def simulation():
     print("\n\nSIMULACION:")
     t = Misano()
     environment = Environment(Track(t.name, t.length, t.sections))
@@ -67,8 +67,11 @@ def test_simulation():
     d = Ducati()
     rider = Rider(b.name, b.cornering, b.step_by_line)
     bike = Bike(d.brand, d.max_speed, d.weight)
-    bike.select_configuration(environment)
-    agents.append(Agent(rider, bike, False, False, False ))
+    if False:
+        bike.select_configuration(environment)
+    else:
+        print("Aquí se llama al nodo")
+    agents.append(Agent(rider, bike, False, False, False, None ))
     '''
     m = Mir()
     s = Suzuki()
@@ -96,8 +99,8 @@ def test_simulation():
 
 
 def main():
-    #test_compilation()
-    test_simulation()
+    compilation()
+    simulation()
 
 
 if __name__ == '__main__':
