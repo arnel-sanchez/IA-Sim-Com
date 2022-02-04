@@ -45,15 +45,21 @@ def test_compilation():
         if validation==True:
             checktype=parser.checktypes()
             if checktype==True:
-                  Parse.execute()
+                  
+                  exe=parser.execute()
+                  if isinstance(exe, RuntimeError):
+                     print(checktype.__repr__())
+                  else:
+                      return parser.Riders,parser.Motorcicles      
             else:
                 print(checktype.__repr__())
+                return False
         else:
              print(validation.__repr__())
-    
+             return False
     else:
        print(parser.error.__repr__())
-
+       return False
     x = 0
 
 
@@ -96,8 +102,9 @@ def test_simulation():
 
 
 def main():
-    #test_compilation()
-    test_simulation()
+    resultComp=test_compilation()
+    if resultComp!=False:
+      test_simulation(resultComp)
 
 
 if __name__ == '__main__':
