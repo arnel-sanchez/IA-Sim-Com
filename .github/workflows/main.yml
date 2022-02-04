@@ -17,8 +17,8 @@ jobs:
         python-version: '3.9'
     - name: Install Dependencies
       run: python -m pip install --upgrade pip && python -m pip install pynput && python -m pip install numpy
-    - name: Intsall PyKE
-      run: wget https://sourceforge.net/projects/pyke/files/pyke/1.1.1/pyke3-1.1.1.zip/download && ls && unzip pyke-1.1.1.zip && cd pyke-1.1.1 && python python setup.py build && python setup.py install
+    - name: Install PyKE
+      run: wget https://sourceforge.net/projects/pyke/files/pyke/1.1.1/pyke3-1.1.1.zip/download && cd download && unzip pyke-1.1.1.zip && cd pyke-1.1.1 && python python setup.py build && python setup.py install
     - name: Run Project
       run: python ./Proyecto/main.py
     - name: Run Test
