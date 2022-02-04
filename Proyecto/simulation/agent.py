@@ -9,12 +9,15 @@ import subprocess
 
 
 class Agent:
-    def __init__(self, rider: Rider, bike: Bike):
+    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_aceleration):
         self.rider = rider
         self.bike = bike
         self.speed = 0
         self.acceleration = 0
         self.time_lap = 0
+        self.flag_configuration = flag_configuration
+        self.flag_action = flag_action
+        self.flag_aceleration
 
     def update_agent_initial_parameters(self, weather, section):
         if self.bike.chassis_stiffness > 5:
