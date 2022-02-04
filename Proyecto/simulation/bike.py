@@ -1,5 +1,8 @@
+import subprocess
 from enum import Enum
 from simulation.environment import Environment
+from ai.ai import edit_moto
+
 
 class Tires(Enum):
     Slick_Soft = 0
@@ -7,6 +10,7 @@ class Tires(Enum):
     Slick_Hard = 2
     Rain_Soft = 3
     Rain_Medium = 4
+
 
 class Bike:
     def __init__(self, brand, max_speed, weight, brakes = 5, chassis_stiffness = 8):
@@ -21,7 +25,9 @@ class Bike:
         self.probability_of_exploding_tires = 0.000001
 
     def select_configuration(self, environment: Environment):
-        self.change_tires(Tires.Slick_Medium)
+        edit_moto(environment.weather)
+        ans = int(subprocess.check_output('python ai/moto.py').decode("utf-8")[0])
+        self.change_tires(Tires(ans))
 
     def change_tires(self, tires: Tires):
         self.tires = tires

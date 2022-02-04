@@ -21,10 +21,9 @@ from simulation.SetOffClasses.Riders.joan_mir import Mir
 from simulation.SetOffClasses.Bikes.ktm import KTM
 from simulation.SetOffClasses.Riders.brad_binder import Binder
 
-
-
 from simulation.SetOffClasses.Tracks.misano import Misano
 from simulation.track import Track
+
 
 def test_compilation():
     print("\nCOMPILACION:\n")
@@ -60,12 +59,16 @@ def test_compilation():
 
 def test_simulation():
     print("\n\nSIMULACION:")
-    time = 1  # Tiempo que demora la simulacion de una vuelta
-    stop = False  # Reajustes en tiempo real
-    agent = []
+    t = Misano()
+    environment = Environment(Track(t.name, t.length, t.sections))
+
+    agents = []
     b = Bagnaia()
     d = Ducati()
-    agent.append(Agent(Rider(b.name, b.cornering, b.step_by_line), Bike(d.brand, d.max_speed, d.weight)))
+    rider = Rider(b.name, b.cornering, b.step_by_line)
+    bike = Bike(d.brand, d.max_speed, d.weight)
+    bike.select_configuration(environment)
+    agents.append(Agent(rider, bike, ))
     '''
     m = Mir()
     s = Suzuki()
@@ -84,9 +87,10 @@ def test_simulation():
     agent.append(Agent(Rider(bi.name, bi.cornering, bi.step_by_line), Bike(k.brand, k.max_speed, k.weight)))
     '''
 
-    t = Misano()
-    environment = Environment(Track(t.name, t.length, t.sections))
-    race = Race(5, agent, environment)
+    race = Race(environment, agents, 5)
+
+    time = 1  # Tiempo que demora la simulacion de una vuelta
+    stop = False  # Reajustes en tiempo real
     s = Simulator()
     s.start(time, stop, race)
 

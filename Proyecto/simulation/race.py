@@ -2,10 +2,11 @@ from simulation.environment import Environment
 from numpy.random import random
 from numpy.random import randint
 
+
 class Race:
-    def __init__(self, laps, agents, environment: Environment):
-        self.agents = agents
+    def __init__(self, environment: Environment, agents, laps):
         self.environment = environment
+        self.agents = agents
         self.laps = laps
         self.current_lap = 0
         self.rank = agents

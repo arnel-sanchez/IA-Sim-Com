@@ -3,12 +3,12 @@ from shutil import rmtree
 from pyke import knowledge_engine
 
 
-def edit_moto():
-    facts = open("moto_facts.kfb", "w")
+def edit_moto(weather):
+    facts = open("ai/moto_facts.kfb", "w")
     facts.write("# moto_facts.kfb\n\n")
-    facts.write("rain(True)\n")
-    facts.write("humidity(False)\n")
-    facts.write("windy(True)\n")
+    facts.write("rainy({})\n".format(True if weather.weather_status.name.__contains__("Rainy") else False))
+    facts.write("humidity({})\n".format(True if weather.humidity > 6 else False))
+    facts.write("windy({})\n".format(True if weather.wind_intensity > 6 else False))
     facts.write("wind_direction(3)\n")
     facts.close()
 
@@ -22,10 +22,10 @@ def moto():
     with engine.prove_goal("bc_moto_rules.select_tires($select)") as gen:
         for ans, plan in gen:
             tires[1].append(ans["select"])
-    print("\nYou should select:")
     for i in range(len(tires[0])):
         for j in range(len(tires[1])):
-            print(tires[0][i] + "_" + tires[1][j])
+            comb = tires[0][i] + tires[1][j]
+            print(comb if comb < 5 else 4)
 
 
 def restart(rules: str):
@@ -39,7 +39,7 @@ def restart(rules: str):
     return engine
 
 
-def edit_action(speed, bike_max_speed, section_max_speed, section_type, tires, weather, humidity):
+def edit_action(speed, bike_max_speed, section_max_speed, section_type, tires, weather):
     facts = open("ai/action_facts.kfb", "w")
     facts.write("# action_facts.kfb\n\n")
     if speed > bike_max_speed or speed > section_max_speed:
@@ -51,8 +51,8 @@ def edit_action(speed, bike_max_speed, section_max_speed, section_type, tires, w
     facts.write("speed({})\n".format(speed_cmp))
     facts.write("curve({})\n".format(True if section_type == "Curve" else False))
     facts.write("tires({})\n".format(True if tires.__contains__("Slick") else False))
-    facts.write("rainy({})\n".format(True if weather.__contains__("Rainy") else False))
-    facts.write("humidity({})\n".format(True if humidity > 6 else False))
+    facts.write("rainy({})\n".format(True if weather.weather_status.name.__contains__("Rainy") else False))
+    facts.write("humidity({})\n".format(True if weather.humidity > 6 else False))
     facts.close()
 
 
