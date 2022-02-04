@@ -6,10 +6,10 @@ from math import sqrt
 from simulation.weather import Cardinals_Points
 from ai.ai import edit_action, call_ai
 from simulation.track import Track_Type
-
+from compilation.ast.nodes import Node
 
 class Agent:
-    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_aceleration):
+    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_aceleration, node: Node):
         self.rider = rider
         self.bike = bike
         self.speed = 0
@@ -19,6 +19,7 @@ class Agent:
         self.flag_action = flag_action
         self.flag_aceleration = flag_aceleration
         self.flag_to_pits = False
+        self.node = node
 
     def update_agent_initial_parameters(self, weather, section):
         if self.bike.chassis_stiffness > 5:
@@ -618,9 +619,16 @@ class Agent:
         return True
 
     def overcome_an_obstacle(self, section, race, weather):
-        action = self.select_action(section, weather)
+        if self.flag_action:
+            action = self.node
+        else:
+            action = self.select_action(section, weather)
 
-        self.select_aceleration(section, race, action)
+        if self.flag_aceleration:
+            self.node
+        else:
+            self.select_aceleration(section, race, action)
+
         self.calc_final_speed(self.speed, section[2], self.acceleration)
             
         if self.status_analysis(section, race, action) == False:
