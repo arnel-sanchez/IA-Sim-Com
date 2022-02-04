@@ -4,11 +4,11 @@ from compilation.errors import Error, UnknownCharacterError, UnexpectedCharacter
 
 class Tokenizer:
     def __init__(self):
-        self.keywords = dict([("bool", TokenType.T_BOOL), ("break", TokenType.T_BREAK),
+        self.keywords = dict([("bike", TokenType.T_NULL), ("bool", TokenType.T_BOOL), ("break", TokenType.T_BREAK),
                               ("continue", TokenType.T_CONTINUE), ("double", TokenType.T_DOUBLE),
                               ("elif", TokenType.T_ELIF), ("else", TokenType.T_ELSE), ("false", TokenType.T_FALSE),
                               ("if", TokenType.T_IF), ("include", TokenType.T_INCLUDE), ("int", TokenType.T_INT),
-                              ("method", TokenType.T_METHOD), ("moto", TokenType.T_NULL), ("null", TokenType.T_NULL),
+                              ("method", TokenType.T_METHOD), ("null", TokenType.T_NULL),
                               ("return", TokenType.T_RETURN), ("rider", TokenType.T_NULL),
                               ("string", TokenType.T_STRING), ("true", TokenType.T_TRUE), ("void", TokenType.T_VOID),
                               ("while", TokenType.T_WHILE)])
