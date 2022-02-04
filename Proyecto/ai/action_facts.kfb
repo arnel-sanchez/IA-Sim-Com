@@ -1,6 +1,6 @@
 # action_facts.kfb
 
-speed(1)
+speed(3)
 curve(False)
 tires(True)
 rainy(False)

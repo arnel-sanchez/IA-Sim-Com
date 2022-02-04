@@ -620,32 +620,6 @@ class Agent:
     def overcome_an_obstacle(self, section, race, weather):
         action = self.select_action(section, weather)
 
-        if action == Agent_actions.SpeedUp:
-            self.select_aceleration(section, race, Agent_actions.SpeedUp)
-            vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
-            t = (vf - self.speed)/self.acceleration
-            self.time_lap += t
-            self.speed = vf
-            
-            if self.status_analysis(section,race):
-                print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
-            else:
-                race.agents.remove(self)
-
-        elif action == Agent_actions.Brake:
-            self.select_aceleration(section, race, Agent_actions.Brake)
-            vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
-            t = (vf - self.speed)/self.acceleration
-            self.time_lap += t
-            self.speed = vf
-            
-            if self.status_analysis(section, race):
-                print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
-            else:
-                race.agents.remove(self)
-        else:
-            print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
-
         self.select_aceleration(section, race, action)
         self.calc_final_speed(self.speed, section[2], self.acceleration)
             
