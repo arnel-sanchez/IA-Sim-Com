@@ -34,6 +34,8 @@ class CheckTypesError(Error):
     def __init__(self, details: str, file: str, line: int, column: int):
         super().__init__("TYPE ERROR", details, file, line, column)
 
-
+class RunTimeError(Error):
+    def __init__(self, details: str, file: str, line: int, column: int):
+        super().__init__("RUNTIME ERROR", details, file, line, column)
 
 #ZeroDivisionError

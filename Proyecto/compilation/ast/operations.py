@@ -94,9 +94,17 @@ class BinOp(Op):#@@
 class AddOp(BinOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
+        self.token
 
     def eval(self,context:Context):
-          return self.left_node.eval(context) + self.right_node.eval(context)
+        exprNI=self.left_node.eval(context)
+        if isinstance(exprNI,RuntimeError):
+            return exprNI
+        exprND=self.right_node.eval(context)
+        if isinstance(exprND,RuntimeError):
+            return exprND
+
+        return exprNI + exprND
 
     @staticmethod
     def type() -> str:
@@ -116,10 +124,17 @@ class ArOp(BinOp):
 class SubOp(ArOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
-
+        self.token
     
     def eval(self,context:Context):
-          return self.left_node.eval(context) - self.right_node.eval(context)
+        exprNI=self.left_node.eval(context)
+        if isinstance(exprNI,RuntimeError):
+            return exprNI
+        exprND=self.right_node.eval(context)
+        if isinstance(exprND,RuntimeError):
+            return exprND
+
+        return exprNI - exprND
 
     @staticmethod
     def type() -> str:
@@ -128,9 +143,17 @@ class SubOp(ArOp):
 class MulOp(BinOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
+        self.token
 
     def eval(self,context:Context):
-          return self.left_node.eval(context) * self.right_node.eval(context)
+        exprNI=self.left_node.eval(context)
+        if isinstance(exprNI,RuntimeError):
+            return exprNI
+        exprND=self.right_node.eval(context)
+        if isinstance(exprND,RuntimeError):
+            return exprND
+
+        return exprNI * exprND
 
     @staticmethod
     def type() -> str:
@@ -139,14 +162,20 @@ class MulOp(BinOp):
 class DivOp(ArOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
-
+        self.token=None
     
     def eval(self,context:Context):
         evaluatenoderight=self.right_node.eval(context)
+        if isinstance(evaluatenoderight,RuntimeError):
+            return evaluatenoderight
+        evaluatenodeleft=self.left_node.eval(context)
+        if isinstance(evaluatenodeleft,RuntimeError):
+            return evaluatenodeleft
+
         if(evaluatenoderight!=0):
-          return left_node.eval(context) / evaluatenoderight
+          return evaluatenodeleft / evaluatenoderight
         else:
-            return "Error"  #Error 
+           return RuntimeError("division by zero","",self.token.line,self.token.column)
 
     @staticmethod
     def type() -> str:
@@ -156,15 +185,20 @@ class DivOp(ArOp):
 class ModOp(DivOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
-            
-
+        self.token=None
     
     def eval(self,context:Context):
         evaluatenoderight=self.right_node.eval(context)
+        if isinstance(evaluatenoderight,RuntimeError):
+            return evaluatenoderight
+        evaluatenodeleft=self.left_node.eval(context)
+        if isinstance(evaluatenodeleft,RuntimeError):
+            return evaluatenodeleft
+
         if(evaluatenoderight!=0):
-          return left_node.eval(context) % evaluatenoderight
+          return evaluatenodeleft % evaluatenoderight
         else:
-            return "Error"  #Error 
+           return RuntimeError("division by zero","",self.token.line,self.token.column)
 
     @staticmethod
     def type() -> str:
@@ -173,10 +207,20 @@ class ModOp(DivOp):
 class ExpOp(ArOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
+        self.token
+
+    def eval(self,context:Context):
+        exprNI=self.left_node.eval(context)
+        if isinstance(exprNI,RuntimeError):
+            return exprNI
+        exprND=self.right_node.eval(context)
+        if isinstance(exprND,RuntimeError):
+            return exprND
+
+        return exprNI ** exprND
 
     
-    def eval(self,context:Context):
-          return self.left_node.eval(context) ** self.right_node.eval(context)
+    
 
     @staticmethod
     def type() -> str:
