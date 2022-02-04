@@ -567,7 +567,7 @@ class Agent:
                 else:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.1
 
-    def select_action(self, section, race, weather):
+    def select_action(self, section, weather):
         edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
         ans = call_ai("python ai/action.py")
         return Agent_actions(ans)
@@ -593,7 +593,7 @@ class Agent:
         return True
 
     def overcome_an_obstacle(self, section, race, weather):
-        action = self.select_action(section, race, weather)
+        action = self.select_action(section, weather)
         if action == Agent_actions.SpeedUp:
             self.select_aceleration(section, race, Agent_actions.SpeedUp)
             vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
