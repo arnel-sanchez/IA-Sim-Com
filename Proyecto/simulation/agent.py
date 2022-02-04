@@ -4,9 +4,8 @@ from enum import Enum
 from math import pow
 from math import sqrt
 from simulation.weather import Cardinals_Points
-from ai.ai import edit_action
+from ai.ai import edit_action, call_ai
 from simulation.track import Track_Type
-import subprocess
 
 
 class Agent:
@@ -572,7 +571,7 @@ class Agent:
 
     def select_action(self, section, weather):
         edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
-        ans = int(subprocess.check_output('python ai/action.py').decode("utf-8")[0])
+        ans = call_ai("python ai/action.py")
         return Agent_actions(ans)
 
     def select_aceleration(self, section, race, action):
@@ -620,6 +619,33 @@ class Agent:
 
     def overcome_an_obstacle(self, section, race, weather):
         action = self.select_action(section, weather)
+
+        if action == Agent_actions.SpeedUp:
+            self.select_aceleration(section, race, Agent_actions.SpeedUp)
+            vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
+            t = (vf - self.speed)/self.acceleration
+            self.time_lap += t
+            self.speed = vf
+            
+            if self.status_analysis(section,race):
+                print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
+            else:
+                race.agents.remove(self)
+
+        elif action == Agent_actions.Brake:
+            self.select_aceleration(section, race, Agent_actions.Brake)
+            vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
+            t = (vf - self.speed)/self.acceleration
+            self.time_lap += t
+            self.speed = vf
+            
+            if self.status_analysis(section, race):
+                print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
+            else:
+                race.agents.remove(self)
+        else:
+            print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
+
         self.select_aceleration(section, race, action)
         self.calc_final_speed(self.speed, section[2], self.acceleration)
             

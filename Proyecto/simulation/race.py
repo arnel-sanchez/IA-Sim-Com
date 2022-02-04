@@ -21,16 +21,16 @@ class Race:
             self.print_ranking()
             return True
         elif self.current_lap == self.laps-1:
-            for agent in agents:
+            for agent in self.agents:
                 if agent.flag_to_pits:
-                    agent.bike.select_configuration(race.environment)
+                    agent.bike.select_configuration(self.environment)
             print("\nUltima vuelta\n")
             self.print_ranking()
             return False
         else:
             for agent in self.agents:
                 if agent.flag_to_pits:
-                    agent.bike.select_configuration(race.environment)
+                    agent.bike.select_configuration(self.environment)
             print("\nVuelta {}\n".format(self.current_lap))
             self.print_ranking()
             return False

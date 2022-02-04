@@ -1,6 +1,12 @@
+import subprocess
 from os.path import exists
 from shutil import rmtree
 from pyke import knowledge_engine
+
+
+def call_ai(script: str):
+    ans = subprocess.run(script, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return int(ans.stdout.decode("utf-8")[-3])
 
 
 def edit_moto(weather):
