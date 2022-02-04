@@ -5,6 +5,7 @@ from math import pow
 from math import sqrt
 from simulation.weather import Cardinals_Points
 from ai.ai import edit_action, call_ai
+from simulation.track import Track_Type
 
 
 class Agent:
@@ -17,6 +18,7 @@ class Agent:
         self.flag_configuration = flag_configuration
         self.flag_action = flag_action
         self.flag_aceleration = flag_aceleration
+        self.flag_to_pits = False
 
     def update_agent_initial_parameters(self, weather, section):
         if self.bike.chassis_stiffness > 5:
@@ -578,8 +580,29 @@ class Agent:
         else:
             self.acceleration = self.bike.acceleration/race.discrete_variable_generator()
 
-    def status_analysis(self, section, race):
+    def status_analysis(self, section, race, action):
         prob = race.continuous_variable_generator()
+
+        if section[4] == Track_Type.Straight:
+            if action.value == 3 or action.value == 4 or action.value == 5 or action.value == 9 or action.value == 10 or action.value == 11:
+                print("El piloto {} ha doblado en plena recta y se ha ido al suelo".format(self.rider.name))
+                return False
+        elif section[4] == Track_Type.Curve:
+            if action.value != 3 and action.value != 4 and action.value != 5 and action.value != 9 and action.value != 10 and action.value != 11:
+                print("El piloto {} ha seguido de largo y no ha doblado, a roto la moto en la grava.".format(self.rider.name))
+                return False
+        
+        if self.rider.probability_of_falling_off_the_motorcycle > prob:
+            print("El piloto {} ha perdido el control de su moto y se ha ido al suelo".format(self.rider.name))
+            return False
+
+        if self.bike.probability_of_the_motorcycle_breaking_down > prob:
+            print("El piloto {} ha reventado el motor de su moto".format(self.rider.name))
+            return False
+
+        if self.bike.probability_of_exploding_tires > prob:
+            print("El piloto {} ha reventado los neumaticos de su moto".format(self.rider.name))
+            return False
 
         if section[2] < self.speed and prob < 0.001:
             print("El piloto {} ha perdido el control de su moto y se ha ido al suelo".format(self.rider.name))
@@ -590,10 +613,13 @@ class Agent:
         elif self.speed > self.bike.max_speed:
             print("El piloto {} ha sobrepasado la velocidad maxima de su moto y ha explotado el motor".format(self.rider.name))
             return False
+
+        print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
         return True
 
     def overcome_an_obstacle(self, section, race, weather):
         action = self.select_action(section, weather)
+
         if action == Agent_actions.SpeedUp:
             self.select_aceleration(section, race, Agent_actions.SpeedUp)
             vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
@@ -620,15 +646,27 @@ class Agent:
         else:
             print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
 
+        self.select_aceleration(section, race, action)
+        self.calc_final_speed(self.speed, section[2], self.acceleration)
+            
+        if self.status_analysis(section, race, action) == False:
+            race.agents.remove(self)
+        
+        if action.value >= 6 and action.value <= 11:
+            self.flag_to_pits = True
         race.ranking()
         return
 
     def calc_final_speed(self, speed, max_speed, acceleration):
-        a = pow(speed, 2) + 2 * max_speed * acceleration
-        if a >= 0:
-            return sqrt(a)
+        vf = pow(speed, 2) + 2 * max_speed * acceleration
+        if vf >= 0:
+            vf = sqrt(vf)
         else:
-            return 0
+            vf = 0
+        t = (vf - self.speed)/self.acceleration
+        self.time_lap += t
+        self.speed = vf
+
 
 
 class Agent_actions(Enum):
