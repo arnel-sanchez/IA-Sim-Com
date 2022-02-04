@@ -28,7 +28,7 @@ from simulation.track import Track
 def compilation():
     print("\nCOMPILACION:\n")
     tokenizer = Tokenizer()
-    file, text = "console", "rider Arnel{method double select_aceleration(){if(time_lap<19.5)aceleration+=30.3}}motorcicle Palmiche{select_configuration(){tires=7}}"
+    file, text = "console", "point else point22; 22 3.4; point_1 point;\"AAA\"aaa\nif;123.0 _a.a"
     print(text)
     tokens, error = tokenizer.tokenize(file, text)
     print()
