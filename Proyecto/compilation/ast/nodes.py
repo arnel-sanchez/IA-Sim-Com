@@ -296,7 +296,7 @@ class RiderNode(TypeSpecial):
      self.padre=None
      self.funciones=[]
      self.nuevocontext:Context=None
-     self.varsforRiders=[["speed",VariableType.DOUBLE,0],["aceleration",VariableType.DOUBLE,0],["time_lap",VariableType.DOUBLE,0]]
+     self.varsforRiders=[["speed",VariableType.DOUBLE,0],["aceleration",VariableType.DOUBLE,0],["time_lap",VariableType.DOUBLE,0],["cornering",VariableType.DOUBLE,5], [ "step_by_line",VariableType.DOUBLE,5]]
      self.functionsOfRiders=["select_aceleration","select_action"]
      self.token=None
 
