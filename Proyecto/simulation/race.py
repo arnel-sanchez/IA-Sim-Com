@@ -2,10 +2,11 @@ from simulation.environment import Environment
 from numpy.random import random
 from numpy.random import randint
 
+
 class Race:
-    def __init__(self, laps, agents, environment: Environment):
-        self.agents = agents
+    def __init__(self, environment: Environment, agents, laps):
         self.environment = environment
+        self.agents = agents
         self.laps = laps
         self.current_lap = 0
         self.rank = agents
@@ -20,10 +21,16 @@ class Race:
             self.print_ranking()
             return True
         elif self.current_lap == self.laps-1:
+            for agent in self.agents:
+                if agent.flag_to_pits:
+                    agent.bike.select_configuration(self.environment)
             print("\nUltima vuelta\n")
             self.print_ranking()
             return False
         else:
+            for agent in self.agents:
+                if agent.flag_to_pits:
+                    agent.bike.select_configuration(self.environment)
             print("\nVuelta {}\n".format(self.current_lap))
             self.print_ranking()
             return False

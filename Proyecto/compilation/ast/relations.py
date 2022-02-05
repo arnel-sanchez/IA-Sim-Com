@@ -30,7 +30,14 @@ class EqRel(Rel):
 
     
     def eval(self,context:Context):
-        if self.left_node.eval(context)==self.right_node.eval(context):
+        exprNI=self.left_node.eval(context)
+        if isinstance(exprNI,RuntimeError):
+            return exprNI
+        exprND=self.right_node.eval(context)
+        if isinstance(exprND,RuntimeError):
+            return exprND
+
+        if exprNI==exprND:
             return True
         else:
           return False
@@ -45,7 +52,14 @@ class NeqRel(Rel):
         super().__init__(left_node, right_node)
 
     def eval(self,context:Context):
-        if self.left_node.eval(context)!=self.right_node.eval(context):
+        exprNI=self.left_node.eval(context)
+        if isinstance(exprNI,RuntimeError):
+            return exprNI
+        exprND=self.right_node.eval(context)
+        if isinstance(exprND,RuntimeError):
+            return exprND
+
+        if exprNI!=exprND:
             return True
         else:
           return False
@@ -60,7 +74,14 @@ class LessRel(Rel):
         super().__init__(left_node, right_node)
 
     def eval(self,context:Context):
-        if self.left_node.eval(context)<self.right_node.eval(context):
+        exprNI=self.left_node.eval(context)
+        if isinstance(exprNI,RuntimeError):
+            return exprNI
+        exprND=self.right_node.eval(context)
+        if isinstance(exprND,RuntimeError):
+            return exprND
+
+        if exprNI<exprND:
             return True
         else:
           return False
@@ -75,7 +96,14 @@ class LeqRel(Rel):
         super().__init__(left_node, right_node)
 
     def eval(self,context:Context):
-        if self.left_node.eval(context)<=self.right_node.eval(context):
+        exprNI=self.left_node.eval(context)
+        if isinstance(exprNI,RuntimeError):
+            return exprNI
+        exprND=self.right_node.eval(context)
+        if isinstance(exprND,RuntimeError):
+            return exprND
+
+        if exprNI<=exprND:
             return True
         else:
           return False
@@ -90,7 +118,14 @@ class GreatRel(Rel):
         super().__init__(left_node, right_node)
 
     def eval(self,context:Context):
-        if self.left_node.eval(context)>self.right_node.eval(context):
+        exprNI=self.left_node.eval(context)
+        if isinstance(exprNI,RuntimeError):
+            return exprNI
+        exprND=self.right_node.eval(context)
+        if isinstance(exprND,RuntimeError):
+            return exprND
+
+        if exprNI>exprND:
             return True
         else:
           return False
@@ -105,7 +140,14 @@ class GreqRel(Rel):
         super().__init__(left_node, right_node)
 
     def eval(self,context:Context):
-        if self.left_node.eval(context)>=self.right_node.eval(context):
+        exprNI=self.left_node.eval(context)
+        if isinstance(exprNI,RuntimeError):
+            return exprNI
+        exprND=self.right_node.eval(context)
+        if isinstance(exprND,RuntimeError):
+            return exprND
+
+        if exprNI>=exprND:
             return True
         else:
           return False

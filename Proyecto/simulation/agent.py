@@ -4,14 +4,22 @@ from enum import Enum
 from math import pow
 from math import sqrt
 from simulation.weather import Cardinals_Points
+from ai.ai import edit_action, call_ai
+from simulation.track import Track_Type
+from compilation.ast.nodes import Node
 
 class Agent:
-    def __init__(self, rider: Rider, bike: Bike):
+    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_aceleration, node: Node):
         self.rider = rider
         self.bike = bike
         self.speed = 0
         self.acceleration = 0
         self.time_lap = 0
+        self.flag_configuration = flag_configuration
+        self.flag_action = flag_action
+        self.flag_aceleration = flag_aceleration
+        self.flag_to_pits = False
+        self.node = node
 
     def update_agent_initial_parameters(self, weather, section):
         if self.bike.chassis_stiffness > 5:
@@ -65,20 +73,20 @@ class Agent:
             else:
                self.rider.cornering += (weather.temperature - 5)/3
 
-            if self.bike.probability_of_exploding_tires + 0.1*(weather.temperature - 5)/3 >= 1:
+            if self.bike.probability_of_exploding_tires + 0.001*(weather.temperature - 5)/3 >= 1:
                 self.bike.probability_of_exploding_tires = 1
             else:
-                self.bike.probability_of_exploding_tires += 0.1*(weather.temperature - 5)/3
+                self.bike.probability_of_exploding_tires += 0.001*(weather.temperature - 5)/3
                     
-            if self.bike.probability_of_the_motorcycle_breaking_down + 0.1*(weather.temperature - 5)/3 >= 1:
+            if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*(weather.temperature - 5)/3 >= 1:
                 self.bike.probability_of_the_motorcycle_breaking_down = 1
             else:
-                self.bike.probability_of_the_motorcycle_breaking_down += 0.1*(weather.temperature - 5)/3
+                self.bike.probability_of_the_motorcycle_breaking_down += 0.001*(weather.temperature - 5)/3
 
-            if self.rider.probability_of_falling_off_the_motorcycle - 0.1*(weather.temperature - 5)/2 <= 0:
+            if self.rider.probability_of_falling_off_the_motorcycle - 0.001*(weather.temperature - 5)/2 <= 0:
                 self.rider.probability_of_falling_off_the_motorcycle = 0
             else:
-                self.rider.probability_of_falling_off_the_motorcycle -= 0.1*(weather.temperature - 5)/3
+                self.rider.probability_of_falling_off_the_motorcycle -= 0.001*(weather.temperature - 5)/3
         elif weather.temperature < 5:
             if self.rider.step_by_line - (weather.temperature - 5)/3 <= 0:
                 self.rider.step_by_line = 0
@@ -90,20 +98,20 @@ class Agent:
             else:
                self.rider.cornering -= (weather.temperature - 5)/3
 
-            if self.bike.probability_of_exploding_tires - 0.1*(weather.temperature - 5)/3 <= 0:
+            if self.bike.probability_of_exploding_tires - 0.001*(weather.temperature - 5)/3 <= 0:
                 self.bike.probability_of_exploding_tires = 0
             else:
-                self.bike.probability_of_exploding_tires -= 0.1*(weather.temperature - 5)/3
+                self.bike.probability_of_exploding_tires -= 0.001*(weather.temperature - 5)/3
                     
-            if self.bike.probability_of_the_motorcycle_breaking_down - 0.1*(weather.temperature - 5)/3 <= 0:
+            if self.bike.probability_of_the_motorcycle_breaking_down - 0.001*(weather.temperature - 5)/3 <= 0:
                 self.bike.probability_of_the_motorcycle_breaking_down = 0
             else:
-                self.bike.probability_of_the_motorcycle_breaking_down -= 0.1*(weather.temperature - 5)/3
+                self.bike.probability_of_the_motorcycle_breaking_down -= 0.001*(weather.temperature - 5)/3
 
-            if self.rider.probability_of_falling_off_the_motorcycle + 0.1*(weather.temperature - 5)/2 >= 10:
+            if self.rider.probability_of_falling_off_the_motorcycle + 0.001*(weather.temperature - 5)/2 >= 10:
                 self.rider.probability_of_falling_off_the_motorcycle = 10
             else:
-                self.rider.probability_of_falling_off_the_motorcycle += 0.1*(weather.temperature - 5)/3
+                self.rider.probability_of_falling_off_the_motorcycle += 0.001*(weather.temperature - 5)/3
         
         if weather.visibility > 5:
             if self.rider.step_by_line + (weather.temperature - 5)/3 >= 10:
@@ -116,10 +124,10 @@ class Agent:
             else:
                self.rider.cornering += (weather.temperature - 5)/3
 
-            if self.rider.probability_of_falling_off_the_motorcycle - 0.1*(weather.temperature - 5)/2 <= 0:
+            if self.rider.probability_of_falling_off_the_motorcycle - 0.001*(weather.temperature - 5)/2 <= 0:
                 self.rider.probability_of_falling_off_the_motorcycle = 0
             else:
-                self.rider.probability_of_falling_off_the_motorcycle -= 0.1*(weather.temperature - 5)/3
+                self.rider.probability_of_falling_off_the_motorcycle -= 0.001*(weather.temperature - 5)/3
         elif weather.visibility < 5:
             if self.rider.step_by_line - (weather.temperature - 5)/3 <= 0:
                 self.rider.step_by_line = 0
@@ -131,10 +139,10 @@ class Agent:
             else:
                self.rider.cornering -= (weather.temperature - 5)/3
 
-            if self.rider.probability_of_falling_off_the_motorcycle + 0.1*(weather.temperature - 5)/2 >= 1:
+            if self.rider.probability_of_falling_off_the_motorcycle + 0.001*(weather.temperature - 5)/2 >= 1:
                 self.rider.probability_of_falling_off_the_motorcycle = 1
             else:
-                self.rider.probability_of_falling_off_the_motorcycle += 0.1*(weather.temperature - 5)/3
+                self.rider.probability_of_falling_off_the_motorcycle += 0.001*(weather.temperature - 5)/3
 
         if weather.humidity > 5:
             if self.rider.step_by_line - (weather.temperature - 5)/3 <= 0:
@@ -147,10 +155,10 @@ class Agent:
             else:
                self.rider.cornering -= (weather.temperature - 5)/3
 
-            if self.rider.probability_of_falling_off_the_motorcycle + 0.1*(weather.temperature - 5)/2 >= 1:
+            if self.rider.probability_of_falling_off_the_motorcycle + 0.001*(weather.temperature - 5)/2 >= 1:
                 self.rider.probability_of_falling_off_the_motorcycle = 1
             else:
-                self.rider.probability_of_falling_off_the_motorcycle += 0.1*(weather.temperature - 5)/3
+                self.rider.probability_of_falling_off_the_motorcycle += 0.001*(weather.temperature - 5)/3
         elif weather.humidity < 5:
             if self.rider.step_by_line + (weather.temperature - 5)/3 >= 10:
                 self.rider.step_by_line = 10
@@ -162,10 +170,10 @@ class Agent:
             else:
                self.rider.cornering += (weather.temperature - 5)/3
 
-            if self.rider.probability_of_falling_off_the_motorcycle - 0.1*(weather.temperature - 5)/2 <= 0:
+            if self.rider.probability_of_falling_off_the_motorcycle - 0.001*(weather.temperature - 5)/2 <= 0:
                 self.rider.probability_of_falling_off_the_motorcycle = 0
             else:
-                self.rider.probability_of_falling_off_the_motorcycle -= 0.1*(weather.temperature - 5)/3
+                self.rider.probability_of_falling_off_the_motorcycle -= 0.001*(weather.temperature - 5)/3
 
         if weather.wind == Cardinals_Points.North:
             #De Frente
@@ -180,10 +188,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
                 
-                if self.bike.probability_of_exploding_tires + 0.1*weather.wind_intensity/4 >= 1:
+                if self.bike.probability_of_exploding_tires + 0.001*weather.wind_intensity/4 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
-                    self.bike.probability_of_exploding_tires += 0.1*weather.wind_intensity/4
+                    self.bike.probability_of_exploding_tires += 0.001*weather.wind_intensity/4
             #De Espaldas
             elif section[3] == Cardinals_Points.South:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
@@ -196,10 +204,10 @@ class Agent:
                 else:
                     self.rider.cornering += weather.wind_intensity/4
 
-                if self.bike.probability_of_the_motorcycle_breaking_down + 0.1*weather.wind_intensity/4 >= 1:
+                if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
-                    self.bike.probability_of_the_motorcycle_breaking_down += 0.1*weather.wind_intensity/4
+                    self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
             #De Lado
             else:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
@@ -212,10 +220,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.1*weather.wind_intensity/4 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
                     self.rider.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.rider.probability_of_falling_off_the_motorcycle += 0.1*weather.wind_intensity/4
+                    self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
         elif weather.wind == Cardinals_Points.East:
             #De Frente
             if section[3] == Cardinals_Points.East:
@@ -229,10 +237,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.bike.probability_of_exploding_tires + 0.1*weather.wind_intensity/4 >= 1:
+                if self.bike.probability_of_exploding_tires + 0.001*weather.wind_intensity/4 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
-                    self.bike.probability_of_exploding_tires += 0.1*weather.wind_intensity/4
+                    self.bike.probability_of_exploding_tires += 0.001*weather.wind_intensity/4
             #De Espaldas
             elif section[3] == Cardinals_Points.West:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
@@ -245,10 +253,10 @@ class Agent:
                 else:
                     self.rider.cornering += weather.wind_intensity/4
 
-                if self.bike.probability_of_the_motorcycle_breaking_down + 0.1*weather.wind_intensity/4 >= 1:
+                if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
-                    self.bike.probability_of_the_motorcycle_breaking_down += 0.1*weather.wind_intensity/4
+                    self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
             #De Lado
             else:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
@@ -261,10 +269,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.1*weather.wind_intensity/4 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
                     self.rider.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.rider.probability_of_falling_off_the_motorcycle += 0.1*weather.wind_intensity/4
+                    self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
         elif weather.wind == Cardinals_Points.South:
             #De Frente
             if section[3] == Cardinals_Points.South:
@@ -278,10 +286,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.bike.probability_of_exploding_tires + 0.1*weather.wind_intensity/4 >= 1:
+                if self.bike.probability_of_exploding_tires + 0.001*weather.wind_intensity/4 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
-                    self.bike.probability_of_exploding_tires += 0.1*weather.wind_intensity/4
+                    self.bike.probability_of_exploding_tires += 0.001*weather.wind_intensity/4
             #De Espaldas
             elif section[3] == Cardinals_Points.North:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
@@ -294,10 +302,10 @@ class Agent:
                 else:
                     self.rider.cornering += weather.wind_intensity/4
 
-                if self.bike.probability_of_the_motorcycle_breaking_down + 0.1*weather.wind_intensity/4 >= 1:
+                if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
-                    self.bike.probability_of_the_motorcycle_breaking_down += 0.1*weather.wind_intensity/4
+                    self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
             #De Lado
             else:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
@@ -310,10 +318,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.1*weather.wind_intensity/4 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
                     self.rider.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.rider.probability_of_falling_off_the_motorcycle += 0.1*weather.wind_intensity/4
+                    self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
         else:
             #De Frente
             if section[3] == Cardinals_Points.West:
@@ -327,10 +335,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.bike.probability_of_exploding_tires + 0.1*weather.wind_intensity/4 >= 1:
+                if self.bike.probability_of_exploding_tires + 0.001*weather.wind_intensity/4 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
-                    self.bike.probability_of_exploding_tires += 0.1*weather.wind_intensity/4
+                    self.bike.probability_of_exploding_tires += 0.001*weather.wind_intensity/4
             #De Espaldas
             elif section[3] == Cardinals_Points.East:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
@@ -343,10 +351,10 @@ class Agent:
                 else:
                     self.rider.cornering += weather.wind_intensity/4
 
-                if self.bike.probability_of_the_motorcycle_breaking_down + 0.1*weather.wind_intensity/4 >= 1:
+                if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
-                    self.bike.probability_of_the_motorcycle_breaking_down += 0.1*weather.wind_intensity/4
+                    self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
             #De Lado
             else:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
@@ -359,10 +367,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.1*weather.wind_intensity/4 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
                     self.rider.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.rider.probability_of_falling_off_the_motorcycle += 0.1*weather.wind_intensity/4
+                    self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
 
     def update_agent_parameter(self, weather, new_weather, section):
         if new_weather.wind == Cardinals_Points.North:
@@ -378,10 +386,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
                 
-                if self.bike.probability_of_exploding_tires + 0.1 >= 1:
+                if self.bike.probability_of_exploding_tires + 0.0001 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
-                    self.bike.probability_of_exploding_tires += 0.1
+                    self.bike.probability_of_exploding_tires += 0.0001
             #De Espaldas
             elif section[3] == Cardinals_Points.South:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
@@ -394,10 +402,10 @@ class Agent:
                 else:
                     self.rider.cornering += weather.wind_intensity/4
 
-                if self.bike.probability_of_the_motorcycle_breaking_down + 0.1 >= 1:
+                if self.bike.probability_of_the_motorcycle_breaking_down + 0.0001 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
-                    self.bike.probability_of_the_motorcycle_breaking_down += 0.1
+                    self.bike.probability_of_the_motorcycle_breaking_down += 0.0001
             #De Lado
             else:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
@@ -410,10 +418,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.1 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.0001 >= 1:
                     self.bike.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.bike.probability_of_falling_off_the_motorcycle += 0.1
+                    self.bike.probability_of_falling_off_the_motorcycle += 0.0001
         elif new_weather.wind == Cardinals_Points.East:
             #De Frente
             if section[3] == Cardinals_Points.East:
@@ -427,10 +435,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.bike.probability_of_exploding_tires + 0.1 >= 1:
+                if self.bike.probability_of_exploding_tires + 0.0001 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
-                    self.bike.probability_of_exploding_tires += 0.1
+                    self.bike.probability_of_exploding_tires += 0.0001
             #De Espaldas
             elif section[3] == Cardinals_Points.West:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
@@ -443,10 +451,10 @@ class Agent:
                 else:
                     self.rider.cornering += weather.wind_intensity/4
 
-                if self.bike.probability_of_the_motorcycle_breaking_down + 0.1 >= 1:
+                if self.bike.probability_of_the_motorcycle_breaking_down + 0.0001 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
-                    self.bike.probability_of_the_motorcycle_breaking_down += 0.1
+                    self.bike.probability_of_the_motorcycle_breaking_down += 0.0001
             #De Lado
             else:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
@@ -459,10 +467,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.1 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.0001 >= 1:
                     self.bike.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.bike.probability_of_falling_off_the_motorcycle += 0.1
+                    self.bike.probability_of_falling_off_the_motorcycle += 0.0001
         elif new_weather.wind == Cardinals_Points.South:
             #De Frente
             if section[3] == Cardinals_Points.South:
@@ -476,10 +484,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.bike.probability_of_exploding_tires + 0.1 >= 1:
+                if self.bike.probability_of_exploding_tires + 0.0001 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
-                    self.bike.probability_of_exploding_tires += 0.1
+                    self.bike.probability_of_exploding_tires += 0.0001
             #De Espaldas
             elif section[3] == Cardinals_Points.North:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
@@ -492,10 +500,10 @@ class Agent:
                 else:
                     self.rider.cornering += weather.wind_intensity/4
 
-                if self.bike.probability_of_the_motorcycle_breaking_down + 0.1 >= 1:
+                if self.bike.probability_of_the_motorcycle_breaking_down + 0.0001 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
-                    self.bike.probability_of_the_motorcycle_breaking_down += 0.1
+                    self.bike.probability_of_the_motorcycle_breaking_down += 0.0001
             #De Lado
             else:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
@@ -508,10 +516,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.1 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.0001 >= 1:
                     self.bike.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.bike.probability_of_falling_off_the_motorcycle += 0.1
+                    self.bike.probability_of_falling_off_the_motorcycle += 0.0001
         else:
             #De Frente
             if section[3] == Cardinals_Points.West:
@@ -525,10 +533,10 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.bike.probability_of_exploding_tires + 0.1 >= 1:
+                if self.bike.probability_of_exploding_tires + 0.0001 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
-                    self.bike.probability_of_exploding_tires += 0.1
+                    self.bike.probability_of_exploding_tires += 0.0001
             #De Espaldas
             elif section[3] == Cardinals_Points.East:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
@@ -541,10 +549,10 @@ class Agent:
                 else:
                     self.rider.cornering += weather.wind_intensity/4
 
-                if self.bike.probability_of_the_motorcycle_breaking_down + 0.1 >= 1:
+                if self.bike.probability_of_the_motorcycle_breaking_down + 0.0001 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
-                    self.bike.probability_of_the_motorcycle_breaking_down += 0.1
+                    self.bike.probability_of_the_motorcycle_breaking_down += 0.0001
             #De Lado
             else:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
@@ -557,21 +565,45 @@ class Agent:
                 else:
                     self.rider.cornering -= weather.wind_intensity/4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.1 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.0001 >= 1:
                     self.bike.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.bike.probability_of_falling_off_the_motorcycle += 0.1
+                    self.bike.probability_of_falling_off_the_motorcycle += 0.0001
 
-    def select_action(self, section, race):
-        if self.speed >= section[2]:
+    def select_action(self, section, weather):
+        edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
+        ans = call_ai("python ai/action.py")
+        return Agent_actions(ans)
+
+    def select_aceleration(self, section, race, action):
+        if action == Agent_actions.Brake:
             self.acceleration = (-1) * self.bike.acceleration/race.discrete_variable_generator()
-            return Agent_actions.Brake
         else:
             self.acceleration = self.bike.acceleration/race.discrete_variable_generator()
-            return Agent_actions.Speed_up
 
-    def status_analysis(self, section, race):
+    def status_analysis(self, section, race, action):
         prob = race.continuous_variable_generator()
+
+        if section[4] == Track_Type.Straight:
+            if action.value == 3 or action.value == 4 or action.value == 5 or action.value == 9 or action.value == 10 or action.value == 11:
+                print("El piloto {} ha doblado en plena recta y se ha ido al suelo".format(self.rider.name))
+                return False
+        elif section[4] == Track_Type.Curve:
+            if action.value != 3 and action.value != 4 and action.value != 5 and action.value != 9 and action.value != 10 and action.value != 11:
+                print("El piloto {} ha seguido de largo y no ha doblado, a roto la moto en la grava.".format(self.rider.name))
+                return False
+        
+        if self.rider.probability_of_falling_off_the_motorcycle > prob:
+            print("El piloto {} ha perdido el control de su moto y se ha ido al suelo".format(self.rider.name))
+            return False
+
+        if self.bike.probability_of_the_motorcycle_breaking_down > prob:
+            print("El piloto {} ha reventado el motor de su moto".format(self.rider.name))
+            return False
+
+        if self.bike.probability_of_exploding_tires > prob:
+            print("El piloto {} ha reventado los neumaticos de su moto".format(self.rider.name))
+            return False
 
         if section[2] < self.speed and prob < 0.001:
             print("El piloto {} ha perdido el control de su moto y se ha ido al suelo".format(self.rider.name))
@@ -582,52 +614,52 @@ class Agent:
         elif self.speed > self.bike.max_speed:
             print("El piloto {} ha sobrepasado la velocidad maxima de su moto y ha explotado el motor".format(self.rider.name))
             return False
+
+        print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
         return True
 
-    def overcome_an_obstacle(self, section, race):
-        if self.select_action(section, race) == Agent_actions.Speed_up :
-            vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
-            t = (vf - self.speed)/self.acceleration
-            self.time_lap += t
-            self.speed = vf
-            
-            if self.status_analysis(section,race):
-                print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
-            else:
-                race.agents.remove(self)
-
-        elif self.select_action(section, race) == Agent_actions.Brake :
-            vf = self.calc_final_speed(self.speed, section[2], self.acceleration)
-            t = (vf - self.speed)/self.acceleration
-            self.time_lap += t
-            self.speed = vf
-            
-            if self.status_analysis(section, race):
-                print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
-            else:
-                race.agents.remove(self)
+    def overcome_an_obstacle(self, section, race, weather):
+        if self.flag_action:
+            action = self.node
         else:
-            print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
+            action = self.select_action(section, weather)
 
-        race.ranking()
+        if self.flag_aceleration:
+            self.node
+        else:
+            self.select_aceleration(section, race, action)
+
+        self.calc_final_speed(self.speed, section[2], self.acceleration)
+            
+        if self.status_analysis(section, race, action) == False:
+            race.agents.remove(self)
+        
+        if action.value >= 6 and action.value <= 11:
+            self.flag_to_pits = True
         return
 
     def calc_final_speed(self, speed, max_speed, acceleration):
-        a = pow(speed, 2) + 2 * max_speed * acceleration
-        if a >= 0:
-            return sqrt(a)
+        vf = pow(speed, 2) + 2 * max_speed * acceleration
+        if vf >= 0:
+            vf = sqrt(vf)
         else:
-            return 0
+            vf = 0
+        t = (vf - self.speed)/self.acceleration
+        self.time_lap += t
+        self.speed = vf
+
+
 
 class Agent_actions(Enum):
-    Speed_up = 0
-    Brake = 1
-    Bend = 2
-    Go_to_the_pits = 3
-    Brake_Bend = 4
-    Speed_up_Bend = 5
-    Speed_up_Go_to_the_pits = 6
-    Brake_Go_to_the_pits = 7
-    Bend_Go_to_the_pits = 8
-    Brake_Bend_Go_to_the_pits = 9
-    Speed_up_Bend_Go_to_the_pits = 10
+    SpeedUp = 0
+    KeepSpeed = 1
+    Brake = 2
+    SpeedUp_Turn = 3
+    KeepSpeed_Turn = 4
+    Brake_Turn = 5
+    SpeedUp_Pits = 6
+    KeepSpeed_Pits = 7
+    Brake_Pits = 8
+    SpeedUp_Turn_Pits = 9
+    KeepSpeed_Turn_Pits = 10
+    Brake_Turn_Pits = 11

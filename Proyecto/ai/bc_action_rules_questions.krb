@@ -1,0 +1,35 @@
+# bc_action_rules_questions.krb
+
+
+speed_up
+    use select_action(1)
+    when
+        action_questions.speed(3)
+
+
+stay
+    use select_action(2)
+    when
+        action_questions.speed(2)
+
+
+brake
+    use select_action(3)
+    when
+        action_questions.speed(1)
+
+
+turn
+    use select_action(0)
+    when
+        action_questions.curve(True)
+
+
+pits
+    use select_action(6)
+    when
+        action_facts.tires($ans_1)
+        action_facts.rainy($ans_2)
+        check $ans_1 == $ans_2
+        action_facts.humidity($ans_3)
+        check $ans_1 == $ans_3

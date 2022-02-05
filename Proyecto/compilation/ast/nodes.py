@@ -1,5 +1,5 @@
 from compilation.tokens import Token, TokenType
-from compilation.errors import Error
+from compilation.errors import *
 from compilation.context import Context
 from compilation.enums import *
 
@@ -12,6 +12,19 @@ class NodeType(Enum):
     BOOL = 3
     ARRAY = 4
     OTHER = 5
+
+
+def normaliza(typevar):
+        if typevar==VariableType.INT or typevar==MethodType.INT:
+          return "int"
+        if typevar==VariableType.BOOL or typevar==MethodType.BOOL:
+          return "bool"
+        if typevar==VariableType.DOUBLE or typevar==MethodType.DOUBLE:
+          return "double"
+        if typevar==VariableType.STRING or typevar==MethodType.STRING:
+          return "str"
+        if typevar==MethodType.VOID:
+            return "void"
 
 
 class Node:
@@ -120,10 +133,12 @@ class Program(Node):
               if verificatealwaysReturn(dec_if):
                   aseguraretorno=True
            
-           if aseguraretorno:
-             return aseguraretorno #No se asegura que se retorne  , Error
-           else:
-              return IncorrectCallError(" Not all code paths return a value	","",self.token.line,self.token.column)
+           if normaliza(self.padre.typefun)!="void":
+
+               if aseguraretorno:
+                 return aseguraretorno #No se asegura que se retorne  , Error
+               else:
+                  return IncorrectCallError(" Not all code paths return a value	","",self.token.line,self.token.column)
 
         else:
 
@@ -168,6 +183,8 @@ class Program(Node):
               
            if not isinstance(statement,ReturnNode):       
                  evaluation=statement.eval(context)
+                 if isinstance(evaluation,RuntimeError):
+                    return evaluation
                  if evaluation!=None:
                     if evaluation=="break"or evaluation=="continue":
                            return evaluation
@@ -204,43 +221,87 @@ class TypeSpecial(Statement):
      self.id=None
      self.padre=None
      self.funciones=[]
-     self.context:Context=None
+     self.nuevocontext:Context=None
+     self.functionsOfRiders=["select_aceleration","select_action"]
+     self.functionsOfMotorcicles=["select_configuration"]
+     self.token=None
 
     def validate(self,context:Context):
-
+       self.nuevocontext = context.crearnuevocontexto()  
+       self.addvars()
+       
+       #Hay que agregarle las variables de las motos o los pilotos
        for function in self.funciones:
-           validationfun=function.validate(context)
+          
+           if isinstance(self,MotorcicleNode):
+              if self.functionsOfMotorcicles.count(function.idfun)!=0:
+                 self.functionsOfMotorcicles.remove(function.idfun)
+              else:
+                  return IncorrectCallError("the method was already defined or it is not valid to define a method with this name in this context","",self.token.line,self.token.column)
+           elif isinstance(self,RiderNode):
+               if self.functionsOfRiders.count(function.idfun)!=0:
+                   self.functionsOfRiders.remove(function.idfun)
+               else:
+                    return IncorrectCallError("the method was already defined or it is not valid to define a method with this name in this context","",self.token.line,self.token.column)
+           validationfun=function.validate(self.nuevocontext)
            if not isinstance(validationfun,bool):
                return validationfun
-
+         
        return True
 
-    def checktype(context:Context):
+    def checktype(self,context:Context):
         for function in self.funciones:
+            if normaliza(self.nuevocontext.enfuncion.typefun)!="void" :
+              return  CheckTypesError("error in the return value of the function","",self.token.line,self.token.column)
+            
             checktypefunction=function.checktype(context)
             if isinstance(checktypefunction,CheckTypesError):
                return checktypefunction
 
         return True
 
+    def addvars(self):
+        if isinstance(self,RiderNode):
+            listvar=self.varsforRiders
+        else:
+            listvar=self.varsforBikes
+
+        for var in listvar:
+             assign=D_Assign()
+             assign.id=var[0]
+             assign.expr=var[2]
+             assign.typevar=var[1]
+             self.nuevocontext.define_var(var[0],assign,self.token)
+        
+    def refreshContext(self,dict):    
+       keys=dict.keys()
+       for key in keys:
+            if self.nuevocontext.variables.keys().count(key)==1:
+                self.nuevocontext.variables[key].expr=dict[key]
+ 
+
 class MotorcicleNode(TypeSpecial):
    def __init__(self):  
      self.id=None
      self.padre=None
      self.funciones=[]
-     self.context:Context=None
-
-
+     self.nuevocontext:Context=None
+     self.varsforBikes=[["brand",VariableType.STRING,"Honda"],["max_speed",VariableType.INT,0],["weight",VariableType.INT,0],["tires",VariableType.INT,5],["brakes",VariableType.INT,5],["chassis_stiffness",VariableType.INT,8],["acceleration",VariableType.INT,69.444],["probability_of_the_motorcycle_breaking_down",VariableType.DOUBLE,0.000001],["probability_of_exploding_tires",VariableType.DOUBLE,0.000001]]
+     self.functionsOfMotorcicles=["select_configuration"]
+     self.token=None
 
 class RiderNode(TypeSpecial):
    def __init__(self):
      self.id=None
      self.padre=None
      self.funciones=[]
-     self.context:Context=None
+     self.nuevocontext:Context=None
+     self.varsforRiders=[["speed",VariableType.DOUBLE,0],["aceleration",VariableType.DOUBLE,0],["time_lap",VariableType.DOUBLE,0],["cornering",VariableType.DOUBLE,5], [ "step_by_line",VariableType.DOUBLE,5]]
+     self.functionsOfRiders=["select_aceleration","select_action"]
+     self.token=None
 
 
-class NodeE(Node):#@@
+class NodeE(Node):
     def __init__(self):    
      self.padre = None
      self.hijos = list() 
@@ -324,14 +385,14 @@ class D_Assign(Statement):
             return True
 
     def eval(self,context:Context):
-      context.evalAttribute(self.id)
+      return context.evalAttribute(self.id)
     
 
     @staticmethod
     def type() -> str:
         return "DecAssign"
 
-class ReturnNode(Statement): #  Mirar El Chequeo de tipos
+class ReturnNode(Statement): 
     def __init__(self):
       self.type=""
       self.expr:Expression= Expression()
@@ -402,7 +463,10 @@ class Redefinition(Statement):
           return self.op.checktype(context)         
      
      def eval(self,context:Context):
-         context.variables[self.id].expr=self.op.eval(context)
+         evaloper=self.op.eval(context)
+         if isinstance(evaloper,RuntimeError):
+             return evaloper
+         context.variables[self.id].value=evaloper
 
      @staticmethod
      def type() -> str:
@@ -419,7 +483,10 @@ class Def_Fun(Statement):
       self.token=None 
 
     def validate(self, context : Context) -> bool:
-        self.nuevocontext = context.crearnuevocontexto()
+        if not isinstance(self.padre,RiderNode) and not isinstance(self.padre,MotorcicleNode):
+           self.nuevocontext = context.crearnuevocontexto()
+        else:
+            self.nuevocontext=context
 
         validationfun=context.define_fun(self.idfun,self,self.token)
         if not isinstance(validationfun,bool):
@@ -451,9 +518,12 @@ class Def_Fun(Statement):
       keys=list(self.nuevocontext.variables.keys())
       index=0
       for arg in args:
-          self.nuevocontext.variables[keys[index]].expr=arg.eval(context)
-          index+=1
-      
+          evalexpression=arg.eval(context)
+          if not isinstance(evalexpression,RuntimeError):
+             self.nuevocontext.variables[keys[index]].value=evalexpression
+             index+=1
+          else:
+              return evalexpression
       return self.body.eval(self.nuevocontext)
 
     @staticmethod
@@ -557,11 +627,16 @@ class IfCond(Statement):
     def eval(self,context:Context):
         resultvalue:bool=None
         resultante=self.conditions[0].eval(context)
+        if isinstance(resultante,RuntimeError):
+            return resultante
         index=1
 
         while index<len(self.conditions):
                self.operadoresbinarios[index-1].left_node=resultante
-               self.operadoresbinarios[index-1].right_node=self.conditions[index].eval(context)
+               evalcond=self.conditions[index].eval(context)
+               if isinstance(evalcond,RuntimeError):
+                  return evalcond
+               self.operadoresbinarios[index-1].right_node=evalcond
                resultante=self.operadoresbinarios[index-1].eval(context)
                index+=1                              
 
@@ -613,11 +688,16 @@ class WhileCond(Statement):
     def eval(self,context:Context):
         resultvalue:bool=None
         resultante=self.conditions[0].eval(context)
+        if isinstance(resultante,RuntimeError):
+            return resultante
         index=1
 
         while index<len(self.conditions):
                self.operadoresbinarios[index-1].left_node=resultante
-               self.operadoresbinarios[index-1].right_node=self.conditions[index].eval(context)
+               evalexpr= self.conditions[index].eval(context)
+               if isinstance(evalexpr,RuntimeError):
+                   return evalexpr
+               self.operadoresbinarios[index-1].right_node=evalexpr
                resultante=self.operadoresbinarios[index-1].eval(context)
                index+=1                              
 
@@ -768,15 +848,15 @@ class Val(Node):#@@
     def type() -> str:
         return "EXP"
 
-class Variable(Node):  #@@
+class Variable(Node):
     def __init__(self,token:Token):
         self.idvar= token.value
         self.token=token
 
-    def validate(self,context:Context): #@@
+    def validate(self,context:Context): 
         return context.check_var(self.idvar,self.token)
 
-    def checktype (self,context:Context):#@@
+    def checktype (self,context:Context):
         type =context.gettypevar(self.idvar)
         if type==VariableType.INT:
           return "int"
@@ -788,7 +868,7 @@ class Variable(Node):  #@@
           return "str"
 
     def eval(self,context:Context):
-        return context.getvalueAttribute(self.idvar)
+        return context.getvalueAttribute(self.idvar,self.token)
 
 
     @staticmethod
@@ -803,7 +883,7 @@ class FunCall(Node):
      self.args:list()=[]
      self.token=None
 
-    def validate (self,context:Context)->bool: #@@
+    def validate (self,context:Context)->bool: 
        for expr in self.args:
            validationexpr=expr.validate(context)
            if not isinstance(validationexpr,bool):

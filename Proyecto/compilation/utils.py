@@ -8,14 +8,14 @@ def split_lines(tokens: [Token]) -> [[TokenType]]:
     current_line = []
     lines = []
     while t_pointer < len(tokens):
-        if tokens[t_pointer].token_type == (TokenType.T_IF or TokenType.T_ELIF or TokenType.T_ELSE or
-                                            TokenType.T_WHILE or TokenType.T_METHOD):
+        if tokens[t_pointer].token_type == TokenType.T_IF or tokens[t_pointer].token_type ==TokenType.T_ELIF or tokens[t_pointer].token_type ==TokenType.T_ELSE or tokens[t_pointer].token_type ==TokenType.T_WHILE or tokens[t_pointer].token_type ==TokenType.T_METHOD or tokens[t_pointer].token_type ==TokenType.T_RIDER or tokens[t_pointer].token_type ==TokenType.T_BIKE:
             t_pointer = loop(tokens, t_pointer, current_line, TokenType.T_OPEN_BRACE)
         elif tokens[t_pointer].token_type == TokenType.T_CLOSE_BRACE:
-            lines.append(current_line)
+            
             current_line = [tokens[t_pointer]]
+            #lines.append(current_line)
             t_pointer += 1
-            if t_pointer < len(tokens) and tokens[t_pointer].token_type == (TokenType.T_ELIF or TokenType.T_ELSE):
+            if t_pointer < len(tokens) and (tokens[t_pointer].token_type == TokenType.T_ELIF or tokens[t_pointer].token_type==TokenType.T_ELSE):
                 t_pointer = loop(tokens, t_pointer, current_line, TokenType.T_OPEN_BRACE)
         else:
             t_pointer = loop(tokens, t_pointer, current_line, TokenType.T_SEMICOLON)
