@@ -30,7 +30,7 @@ def compilation():
     tokenizer = Tokenizer()
     file= "console"#, "point else point22; 22 3.4; point_1 point;\"AAA\"aaa\nif;123.0 _a.a"
     #print(text)
-    fileopen=open("C:/Users/DarianRamon/Documents/GitHub/ScriptPrueba/PruebaTipos.txt")
+    fileopen=open("C:/Users/DarianRamon/Documents/GitHub/ScriptPrueba/New Text Document.txt")
     text = fileopen.read()
     tokens, error = tokenizer.tokenize(file, text)
     print()
