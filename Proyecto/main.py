@@ -34,7 +34,7 @@ def compilation():
     tokens, error = tokenizer.tokenize(file, text)
     if error is not None:
         print(error)
-
+        return False
     lines = split_lines(tokens)
     parser = Parser()
     if parser.parse(lines)==True:
