@@ -28,13 +28,10 @@ from simulation.track import Track
 def compilation():
     print("\nCOMPILACION:\n")
     tokenizer = Tokenizer()
-    file, text = "console", ""
+    file, text = "console", "rider Arnel{method void select_aceleration(){if(time_lap<19.5){aceleration+=30.3;}}}bike Palmiche{method void select_configuration(){tires=7;}}"
     tokens, error = tokenizer.tokenize(file, text)
     if error is not None:
         print(error)
-    else:
-        for token in tokens:
-            print(token)
 
     lines = split_lines(tokens)
     parser = Parser()
@@ -88,7 +85,8 @@ def simulation(listsOfAgents):
             agents.append(Agent(rider, bike, flag, False, False, None ))
     else:
         if len(listsOfAgents[0]) == 1:
-            rider = Rider(listsOfAgents[0][0].name, listsOfAgents[0][0].cornering, blistsOfAgents[0][0].step_by_line)
+            a = listsOfAgents[0][0].Nodo().id
+            rider = Rider("asdasd", listsOfAgents[0][0].cornering, blistsOfAgents[0][0].step_by_line)
             if listsOfAgents[1] != None:
                 bike = Bike(listsOfAgents[1][0].brand, listsOfAgents[1][0].max_speed, listsOfAgents[1][0].weight)
                 if len(listsOfAgents[1][i].functionsOfMotorcicles) == 0:
