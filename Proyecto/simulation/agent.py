@@ -571,22 +571,48 @@ class Agent:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.0001
 
     def select_action(self, section, weather):
-        edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
-        ans = call_ai("python ai/action.py")
-        return Agent_actions(ans)
+        if not self.flag_action:
+         edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
+         ans = call_ai("python ai/action.py")
+         return Agent_actions(ans)
+        else:
+            self.node.refreshContext(self.__dict__)
+            function=None
+            if self.node.funciones[0].idfun=="select_action":
+             function=self.node.funciones[0]
+            else:
+                function=self.node.funciones[1]
+            evaluation = function.eval([],self.node.nuevocontext)
+            if evaluation > 11:
+              return 11
+            else:
+                return evaluation
+            
+
 
     def select_aceleration(self, section, race, action):
+      if not self.flag_aceleration:  
         if action == Agent_actions.Brake:
             self.acceleration = (-1) * self.bike.acceleration/race.discrete_variable_generator()
         else:
             self.acceleration = self.bike.acceleration/race.discrete_variable_generator()
+      else:
+            self.node.refreshContext(self.__dict__)          
+            function=None
+            if self.node.funciones[0].idfun=="select_aceleration":
+             function=self.node.funciones[0]
+            else:
+                function=self.node.funciones[1]
+            function.eval([],self.node.nuevocontext)
+            self.acceleration=self.node.nuevocontext.variables["aceleration"].value
+            
 
     def status_analysis(self, section, race, action):
         prob = race.continuous_variable_generator()
 
         if self.speed == 0:
             print("El piloto {} ha roto el acelrador y su moto se ha detenido en plena carrera, ha sido descalificado".format(self.rider.name))
-                return False
+            return False
 
         if section[4] == Track_Type.Straight:
             if action.value == 3 or action.value == 4 or action.value == 5 or action.value == 9 or action.value == 10 or action.value == 11:

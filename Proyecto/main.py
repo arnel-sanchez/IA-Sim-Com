@@ -70,7 +70,7 @@ def simulation(listsOfAgents):
         for i in len(listsOfAgents[0]):
             rider = Rider(listsOfAgents[0][i].id, listsOfAgents[0][i].varsforRiders[3][2], listsOfAgents[0][i].varsforRiders[4][2])
             if listsOfAgents[1][i] != None:
-                bike = Bike(listsOfAgents[1][i].varsforBikes[0][2], listsOfAgents[1][i].varsforBikes[1][2], listsOfAgents[1][i].varsforBikes[2][2], listsOfAgents[1][i].varsforBikes[3][2], listsOfAgents[1][i].varsforBikes[4][2])
+                bike = Bike(listsOfAgents[1][i].varsforBikes[0][2], listsOfAgents[1][i].varsforBikes[1][2], listsOfAgents[1][i].varsforBikes[2][2], listsOfAgents[1][i].varsforBikes[3][2], listsOfAgents[1][i].varsforBikes[4][2],listsOfAgents[1][i])
                 if len(listsOfAgents[1][i].funciones) == 0:
                     flag_configuration = False
                 else:
@@ -90,7 +90,7 @@ def simulation(listsOfAgents):
                     flag_action = True
             else:
                 d = Ducati()
-                bike = Bike(d.brand, d.max_speed, d.weight)
+                bike = Bike(d.brand, d.max_speed, d.weight,None)
                 flag = False
 
                 if len(listsOfAgents[0][i].funciones) == 0:
@@ -110,12 +110,12 @@ def simulation(listsOfAgents):
                 bike.select_configuration(environment)
             else:
                 print("Aquí se llama al nodo")
-            agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_aceleration, None ))
+            agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_aceleration, listsOfAgents[0][i] ))
     else:
         if len(listsOfAgents[0]) == 1:
             rider = Rider(listsOfAgents[0][0].id, listsOfAgents[0][0].varsforRiders[3][2], listsOfAgents[0][0].varsforRiders[4][2])
             if listsOfAgents[1] != None:
-                bike = Bike(listsOfAgents[1][0].varsforBikes[0][2], listsOfAgents[1][0].varsforBikes[1][2], listsOfAgents[1][0].varsforBikes[2][2], listsOfAgents[1][0].varsforBikes[3][2], listsOfAgents[1][0].varsforBikes[4][2])
+                bike = Bike(listsOfAgents[1][0].varsforBikes[0][2], listsOfAgents[1][0].varsforBikes[1][2], listsOfAgents[1][0].varsforBikes[2][2], listsOfAgents[1][0].varsforBikes[3][2], listsOfAgents[1][0].varsforBikes[4][2],listsOfAgents[1][i])
                 if len(listsOfAgents[1][0].funciones) == 0:
                     flag_configuration = False
                 else:
@@ -135,7 +135,7 @@ def simulation(listsOfAgents):
                     flag_action = True
             else:
                 d = Ducati()
-                bike = Bike(d.brand, d.max_speed, d.weight)
+                bike = Bike(d.brand, d.max_speed, d.weight,None)
                 flag_configuration = False
 
                 if len(listsOfAgents[0][0].funciones) == 0:
@@ -154,8 +154,10 @@ def simulation(listsOfAgents):
             if flag_configuration == False:
                 bike.select_configuration(environment)
             else:
+                listsOfAgents[1][0].funciones[0].eval([],listsOfAgents[1][0].nuevocontext)
+                bike.tires=listsOfAgents[1][0].nuevocontext.variables["tires"].value
                 print("Aquí se llama al nodo")
-            agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_aceleration, None ))
+            agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_aceleration, listsOfAgents[0][i] ))
         
         b = Bagnaia()
         d = Ducati()
