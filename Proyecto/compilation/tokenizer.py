@@ -85,7 +85,7 @@ class Tokenizer:
                 self.alpha()
             else:
                 op = self.operators.get(current)
-                if op:
+                if op or current in ["&", "|"]:
                     self.operator(current, op)
                 else:
                     pct = self.punctuators.get(current)

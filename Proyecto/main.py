@@ -28,7 +28,9 @@ from simulation.track import Track
 def compilation():
     print("\nCOMPILACION:\n")
     tokenizer = Tokenizer()
-    file, text = "console", "rider Arnel{method void select_aceleration(){if(time_lap<19.5){aceleration+=30.3;}}}bike Palmiche{method void select_configuration(){tires=7;}}"
+    # file, text = "console", "rider Arnel{method void select_aceleration(){if(time_lap<19.5){aceleration+=30.3;}}}bike Palmiche{method void select_configuration(){tires=7;}}"
+    file = "console"
+    text = open("codes/test.pys").read()
     tokens, error = tokenizer.tokenize(file, text)
     if error is not None:
         print(error)
