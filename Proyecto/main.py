@@ -85,8 +85,7 @@ def simulation(listsOfAgents):
             agents.append(Agent(rider, bike, flag, False, False, None ))
     else:
         if len(listsOfAgents[0]) == 1:
-            a = listsOfAgents[0][0].Nodo().id
-            rider = Rider("asdasd", listsOfAgents[0][0].cornering, blistsOfAgents[0][0].step_by_line)
+            rider = Rider(listsOfAgents[0][0].id, listsOfAgents[0][0].varsforRiders["cornering"], blistsOfAgents[0][0].varsforRiders["step_by_line"])
             if listsOfAgents[1] != None:
                 bike = Bike(listsOfAgents[1][0].brand, listsOfAgents[1][0].max_speed, listsOfAgents[1][0].weight)
                 if len(listsOfAgents[1][i].functionsOfMotorcicles) == 0:
