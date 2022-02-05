@@ -12,7 +12,7 @@ class Tires(Enum):
 
 
 class Bike:
-    def __init__(self, brand, max_speed, weight, brakes = 5, chassis_stiffness = 8, nodo :Node):
+    def __init__(self, brand, max_speed, weight, node :Node, brakes = 5, chassis_stiffness = 8):
         self.brand = brand
         self.max_speed = max_speed
         self.weight = weight
@@ -22,17 +22,17 @@ class Bike:
         self.acceleration = 69.444
         self.probability_of_the_motorcycle_breaking_down = 0.000001
         self.probability_of_exploding_tires = 0.000001
-        self.nodo=nodo
+        self.node=node
 
     def select_configuration(self, environment: Environment):
-       if nodo is None:
-        edit_moto(environment.weather)
-        ans = call_ai("python ai/moto.py")
-        self.change_tires(Tires(ans))
-       else:
-           self.nodo.refreshContext(self.__dict__)
-           self.nodo.funciones[0].eval([],self.nodo.nuevocontext)
-           self.tires=self.node.nuevocontext.variables["tires"].value
+        if self.node is None:
+            edit_moto(environment.weather)
+            ans = call_ai("python ai/moto.py")
+            self.change_tires(Tires(ans))
+        else:
+            self.node.refreshContext(self.__dict__)
+            self.node.funciones[0].eval([],self.node.nuevocontext)
+            self.tires=self.node.nuevocontext.variables["tires"].value
 
     def change_tires(self, tires: Tires):
         self.tires = tires

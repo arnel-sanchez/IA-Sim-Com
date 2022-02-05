@@ -115,7 +115,7 @@ def simulation(listsOfAgents):
         if len(listsOfAgents[0]) == 1:
             rider = Rider(listsOfAgents[0][0].id, listsOfAgents[0][0].varsforRiders[3][2], listsOfAgents[0][0].varsforRiders[4][2])
             if listsOfAgents[1] != None:
-                bike = Bike(listsOfAgents[1][0].varsforBikes[0][2], listsOfAgents[1][0].varsforBikes[1][2], listsOfAgents[1][0].varsforBikes[2][2], listsOfAgents[1][0].varsforBikes[3][2], listsOfAgents[1][0].varsforBikes[4][2],listsOfAgents[1][i])
+                bike = Bike(listsOfAgents[1][0].varsforBikes[0][2], listsOfAgents[1][0].varsforBikes[1][2], listsOfAgents[1][0].varsforBikes[2][2], listsOfAgents[1][0], listsOfAgents[1][0].varsforBikes[3][2], listsOfAgents[1][0].varsforBikes[4][2])
                 if len(listsOfAgents[1][0].funciones) == 0:
                     flag_configuration = False
                 else:
@@ -135,7 +135,7 @@ def simulation(listsOfAgents):
                     flag_action = True
             else:
                 d = Ducati()
-                bike = Bike(d.brand, d.max_speed, d.weight,None)
+                bike = Bike(d.brand, d.max_speed, d.weight, None)
                 flag_configuration = False
 
                 if len(listsOfAgents[0][0].funciones) == 0:
@@ -157,47 +157,47 @@ def simulation(listsOfAgents):
                 listsOfAgents[1][0].funciones[0].eval([],listsOfAgents[1][0].nuevocontext)
                 bike.tires=listsOfAgents[1][0].nuevocontext.variables["tires"].value
                 print("Aquí se llama al nodo")
-            agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_aceleration, listsOfAgents[0][i] ))
+            agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_aceleration, listsOfAgents[0][0] ))
         
         b = Bagnaia()
         d = Ducati()
         rider = Rider(b.name, b.cornering, b.step_by_line)
-        bike = Bike(d.brand, d.max_speed, d.weight)
+        bike = Bike(d.brand, d.max_speed, d.weight, None)
         bike.select_configuration(environment)
         agents.append(Agent(rider, bike, False, False, False, None ))
         
         m = Mir()
         s = Suzuki()
         rider = Rider(m.name, m.cornering, m.step_by_line)
-        bike = Bike(s.brand, s.max_speed, s.weight)
+        bike = Bike(s.brand, s.max_speed, s.weight, None)
         bike.select_configuration(environment)
         agents.append(Agent(rider, bike, False, False, False, None ))
         
         e = Espargaro()
         a = Aprilia()
         rider = Rider(e.name, e.cornering, e.step_by_line)
-        bike = Bike(a.brand, a.max_speed, a.weight)
+        bike = Bike(a.brand, a.max_speed, a.weight, None)
         bike.select_configuration(environment)
         agents.append(Agent(rider, bike, False, False, False, None ))
 
         ma = Marquez()
         h = Honda()
         rider = Rider(ma.name, ma.cornering, ma.step_by_line)
-        bike = Bike(h.brand, h.max_speed, h.weight)
+        bike = Bike(h.brand, h.max_speed, h.weight, None)
         bike.select_configuration(environment)
         agents.append(Agent(rider, bike, False, False, False, None ))
 
         q = Quartararo()
         y = Yamaha()
         rider = Rider(q.name, q.cornering, q.step_by_line)
-        bike = Bike(y.brand, y.max_speed, y.weight)
+        bike = Bike(y.brand, y.max_speed, y.weight, None)
         bike.select_configuration(environment)
         agents.append(Agent(rider, bike, False, False, False, None ))
 
         bi = Binder()
         k = KTM()
         rider = Rider(bi.name, bi.cornering, bi.step_by_line)
-        bike = Bike(k.brand, k.max_speed, k.weight)
+        bike = Bike(k.brand, k.max_speed, k.weight, None)
         bike.select_configuration(environment)
         agents.append(Agent(rider, bike, False, False, False, None ))
 
