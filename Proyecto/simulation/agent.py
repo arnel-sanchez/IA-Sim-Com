@@ -647,15 +647,8 @@ class Agent:
         return True
 
     def overcome_an_obstacle(self, section, race, weather):
-        if self.flag_action:
-            action = self.node
-        else:
-            action = self.select_action(section, weather)
-
-        if self.flag_aceleration:
-            self.node
-        else:
-            self.aceleration = self.select_aceleration(section, race, action)
+        action = self.select_action(section, weather)
+        self.aceleration = self.select_aceleration(section, race, action)
 
         self.calc_final_speed(self.speed, section[2])
             
