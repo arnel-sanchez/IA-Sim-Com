@@ -1,0 +1,30 @@
+
+Method bool x (int y,bool f)
+{
+    if (f)
+    {
+      return f
+    }
+    else
+    {
+      y+=10
+
+    }
+
+    while(y>0)
+    {
+      if (f)
+      {
+         f=False
+      }
+      else
+      {
+        f=True
+      }
+      y-=1
+    }
+     
+    return f
+}
+
+int k = x(4,True)

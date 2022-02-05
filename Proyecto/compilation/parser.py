@@ -15,6 +15,7 @@ class Parser:
         self.estados = []  # Aqui guardamos los estados en forma de string , de forma que si el ultimo estado de la lista es el estado en el que estoy y si no hay estados en la lista ent estamos fuera de cualquier ambito del programa
         self.context=Context()
         self.i=0
+        self.dentroDType=False
         self.Riders=[]
         self.Motorcicles=[]
         self.estadoDAST= EstadoDAST.EnProgram
@@ -274,7 +275,7 @@ class Parser:
                     if len(self.estados) != 0:
                         estado = self.estados[- 1]
                         if estado == Region.R_TYPE:
-                            if line[self.i].token_type != TokenType.T_METHOD and line[self.i].token_type !=TokenType.T_CLOSE_BRACE:
+                            if line[self.i].token_type != TokenType.T_METHOD and line[self.i].token_type !=TokenType.T_CLOSE_BRACE and line[self.i].token_type != TokenType.T_ID:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "", line[self.i].line, line[self.i].column)#
                                 return False
                         elif estado == Region.R_IF or estado == Region.R_ELIF or estado == Region.R_ELSE:
@@ -491,9 +492,18 @@ class Parser:
     
     def CreanodoTipoEspecial(self,termino,token):
          if termino==TokenType.T_ID:
+            if self.dentroDType==False:
              self.nodoactual.id=token.value
              return
-         elif termino==TokenType.T_OPEN_BRACE or termino==TokenType.T_METHOD:
+            else:                 
+                 nuevonodo = Redefinition()
+                 nuevonodo.token=token
+                 self.nodoactual.variables.append(nuevonodo)
+                 nuevonodo.padre=self.nodoactual
+                 self.nodoactual=nuevonodo
+                 self.nodoactual.id=token.value
+                 self.estadoDAST=EstadoDAST.EnRedefinition
+         elif  termino==TokenType.T_METHOD:
              self.estadoDAST=EstadoDAST.EnFuncion
              nuevonodo= Def_Fun()
              nuevonodo.token=token
@@ -501,8 +511,12 @@ class Parser:
              nuevonodo.padre=self.nodoactual
              self.nodoactual=nuevonodo
          elif termino==TokenType.T_CLOSE_BRACE:
+             self.dentroDType=False
              self.nodoactual=self.nodoactual.padre
              self.estadoDAST=EstadoDAST.EnProgram
+         elif termino==TokenType.T_OPEN_BRACE :
+              self.dentroDType=True
+         
 
     def CreaNododAsignacion(self,termino,token:Token):
         if termino==TokenType.T_INT :
@@ -603,7 +617,10 @@ class Parser:
             nuevonodo=XorAs(self.nodoactual.id)
             nuevonodo.token=token
         elif termino==TokenType.T_SEMICOLON :
-            self.estadoDAST=EstadoDAST.EnProgram
+            if isinstance(self.nodoactual.padre,Program):
+               self.estadoDAST=EstadoDAST.EnProgram
+            else:
+               self.estadoDAST=EstadoDAST.EnTipoEspecial 
             self.nodoactual= self.nodoactual.padre
             return
         if termino!="I" and termino!="H":

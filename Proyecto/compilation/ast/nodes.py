@@ -221,6 +221,7 @@ class TypeSpecial(Statement):
      self.id=None
      self.padre=None
      self.funciones=[]
+     self.variables=[]
      self.nuevocontext:Context=None
      self.functionsOfRiders=["select_aceleration","select_action"]
      self.functionsOfMotorcicles=["select_configuration"]
@@ -230,6 +231,25 @@ class TypeSpecial(Statement):
        self.nuevocontext = context.crearnuevocontexto()  
        self.addvars()
        
+       if isinstance(self,RiderNode):
+        for var in self.variables:
+           if not isinstance(var.op,Assign):
+               return IncorrectCallError("in this context they can only be redefined with the equal operator","",self.token.line,self.token.column)
+           if self.nuevocontext.variables.keys().count(var.id)==0 or (var.id != "cornering" and var.id != "step_by_line"):
+               return IncorrectCallError("only cornering variables and step_by_line belonging to the type can be redefined","",self.token.line,self.token.column)
+        
+           validationexpr=var.expr.validate(context)
+           if not isinstance(validationexpr,bool):
+             validationexpr.line=self.token.line
+             validationexpr.column=self.token.column
+             return validationexpr 
+
+       else:
+           if len(self.variables)>0:
+               return IncorrectCallError("within a motorcycle type you can not redefine variables","",self.token.line,self.token.column)
+
+
+
        #Hay que agregarle las variables de las motos o los pilotos
        for function in self.funciones:
           
@@ -243,6 +263,8 @@ class TypeSpecial(Statement):
                    self.functionsOfRiders.remove(function.idfun)
                else:
                     return IncorrectCallError("the method was already defined or it is not valid to define a method with this name in this context","",self.token.line,self.token.column)
+           if len(function.args)>0:
+               return IncorrectCallError("methods defined within a type must have no arguments","",self.token.line,self.token.column)
            validationfun=function.validate(self.nuevocontext)
            if not isinstance(validationfun,bool):
                return validationfun
@@ -250,6 +272,12 @@ class TypeSpecial(Statement):
        return True
 
     def checktype(self,context:Context):
+        
+        for var in self.variables:
+          checking=var.op.checktype(self.nuevocontext) 
+          if isinstance(checking,CheckTypesError):
+              return checking
+
         for function in self.funciones:
             if normaliza(self.nuevocontext.enfuncion.typefun)!="void" :
               return  CheckTypesError("error in the return value of the function","",self.token.line,self.token.column)
@@ -269,7 +297,7 @@ class TypeSpecial(Statement):
         for var in listvar:
              assign=D_Assign()
              assign.id=var[0]
-             assign.expr=var[2]
+             assign.value=var[2]
              assign.typevar=var[1]
              self.nuevocontext.define_var(var[0],assign,self.token)
         
@@ -277,7 +305,7 @@ class TypeSpecial(Statement):
        keys=dict.keys()
        for key in keys:
             if self.nuevocontext.variables.keys().count(key)==1:
-                self.nuevocontext.variables[key].expr=dict[key]
+                self.nuevocontext.variables[key].value=dict[key]
  
 
 class MotorcicleNode(TypeSpecial):
@@ -285,8 +313,9 @@ class MotorcicleNode(TypeSpecial):
      self.id=None
      self.padre=None
      self.funciones=[]
+     self.variables=[]
      self.nuevocontext:Context=None
-     self.varsforBikes=[["brand",VariableType.STRING,"Honda"],["max_speed",VariableType.INT,0],["weight",VariableType.INT,0],["tires",VariableType.INT,5],["brakes",VariableType.INT,5],["chassis_stiffness",VariableType.INT,8],["acceleration",VariableType.INT,69.444],["probability_of_the_motorcycle_breaking_down",VariableType.DOUBLE,0.000001],["probability_of_exploding_tires",VariableType.DOUBLE,0.000001]]
+     self.varsforBikes=[["brand",VariableType.STRING,"Honda"],["max_speed",VariableType.INT,0],["weight",VariableType.INT,0],["tires",VariableType.INT,5],["brakes",VariableType.INT,5],["chassis_stiffness",VariableType.INT,8]]
      self.functionsOfMotorcicles=["select_configuration"]
      self.token=None
 
@@ -295,8 +324,9 @@ class RiderNode(TypeSpecial):
      self.id=None
      self.padre=None
      self.funciones=[]
+     self.variables=[]
      self.nuevocontext:Context=None
-     self.varsforRiders=[["speed",VariableType.DOUBLE,0],["aceleration",VariableType.DOUBLE,0],["time_lap",VariableType.DOUBLE,0],["cornering",VariableType.DOUBLE,5], [ "step_by_line",VariableType.DOUBLE,5]]
+     self.varsforRiders=[["speed",VariableType.DOUBLE,0],["aceleration",VariableType.DOUBLE,0],["time_lap",VariableType.DOUBLE,0],["cornering",VariableType.INT,5], [ "step_by_line",VariableType.INT,5]]
      self.functionsOfRiders=["select_aceleration","select_action"]
      self.token=None
 
@@ -346,7 +376,8 @@ class D_Assign(Statement):
        self.isarray: bool=False
        self.arrayvalue:list()=[]
        self.token=None
-    
+       self.value=None
+
     def validate(self, context: Context) -> bool: #@@
        if not self.isarray:
         

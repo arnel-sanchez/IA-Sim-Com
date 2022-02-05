@@ -23,14 +23,14 @@ from simulation.SetOffClasses.Riders.brad_binder import Binder
 
 from simulation.SetOffClasses.Tracks.misano import Misano
 from simulation.track import Track
-
+import sys
 
 def compilation():
     print("\nCOMPILACION:\n")
     tokenizer = Tokenizer()
     # file, text = "console", "rider Arnel{method void select_aceleration(){if(time_lap<19.5){aceleration+=30.3;}}}bike Palmiche{method void select_configuration(){tires=7;}}"
     file = "console"
-    text = open("codes/test.pys").read()
+    text = open(sys.path[0]+"/ScriptPrueba/PruebaTipos.txt").read()
     tokens, error = tokenizer.tokenize(file, text)
     if error is not None:
         print(error)
@@ -45,7 +45,7 @@ def compilation():
                   
                   exe=parser.execute()
                   if isinstance(exe, RuntimeError):
-                     print(checktype.__repr__())
+                     print(exe.__repr__())
                   else:
                       parser.LoadRidersAndBikes()
                       return parser.Riders,parser.Motorcicles      
