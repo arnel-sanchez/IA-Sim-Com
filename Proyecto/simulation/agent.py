@@ -586,7 +586,7 @@ class Agent:
             if evaluation > 11:
               return 11
             else:
-                return evaluation
+                return Agent_actions(evaluation)
             
 
 
