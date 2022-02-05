@@ -365,7 +365,7 @@ class TypeSpecial(Statement):
     def refreshContext(self,dict):    
        keys=dict.keys()
        for key in keys:
-            if self.nuevocontext.variables.keys().count(key)==1:
+            if list(self.nuevocontext.variables.keys()).count(key)==1:
                 self.nuevocontext.variables[key].value=dict[key]
  
 
