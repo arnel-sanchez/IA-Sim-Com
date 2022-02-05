@@ -106,3 +106,9 @@ class Weather:
             print("Nublado")
         else:
             print("Lluvioso")
+
+    def is_wind_front(self, wind: Cardinals_Points):
+        return True
+
+    def is_wind_back(self, wind: Cardinals_Points):
+        return True
