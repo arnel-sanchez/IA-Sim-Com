@@ -1,0 +1,52 @@
+
+int c=10;
+double x=21.0+10;
+bool z=false;
+
+method double suma(int x , double y)
+{
+   int u=10;
+   if (x==21)
+   {
+     return 10.5;
+   }
+   elif(z==true)
+   {
+    return 10.4;
+   }
+else
+{
+ int o=4;
+ return 3+y;
+}
+      
+
+}
+
+
+rider Arnel{
+
+cornering=10;
+step_by_line=7;
+
+            method void select_aceleration()
+            {            if(time_lap<19.5)
+                         {
+                           aceleration+=30.3+suma(3,3.8);
+                         }  
+            }
+
+           }
+
+bike Palmiche{
+
+
+                         
+                     method void select_configuration()
+                      {
+                          tires=7;
+                          return;
+
+                      }
+
+          }

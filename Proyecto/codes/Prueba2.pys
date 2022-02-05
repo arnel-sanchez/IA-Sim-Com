@@ -1,8 +1,10 @@
 int x=7;
 int y=8+9;
 bool z=false;
+double t= y+9.0;
 
-if (z==true && z!=false || y==17 ^ y==11 )
+
+if (y==11+45 && z==true || y==4)
 {
   y=100;
 }

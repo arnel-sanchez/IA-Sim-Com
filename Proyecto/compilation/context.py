@@ -4,9 +4,9 @@ from compilation.enums import *
 
 class Context:    
     def __init__(self):
-     self.variables=dict()
-     self.funciones=dict()
-     self.errors=list()
+     self.variables={}
+     self.funciones={}
+     self.errors=[]
      self.contextPadre = None 
      self.enfuncion=None
      self.enwhile=None
@@ -94,14 +94,20 @@ class Context:
 
     def check_fun(self,fun:str,args:int,token:Token) :
          funContain = self.funciones.get(fun,"NoEsta")
-         if funContain != "NoEsta" and args== len(funContain.args):
+         if funContain != "NoEsta" : 
+           if args== len(funContain.args):      
              return True
+           else:
+             return IncorrectCallError("the number of parameters entered into the function is not correct","",token.line,token.column)
          else :
              context=self.contextPadre
              while context is not None:
                  funContain = context.funciones.get(fun,"NoEsta")
-                 if funContain != "NoEsta" and args==len(funContain.args):
-                     return True
+                 if funContain != "NoEsta" :
+                     if args== len(funContain.args): 
+                      return True
+                     else:
+                         return IncorrectCallError("the number of parameters entered into the function is not correct","",token.line,token.column)
                  context=context.contextPadre
              return IncorrectCallError("there is no function with this name accessible from this scope","",token.line,token.column)
     def define_fun(self,fun:str, node,token:Token):
