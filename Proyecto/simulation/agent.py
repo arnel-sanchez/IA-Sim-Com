@@ -584,6 +584,10 @@ class Agent:
     def status_analysis(self, section, race, action):
         prob = race.continuous_variable_generator()
 
+        if self.speed == 0:
+            print("El piloto {} ha roto el acelrador y su moto se ha detenido en plena carrera, ha sido descalificado".format(self.rider.name))
+                return False
+
         if section[4] == Track_Type.Straight:
             if action.value == 3 or action.value == 4 or action.value == 5 or action.value == 9 or action.value == 10 or action.value == 11:
                 print("El piloto {} ha doblado en plena recta y se ha ido al suelo".format(self.rider.name))
@@ -614,8 +618,6 @@ class Agent:
         elif self.speed > self.bike.max_speed:
             print("El piloto {} ha sobrepasado la velocidad maxima de su moto y ha explotado el motor".format(self.rider.name))
             return False
-
-        print("Obstaculo {} superado por el piloto {}".format(section[0],self.rider.name))
         return True
 
     def overcome_an_obstacle(self, section, race, weather):
@@ -627,9 +629,9 @@ class Agent:
         if self.flag_aceleration:
             self.node
         else:
-            self.select_aceleration(section, race, action)
+            self.aceleration = self.select_aceleration(section, race, action)
 
-        self.calc_final_speed(self.speed, section[2], self.acceleration)
+        self.calc_final_speed(self.speed, section[2])
             
         if self.status_analysis(section, race, action) == False:
             race.agents.remove(self)
@@ -638,15 +640,18 @@ class Agent:
             self.flag_to_pits = True
         return
 
-    def calc_final_speed(self, speed, max_speed, acceleration):
-        vf = pow(speed, 2) + 2 * max_speed * acceleration
+    def calc_final_speed(self, speed, max_speed):
+        vf = pow(speed, 2) + 2 * max_speed * self.acceleration
         if vf >= 0:
             vf = sqrt(vf)
         else:
             vf = 0
-        t = (vf - self.speed)/self.acceleration
-        self.time_lap += t
-        self.speed = vf
+        if self.acceleration != 0:
+            t = (vf - self.speed)/self.acceleration
+            self.time_lap += t
+            self.speed = vf
+        else:
+            self.time_lap = 0
 
 
 

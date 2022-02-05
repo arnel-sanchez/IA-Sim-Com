@@ -71,37 +71,63 @@ def simulation(listsOfAgents):
             rider = Rider(listsOfAgents[0][i].id, listsOfAgents[0][i].varsforRiders[3][2], listsOfAgents[0][i].varsforRiders[4][2])
             if listsOfAgents[1][i] != None:
                 bike = Bike(listsOfAgents[1][i].varsforBikes[0][2], listsOfAgents[1][i].varsforBikes[1][2], listsOfAgents[1][i].varsforBikes[2][2], listsOfAgents[1][i].varsforBikes[3][2], listsOfAgents[1][i].varsforBikes[4][2])
-                if len(listsOfAgents[1][i].functionsOfMotorcicles) == 0:
-                    flag = False
+                if len(listsOfAgents[1][i].funciones) == 0:
+                    flag_configuration = False
                 else:
-                    flag = True
+                    flag_configuration = True
+                
+                if len(listsOfAgents[0][i].funciones) == 0:
+                    flag_aceleration = False
+                    flag_action = False
+                elif len(listsOfAgents[0][i].funciones) == 1 and listsOfAgents[0][i].funciones[0] == "select_action":
+                    flag_aceleration = False
+                    flag_action = True
+                elif len(listsOfAgents[0][i].funciones) == 1 and listsOfAgents[0][i].funciones[0] == "select_aceleration":
+                    flag_aceleration = True
+                    flag_action = False
+                else:
+                    flag_aceleration = True
+                    flag_action = True
             else:
                 d = Ducati()
                 bike = Bike(d.brand, d.max_speed, d.weight)
                 flag = False
 
-            if flag == False:
+                if len(listsOfAgents[0][i].funciones) == 0:
+                    flag_aceleration = False
+                    flag_action = False
+                elif len(listsOfAgents[0][i].funciones) == 1 and listsOfAgents[0][i].funciones[0] == "select_action":
+                    flag_aceleration = False
+                    flag_action = True
+                elif len(listsOfAgents[0][i].funciones) == 1 and listsOfAgents[0][i].funciones[0] == "select_aceleration":
+                    flag_aceleration = True
+                    flag_action = False
+                else:
+                    flag_aceleration = True
+                    flag_action = True
+
+            if flag_configuration == False:
                 bike.select_configuration(environment)
             else:
                 print("Aquí se llama al nodo")
-            agents.append(Agent(rider, bike, flag, False, False, None ))
+            agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_aceleration, None ))
     else:
         if len(listsOfAgents[0]) == 1:
             rider = Rider(listsOfAgents[0][0].id, listsOfAgents[0][0].varsforRiders[3][2], listsOfAgents[0][0].varsforRiders[4][2])
             if listsOfAgents[1] != None:
                 bike = Bike(listsOfAgents[1][0].varsforBikes[0][2], listsOfAgents[1][0].varsforBikes[1][2], listsOfAgents[1][0].varsforBikes[2][2], listsOfAgents[1][0].varsforBikes[3][2], listsOfAgents[1][0].varsforBikes[4][2])
-                if len(listsOfAgents[1][0].functionsOfMotorcicles) == 0:
+                if len(listsOfAgents[1][0].funciones) == 0:
                     flag_configuration = False
                 else:
                     flag_configuration = True
                 
-                if len(listsOfAgents[0][0].functionsOfRiders) == 0:
+                if len(listsOfAgents[0][0].funciones) == 0:
                     flag_aceleration = False
                     flag_action = False
-                elif len(listsOfAgents[0][0].functionsOfRiders) == 1 and listsOfAgents[0][0].functionsOfRiders[0] == "select_action":
+                elif len(listsOfAgents[0][0].funciones) == 1 and listsOfAgents[0][0].funciones[0] == "select_action":
                     flag_aceleration = False
                     flag_action = True
-                elif len(listsOfAgents[0][0].functionsOfRiders) == 1 and listsOfAgents[0][0].functionsOfRiders[0] == "select_aceleration":
+                elif len(listsOfAgents[0][0].funciones) == 1 and listsOfAgents[0][0].funciones[0] == "select_aceleration":
                     flag_aceleration = True
                     flag_action = False
                 else:
@@ -110,7 +136,20 @@ def simulation(listsOfAgents):
             else:
                 d = Ducati()
                 bike = Bike(d.brand, d.max_speed, d.weight)
-                flag = False
+                flag_configuration = False
+
+                if len(listsOfAgents[0][0].funciones) == 0:
+                    flag_aceleration = False
+                    flag_action = False
+                elif len(listsOfAgents[0][0].funciones) == 1 and listsOfAgents[0][0].funciones[0] == "select_action":
+                    flag_aceleration = False
+                    flag_action = True
+                elif len(listsOfAgents[0][0].funciones) == 1 and listsOfAgents[0][0].funciones[0] == "select_aceleration":
+                    flag_aceleration = True
+                    flag_action = False
+                else:
+                    flag_aceleration = True
+                    flag_action = True
 
             if flag_configuration == False:
                 bike.select_configuration(environment)
