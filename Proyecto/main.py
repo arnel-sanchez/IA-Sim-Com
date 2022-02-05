@@ -48,6 +48,7 @@ def compilation():
                   if isinstance(exe, RuntimeError):
                      print(checktype.__repr__())
                   else:
+                      parser.LoadRidersAndBikes()
                       return parser.Riders,parser.Motorcicles      
             else:
                 print(checktype.__repr__())

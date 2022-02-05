@@ -836,6 +836,6 @@ class Parser:
     def LoadRidersAndBikes(self):
         for statement in self.nodopararecorrerast.statements:
             if isinstance(statement,RiderNode):
-                self.Riders.setupdate(statement.id,statement)
+                self.Riders.setdefault(statement.id,statement)
             elif isinstance(statement,MotorcicleNode):
-                self.Motorcicles.setupdate(statement.id,statement)
+                self.Motorcicles.setdefault(statement.id,statement)
