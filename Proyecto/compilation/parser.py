@@ -42,7 +42,7 @@ class Parser:
                              "N": [[TokenType.T_ELSE, TokenType.T_OPEN_BRACE],
                                    [TokenType.T_ELIF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE], ["e"]],
-                             "W": [[TokenType.T_CONTINUE], [TokenType.T_BREAK], [TokenType.T_RETURN,"E"]],
+                             "W": [[TokenType.T_CONTINUE], [TokenType.T_BREAK], [TokenType.T_RETURN,"V"]],
                              "F": [[TokenType.T_RIDER], [TokenType.T_BIKE]],
                              "A": [[TokenType.T_OPEN_PAREN, "Z"
                                     , TokenType.T_CLOSE_PAREN], ["e"]],
@@ -65,7 +65,8 @@ class Parser:
                                     "E", "U", TokenType.T_CLOSE_BRACKET]],
                              "H": [[ "I","E"],[TokenType.T_OPEN_PAREN, "Z"
                                     ,TokenType.T_CLOSE_PAREN]],
-                             "O": [[ "C","E"],["e"]]} 
+                             "O": [[ "C","E"],["e"]],
+                             "V": [["E"],["e"]]} 
                                   
         self.terminales = [TokenType.T_SEMICOLON, TokenType.T_OPEN_PAREN, TokenType.T_CLOSE_PAREN,
                            TokenType.T_OPEN_BRACKET, TokenType.T_CLOSE_BRACKET, TokenType.T_OPEN_BRACE,
@@ -84,17 +85,17 @@ class Parser:
                            TokenType.T_CONTINUE, TokenType.T_BREAK, TokenType.T_RETURN, TokenType.T_RIDER,
                            TokenType.T_BIKE]
         self.no_terminales = ["L", "D", "I", "E", "M", "Y", "J", "U", "N", "@", "R", "K", "T", "P", "W", "S", "F",
-                              "A", "Z", "Q", "C", "B", "G", "X", "~", "^","H","O"]
+                              "A", "Z", "Q", "C", "B", "G", "X", "~", "^","H","O","V"]
         self.first = dict()  # Guardamos los terminales que pertenecen al First de cada produccion posible de nuestra gramatica
         self.follow = {"L": [], "D": [], "I": [], "E": [], "M": [], "Y": [], "J": [], "U": [], "N": [], "@": [],
                        "R": [], "K": [], "T": [], "P": [], "W": [], "S": [], "F": [], "A": [], "Z": [],
                         "Q": [], "C": [], "B": [], "G": [], "X": [], "~": [],
-                       "^": [],"H": [],"O":[]}
+                       "^": [],"H": [],"O":[] , "V" : []}
                                 
         self.completafollow = {"L": [], "D": [], "I": [], "E": [], "M": [], "Y": [], "J": [], "U": [], "N": [], "@": [],
                        "R": [], "K": [], "T": [], "P": [], "W": [], "S": [], "F": [], "A": [], "Z": [],
                         "Q": [], "C": [], "B": [], "G": [], "X": [], "~": [],
-                       "^": [], "H":[], "O" : []} 
+                       "^": [], "H":[], "O" : [], "V":[]} 
                                     # Aqui guardamos los terminales que pertenecen al Follow de cada no terminal
         self.pendiente_follow = []  # Los elementos de esta lista tendran una forma "A,B" lo que significa que todo lo que pertenece al Follow de A tambien pertenece al Folow de B
         self.matriz = [[None for _ in range(len(self.terminales))] for _ in range(len(self.no_terminales))]
@@ -118,7 +119,7 @@ class Parser:
                                     TokenType.T_OPEN_BRACE], ["N", TokenType.T_ELSE, TokenType.T_OPEN_BRACE],
                                    ["N", TokenType.T_ELIF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE], ["N", "e"], ["W", TokenType.T_CONTINUE],
-                                   ["W", TokenType.T_BREAK], ["W", TokenType.T_RETURN,"E"], ["F", TokenType.T_RIDER],
+                                   ["W", TokenType.T_BREAK], ["W", TokenType.T_RETURN,"V"], ["F", TokenType.T_RIDER],
                                    ["F", TokenType.T_BIKE],
                                    ["A", TokenType.T_OPEN_PAREN, "Z", TokenType.T_CLOSE_PAREN], ["A", "e"],
                                    ["Z", "e"],["Z", "E","U"],["I",TokenType.T_ASSIGN],
@@ -136,7 +137,7 @@ class Parser:
                                    ["S", TokenType.T_OR_OP, "G"], ["S", TokenType.T_AND_OP, "G"], ["S", TokenType.T_XOR_OP, "G"],
                                    ["^", "T", TokenType.T_ID, TokenType.T_ASSIGN,
                                     TokenType.T_OPEN_BRACKET, "E", "U", TokenType.T_CLOSE_BRACKET], ["H","I","E"],["H",TokenType.T_OPEN_PAREN, "Z"
-                                    ,TokenType.T_CLOSE_PAREN],["O","C","E"],["O","e"]]
+                                    ,TokenType.T_CLOSE_PAREN],["O","C","E"],["O","e"],["V","E"],["V","e"]]
         self.first_producciones_calculado = False  # Esta variable booleana me sirve calcular los first restantes que luego me hacen falta para los Follows
         self.hacer_first("L")
         self.calcular_first_restantes()
@@ -421,7 +422,9 @@ class Parser:
                  nodoparaExpression.padre=self.nodoactual
                  self.nodoactual.expr=nodoparaExpression
                  self.nodoactual=nodoparaExpression
-                 self.estadoDAST=EstadoDAST.EnExpresionAssign
+                 if self.i+1< len(line):
+                   if line[self.i+1].token_type!=TokenType.T_SEMICOLON:
+                    self.estadoDAST=EstadoDAST.EnExpresionAssign
 
             elif termino == TokenType.T_BREAK:
                 nuevonodo.type="break"
@@ -569,6 +572,9 @@ class Parser:
              self.nodoactual.args.append(nuevonodo)
              self.nodoactual=nuevonodo
             self.estadoDAST=EstadoDAST.EnExpresionAssign
+       # elif termino==TokenType.T_CLOSE_PAREN:
+           # self.nodoactual= self.nodoactual.padre
+           # self.estadoDAST=EstadoDAST.EnExpresionAssign
 
             
     def CreaArgsdfun(self,termino,token:Token):
@@ -803,11 +809,11 @@ class Parser:
                  self.estadoDAST=EstadoDAST.LlamadoAfuncion
             else:  
                  nuevonodo=Variable(token)
-        if termino!=TokenType.T_OPEN_BRACKET and termino!="U":
+        if termino!=TokenType.T_OPEN_BRACKET and termino!="U" and termino!="V":
           if isinstance(self.nodoactual.nododreconocimiento,NodeE) and isinstance(nuevonodo,NodeE) :
             self.nodoactual.nododreconocimiento=nuevonodo
             self.nodoactual.noderaiz=nuevonodo
-          elif termino!="A" and termino!="Z" and termino!="U":
+          elif termino!="A" and termino!="Z" and termino!="U" and termino!="V":
             nuevonodo.padre=self.nodoactual.nododreconocimiento
             self.nodoactual.nododreconocimiento.hijos.append(nuevonodo)
             if termino == "E" or termino=="B" or termino=="M"or termino=="X" or termino=="Y" or termino=="Q" or isinstance(nuevonodo,FunCall) :

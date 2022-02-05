@@ -27,25 +27,14 @@ def normaliza(typevar):
             return "void"
 
 
-class Node:
-    def validate(self, variables: dict):
-        return True
-
-    #def type(self) -> NodeType:
-     #   return NodeType.OTHER
-
-    def eval(self, variables: dict):
-        return None
-
-    def __repr__(self) -> str:
-        return "NODE()"
-
-
 def verificatealwaysReturn(dec):
     for statement in dec.body.statements:
          if isinstance(statement,ReturnNode):
              if dec.nodoelse==None:
+                if isinstance(dec,Program): 
                  return True
+                else:
+                    return False
              elif isinstance(dec.nodoelse,IfCond):
                  if verificatealwaysReturn(dec.nodoelse):
                      return True
@@ -60,6 +49,63 @@ def verificatealwaysReturn(dec):
              if verificatealwaysReturn(statement):
                  return True
     return False
+
+
+
+
+class Node:
+    def validate(self, variables: dict):
+        return True
+
+    #def type(self) -> NodeType:
+     #   return NodeType.OTHER
+
+    def eval(self, variables: dict):
+        return None
+
+    def __repr__(self) -> str:
+        return "NODE()"
+
+
+class Assign(Node):
+    def __init__(self, idnode: Node):
+        self.idnode = idnode
+        self.expression:Expression = None
+        self.token=None
+
+    def checktype(self,context:Context):
+        
+        checkexpr=self.expression.checktype(context)
+        if isinstance(checkexpr,CheckTypesError):            
+            checkexpr.line=self.token.line
+            checkexpr.column=self.token.column
+            return checkexpr
+
+        if checkexpr==normaliza(context.gettypevar(self.idnode)):
+            return True
+        else :
+           return CheckTypesError("the expression to be assigned is not of the same type as the variable","",self.token.line,self.token.column)
+
+    def eval(self,context:Context):
+       return self.expression.eval(context)
+        
+
+    @staticmethod
+    def review(variables: dict, var_id: str, value):
+        variables[var_id] = value
+        return value
+
+    def __repr__(self):
+        return "{}_ASSIGN({}, {})".format(self.type(), self.id_node, self.expression)
+
+    @staticmethod
+    def type() -> str:
+        return "U"
+
+
+
+
+
 
 class Statement(Node):
 
@@ -179,7 +225,7 @@ class Program(Node):
       
          for statement in self.statements:     
 
-          if not isinstance(statement,Def_Fun) and not isinstance(statement,RiderNode) and not isinstance(statement,MotorcicleNode) : 
+          if not isinstance(statement,Def_Fun)  : 
               
            if not isinstance(statement,ReturnNode):       
                  evaluation=statement.eval(context)
@@ -202,7 +248,7 @@ class Program(Node):
            elif statement.type=="continue":                  
                   return "continue"
            else:
-              if statement.expr!=None:
+              if statement.expr.noderaiz.ast!=None:
                 return statement.expr.eval(context)
               else:
                 if isinstance(self.padre,Def_Fun):
@@ -234,8 +280,9 @@ class TypeSpecial(Statement):
        if isinstance(self,RiderNode):
         for var in self.variables:
            if not isinstance(var.op,Assign):
-               return IncorrectCallError("in this context they can only be redefined with the equal operator","",self.token.line,self.token.column)
-           if self.nuevocontext.variables.keys().count(var.id)==0 or (var.id != "cornering" and var.id != "step_by_line"):
+              return IncorrectCallError("in this context they can only be redefined with the equal operator","",self.token.line,self.token.column)
+           keys=list(self.nuevocontext.variables.keys())
+           if keys.count(var.id)==0 or (var.id != "cornering" and var.id != "step_by_line"):
                return IncorrectCallError("only cornering variables and step_by_line belonging to the type can be redefined","",self.token.line,self.token.column)
         
            validationexpr=var.expr.validate(context)
@@ -287,6 +334,13 @@ class TypeSpecial(Statement):
                return checktypefunction
 
         return True
+
+    def eval (self,context:Context):
+     for var in self.variables:
+         evalvar=var.expr.eval(self.nuevocontext)
+         if isinstance(evalvar,RuntimeError):
+             return evalvar
+         self.nuevocontext.variables[var].value=evalvar
 
     def addvars(self):
         if isinstance(self,RiderNode):
