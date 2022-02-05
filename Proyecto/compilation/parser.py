@@ -15,8 +15,8 @@ class Parser:
         self.estados = []  # Aqui guardamos los estados en forma de string , de forma que si el ultimo estado de la lista es el estado en el que estoy y si no hay estados en la lista ent estamos fuera de cualquier ambito del programa
         self.context=Context()
         self.i=0
-        self.Riders={}
-        self.Motorcicles={}
+        self.Riders=[]
+        self.Motorcicles=[]
         self.estadoDAST= EstadoDAST.EnProgram
         self.nodoactual=Program()  #Este sera el nodo en el que estoy parado cuando estoy construyendo el AST
         self.nodopararecorrerast=self.nodoactual
@@ -836,6 +836,6 @@ class Parser:
     def LoadRidersAndBikes(self):
         for statement in self.nodopararecorrerast.statements:
             if isinstance(statement,RiderNode):
-                self.Riders.setdefault(statement.id,statement)
+                self.Riders.append(statement)
             elif isinstance(statement,MotorcicleNode):
-                self.Motorcicles.setdefault(statement.id,statement)
+                self.Motorcicles.append(statement)
