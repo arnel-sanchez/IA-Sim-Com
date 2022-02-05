@@ -340,7 +340,10 @@ class TypeSpecial(Statement):
          evalvar=var.expr.eval(self.nuevocontext)
          if isinstance(evalvar,RuntimeError):
              return evalvar
-         self.nuevocontext.variables[var].value=evalvar
+
+         if evalvar>10:
+           return RuntimeError("this variable must be less than or equal to 10","",self.token.line,self.token.column)
+         self.nuevocontext.variables[var.id].value=evalvar
 
     def addvars(self):
         if isinstance(self,RiderNode):
