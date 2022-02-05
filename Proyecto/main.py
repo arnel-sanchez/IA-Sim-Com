@@ -30,7 +30,7 @@ def compilation():
     tokenizer = Tokenizer()
     # file, text = "console", "rider Arnel{method void select_aceleration(){if(time_lap<19.5){aceleration+=30.3;}}}bike Palmiche{method void select_configuration(){tires=7;}}"
     file = "console"
-    text = open(sys.path[0]+"/ScriptPrueba/PruebaTipos.txt").read()
+    text = open(sys.path[0]+"\codes\PruebaTipos.pys").read()
     tokens, error = tokenizer.tokenize(file, text)
     if error is not None:
         print(error)
