@@ -14,6 +14,19 @@ class NodeType(Enum):
     OTHER = 5
 
 
+def normaliza(typevar):
+        if typevar==VariableType.INT or typevar==MethodType.INT:
+          return "int"
+        if typevar==VariableType.BOOL or typevar==MethodType.BOOL:
+          return "bool"
+        if typevar==VariableType.DOUBLE or typevar==MethodType.DOUBLE:
+          return "double"
+        if typevar==VariableType.STRING or typevar==MethodType.STRING:
+          return "str"
+        if typevar==MethodType.VOID:
+            return "void"
+
+
 class Node:
     def validate(self, variables: dict):
         return True
@@ -120,10 +133,12 @@ class Program(Node):
               if verificatealwaysReturn(dec_if):
                   aseguraretorno=True
            
-           if aseguraretorno:
-             return aseguraretorno #No se asegura que se retorne  , Error
-           else:
-              return IncorrectCallError(" Not all code paths return a value	","",self.token.line,self.token.column)
+           if normaliza(self.padre.typefun)!="void":
+
+               if aseguraretorno:
+                 return aseguraretorno #No se asegura que se retorne  , Error
+               else:
+                  return IncorrectCallError(" Not all code paths return a value	","",self.token.line,self.token.column)
 
         else:
 
@@ -236,10 +251,9 @@ class TypeSpecial(Statement):
 
     def checktype(self,context:Context):
         for function in self.funciones:
-            if normaliza(context.enfuncion.typefun)!="int" and isinstance(self,RiderNode):
+            if normaliza(self.nuevocontext.enfuncion.typefun)!="void" :
               return  CheckTypesError("error in the return value of the function","",self.token.line,self.token.column)
-            if normaliza(context.enfuncion.typefun)!="void" and isinstance(self,MotorcicleNode):
-              return  CheckTypesError("error in the return value of the function","",self.token.line,self.token.column) 
+            
             checktypefunction=function.checktype(context)
             if isinstance(checktypefunction,CheckTypesError):
                return checktypefunction
@@ -272,7 +286,7 @@ class MotorcicleNode(TypeSpecial):
      self.padre=None
      self.funciones=[]
      self.nuevocontext:Context=None
-     self.varsforBikes=[["brand",VariableType.STRING,"Honda"],["max_speed",VariableType.INT,0],["weight",VariableType.INT,0],["brakes",VariableType.INT,5],["chassis_stiffness",VariableType.INT,8],["acceleration",VariableType.INT,69.444],["probability_of_the_motorcycle_breaking_down",VariableType.DOUBLE,0.000001],["probability_of_exploding_tires",VariableType.DOUBLE,0.000001]]
+     self.varsforBikes=[["brand",VariableType.STRING,"Honda"],["max_speed",VariableType.INT,0],["weight",VariableType.INT,0],["tires",VariableType.INT,5],["brakes",VariableType.INT,5],["chassis_stiffness",VariableType.INT,8],["acceleration",VariableType.INT,69.444],["probability_of_the_motorcycle_breaking_down",VariableType.DOUBLE,0.000001],["probability_of_exploding_tires",VariableType.DOUBLE,0.000001]]
      self.functionsOfMotorcicles=["select_configuration"]
      self.token=None
 
@@ -469,7 +483,10 @@ class Def_Fun(Statement):
       self.token=None 
 
     def validate(self, context : Context) -> bool:
-        self.nuevocontext = context.crearnuevocontexto()
+        if not isinstance(self.padre,RiderNode) and not isinstance(self.padre,MotorcicleNode):
+           self.nuevocontext = context.crearnuevocontexto()
+        else:
+            self.nuevocontext=context
 
         validationfun=context.define_fun(self.idfun,self,self.token)
         if not isinstance(validationfun,bool):

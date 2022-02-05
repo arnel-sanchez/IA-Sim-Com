@@ -7,6 +7,17 @@ from compilation.context import Context
 def is_string(value: str) -> bool:
     return isinstance(value, str)
 
+def normaliza(typevar):
+        if typevar==VariableType.INT or typevar==MethodType.INT:
+          return "int"
+        if typevar==VariableType.BOOL or typevar==MethodType.BOOL:
+          return "bool"
+        if typevar==VariableType.DOUBLE or typevar==MethodType.DOUBLE:
+          return "double"
+        if typevar==VariableType.STRING or typevar==MethodType.STRING:
+          return "str"
+        if typevar==MethodType.VOID:
+            return "void"
 
 class Assign(Node):
     def __init__(self, idnode: Node):
