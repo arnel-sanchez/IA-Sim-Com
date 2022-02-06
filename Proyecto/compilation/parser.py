@@ -338,7 +338,7 @@ class Parser:
                 
                 
                 self.EligeTipoDdeclaracion(termino,line[self.i],line)
-                if self.matriz[indice_nt][indice_t] != None  :
+                if self.matriz[indice_nt][indice_t] is not None  :
                     if self.matriz[indice_nt][indice_t]!="e":
                       if self.parsear(line, self.matriz[indice_nt][indice_t])==False:
                              return False

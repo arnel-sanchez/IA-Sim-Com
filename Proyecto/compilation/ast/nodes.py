@@ -632,7 +632,7 @@ class Condition(Node):
          validationExpr1=self.expression1.validate(context)
          if isinstance(validationExpr1,IncorrectCallError):
              return validationExpr1
-         if self.expression2.nododreconocimiento.ast != None:
+         if self.expression2.nododreconocimiento.ast is not None:
           validationExpr2=self.expression2.validate(context)
           if isinstance(validationExpr2,IncorrectCallError):
              return validationExpr2

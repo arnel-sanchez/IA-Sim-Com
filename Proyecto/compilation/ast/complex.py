@@ -1,16 +1,17 @@
-from compilation.ast.nodes import Token, TokenType, Node
+from compilation.enums import VariableType, MethodType
+from compilation.ast.nodes import Node, TokenType, Token
 from compilation.context import Context
 from compilation.ast.auxiliary import NodeE
 
 
 def normaliza(typevar):
-    if typevar == VariableType.INT or MethodType.INT:
+    if typevar == VariableType.INT or typevar == MethodType.INT:
         return "int"
-    if typevar == VariableType.BOOL or MethodType.BOOL:
+    if typevar == VariableType.BOOL or typevar == MethodType.BOOL:
         return "bool"
-    if typevar == VariableType.DOUBLE or MethodType.DOUBLE:
+    if typevar == VariableType.DOUBLE or typevar == MethodType.DOUBLE:
         return "double"
-    if typevar == VariableType.STRING or MethodType.STRING:
+    if typevar == VariableType.STRING or typevar == MethodType.STRING:
         return "str"
     if typevar == MethodType.VOID:
         return "void"
@@ -47,7 +48,6 @@ class Expression(Node):
     def __init__(self):
         self.nododreconocimiento = NodeE()
         self.noderaiz = NodeE()
-        #self.noderaiz = self.nododreconocimiento
 
     def checktype(self, context: Context):
         return self.noderaiz.checktype(context)
@@ -68,7 +68,7 @@ class Condition(Node):
         return self.expression1.validate(context) and self.expression2.validate(context)
 
     def checktype(self, context: Context):
-        if self.expression2.nododreconocimiento.ast == None:
+        if self.expression2.nododreconocimiento.ast is None:
             if self.expression1.checktype(context) != "bool":
                 return False
             else:
