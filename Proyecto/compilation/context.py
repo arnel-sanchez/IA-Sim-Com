@@ -11,6 +11,10 @@ class Context:
         self.enfuncion = None
         self.enwhile = None
 
+    def clear(self):
+        for var in self.variables:
+            var.value=None
+
     def evalAttribute(self, idvar):
         evalexpr = self.variables[idvar].expr.noderaiz.eval(self)
         if not isinstance(evalexpr, RuntimeError):
