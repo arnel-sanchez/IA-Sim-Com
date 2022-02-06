@@ -168,6 +168,7 @@ def simulation(agents_lists):
 def main():
     comp = compilation()
     if comp:
+        print("OK")
         simulation(comp)
 
 
