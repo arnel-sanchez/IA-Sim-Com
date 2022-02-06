@@ -2,7 +2,7 @@
 
 
 speed($ans)
-	How is the final speed compared to the maximum speed?
+	How is the current speed compared to the maximum speed?
 	---
 	$ans = select_1
 		1: Higher
