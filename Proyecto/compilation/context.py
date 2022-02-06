@@ -13,7 +13,7 @@ class Context:
 
     def clear(self):
         for var in self.variables:
-            var.value=None
+            var.value = None
 
     def evalAttribute(self, idvar):
         evalexpr = self.variables[idvar].expr.noderaiz.eval(self)

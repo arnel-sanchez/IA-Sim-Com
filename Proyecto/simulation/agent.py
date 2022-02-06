@@ -1015,7 +1015,7 @@ class Agent:
         else:
             vf = 0
         if self.acceleration != 0:
-            t = (vf - self.speed)/self.acceleration
+            t = (vf - self.speed) / self.acceleration
             self.time_lap += t
             self.speed = vf
         else:

@@ -44,7 +44,7 @@ bike Palmiche{
                          
                      method void select_configuration()
                       {
-                          tires=7;
+                          tires=3;
                           return;
 
                       }
