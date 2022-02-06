@@ -147,7 +147,7 @@
 	Sin embargo, durante la carrera las condiciones pueden variar y es necesario realizar los ajustes necesarios para que el piloto mejore su rendimiento, los cuales se harán al pasar de una seccion a otra de la pista o al finalizar cada vuelta. Esto podrá hacerse utilizando un lenguaje imperativo, mediante el uso de palabras claves para que el piloto no necesite analizar situaciones complejas y pueda concentrarse en pilotar de la forma mas eficiente posible.\par
 	De esta manera, la simulación de la carrera será dinámica, puesto que entre las vueltas podrán existir variaciones provocadas por los ajustes propuestos por el Jefe Técnico, el cuál podrá ser una persona o una IA.\par
 	
-\section{Definición del Lenguaje}
+\section{Definición del Lenguaje}\cite{conferenciasC}\cite{ullman}
 	\subsection{Introducción a PySharp (P\#)}
 	\subsubsection{Hello world!}
 	
@@ -273,11 +273,10 @@
 	
 	\begin{lstlisting}[language={PySharp}]
 		rider Rossi() {
-			method int example() {    
+			method int select_action() {    
 				return 0;
 			}
-			
-			method void curves() {    
+			method void select_acceleration(){
 				...
 			}
 			...
@@ -522,7 +521,7 @@
 	El resultado del DSL si se hacen los 3 recorridos del AST sin error, son dos listas, una con todos los pilotos que fueron creados y otra con todas las motos. A partir de estas listas se crean los pilotos y las motos en la simulacion. Los pilotos que no fueron creados en el código ejecutan sus métodos como normalmente. En el caso de un piloto que fue creado desde el DSL se ejecuta la función definida en el lenguaje, pero antes de ejecutarla se actualiza el contexto de la funcion para que dicha función pueda apoyarse en la situación actual. Luego de la ejecución de la función dependiendo que función se ejecutó, se importa a la simulación la variable que se quiere desde el contexto del método. 		
 	
 	
-\section{Simulación}
+\section{Simulación}\cite{conferenciasS}\cite{garcia}
 	Nos propusimos simular una carrera de MotoGP contrareloj, compuesta por los agentes (tuplas moto-piloto) y el ambiente (tupla clima-pista). Una vez estos son generados, se simula cada sección de la pista, calculando la influencia que ejerce el ambiente sobre el agente y las propias interacciones del agente consigo mismo, el tiempo que le demora a cada piloto en circular dicha sección y la aceleración y la acción que escogerá dicho piloto en esa sección, ya sea mediante una función redefinida desde el DSL o por una Inteligencia Artificial.
 	
 	\subsection{Clima}
@@ -618,10 +617,10 @@
 	\end{itemize}
 	De acuerdo a las interacciones anteriores se debe escoger el neumático lo más preciso posible y este provocará una combinación entre estos factores.
 
-\section{Inteligencia Artificial}
+\section{Inteligencia Artificial}\cite{conferenciasIA}\cite{russell}
 	Como nuestro proyecto se basa en simular una carrera de MotoGP donde hay n corredores, aquellos que no hayan sido diseñados mediante DSL son controlados por IA, el comportamiento de la cual varía a partir de las condiciones del ambiente que lo rodea, las características de su moto y la experiencia del propio piloto.
 	
-	Para la implementación de la IA se utilizan Sistemas Expertos generados mediante el uso de un procedimiento declarativo/imperativo, apoyándonos en la biblioteca PyKE de Python.
+	Para la implementación de la IA se utilizan Sistemas Expertos generados mediante el uso de un procedimiento declarativo/imperativo, apoyándonos en la biblioteca PyKE\cite{pyke} de Python.
 	
 	Se emplea como base de conocimiento el conjunto de variables que forman parte de la simulación y que influyen en su desempeño, como:
 	\begin{itemize}
@@ -671,8 +670,8 @@
 		moto_facts.wind_direction(1)
 	\end{lstlisting}
 	
-	Luego, consultando los resultados obtenidos por las librerías de PyKE, mediante Python de manera imperativa será posible la interacción de la estructura antes expuesta con la simulación de la carrera.
-	Atendiendo al ejemplo mostrado de selección de gomas, el sistema declarativo de PyKE devuelve el cálculo de una ecuación:
+	Luego, consultando los resultados obtenidos por las librerías de PyKE\cite{pyke}, mediante Python de manera imperativa será posible la interacción de la estructura antes expuesta con la simulación de la carrera.
+	Atendiendo al ejemplo mostrado de selección de gomas, el sistema declarativo de PyKE\cite{pyke} devuelve el cálculo de una ecuación:
 	$$valor\_tipo\_goma + valor\_goma = selección$$
 	
 	El resultado obtenido se utiliza para generar el tipo de las gomas seleccionadas, mediante el uso de un Enum en Python:
@@ -725,7 +724,7 @@
 	\end{lstlisting}
 	
 	Asimismo, se calcula mediante una ecuación el valor de la decisión tomada:
-	$$acción\_velocidad + doblar + pits = acción$$
+	$acción\_velocidad + doblar + pits = acción$
 	
 	\begin{lstlisting}[language={Python}, label={Script}]
 		class AgentActions(Enum):
@@ -746,9 +745,12 @@
 	\subsection{Selección de la aceleración}
 	Una tercera heurística es la encargada de escoger la mejor aceleración en una sección dada de la pista, con el objetivo de alcanzar la mayor velocidad posible sin causar un accidente que obligue a abandonar la carrera. 
 	Primeramente, se calcula la aceleración máxima alcanzable, tomando en cuenta que no se exceda la velocidad máxima admitida por la moto y la sección que se recorre.
-	$$a_{max}=(V_{max}^{2}-V^{2})/(2*X)$$
+	$a_{max}=(V_{max}^{2}-V^{2})/(2*X)$
 	Luego, se establece un sistema de penalizaciones que disminuyen dicha aceleración si no se poseen las condiciones óptimas del ambiente (clima, humedad, temperatura) y del piloto (destreza en curvas y rectas).
 	El resultado obtenido es incorporado a la simulación para continuar la carrera. De su valor depende mucho si el piloto obtiene un buen tiempo o sufre un accidente que lo saque de la competencia.
-
+	
+\pagebreak
+\bibliographystyle{unsrt}
+\bibliography{./_static/bib}
 \end{document}
 
