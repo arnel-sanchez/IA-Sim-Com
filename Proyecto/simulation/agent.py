@@ -941,7 +941,7 @@ class Agent:
     def select_action(self, section, weather):
         if not self.flag_action:
             edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
-            ans = call_ai("cd ai && python action.py")
+            ans = call_ai("python ai/action.py")
             return Agent_actions(ans)
         else:
             self.node.refreshContext(self.__dict__)
