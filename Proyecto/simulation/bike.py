@@ -27,6 +27,7 @@ class Bike:
     def select_configuration(self, environment: Environment):
         if self.node is None:
             edit_moto(environment.weather)
+            print(os.getcwd())
             ans = call_ai("python ai/moto.py")
             self.change_tires(Tires(ans))
         else:
