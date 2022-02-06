@@ -1,0 +1,80 @@
+Como nuestro proyecto se basa en simular una carrera de MotoGP donde hay n corredores, aquellos que no hayan sido diseñados mediante DSL son controlados por IA, el comportamiento de la cual varía a partir de las condiciones del ambiente que lo rodea, las características de su moto y la experiencia del propio piloto.
+
+Para la implementación de la IA, se utilizan Sistemas Expertos generados mediante el uso de un procedimiento declarativo/imperativo, apoyándonos en la biblioteca PyKE de Python.
+
+Se utiliza como base de conocimiento el conjunto de variables que forman parte de la simulación y que influyen en su desempeño, como:
+\begin{itemize}
+	\item las características de la moto (velocidad, frenos, chasis)
+	\item el estado del clima (soleado, nublado o lluvioso)
+	\item la intensidad y el sentido del viento
+	\item la humedad y la temperatura del ambiente
+	\item la sección de pista que se está corriendo (curva o recta)
+	\item la velocidad máxima alcanzable en la sección
+	\item las habilidades del piloto (en rectas y curvas)
+	\item entre otros
+\end{itemize}
+
+\subsection{Configuración de la moto}
+	La primera heurística es la encargada de escoger la mejor configuración de la moto. De este modo, atendiendo a las condiciones iniciales de la carrera (que serán los hechos), la IA podrá tomar decisiones atendiendo a las reglas definidas. Al ser declarativas, las determinaciones tomadas se obtendrán mediante match hechos-reglas.
+	Los hechos del sistema se presentan mediante una lógica difusa y son procesados para ser analizados:
+	%Imagen de hechos
+
+	Las reglas del sistema se formulan del modo:
+	%imagen de reglas
+
+	Luego, consultando los resultados obtenidos por las librerías de PyKE, mediante Python de manera imperativa será posible la interacción de la estructura antes expuesta con la simulación de la carrera.
+	Atendiendo al ejemplo mostrado de selección de gomas, el sistema declarativo de PyKE devuelve el cálculo de una ecuación:
+	$valor_tipo_goma + valor_goma = selección$
+
+	El resultado obtenido se utiliza para generar el tipo de las gomas seleccionadas, mediante el uso de un Enum en Python:
+	\begin{lstlisting}[language={Python}, label={Script}]
+		class Tires(Enum):
+		    Slick_Soft = 0
+		    Slick_Medium = 1
+		    Slick_Hard = 2
+		    Rain_Soft = 3
+		    Rain_Medium = 4
+	\end{lstlisting}
+
+
+\subsection{Selección de acciones}
+	Una segunda heurística será la encargada de escoger la acción que debe ejecutar el piloto, atendiendo a las condiciones de la carrera:
+	\begin{itemize}
+		\item aumentar/disminuir/mantener velocidad
+		\item doblar
+		\item ir a los pits
+		\item combinaciones de todas las anteriores
+	\end{itemize}
+  	(Ejemplo: aumentar velocidad + doblar + ir a los pits)
+	En este caso, se utiliza el mismo método expuesto en la configuración de la moto: declarativo/imperativo con el uso de PyKE.
+	Se analizan los parámetros de velocidad, sección de la pista y estado del clima:
+
+
+	Y se decide tomándolos en cuenta:
+
+
+	Asimismo, se calcula mediante una ecuación el valor de la decisión tomada:
+	$acción_velocidad + doblar + pits = acción$
+
+	\begin{lstlisting}[language={Python}, label={Script}]
+		class AgentActions(Enum):
+			SpeedUp = 0
+			KeepSpeed = 1
+			Brake = 2
+			SpeedUp_Turn = 3
+			KeepSpeed_Turn = 4
+			Brake_Turn = 5
+			SpeedUp_Pits = 6
+			KeepSpeed_Pits = 7
+			Brake_Pits = 8
+			SpeedUp_Turn_Pits = 9
+			KeepSpeed_Turn_Pits = 10
+			Brake_Turn_Pits = 11
+	\end{lstlisting}
+
+\subsection{Selección de la aceleración}
+	Una tercera heurística es la encargada de escoger la mejor aceleración en una sección dada de la pista, con el objetivo de alcanzar la mayor velocidad posible sin causar un accidente que obligue a abandonar la carrera. 
+	Primeramente, se calcula la aceleración máxima alcanzable, tomando en cuenta que no se exceda la velocidad máxima admitida por la moto y la sección que se recorre.
+	$a_max=(V_max^{2}-V^{2})/(2*X)$
+	Luego, se establece un sistema de penalizaciones que disminuyen dicha aceleración si no se poseen las condiciones óptimas del ambiente (clima, humedad, temperatura) y del piloto (destreza en curvas y rectas).
+	El resultado obtenido es incorporado a la simulación para continuar la carrera. De su valor depende mucho si el piloto obtiene un buen tiempo o sufre un accidente que lo saque de la competencia.
