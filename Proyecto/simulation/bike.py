@@ -31,6 +31,10 @@ class Bike:
             edit_moto(environment.weather)
             ans = call_ai("python ai/moto.py")
             self.change_tires(Tires(ans))
+        elif len(self.node.funciones)==0:
+            edit_moto(environment.weather)
+            ans = call_ai("python ai/moto.py")
+            self.change_tires(Tires(ans))
         else:
             self.node.refreshContext(self.__dict__)
             self.node.funciones[0].eval([], self.node.nuevocontext)
