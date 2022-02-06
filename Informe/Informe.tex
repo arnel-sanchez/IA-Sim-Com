@@ -621,9 +621,9 @@
 \section{Inteligencia Artificial}
 	Como nuestro proyecto se basa en simular una carrera de MotoGP donde hay n corredores, aquellos que no hayan sido diseñados mediante DSL son controlados por IA, el comportamiento de la cual varía a partir de las condiciones del ambiente que lo rodea, las características de su moto y la experiencia del propio piloto.
 	
-	Para la implementación de la IA, se utilizan Sistemas Expertos generados mediante el uso de un procedimiento declarativo/imperativo, apoyándonos en la biblioteca PyKE de Python.
+	Para la implementación de la IA se utilizan Sistemas Expertos generados mediante el uso de un procedimiento declarativo/imperativo, apoyándonos en la biblioteca PyKE de Python.
 	
-	Se utiliza como base de conocimiento el conjunto de variables que forman parte de la simulación y que influyen en su desempeño, como:
+	Se emplea como base de conocimiento el conjunto de variables que forman parte de la simulación y que influyen en su desempeño, como:
 	\begin{itemize}
 		\item las características de la moto (velocidad, frenos, chasis)
 		\item el estado del clima (soleado, nublado o lluvioso)
@@ -673,7 +673,7 @@
 	
 	Luego, consultando los resultados obtenidos por las librerías de PyKE, mediante Python de manera imperativa será posible la interacción de la estructura antes expuesta con la simulación de la carrera.
 	Atendiendo al ejemplo mostrado de selección de gomas, el sistema declarativo de PyKE devuelve el cálculo de una ecuación:
-	$valor_tipo_goma + valor_goma = selección$
+	$$valor_tipo_goma + valor_goma = selección$$
 	
 	El resultado obtenido se utiliza para generar el tipo de las gomas seleccionadas, mediante el uso de un Enum en Python:
 	\begin{lstlisting}[language={Python}, label={Script}]
@@ -694,6 +694,7 @@
 		\item combinaciones de todas las anteriores
 	\end{itemize}
 	(Ejemplo: aumentar velocidad + doblar + ir a los pits)
+	
 	En este caso, se utiliza el mismo método expuesto en la configuración de la moto: declarativo/imperativo con el uso de PyKE.
 	Se analizan los parámetros de velocidad, sección de la pista y estado del clima:
 	\begin{lstlisting}[language={PySharp}, label={Script}]
@@ -724,7 +725,7 @@
 	\end{lstlisting}
 	
 	Asimismo, se calcula mediante una ecuación el valor de la decisión tomada:
-	$acción_velocidad + doblar + pits = acción$
+	$$acción_velocidad + doblar + pits = acción$$
 	
 	\begin{lstlisting}[language={Python}, label={Script}]
 		class AgentActions(Enum):
@@ -745,7 +746,7 @@
 	\subsection{Selección de la aceleración}
 	Una tercera heurística es la encargada de escoger la mejor aceleración en una sección dada de la pista, con el objetivo de alcanzar la mayor velocidad posible sin causar un accidente que obligue a abandonar la carrera. 
 	Primeramente, se calcula la aceleración máxima alcanzable, tomando en cuenta que no se exceda la velocidad máxima admitida por la moto y la sección que se recorre.
-	$a_{max}=(V_{max}^{2}-V^{2})/(2*X)$
+	$$a_{max}=(V_{max}^{2}-V^{2})/(2*X)$$
 	Luego, se establece un sistema de penalizaciones que disminuyen dicha aceleración si no se poseen las condiciones óptimas del ambiente (clima, humedad, temperatura) y del piloto (destreza en curvas y rectas).
 	El resultado obtenido es incorporado a la simulación para continuar la carrera. De su valor depende mucho si el piloto obtiene un buen tiempo o sufre un accidente que lo saque de la competencia.
 
