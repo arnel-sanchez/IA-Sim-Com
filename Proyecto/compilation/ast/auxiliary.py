@@ -233,3 +233,19 @@ class FunCall(Node):
     @staticmethod
     def type() -> str:
         return "FunCall"
+
+
+class Expression(Node):
+    def __init__(self):
+        self.nododreconocimiento = NodeE()
+        self.noderaiz = NodeE()
+        self.noderaiz = self.nododreconocimiento
+
+    def checktype(self, context: Context):
+        return self.noderaiz.checktype(context)
+
+    def validate(self, context: Context):
+        return self.noderaiz.validate(context)
+
+    def eval(self, context: Context):
+        return self.noderaiz.eval(context)

@@ -2,8 +2,53 @@ from compilation.ast.nodes import Statement, normaliza
 from compilation.context import Context
 from compilation.ast.assignments import Assign
 from compilation.errors import IncorrectCallError, CheckTypesError
-from compilation.ast.complex import D_Assign
 from compilation.enums import VariableType
+
+
+class D_Assign(Statement):
+    def __init__(self):
+        self.typevar = None
+        self.id = None
+        self.expr = None
+        self.isarray: bool = False
+        self.arrayvalue = []
+        self.token = None
+        self.value = None
+
+    def validate(self, context: Context) -> bool:  # @@
+        if not self.isarray:
+            validationexpr = self.expr.validate(context)
+            if not isinstance(validationexpr, bool):
+                validationexpr.line = self.token.line
+                validationexpr.column = self.token.column
+                return validationexpr
+            validationvar = context.define_var(self.id, self, self.token)
+            if not isinstance(validationvar, bool):
+                return validationvar
+        else:
+            for expresion in self.arrayvalue:
+                if not expresion.validate(context):
+                    return False
+        return True
+
+    def checktype(self, context: Context):
+        typeExpression = self.expr.checktype(context)
+        type = normaliza(self.typevar)
+        if isinstance(typeExpression, CheckTypesError):
+            typeExpression.line = self.token.line
+            typeExpression.column = self.token.column
+            return typeExpression
+        if typeExpression == type:
+            return True
+        return CheckTypesError("the induced type of the expression is different from the type of the variable", "",
+                               self.token.line, self.token.column)
+
+    def eval(self, context: Context):
+        return context.evalAttribute(self.id)
+
+    @staticmethod
+    def type() -> str:
+        return "DecAssign"
 
 
 class TypeSpecial(Statement):

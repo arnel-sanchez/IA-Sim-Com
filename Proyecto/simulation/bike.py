@@ -1,6 +1,6 @@
 from enum import Enum
 
-from compilation.ast.nodes import BikeNode
+from compilation.ast.specials import BikeNode
 from ai.ai import edit_moto, call_ai
 from simulation.environment import Environment
 

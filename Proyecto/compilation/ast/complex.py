@@ -1,8 +1,8 @@
 from compilation.ast.nodes import Node, normaliza, Statement
 from compilation.context import Context
-from compilation.ast.specials import RiderNode, BikeNode
+from compilation.ast.specials import RiderNode, BikeNode, D_Assign
 from compilation.errors import IncorrectCallError, CheckTypesError
-from compilation.ast.auxiliary import NodeE
+from compilation.ast.auxiliary import Expression
 
 
 def verificatealwaysReturn(dec):
@@ -161,75 +161,6 @@ class Program(Node):
     @staticmethod
     def type() -> str:
         return "Program"
-
-
-class Expression(Node):
-    def __init__(self):
-        self.nododreconocimiento = NodeE()
-        self.noderaiz = NodeE()
-        self.noderaiz = self.nododreconocimiento
-
-    def checktype(self, context: Context):
-        return self.noderaiz.checktype(context)
-
-    def validate(self, context: Context):
-        return self.noderaiz.validate(context)
-
-    def eval(self, context: Context):
-        return self.noderaiz.eval(context)
-
-
-class D_Assign(Statement):
-    def __init__(self):
-        self.typevar = None
-        self.id = None
-        self.expr = None
-        self.isarray: bool = False
-        self.arrayvalue = []
-        self.token = None
-        self.value = None
-
-    def validate(self, context: Context) -> bool:  # @@
-        if not self.isarray:
-            validationexpr = self.expr.validate(context)
-            if not isinstance(validationexpr, bool):
-                validationexpr.line = self.token.line
-                validationexpr.column = self.token.column
-                return validationexpr
-            validationvar = context.define_var(self.id, self, self.token)
-            if not isinstance(validationvar, bool):
-                return validationvar
-        else:
-            for expresion in self.arrayvalue:
-                if not expresion.validate(context):
-                    return False
-        return True
-
-    def checktype(self, context: Context):
-        if not self.isarray:
-            typeExpression = self.expr.checktype(context)
-            type = normaliza(self.typevar)
-            if isinstance(typeExpression, CheckTypesError):
-                typeExpression.line = self.token.line
-                typeExpression.column = self.token.column
-                return typeExpression
-            if typeExpression == type:
-                return True
-            return CheckTypesError("the induced type of the expression is different from the type of the variable", "",
-                                   self.token.line, self.token.column)
-        else:
-            for expression in arrayvalue:
-                typeExpression = expression.checktype(context)
-                if typeExpression != typevar:
-                    return False
-            return True
-
-    def eval(self, context: Context):
-        return context.evalAttribute(self.id)
-
-    @staticmethod
-    def type() -> str:
-        return "DecAssign"
 
 
 class ReturnNode(Statement):
