@@ -152,24 +152,12 @@
 		El cuerpo de un método especifica las declaraciones que se ejecutarán cuando se invoca el método. El cuerpo de un método puede declarar variables que son específicas de la invocación del método. Estas variables se denominan variables locales. Una declaración de variable local especifica un nombre de tipo, un nombre de variable y un valor inicial.
 		
 	\subsubsection{Operadores}
-		Un \textbf{operador} es un miembro que define el significado de aplicar un operador de expresión particular. Se pueden definir tres tipos de operadores: operadores unarios y operadores binarios.\par
-	
-		\textbf{Operadores Unarios:}
-		\begin{lstlisting}[language={PSharp}]
-			!true;
-		\end{lstlisting}
+		Un \textbf{operador} es un miembro que define el significado de aplicar un operador de expresión particular.\par
 		
 		\textbf{Operadores Binarios:}
 		\begin{lstlisting}[language={PSharp}]
 			3+5;
 			true && false;
-		\end{lstlisting}
-	
-	\subsubsection{Matrices}
-		Una matriz es una estructura de datos que contiene una serie de variables a las que se accede a través de índices calculados. Las variables contenidas en una matriz, también llamadas elementos de la matriz, son todas del mismo tipo, y este tipo se denomina tipo de elemento de la matriz. Los tipos de matriz son tipos de referencia y la declaración de una variable de matriz simplemente reserva espacio para una referencia a una instancia de matriz. Los índices de los elementos de una matriz van de 0 a longitud - 1.
-		
-		\begin{lstlisting}[language={PSharp}]
-			int[] a = [1, 2, 3, 4, 5];
 		\end{lstlisting}
 	
 	\subsubsection{Análisis Léxico}
@@ -267,19 +255,17 @@
 		| 'void'\par
 		| 'while'\par
 		
-		| 'motorcycle'\par
+		| 'bike'\par
 		| 'rider'\par
-		| 'track'\par
-		| 'weather'\par
 		
-		| 'angle'\par
 		| 'brakes'\par
-		| 'lap'\par
-		| 'length'\par
+		| 'max\_speed'\par
+		| 'weight'\par
+		| 'chassis\_stiffness'\par
 		| 'speed'\par
-		| 'temperature'\par
-		| 'skill'\par
-		| 'tyres'\par		
+		| 'tyres'\par
+		| 'cornering'\par
+		| 'step\_by\_line'\par		
 		;\par
 		
 		\underline{\textbf{Literales}}\par
@@ -339,7 +325,6 @@
 		| '/' \par
 		| '\%' \par
 		| '**' \par
-		| '!' \par
 		| '=' \par
 		| '<' \par
 		| '>' \par
@@ -365,4 +350,36 @@
 		: 'include' '<Nombre\_del\_archivo.pys>' ';'\par
 		;\par
 		
+	\subsection{Explicación de la Implementación}
+	Para crear nuestra gramatica nos apoyamos en los lenguajes Python y CSharp , de ahi el nombre de nuestro DSL PSharp.
+	
+	Cuando se recibe el código se tokeniza, luego de tener los tokens resultantes acordamos que tendríamos como una línea e implementamos el método $split_linese$ , el cual	recibe los tokens y los convierte en líneas , estas líneas son pasadas al parser.
+	
+	El parser que decidimos desarrolar fue el parser LL , lo primero que hicimos fue las producciones , donde decidimos como serían correctas
+	sintácticamente nuestras líneas, las producciones generan todas las posibles cadenas válidas para nuestro lenguaje y no existen cadenas
+	que son generadas por nuestra gramática que no pertenezcan a nuestro lenguaje. De esta forma con una gramática válida empezamos al proceso
+	de parsing. Nuestro parser necesita un método $hacer_first$ primeramente para hacer los first de cada cadena posible de nuestra gramática,
+	luego llamamos un método auxiliar $calcular_first_restantes$ el cual tiene la función de calcular los first de los no terminales que aún
+	no lo tienen calculado , nos hace falta guardar los first de los no terminales pq los necesitamos para hallar los follows en el método
+	$hacer_follow$ .Luego de invocar a $hacer_follow$ debemos invocar un metodo auxiliar $completar_follows$ el cual se encarga de satisfacer
+	la regla de los follows que dice que el follow de la cabeza de la producción es subconjunto del follow del último no terminal , si el último no terminal puede ser el último elemento de la producción.
+	
+	Teniendo los first y los follows construimos la tabla LL(1) mediante el metodo $construir_tabla_LL$ , al tener la tabla ya podemos comprobar que nuestra gramática no es ambigua , siempre existe solo una producción que aplicar. Luego creamos el metodo parsear al que hay que pasarle	todas las líneas de nuestro código una por una y este realiza la comprobacion sintáctica y en este mismo método vamos a ir creando nuestro	$AST$ para luego hacer el chequeo semántico. Para crear el $AST$ utilizamos metodos como $CreaNododExpresion$, $CreaNodoCondicion$, $CreaNododFuncion$, $EligeTipoDdeclaracion$, entre otros, declarados en la clase Parser. 
+	
+	Nuestro AST tiene un nodo por cada declaración que se puede realizar en el código. Tiene un nodo para una definición de función, una 
+	definición de variables, redefinición de variables, If, WHile, Rider, Bike, Return. En cada uno de estos nodos excepto Rider y Bike sí existe un ámbito como es el caso del nodo If, el While y la definición de función, cada uno de estos nodo tiene como atributo un tipo de nodo Program, el cuál posee una lista de declaraciones y por lo tanto en él se pueden guardar la lista de declaraciones que se haga en el ámbito.
+	
+	Explicada la estructura del AST pasamos al chequeo semántico sobre este. Hacemos 3 recorridos sobre el AST, el primero para validar cada nodo. Un nodo es válido si todo lo que tiene guardado en sus atributos que es dependiente del contexto puede ser utilizado desde ese contexto y de la forma que se quiere. Decimos esto porque por ejemplo las variables solo se pueden redefinir en el contexto en que fueron definidas. Decir que cada vez que creamos una función o un tipo creamos un contexto que responde a dicho ámbito. Todo lo que se defina en dicho ámbito pertenece a su contexto, no importa si se define dentro de un While o dentro de un If. En resumen los contextos en nuestro programa funcionan como en python con la particularidad de que no tenemos variables globales, si quieres redefinir una variable debes hacerlo en el contexto donde fue definida y solo se crea un nuevo contexto cuando se crea una funcion fuera de un tipo o cuando se crea un tipo. Destacar que las funciones definidas dentro de los tipos solo tienen el mismo context, y no se le pueden pasar parámetros.
+	
+	Volviendo al AST, hacemos una segunda pasada, en esta pasada verificamos los tipos donde en los nodos en que hay expresiones inducimos el tipo. Decir que	una expresión para nosotros puede ser una expresión aritmética , un bool, o un string, podemos incluir variables y llamado a función. La tercera pasada la hacemos para evaluar nuestros nodos. Si encontramos un nodo $Def_Fun$ no lo evaluamos, una definición de función se evalua cuando se llama a la función.
+	
+	Cuando se crea un tipo se importan las variables que puede tener ese tipo en la simulación, dentro de un tipo Bike solo se puede redefinir una función , la función $select_configuration$ que debe ser void , aunque dentro de la funcion si se pueden redefinir las variables de Bike, en este caso el objetivo de $select_configuration$ es seleccionar el tipo de gomas dadas las características de la moto y el ambiente y por tanto modificar la variable tires del contexto del tipo, la cuál utilizará el simulador. 
+	
+	Dentro de un tipo Rider existen en el contexto, igual que en Bike, variables que pertenecen a Rider que fueron importadas desde la simulación, en este caso se pueden redefinir dos de ellas $cornering$ y $step_by_line$ que posteriormente serán pasadas al simulador, estas variables tienen mucha influencia en la simulación ya que son la habilidad en recta y en curva de un piloto. Son variables enteras que lo maximo que pueden ser es 10 , en caso de que se entre un valor mayor se supondra que se quiso entrar el maximo de habilidad y la variable será igual a 10 .En cuanto a las funciones se podrán definir $select_action$ que debe retornar un valor entero y es la encargada
+	de elegir que acción realizar, para hacer este metodo podemos tener en cuenta las características del piloto que pueden ser llamadas y están actualizadas. También podemos definir la funcion $select_acceleration$ la cual debe ser void y su función debe ser actualizar la aceleracion de un agente.
+	
+	\subsection{Conexion Simulacion - Compilacion}
+	
+	El resultado del DSL si se hacen los 3 recorridos del AST sin error, son dos listas, una con todos los pilotos que fueron creados y otra con todas las motos , a partir de estas listas se crean los pilotos y las motos en la simulacion. En la simulacion los pilotos que no fueron creados en el código ejecutan sus métodos como normalmente, en el caso de un piloto que fue creado desde el DSL se ejecuta la función definida en el DSL, pero antes de ejecutarla se actualiza el contexto de la funcion para que dicha función pueda apoyarse en la situación actual. Luego de la ejecución de la función dependiendo que función se ejecutó se importa a la simulación la variable que se quiere desde el contexto del método. 		
+
 		
