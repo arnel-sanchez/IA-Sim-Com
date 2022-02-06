@@ -2,10 +2,9 @@
 from simulation.weather import CardinalsPoints
 from simulation.track import TrackType
 
+
 class Misano(Track):
     def __init__(self):
-        self.name = "Misano"
-        self.length = 4226
         '''
         Posición 0: Nombre de la Sección
         Posición 1: Longitud de la sección en metros
@@ -13,7 +12,7 @@ class Misano(Track):
         Posición 3: Punto Cardinal hacia donde está orientada la sección
         Posición 4: Tipo de Sección
         '''
-        self.sections = [
+        sections = [
             ("recta1", 265.5411, 263.9, CardinalsPoints.Southwest, TrackType.Straight),
             ("curva1", 64.37376, 118.4, CardinalsPoints.West, TrackType.Curve),
             ("recta2", 48.28032, 135, CardinalsPoints.West, TrackType.Straight),
@@ -43,4 +42,5 @@ class Misano(Track):
             ("recta14", 209.2147, 195.5, CardinalsPoints.Northwest, TrackType.Straight),
             ("curva14", 32.18688, 114.3, CardinalsPoints.Southwest, TrackType.Curve),
             ("recta15", 265.5411, 263.9, CardinalsPoints.Southwest, TrackType.Straight)
-            ]
+        ]
+        super().__init__("Misano", 4226, sections)
