@@ -1,12 +1,13 @@
 from enum import Enum
-import enum
 
-class Weather_Status(Enum):
+
+class WeatherStatus(Enum):
     Sunny = 0
     Cloudy = 1
     Rainy = 2
 
-class Cardinals_Points(Enum):
+
+class CardinalsPoints(Enum):
     North = 0
     East = 1
     West = 2
@@ -16,8 +17,9 @@ class Cardinals_Points(Enum):
     Southeast = 6
     Northeast = 7
 
+
 class Weather:
-    def __init__(self, temperature, visibility, wind_intensity, humidity, wind: Cardinals_Points, weather_status: Weather_Status):
+    def __init__(self, temperature, visibility, wind_intensity, humidity, wind: CardinalsPoints, weather_status: WeatherStatus):
         self.weather_status = weather_status
         self.wind = wind
         self.temperature = temperature
@@ -73,7 +75,7 @@ class Weather:
         else:
             self.wind_intensity += decrease_wind
 
-    def change_weather_status(self, new_weather_status : Weather_Status):
+    def change_weather_status(self, new_weather_status: WeatherStatus):
         if new_weather_status == 0:
             self.decrease_humidity(2)
             self.increase_visibility(2)
@@ -95,7 +97,7 @@ class Weather:
             self.decrease_temperature(2)
             self.weather_status = new_weather_status
 
-    def change_wind(self, new_wind : Cardinals_Points):
+    def change_wind(self, new_wind: CardinalsPoints):
         self.wind = new_wind
 
     def print(self):
@@ -107,8 +109,8 @@ class Weather:
         else:
             print("Lluvioso")
 
-    def is_wind_front(self, wind: Cardinals_Points):
+    def is_front_wind(self, wind: CardinalsPoints):
         return True
 
-    def is_wind_back(self, wind: Cardinals_Points):
+    def is_back_wind(self, wind: CardinalsPoints):
         return True

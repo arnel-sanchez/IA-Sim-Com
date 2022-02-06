@@ -1,11 +1,9 @@
-from time import sleep
 from simulation.race import Race
+
 
 class Simulator:
     def start(self, race: Race):
-
         print("\nInicio de la carrera\n")
-
         while True:
             for section in race.environment.track.sections:
                 for agent in race.agents:

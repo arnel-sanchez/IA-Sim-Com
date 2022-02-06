@@ -1,11 +1,12 @@
-import subprocess
+from subprocess import run, PIPE, STDOUT
 from os.path import exists
 from shutil import rmtree
+
 from pyke import knowledge_engine
 
 
 def call_ai(script: str):
-    ans = subprocess.run(script, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    ans = run(script, stdout=PIPE, stderr=STDOUT)
     return int(ans.stdout.decode("utf-8")[-3])
 
 
