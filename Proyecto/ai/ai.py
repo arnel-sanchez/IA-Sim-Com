@@ -87,3 +87,25 @@ def action():
         for ans, plan in gen:
             actions.append(int(ans["select"]))
     print(sum(actions))
+
+
+def acceleration(max_acceleration, weather, section, bike, rider):
+    weather_status = [weather.weather_status == 1,
+                      3 < weather.humidity < 7,
+                      3 < weather.temperature < 7,
+                      3 < weather.visibility < 7,
+                      3 < weather.wind_intensity < 7]
+    for w in weather_status:
+        if not w:
+            max_acceleration -= 1
+    if section[4].name == "Straight":
+        if bike.brakes < 9 and bike.chassis_stiffness < 9:
+            max_acceleration -= 1
+        if rider.step_by_line < 9:
+            max_acceleration -= 1
+    else:
+        if bike.brakes != 5 and bike.chassis_stiffness != 5:
+            max_acceleration -= 1
+        if rider.cornering < 9:
+            max_acceleration -= 1
+    return max_acceleration

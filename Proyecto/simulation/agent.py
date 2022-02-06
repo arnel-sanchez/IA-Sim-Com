@@ -9,7 +9,7 @@ from simulation.bike import Tires
 from simulation.track import TrackType
 
 from compilation.ast.nodes import RiderNode
-from ai.ai import edit_action, call_ai
+from ai.ai import edit_action, call_ai, acceleration
 
 
 class Agent:
@@ -547,13 +547,19 @@ class Agent:
                 return AgentActions(11)
             else:
                 return AgentActions(evaluation)
-            
-    def select_acceleration(self, section, race, action):
+
+    def select_acceleration(self, section, race, weather, action):
         if not self.flag_acceleration:
-            if action == AgentActions.Brake:
-                self.acceleration = (-1) * self.bike.acceleration / race.discrete_variable_generator()
-            else:
-                self.acceleration = self.bike.acceleration / race.discrete_variable_generator()
+            max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, section[2]), section[1])
+            self.acceleration = acceleration(max_acceleration, weather, section, self.bike, self.rider)
+            if self.acceleration < 0:
+                if action.name.__contains__("SpeedUp"):
+                    self.acceleration = 0
+            #if action == AgentActions.Brake:
+            #    self.acceleration *= -1 #) * self.bike.acceleration / race.discrete_variable_generator()
+            #else:
+            #    self.acceleration = self.bike.acceleration / race.discrete_variable_generator()
+            x = 0
         else:
             self.node.refreshContext(self.__dict__)
             function = None
@@ -572,7 +578,7 @@ class Agent:
             return False
 
         if self.speed == 0:
-            print("El piloto {} ha roto el acelrador y su moto se ha detenido en plena carrera, ha sido descalificado".format(self.rider.name))
+            print("El piloto {} ha roto el acelerador y su moto se ha detenido en plena carrera, ha sido descalificado".format(self.rider.name))
             return False
 
         if section[4] == TrackType.Straight:
@@ -581,7 +587,7 @@ class Agent:
                 return False
         elif section[4] == TrackType.Curve:
             if action.value != 3 and action.value != 4 and action.value != 5 and action.value != 9 and action.value != 10 and action.value != 11:
-                print("El piloto {} ha seguido de largo y no ha doblado, a roto la moto en la grava.".format(self.rider.name))
+                print("El piloto {} ha seguido de largo y no ha doblado, ha roto la moto en la grava.".format(self.rider.name))
                 return False
         
         if self.rider.probability_of_falling_off_the_bike > prob:
@@ -609,16 +615,17 @@ class Agent:
 
     def overcome_an_obstacle(self, section, race, weather):
         action = self.select_action(section, weather)
-        self.select_acceleration(section, race, action)
-        self.calc_final_speed(self.speed, section[2])
+        self.select_acceleration(section, race, weather, action)
+        self.calc_final_speed(section[2])
         if not self.status_analysis(section, race, action):
             race.agents.remove(self)
         if action is not None and 6 <= action.value <= 11:
             self.flag_to_pits = True
         return
 
-    def calc_final_speed(self, speed, max_speed):
-        vf = pow(speed, 2) + 2 * max_speed * self.acceleration
+    def calc_final_speed(self, max_speed):
+        y = self.speed
+        vf = pow(self.speed, 2) + 2 * max_speed * self.acceleration
         if vf >= 0:
             vf = sqrt(vf)
         else:
@@ -629,9 +636,12 @@ class Agent:
             self.speed = vf
         else:
             self.time_lap = 0
+        if self.speed == 0:
+            x = 0
 
-    def calc_max_acceleration(speed_initial, speed_final, length):
-        return (pow(speed_final, 2) - pow(speed_initial, 2))/2*length
+    def calc_max_acceleration(self, max_speed, length):
+        return (pow(max_speed/3.6, 2) - pow(self.speed/3.6, 2))/(2*length)
+
 
 class AgentActions(Enum):
     SpeedUp = 0

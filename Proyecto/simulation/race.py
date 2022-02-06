@@ -43,9 +43,10 @@ class Race:
         for x in self.rank:
             print("{}: {}".format(i, x.rider.name))
             i += 1
+        print()
 
     def ranking(self):
-        self.agents.sort(key=lambda agent : agent.time_lap)
+        self.agents.sort(key=lambda agent: agent.time_lap)
 
     def continuous_variable_generator(self):
         return normalvariate(0.5, 0.16)
