@@ -9,7 +9,7 @@ from simulation.track import Track_Type
 from compilation.ast.nodes import Node
 
 class Agent:
-    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_aceleration, node: Node):
+    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_acceleration, node: Node):
         self.rider = rider
         self.bike = bike
         self.speed = 0
@@ -17,7 +17,7 @@ class Agent:
         self.time_lap = 0
         self.flag_configuration = flag_configuration
         self.flag_action = flag_action
-        self.flag_aceleration = flag_aceleration
+        self.flag_acceleration = flag_acceleration
         self.flag_to_pits = False
         self.node = node
 
@@ -959,8 +959,8 @@ class Agent:
             else:
                 return Agent_actions(evaluation)
             
-    def select_aceleration(self, section, race, action):
-      if not self.flag_aceleration:  
+    def select_acceleration(self, section, race, action):
+      if not self.flag_acceleration:  
         if action == Agent_actions.Brake:
             self.acceleration = (-1) * self.bike.acceleration/race.discrete_variable_generator()
         else:
@@ -968,12 +968,12 @@ class Agent:
       else:
             self.node.refreshContext(self.__dict__)          
             function=None
-            if self.node.funciones[0].idfun=="select_aceleration":
+            if self.node.funciones[0].idfun=="select_acceleration":
                 function=self.node.funciones[0]
             else:
                 function=self.node.funciones[1]
             function.eval([],self.node.nuevocontext)
-            self.acceleration=self.node.nuevocontext.variables["aceleration"].value
+            self.acceleration=self.node.nuevocontext.variables["acceleration"].value
             
     def status_analysis(self, section, race, action):
         prob = race.continuous_variable_generator()
@@ -1020,7 +1020,7 @@ class Agent:
 
     def overcome_an_obstacle(self, section, race, weather):
         action = self.select_action(section, weather)
-        self.aceleration = self.select_aceleration(section, race, action)
+        self.acceleration = self.select_acceleration(section, race, action)
 
         self.calc_final_speed(self.speed, section[2])
             

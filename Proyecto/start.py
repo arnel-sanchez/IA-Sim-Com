@@ -3,8 +3,6 @@ from os import name, system
 from time import sleep
 from sys import exit
 
-from simulation.simulator import start
-
 
 def main():
     print_welcome()
@@ -43,7 +41,7 @@ def test_simulation():
     print("\n\nSIMULACION:")
     time = 1  # Tiempo que demora la simulacion de una vuelta
     stop = False  # Reajustes en tiempo real
-    start(time, stop)
+    #start(time, stop)
 
 
 def print_new_simulation():
