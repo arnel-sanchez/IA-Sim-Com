@@ -34,7 +34,7 @@ class Bike:
         else:
             self.node.refreshContext(self.__dict__)
             self.node.funciones[0].eval([], self.node.nuevocontext)
-            evaluation = self.node.nuevocontext.variables["tires"].value
+            evaluation = self.node.nuevocontext.variables["tires"].value.value
             if evaluation <= 4:
                 self.tires = Tires(evaluation)
             else:

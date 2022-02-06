@@ -963,7 +963,7 @@ class Agent:
             return False
 
         if self.speed == 0:
-            print("El piloto {} ha roto el acelrador y su moto se ha detenido en plena carrera, ha sido descalificado".format(self.rider.name))
+            print("El piloto {} ha roto el acelerador y su moto se ha detenido en plena carrera, ha sido descalificado".format(self.rider.name))
             return False
 
         if section[4] == TrackType.Straight:
