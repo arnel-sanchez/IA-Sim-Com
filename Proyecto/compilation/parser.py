@@ -572,7 +572,16 @@ class Parser:
              self.nodoactual.args.append(nuevonodo)
              self.nodoactual=nuevonodo
             self.estadoDAST=EstadoDAST.EnExpresionAssign
-       # elif termino==TokenType.T_CLOSE_PAREN:
+        elif termino==TokenType.T_CLOSE_PAREN: 
+             if isinstance(self.nodoactual,FunCall) :
+                self.nodoactual = self.nodoactual.padre
+                self.estadoDAST=EstadoDAST.EnProgram
+                return
+             elif isinstance(self.nodoactual.nododreconocimiento,FunCall):
+                  self.nodoactual.nododreconocimiento = self.nodoactual.nododreconocimiento.padre 
+                  self.estadoDAST=EstadoDAST.EnExpresionAssign
+                  return
+       #  elif termino==TokenType.T_CLOSE_PAREN:
            # self.nodoactual= self.nodoactual.padre
            # self.estadoDAST=EstadoDAST.EnExpresionAssign
 
