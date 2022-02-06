@@ -22,7 +22,7 @@ class Bike:
         self.brakes = brakes
         self.chassis_stiffness = chassis_stiffness
         self.acceleration = 69.444
-        self.probability_of_the_motorcycle_breaking_down = 0.000001
+        self.probability_of_the_bike_breaking_down = 0.000001
         self.probability_of_exploding_tires = 0.000001
         self.node = node
 

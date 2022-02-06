@@ -269,7 +269,7 @@ class TypeSpecial(Statement):
      self.variables=[]
      self.nuevocontext:Context=None
      self.functionsOfRiders=["select_acceleration","select_action"]
-     self.functionsOfMotorcicles=["select_configuration"]
+     self.functionsOfBikes=["select_configuration"]
      self.token=None
 
     def validate(self,context:Context):
@@ -292,7 +292,7 @@ class TypeSpecial(Statement):
 
        else:
            if len(self.variables)>0:
-               return IncorrectCallError("within a motorcycle type you can not redefine variables","",self.token.line,self.token.column)
+               return IncorrectCallError("within a bike type you can not redefine variables","",self.token.line,self.token.column)
 
 
 
@@ -300,8 +300,8 @@ class TypeSpecial(Statement):
        for function in self.funciones:
           
            if isinstance(self, BikeNode):
-              if self.functionsOfMotorcicles.count(function.idfun)!=0:
-                 self.functionsOfMotorcicles.remove(function.idfun)
+              if self.functionsOfBikes.count(function.idfun)!=0:
+                 self.functionsOfBikes.remove(function.idfun)
               else:
                   return IncorrectCallError("the method was already defined or it is not valid to define a method with this name in this context","",self.token.line,self.token.column)
            elif isinstance(self,RiderNode):
@@ -376,7 +376,7 @@ class BikeNode(TypeSpecial):
      self.variables=[]
      self.nuevocontext:Context=None
      self.varsforBikes=[["brand",VariableType.STRING,"Honda"],["max_speed",VariableType.INT,0],["weight",VariableType.INT,0],["tires",VariableType.INT,5],["brakes",VariableType.INT,5],["chassis_stiffness",VariableType.INT,8]]
-     self.functionsOfMotorcicles=["select_configuration"]
+     self.functionsOfBikes=["select_configuration"]
      self.token=None
 
 class RiderNode(TypeSpecial):

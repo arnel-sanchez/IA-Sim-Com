@@ -48,7 +48,7 @@ def compilation():
                     print(exe.__repr__())
                 else:
                     parser.LoadRidersAndBikes()
-                    return parser.Riders, parser.Motorcicles
+                    return parser.Riders, parser.Bikes
             else:
                 print(checktype.__repr__())
                 return False

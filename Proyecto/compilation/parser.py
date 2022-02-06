@@ -17,7 +17,7 @@ class Parser:
         self.i=0
         self.dentroDType=False
         self.Riders=[]
-        self.Motorcicles=[]
+        self.Bikes=[]
         self.estadoDAST= EstadoDAST.EnProgram
         self.nodoactual=Program()  #Este sera el nodo en el que estoy parado cuando estoy construyendo el AST
         self.nodopararecorrerast=self.nodoactual
@@ -861,4 +861,4 @@ class Parser:
             if isinstance(statement,RiderNode):
                 self.Riders.append(statement)
             elif isinstance(statement, BikeNode):
-                self.Motorcicles.append(statement)
+                self.Bikes.append(statement)

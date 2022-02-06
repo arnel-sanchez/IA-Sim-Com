@@ -6,12 +6,12 @@ class Rider:
         self.name = name
         self.cornering = cornering
         self.step_by_line = step_by_line
-        self.probability_of_falling_off_the_motorcycle = 0.000001
+        self.probability_of_falling_off_the_bike = 0.000001
         self.bike = None
 
-    def assign_bike(self, bike: Bike, probability_of_falling_off_the_motorcycle):
+    def assign_bike(self, bike: Bike, probability_of_falling_off_the_bike):
         self.bike = bike
-        self.probability_of_falling_off_the_motorcycle = probability_of_falling_off_the_motorcycle
+        self.probability_of_falling_off_the_bike = probability_of_falling_off_the_bike
 
     def print(self):
         print("Piloto: {}".format(self.name))

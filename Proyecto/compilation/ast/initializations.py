@@ -1,6 +1,6 @@
 from compilation.ast.nodes import Node, Id, Error
 from compilation.variables import Variable, VariableType, Method, MethodType
-from simulation.motorcycle import Motorcycle
+from simulation.bike import Bike
 from simulation.rider import Rider
 
 
@@ -193,8 +193,8 @@ class MotoInit(TypeInit):
         super().__init__(id_node)
 
     @staticmethod
-    def default(type_id: str) -> Motorcycle:
-        return Motorcycle()
+    def default(type_id: str) -> Bike:
+        return Bike()
 
     @staticmethod
     def type() -> str:
