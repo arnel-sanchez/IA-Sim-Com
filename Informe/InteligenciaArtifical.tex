@@ -1,8 +1,8 @@
 Como nuestro proyecto se basa en simular una carrera de MotoGP donde hay n corredores, aquellos que no hayan sido diseñados mediante DSL son controlados por IA, el comportamiento de la cual varía a partir de las condiciones del ambiente que lo rodea, las características de su moto y la experiencia del propio piloto.
 
-Para la implementación de la IA, se utilizan Sistemas Expertos generados mediante el uso de un procedimiento declarativo/imperativo, apoyándonos en la biblioteca PyKE de Python.
+Para la implementación de la IA se utilizan Sistemas Expertos generados mediante el uso de un procedimiento declarativo/imperativo, apoyándonos en la biblioteca PyKE de Python.
 
-Se utiliza como base de conocimiento el conjunto de variables que forman parte de la simulación y que influyen en su desempeño, como:
+Se emplea como base de conocimiento el conjunto de variables que forman parte de la simulación y que influyen en su desempeño, como:
 \begin{itemize}
 	\item las características de la moto (velocidad, frenos, chasis)
 	\item el estado del clima (soleado, nublado o lluvioso)
@@ -75,6 +75,6 @@ Se utiliza como base de conocimiento el conjunto de variables que forman parte d
 \subsection{Selección de la aceleración}
 	Una tercera heurística es la encargada de escoger la mejor aceleración en una sección dada de la pista, con el objetivo de alcanzar la mayor velocidad posible sin causar un accidente que obligue a abandonar la carrera. 
 	Primeramente, se calcula la aceleración máxima alcanzable, tomando en cuenta que no se exceda la velocidad máxima admitida por la moto y la sección que se recorre.
-	$a_max=(V_max^{2}-V^{2})/(2*X)$
+	$$a_max=(V_max^{2}-V^{2})/(2*X)$$
 	Luego, se establece un sistema de penalizaciones que disminuyen dicha aceleración si no se poseen las condiciones óptimas del ambiente (clima, humedad, temperatura) y del piloto (destreza en curvas y rectas).
 	El resultado obtenido es incorporado a la simulación para continuar la carrera. De su valor depende mucho si el piloto obtiene un buen tiempo o sufre un accidente que lo saque de la competencia.
