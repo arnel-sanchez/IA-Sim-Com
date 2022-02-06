@@ -8,7 +8,7 @@ from simulation.weather import CardinalsPoints, WeatherStatus
 from simulation.bike import Tires
 from simulation.track import TrackType
 
-from compilation.ast.nodes import RiderNode
+from compilation.ast.specials import RiderNode
 from ai.ai import edit_action, call_ai, acceleration
 
 
