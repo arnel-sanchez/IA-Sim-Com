@@ -39,7 +39,6 @@ class Bike:
                 evaluation=4
                 self.tires=Tires(evaluation)
 
-
     def change_tires(self, tires: Tires):
         self.tires = tires
 

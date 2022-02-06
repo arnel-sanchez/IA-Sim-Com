@@ -13,10 +13,7 @@ class Race:
         
         for agent in agents:
             agent.update_agent_initial_parameters(self.environment.weather, self.environment.track.sections[0])
-            if agent.flag_configuration == False:
-                agent.bike.select_configuration(environment)
-            else:
-                print("Aquí se llama al nodo")
+            agent.bike.select_configuration(environment)
 
     def change_lap(self):
         self.current_lap+=1
