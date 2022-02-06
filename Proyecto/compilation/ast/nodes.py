@@ -4,7 +4,6 @@ from compilation.context import Context
 from compilation.enums import *
 
 
-
 class NodeType(Enum):
     STRING = 0
     INT = 1
