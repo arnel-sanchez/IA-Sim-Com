@@ -38,11 +38,11 @@ def compilation():
         return False
     lines = split_lines(tokens)
     parser = Parser()
-    if parser.parse(lines):
+    if parser.parse(lines)==True:
         validation = parser.validaAST()
-        if validation:
+        if validation==True:
             checktype = parser.checktypes()
-            if checktype:
+            if checktype==True:
                 exe = parser.execute()
                 if isinstance(exe, RuntimeError):
                     print(exe.__repr__())

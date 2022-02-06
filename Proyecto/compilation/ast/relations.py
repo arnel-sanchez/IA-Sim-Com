@@ -1,23 +1,23 @@
-from compilation.ast.operations import BinOp, same_type
+from compilation.ast.operations import BinOp
 from compilation.ast.nodes import Node
 from compilation.context import Context
 from compilation.errors import CheckTypesError
 
+
 class Rel(BinOp):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
-        
 
     def checktype(self, context):
-        checkexpr1=self.left_node.checktype(context)
-        if isinstance(checkexpr1,CheckTypesError):
+        checkexpr1 = self.left_node.checktype(context)
+        if isinstance(checkexpr1, CheckTypesError):
             return checkexpr1
-        checkexpr2=self.right_node.checktype(context)
-        if isinstance(checkexpr2,CheckTypesError):
-            return checkexpr2     
+        checkexpr2 = self.right_node.checktype(context)
+        if isinstance(checkexpr2, CheckTypesError):
+            return checkexpr2
         if checkexpr1 == checkexpr2:
-           return True
-        return CheckTypesError("cannot compare expressions with different types","","","")
+            return True
+        return CheckTypesError("cannot compare expressions with different types", "", 0, 0)
 
     @staticmethod
     def type() -> str:
@@ -28,19 +28,18 @@ class EqRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    
-    def eval(self,context:Context):
-        exprNI=self.left_node.eval(context)
-        if isinstance(exprNI,RuntimeError):
+    def eval(self, context: Context):
+        exprNI = self.left_node.eval(context)
+        if isinstance(exprNI, RuntimeError):
             return exprNI
-        exprND=self.right_node.eval(context)
-        if isinstance(exprND,RuntimeError):
+        exprND = self.right_node.eval(context)
+        if isinstance(exprND, RuntimeError):
             return exprND
 
-        if exprNI==exprND:
+        if exprNI == exprND:
             return True
         else:
-          return False
+            return False
 
     @staticmethod
     def type() -> str:
@@ -51,18 +50,18 @@ class NeqRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    def eval(self,context:Context):
-        exprNI=self.left_node.eval(context)
-        if isinstance(exprNI,RuntimeError):
+    def eval(self, context: Context):
+        exprNI = self.left_node.eval(context)
+        if isinstance(exprNI, RuntimeError):
             return exprNI
-        exprND=self.right_node.eval(context)
-        if isinstance(exprND,RuntimeError):
+        exprND = self.right_node.eval(context)
+        if isinstance(exprND, RuntimeError):
             return exprND
 
-        if exprNI!=exprND:
+        if exprNI != exprND:
             return True
         else:
-          return False
+            return False
 
     @staticmethod
     def type() -> str:
@@ -73,18 +72,18 @@ class LessRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    def eval(self,context:Context):
-        exprNI=self.left_node.eval(context)
-        if isinstance(exprNI,RuntimeError):
+    def eval(self, context: Context):
+        exprNI = self.left_node.eval(context)
+        if isinstance(exprNI, RuntimeError):
             return exprNI
-        exprND=self.right_node.eval(context)
-        if isinstance(exprND,RuntimeError):
+        exprND = self.right_node.eval(context)
+        if isinstance(exprND, RuntimeError):
             return exprND
 
-        if exprNI<exprND:
+        if exprNI < exprND:
             return True
         else:
-          return False
+            return False
 
     @staticmethod
     def type() -> str:
@@ -95,18 +94,18 @@ class LeqRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    def eval(self,context:Context):
-        exprNI=self.left_node.eval(context)
-        if isinstance(exprNI,RuntimeError):
+    def eval(self, context: Context):
+        exprNI = self.left_node.eval(context)
+        if isinstance(exprNI, RuntimeError):
             return exprNI
-        exprND=self.right_node.eval(context)
-        if isinstance(exprND,RuntimeError):
+        exprND = self.right_node.eval(context)
+        if isinstance(exprND, RuntimeError):
             return exprND
 
-        if exprNI<=exprND:
+        if exprNI <= exprND:
             return True
         else:
-          return False
+            return False
 
     @staticmethod
     def type() -> str:
@@ -117,18 +116,18 @@ class GreatRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    def eval(self,context:Context):
-        exprNI=self.left_node.eval(context)
-        if isinstance(exprNI,RuntimeError):
+    def eval(self, context: Context):
+        exprNI = self.left_node.eval(context)
+        if isinstance(exprNI, RuntimeError):
             return exprNI
-        exprND=self.right_node.eval(context)
-        if isinstance(exprND,RuntimeError):
+        exprND = self.right_node.eval(context)
+        if isinstance(exprND, RuntimeError):
             return exprND
 
-        if exprNI>exprND:
+        if exprNI > exprND:
             return True
         else:
-          return False
+            return False
 
     @staticmethod
     def type() -> str:
@@ -139,18 +138,18 @@ class GreqRel(Rel):
     def __init__(self, left_node: Node, right_node: Node):
         super().__init__(left_node, right_node)
 
-    def eval(self,context:Context):
-        exprNI=self.left_node.eval(context)
-        if isinstance(exprNI,RuntimeError):
+    def eval(self, context: Context):
+        exprNI = self.left_node.eval(context)
+        if isinstance(exprNI, RuntimeError):
             return exprNI
-        exprND=self.right_node.eval(context)
-        if isinstance(exprND,RuntimeError):
+        exprND = self.right_node.eval(context)
+        if isinstance(exprND, RuntimeError):
             return exprND
 
-        if exprNI>=exprND:
+        if exprNI >= exprND:
             return True
         else:
-          return False
+            return False
 
     @staticmethod
     def type() -> str:
