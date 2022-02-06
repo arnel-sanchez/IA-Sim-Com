@@ -8,6 +8,7 @@
 $ git clone https://github.com/arnel-sanchez/IA-Sim-Com
 $ cd IA-Sim-Com/Proyecto
 $ python -m pip install --upgrade pip && python -m pip install pynput && python -m pip install numpy
+$ wget https://sourceforge.net/projects/pyke/files/pyke/1.1.1/pyke3-1.1.1.zip && unzip pyke3-1.1.1.zip && cd pyke-1.1.1 && python setup.py build && python setup.py install
 $ python main.py
 ```
 ## [Informe](https://github.com/arnel-sanchez/IA-Sim-Com/blob/master/Informe/Informe.pdf)
