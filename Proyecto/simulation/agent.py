@@ -630,6 +630,8 @@ class Agent:
         else:
             self.time_lap = 0
 
+    def calc_max_aceleration(speed_initial, speed_final, length):
+        return (pow(speed_final, 2) - pow(speed_initial, 2))/2*length
 
 class AgentActions(Enum):
     SpeedUp = 0
