@@ -4,7 +4,7 @@ from enum import Enum
 from simulation.rider import Rider
 from simulation.bike import Bike
 
-from simulation.weather import CardinalsPoints, WeatherStatus
+from simulation.weather import WeatherStatus
 from simulation.bike import Tires
 from simulation.track import TrackType
 
@@ -27,20 +27,20 @@ class Agent:
 
     def update_agent_initial_parameters(self, weather, section):
         if self.bike.chassis_stiffness > 5:
-            if self.rider.step_by_line + (self.bike.chassis_stiffness - 5) / 2 >= 10:
+            if self.rider.step_by_line + self.bike.chassis_stiffness - 5 / 2 >= 10:
                 self.rider.step_by_line = 10
             else:
                 self.rider.step_by_line += (self.bike.chassis_stiffness - 5) / 2
-            if self.rider.cornering - (self.bike.chassis_stiffness) / 2 <= 0:
+            if self.rider.cornering - self.bike.chassis_stiffness / 2 <= 0:
                 self.rider.cornering = 0
             else:
                 self.rider.cornering -= self.bike.chassis_stiffness / 2
         elif self.bike.chassis_stiffness < 5:
-            if self.rider.cornering + (self.bike.chassis_stiffness - 5) / 2 >= 10:
+            if self.rider.cornering + self.bike.chassis_stiffness - 5 / 2 >= 10:
                 self.rider.cornering = 10
             else:
                 self.rider.cornering += (self.bike.chassis_stiffness - 5) / 2
-            if self.rider.step_by_line - (self.bike.chassis_stiffness) / 2 <= 0:
+            if self.rider.step_by_line - self.bike.chassis_stiffness / 2 <= 0:
                 self.rider.step_by_line = 0
             else:
                 self.rider.step_by_line -= self.bike.chassis_stiffness / 2
@@ -58,7 +58,7 @@ class Agent:
                 self.rider.cornering = 10
             else:
                 self.rider.cornering += (self.bike.brakes - 5) / 2
-            if self.rider.step_by_line - (self.bike.brakes) / 2 <= 0:
+            if self.rider.step_by_line - self.bike.brakes / 2 <= 0:
                 self.rider.step_by_line = 0
             else:
                 self.rider.step_by_line -= self.bike.brakes / 2

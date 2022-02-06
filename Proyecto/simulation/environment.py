@@ -28,8 +28,8 @@ class Environment:
     def change_weather_status(self):
         wind = randint(0, 7)
         weather_status = randint(0, 2)
-        self.weather.change_wind(wind)
-        self.weather.change_weather_status(weather_status)
+        self.weather.change_wind(CardinalsPoints(wind))
+        self.weather.change_weather_status(WeatherStatus(weather_status))
 
     def print(self):
         return
