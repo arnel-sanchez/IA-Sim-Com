@@ -75,30 +75,42 @@ class Weather:
         else:
             self.wind_intensity += decrease_wind
 
+    def change_temperature(self, temperature):
+        self.temperature = temperature
+    
+    def change_humidity(self, humidity):
+        self.humidity = humidity
+    
+    def change_visibility(self, visibility):
+        self.visibility = visibility
+    
+    def change_wind_intensity(self, wind_intensity):
+        self.wind_intensity = wind_intensity
+
     def change_weather_status(self, new_weather_status: WeatherStatus):
         if new_weather_status == 0:
             self.decrease_humidity(2)
             self.increase_visibility(2)
             self.increase_temperature(2)
-            self.weather_status = new_weather_status
+            self.weather_status = WeatherStatus(new_weather_status)
         elif new_weather_status == 1:
             if self.weather_status == 2:
-                self.weather_status = new_weather_status
+                self.weather_status = WeatherStatus(new_weather_status)
                 self.decrease_humidity(2)
                 self.increase_visibility(2)
                 self.increase_temperature(2)
             else:
                 self.decrease_visibility(2)
                 self.decrease_temperature(2)
-                self.weather_status = new_weather_status
+                self.weather_status = WeatherStatus(new_weather_status)
         elif new_weather_status == 2:
             self.increase_humidity(2)
             self.decrease_visibility(2)
             self.decrease_temperature(2)
-            self.weather_status = new_weather_status
+            self.weather_status = WeatherStatus(new_weather_status)
 
     def change_wind(self, new_wind: CardinalsPoints):
-        self.wind = new_wind
+        self.wind = CardinalsPoints(new_wind)
 
     def print(self):
         print("Clima: ", end="")

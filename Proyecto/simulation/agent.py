@@ -295,6 +295,101 @@ class Agent:
                 self.rider.probability_of_falling_off_the_bike += 0.001 * weather.wind_intensity / 4
 
     def update_agent_parameter(self, weather, new_weather, section):
+        if new_weather.temperature > 5 and weather.temperature < 5:
+            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
+                self.rider.step_by_line = 10
+            else:
+                self.rider.step_by_line += (weather.temperature - 5) / 3
+            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
+                self.rider.cornering = 10
+            else:
+                self.rider.cornering += (weather.temperature - 5) / 3
+            if self.bike.probability_of_exploding_tires + 0.001 * (weather.temperature - 5) / 3 >= 1:
+                self.bike.probability_of_exploding_tires = 1
+            else:
+                self.bike.probability_of_exploding_tires += 0.001 * (weather.temperature - 5) / 3
+            if self.bike.probability_of_the_bike_breaking_down + 0.001 * (weather.temperature - 5) / 3 >= 1:
+                self.bike.probability_of_the_bike_breaking_down = 1
+            else:
+                self.bike.probability_of_the_bike_breaking_down += 0.001 * (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_bike - 0.001 * (weather.temperature - 5) / 2 <= 0:
+                self.rider.probability_of_falling_off_the_bike = 0
+            else:
+                self.rider.probability_of_falling_off_the_bike -= 0.001 * (weather.temperature - 5) / 3
+        elif new_weather.temperature < 5 and weather.temperature > 5:
+            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
+                self.rider.step_by_line = 0
+            else:
+                self.rider.step_by_line -= (weather.temperature - 5) / 3
+            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
+                self.rider.cornering = 0
+            else:
+                self.rider.cornering -= (weather.temperature - 5) / 3
+            if self.bike.probability_of_exploding_tires - 0.001 * (weather.temperature - 5) / 3 <= 0:
+                self.bike.probability_of_exploding_tires = 0
+            else:
+                self.bike.probability_of_exploding_tires -= 0.001 * (weather.temperature - 5) / 3
+            if self.bike.probability_of_the_bike_breaking_down - 0.001 * (weather.temperature - 5) / 3 <= 0:
+                self.bike.probability_of_the_bike_breaking_down = 0
+            else:
+                self.bike.probability_of_the_bike_breaking_down -= 0.001 * (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_bike + 0.001 * (weather.temperature - 5) / 2 >= 10:
+                self.rider.probability_of_falling_off_the_bike = 10
+            else:
+                self.rider.probability_of_falling_off_the_bike += 0.001 * (weather.temperature - 5) / 3
+        if new_weather.visibility > 5 and weather.visibility < 5:
+            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
+                self.rider.step_by_line = 10
+            else:
+                self.rider.step_by_line += (weather.temperature - 5) / 3
+            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
+                self.rider.cornering = 10
+            else:
+                self.rider.cornering += (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_bike - 0.001 * (weather.temperature - 5) / 2 <= 0:
+                self.rider.probability_of_falling_off_the_bike = 0
+            else:
+                self.rider.probability_of_falling_off_the_bike -= 0.001 * (weather.temperature - 5) / 3
+        elif new_weather.visibility < 5 and weather.visibility > 5:
+            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
+                self.rider.step_by_line = 0
+            else:
+                self.rider.step_by_line -= (weather.temperature - 5) / 3
+            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
+                self.rider.cornering = 0
+            else:
+                self.rider.cornering -= (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_bike + 0.001 * (weather.temperature - 5) / 2 >= 1:
+                self.rider.probability_of_falling_off_the_bike = 1
+            else:
+                self.rider.probability_of_falling_off_the_bike += 0.001 * (weather.temperature - 5) / 3
+        if new_weather.humidity > 5 and weather.humidity < 5:
+            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
+                self.rider.step_by_line = 0
+            else:
+                self.rider.step_by_line -= (weather.temperature - 5) / 3
+            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
+                self.rider.cornering = 0
+            else:
+                self.rider.cornering -= (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_bike + 0.001 * (weather.temperature - 5) / 2 >= 1:
+                self.rider.probability_of_falling_off_the_bike = 1
+            else:
+                self.rider.probability_of_falling_off_the_bike += 0.001 * (weather.temperature - 5) / 3
+        elif new_weather.humidity < 5 and weather.humidity > 5:
+            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
+                self.rider.step_by_line = 10
+            else:
+                self.rider.step_by_line += (weather.temperature - 5) / 3
+            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
+                self.rider.cornering = 10
+            else:
+                self.rider.cornering += (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_bike - 0.001 * (weather.temperature - 5) / 2 <= 0:
+                self.rider.probability_of_falling_off_the_bike = 0
+            else:
+                self.rider.probability_of_falling_off_the_bike -= 0.001 * (weather.temperature - 5) / 3
+
         if new_weather.is_front_wind(section[3]):
             if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                 self.rider.step_by_line = 0
