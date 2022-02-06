@@ -269,7 +269,7 @@ class TypeSpecial(Statement):
      self.funciones=[]
      self.variables=[]
      self.nuevocontext:Context=None
-     self.functionsOfRiders=["select_aceleration","select_action"]
+     self.functionsOfRiders=["select_acceleration","select_action"]
      self.functionsOfMotorcicles=["select_configuration"]
      self.token=None
 
@@ -326,7 +326,7 @@ class TypeSpecial(Statement):
               return checking
 
         for function in self.funciones:
-            if ((function.idfun=="select_configuration" or function.idfun=="select_aceleration") and normaliza(function.typefun)!="void") or (function.idfun=="select_action" and normaliza(function.typefun)!="int") :
+            if ((function.idfun=="select_configuration" or function.idfun=="select_acceleration") and normaliza(function.typefun)!="void") or (function.idfun=="select_action" and normaliza(function.typefun)!="int") :
               return  CheckTypesError("error in the return value of the function","",self.token.line,self.token.column)
             
             checktypefunction=function.checktype(context)
@@ -387,8 +387,8 @@ class RiderNode(TypeSpecial):
      self.funciones=[]
      self.variables=[]
      self.nuevocontext:Context=None
-     self.varsforRiders=[["speed",VariableType.DOUBLE,0],["aceleration",VariableType.DOUBLE,0],["time_lap",VariableType.DOUBLE,0],["cornering",VariableType.INT,5], [ "step_by_line",VariableType.INT,5]]
-     self.functionsOfRiders=["select_aceleration","select_action"]
+     self.varsforRiders=[["speed",VariableType.DOUBLE,0],["acceleration",VariableType.DOUBLE,0],["time_lap",VariableType.DOUBLE,0],["cornering",VariableType.INT,5], [ "step_by_line",VariableType.INT,5]]
+     self.functionsOfRiders=["select_acceleration","select_action"]
      self.token=None
 
 

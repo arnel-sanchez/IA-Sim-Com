@@ -87,7 +87,7 @@ def simulation(agents_lists):
             elif len(agents_lists[0][i].funciones) == 1 and agents_lists[0][i].funciones[0] == "select_action":
                 flag_acceleration = False
                 flag_action = True
-            elif len(agents_lists[0][i].funciones) == 1 and agents_lists[0][i].funciones[0] == "select_aceleration":
+            elif len(agents_lists[0][i].funciones) == 1 and agents_lists[0][i].funciones[0] == "select_acceleration":
                 flag_acceleration = True
                 flag_action = False
             else:
@@ -116,7 +116,7 @@ def simulation(agents_lists):
             elif len(agents_lists[0][0].funciones) == 1 and agents_lists[0][0].funciones[0] == "select_action":
                 flag_acceleration = False
                 flag_action = True
-            elif len(agents_lists[0][0].funciones) == 1 and agents_lists[0][0].funciones[0] == "select_aceleration":
+            elif len(agents_lists[0][0].funciones) == 1 and agents_lists[0][0].funciones[0] == "select_acceleration":
                 flag_acceleration = True
                 flag_action = False
             else:
