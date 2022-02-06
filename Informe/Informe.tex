@@ -153,7 +153,7 @@
 	
 	\begin{lstlisting}[language={PySharp}]
 		method void main() {
-			print("Hello World!");
+			return 0;
 		}
 	\end{lstlisting}	
 	Los archivos de P\# suelen tener la extensión de archivo .pys.\par
@@ -220,21 +220,21 @@
 	Las \textbf{declaraciones de expresión} se utilizan para evaluar expresiones. Las expresiones que se pueden usar como declaraciones incluyen invocaciones de métodos, asignaciones que usan = y los operadores de asignación compuesta.
 	
 	\begin{lstlisting}[language={PySharp}]
-		method void example() {
+		method int example() {
 			int a = 1;
-			print(a + 2);
+			return a + 2;
 		}
 	\end{lstlisting}
 	
 	La \textbf{instrucción de selección} se utiliza para seleccionar una de varias declaraciones posibles para su ejecución en función del valor de alguna expresión. Este es el caso de la sentencia \textbf{if}.
 	
 	\begin{lstlisting}[language={PySharp}]
-		method void example(int a) {
+		method int example(int a) {
 			if (a < 5) {
-				print(a);
+				return a;
 			}
 			else {
-				print(a % 5);
+				return a % 5;
 			}
 		}
 	\end{lstlisting}
@@ -244,7 +244,7 @@
 	\begin{lstlisting}[language={PySharp}]
 		method void example(int a) {
 			while (a > 5) {
-				print(a);
+				return a;
 				a -= 1;
 			}
 		}
@@ -255,14 +255,14 @@
 	\begin{lstlisting}[language={PySharp}]
 		method int example() {
 			while (true) {
-				x = input()
+				x = "x"
 				if (x == "x") {
 					continue;
 				}
 				elif (x == "") {
 					break;
 				}
-				print(x);
+				return x;
 			}
 			return 0;
 		}
