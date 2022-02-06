@@ -108,8 +108,15 @@ def simulation(listsOfAgents):
             if flag_configuration == False:
                 bike.select_configuration(environment)
             else:
-                listsOfAgents[1][0].funciones[0].eval([],listsOfAgents[1][0].nuevocontext)
-                bike.tires=listsOfAgents[1][0].nuevocontext.variables["tires"].value
+                listsOfAgents[1][i].funciones[0].eval([],listsOfAgents[1][i].nuevocontext)
+                evaluation=listsOfAgents[1][i].nuevocontext.variables["tires"].value
+                if evaluation<=4:
+                   bike.tires=Tires(evaluation)
+                else:
+                 evaluation=4
+                 bike.tires=Tires(evaluation)
+            
+
             agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_aceleration, listsOfAgents[0][i] ))
     else:
         if len(listsOfAgents[0]) == 1:
@@ -153,9 +160,15 @@ def simulation(listsOfAgents):
             if flag_configuration == False:
                 bike.select_configuration(environment)
             else:
-                listsOfAgents[1][0].funciones[0].eval([],listsOfAgents[1][0].nuevocontext)
-                bike.tires=listsOfAgents[1][0].nuevocontext.variables["tires"].value
-                
+                listsOfAgents[1][0].funciones[0].eval([],listsOfAgents[1][0].nuevocontext)        
+                evaluation=listsOfAgents[1][0].nuevocontext.variables["tires"].value
+                if evaluation<=4:
+                   bike.tires=Tires(evaluation)
+                else:
+                 evaluation=4
+                 bike.tires=Tires(evaluation)
+
+
             agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_aceleration, listsOfAgents[0][0] ))
         
         b = Bagnaia()
