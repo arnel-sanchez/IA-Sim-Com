@@ -1,4 +1,4 @@
-from compilation.ast.nodes import Node, CheckTypesError, Error
+from compilation.ast.nodes import Node, CheckTypesError
 from compilation.ast.complex import Expression, normaliza
 from compilation.context import Context
 from compilation.enums import VariableType
@@ -10,20 +10,18 @@ def is_string(value: str) -> bool:
 
 
 class Assign(Node):
-    def __init__(self, idnode: Node):
-        self.idnode = idnode
-        self.expression: Expression = None
+    def __init__(self, id_node: Node):
+        self.id_node = id_node
+        self.expression = None
         self.token = None
 
     def checktype(self, context: Context):
-
         checkexpr = self.expression.checktype(context)
         if isinstance(checkexpr, CheckTypesError):
             checkexpr.line = self.token.line
             checkexpr.column = self.token.column
             return checkexpr
-
-        if checkexpr == normaliza(context.gettypevar(self.idnode)):
+        if checkexpr == normaliza(context.gettypevar(self.id_node)):
             return True
         else:
             return CheckTypesError("the expression to be assigned is not of the same type as the variable", "",
@@ -90,7 +88,7 @@ class AddAs(OpAs):
         self.token = None
 
     def eval(self, context: Context):
-        if context.variables[self.idnode].value == None:
+        if context.variables[self.idnode].value is None:
             return RuntimeError("local variable {} referenced before assignment".format(self.id_node), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
@@ -101,7 +99,8 @@ class AddAs(OpAs):
         else:
             return (float)(context.variables[self.idnode].value + evalexpression)
 
-    def type(self) -> str:
+    @staticmethod
+    def type() -> str:
         return "ADD"
 
 
@@ -133,7 +132,7 @@ class SubAs(ArAs):
         self.token = None
 
     def eval(self, context: Context):
-        if context.variables[self.idnode].value == None:
+        if context.variables[self.idnode].value is None:
             return RuntimeError("local variable {} referenced before assignment".format(self.id_node), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
@@ -156,7 +155,7 @@ class MulAs(OpAs):
         self.token = None
 
     def eval(self, context: Context):
-        if context.variables[self.idnode].value == None:
+        if context.variables[self.idnode].value is None:
             return RuntimeError("local variable {} referenced before assignment".format(self.id_node), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
@@ -179,7 +178,7 @@ class DivAs(ArAs):
         self.token = None
 
     def eval(self, context: Context):
-        if context.variables[self.idnode].value == None:
+        if context.variables[self.idnode].value is None:
             return RuntimeError("local variable {} referenced before assignment".format(self.id_node), "",
                                 self.token.line, self.token.column)
         nododDivision = self.expression.eval(context)
@@ -205,7 +204,7 @@ class ModAs(DivAs):
         self.token = None
 
     def eval(self, context: Context):
-        if context.variables[self.idnode].value == None:
+        if context.variables[self.idnode].value is None:
             return RuntimeError("local variable {} referenced before assignment".format(self.id_node), "",
                                 self.token.line, self.token.column)
         nododDivision = self.expression.eval(context)
@@ -250,7 +249,7 @@ class ExpAs(ArAs):
 
     def eval(self, context: Context):
 
-        if context.variables[self.idnode].value == None:
+        if context.variables[self.idnode].value is None:
             return RuntimeError("local variable {} referenced before assignment".format(self.id_node), "",
                                 self.token.line, self.token.column)
         exponente = self.expression.eval(context)
@@ -300,7 +299,7 @@ class AndAs(BoolAs):
 
     def eval(self, context: Context):
 
-        if context.variables[self.idnode].value == None:
+        if context.variables[self.idnode].value is None:
             return RuntimeError("local variable {} referenced before assignment".format(self.id_node), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
@@ -322,7 +321,7 @@ class OrAs(BoolAs):
 
     def eval(self, context: Context):
 
-        if context.variables[self.idnode].value == None:
+        if context.variables[self.idnode].value is None:
             return RuntimeError("local variable {} referenced before assignment".format(self.id_node), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
@@ -344,7 +343,7 @@ class XorAs(BoolAs):
 
     def eval(self, context: Context):
 
-        if context.variables[self.idnode].value == None:
+        if context.variables[self.idnode].value is None:
             return RuntimeError("local variable {} referenced before assignment".format(self.id_node), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
