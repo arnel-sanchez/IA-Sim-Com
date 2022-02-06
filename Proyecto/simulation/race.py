@@ -1,5 +1,4 @@
-from numpy.random import random, randint
-
+from random import normalvariate, randint
 from simulation.environment import Environment
 
 
@@ -21,18 +20,20 @@ class Race:
             self.print_ranking()
             return True
         elif self.current_lap == self.laps - 1:
+            self.environment.change_weather_status()
             for agent in self.agents:
                 if agent.flag_to_pits:
                     agent.bike.select_configuration(self.environment)
-            self.environment.change_weather()
+                agent.update_agent_initial_parameters(self.environment.weather, self.environment.track.sections[0])
             print("\nUltima vuelta\n")
             self.print_ranking()
             return False
         else:
+            self.environment.change_weather_status()
             for agent in self.agents:
                 if agent.flag_to_pits:
                     agent.bike.select_configuration(self.environment)
-            self.environment.change_weather()
+                agent.update_agent_initial_parameters(self.environment.weather, self.environment.track.sections[0])
             print("\nVuelta {}\n".format(self.current_lap))
             self.print_ranking()
             return False
@@ -42,12 +43,13 @@ class Race:
         for x in self.rank:
             print("{}: {}".format(i, x.rider.name))
             i += 1
+        print()
 
     def ranking(self):
-        self.agents.sort(key=lambda agent : agent.time_lap)
+        self.agents.sort(key=lambda agent: agent.time_lap)
 
     def continuous_variable_generator(self):
-        return random()
+        return normalvariate(0.5, 0.16)
 
     def discrete_variable_generator(self):
         return randint(1, 10)

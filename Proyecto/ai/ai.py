@@ -10,13 +10,30 @@ def call_ai(script: str):
     return int(ans.stdout.decode("utf-8")[-3])
 
 
-def edit_moto(weather):
+def edit_moto(environment):
+    weather = environment.weather
+    front = 0
+    back = 0
+    side = 0
+    for section in environment.track.sections:
+        if weather.is_front_wind(section[3]):
+            front += 1
+        elif weather.is_back_wind(section[3]):
+            back += 1
+        else:
+            side += 1
+    if front > back and front > side:
+        direction = 1
+    elif back > front and back > side:
+        direction = 3
+    else:
+        direction = 2
     facts = open("ai/moto_facts.kfb", "w+")
     facts.write("# moto_facts.kfb\n\n")
     facts.write("rainy({})\n".format(True if weather.weather_status.name.__contains__("Rainy") else False))
     facts.write("humidity({})\n".format(True if weather.humidity > 6 else False))
     facts.write("windy({})\n".format(True if weather.wind_intensity > 6 else False))
-    facts.write("wind_direction(3)\n")
+    facts.write("wind_direction({})\n".format(direction))
     facts.close()
 
 
@@ -70,3 +87,25 @@ def action():
         for ans, plan in gen:
             actions.append(int(ans["select"]))
     print(sum(actions))
+
+
+def acceleration(max_acceleration, weather, section, bike, rider):
+    weather_status = [weather.weather_status == 1,
+                      3 < weather.humidity < 7,
+                      3 < weather.temperature < 7,
+                      3 < weather.visibility < 7,
+                      3 < weather.wind_intensity < 7]
+    for w in weather_status:
+        if not w:
+            max_acceleration -= 1
+    if section[4].name == "Straight":
+        if bike.brakes < 9 and bike.chassis_stiffness < 9:
+            max_acceleration -= 1
+        if rider.step_by_line < 9:
+            max_acceleration -= 1
+    else:
+        if bike.brakes != 5 and bike.chassis_stiffness != 5:
+            max_acceleration -= 1
+        if rider.cornering < 9:
+            max_acceleration -= 1
+    return max_acceleration

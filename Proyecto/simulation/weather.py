@@ -9,13 +9,13 @@ class WeatherStatus(Enum):
 
 class CardinalsPoints(Enum):
     North = 0
-    East = 1
-    West = 2
-    South = 3
-    Northwest = 4
+    Northeast = 1
+    East = 2
+    Southeast = 3
+    South = 4
     Southwest = 5
-    Southeast = 6
-    Northeast = 7
+    West = 6
+    Northwest = 7
 
 
 class Weather:
@@ -75,30 +75,42 @@ class Weather:
         else:
             self.wind_intensity += decrease_wind
 
+    def change_temperature(self, temperature):
+        self.temperature = temperature
+    
+    def change_humidity(self, humidity):
+        self.humidity = humidity
+    
+    def change_visibility(self, visibility):
+        self.visibility = visibility
+    
+    def change_wind_intensity(self, wind_intensity):
+        self.wind_intensity = wind_intensity
+
     def change_weather_status(self, new_weather_status: WeatherStatus):
         if new_weather_status == 0:
             self.decrease_humidity(2)
             self.increase_visibility(2)
             self.increase_temperature(2)
-            self.weather_status = new_weather_status
+            self.weather_status = WeatherStatus(new_weather_status)
         elif new_weather_status == 1:
             if self.weather_status == 2:
-                self.weather_status = new_weather_status
+                self.weather_status = WeatherStatus(new_weather_status)
                 self.decrease_humidity(2)
                 self.increase_visibility(2)
                 self.increase_temperature(2)
             else:
                 self.decrease_visibility(2)
                 self.decrease_temperature(2)
-                self.weather_status = new_weather_status
+                self.weather_status = WeatherStatus(new_weather_status)
         elif new_weather_status == 2:
             self.increase_humidity(2)
             self.decrease_visibility(2)
             self.decrease_temperature(2)
-            self.weather_status = new_weather_status
+            self.weather_status = WeatherStatus(new_weather_status)
 
     def change_wind(self, new_wind: CardinalsPoints):
-        self.wind = new_wind
+        self.wind = CardinalsPoints(new_wind)
 
     def print(self):
         print("Clima: ", end="")
@@ -109,8 +121,25 @@ class Weather:
         else:
             print("Lluvioso")
 
-    def is_front_wind(self, wind: CardinalsPoints):
-        return True
+    def is_front_wind(self, other_wind: CardinalsPoints):
+        if self.wind == CardinalsPoints.South and other_wind.name.__contains__("North"):
+            return True
+        elif self.wind == CardinalsPoints.Northeast and other_wind in [CardinalsPoints.South, CardinalsPoints.Southwest, CardinalsPoints.West]:
+            return True
+        elif self.wind == CardinalsPoints.West and other_wind.name.__contains__("East"):
+            return True
+        elif self.wind == CardinalsPoints.Southeast and other_wind in [CardinalsPoints.North, CardinalsPoints.Northwest, CardinalsPoints.West]:
+            return True
+        elif self.wind == CardinalsPoints.North and other_wind.name.__contains__("South"):
+            return True
+        elif self.wind == CardinalsPoints.Southwest and other_wind in [CardinalsPoints.North, CardinalsPoints.Northeast, CardinalsPoints.East]:
+            return True
+        elif self.wind == CardinalsPoints.East and other_wind.name.__contains__("West"):
+            return True
+        elif self.wind == CardinalsPoints.Northwest and other_wind in [CardinalsPoints.South, CardinalsPoints.Southeast, CardinalsPoints.East]:
+            return True
+        return False
 
     def is_back_wind(self, wind: CardinalsPoints):
-        return True
+        if self.wind == wind:
+            return True
