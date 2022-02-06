@@ -1,6 +1,18 @@
 # IA-Sim-Com
 
-Help
+## Como instalar el proyecto
+
+### Instalar Python
+
+```bash
+$ git clone https://github.com/arnel-sanchez/IA-Sim-Com
+$ cd IA-Sim-Com/Proyecto
+$ python -m pip install --upgrade pip && python -m pip install pynput && python -m pip install numpy
+$ python main.py
+```
+## [Informe](https://github.com/arnel-sanchez/IA-Sim-Com/blob/master/Informe/Informe.pdf)
+
+## Ayuda
 
 Nuestro DSL es un lenguaje con tipado estatico , se pueden definir variables de forma que declares su tipo y le asignes un valor,como C#. 
 Los tipos de variables con los que contamos son int , double,string y bool .Puedes redefinir variables solo en el ambito en que fueron creadas.
@@ -13,8 +25,8 @@ variables cornering o step_by_line, solo ellas, que son enteras y definen la hab
 que es void.EL otro tipo que se puede crear es un tipo Bike ,dentro del cual no se pueden redefinir variables ,solo se puede definir una funcion
 cuyo nombre debe ser "select_configuration", debe ser void.
 
-Las variables que pertenecen inicialmente al contexto de un rider son:  "speed","acceleration","time_lap","cornering" y "step_by_line"
-Las variables que pertenecen inicialmente al contexto de un bike son:"brand","max_speed","weight","tires","brakes" y "chassis_stiffness"
+Las variables que pertenecen inicialmente al contexto de un rider son: "speed","acceleration","time_lap","cornering" y "step_by_line"
+Las variables que pertenecen inicialmente al contexto de un bike son: "brand","max_speed","weight","tires","brakes" y "chassis_stiffness"
 
  
 Dentro de una funcion puedo crear una variable con id igual a otra variable de un contexto padre, si dentro de dicha funcion se llama este
