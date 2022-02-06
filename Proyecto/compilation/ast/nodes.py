@@ -326,7 +326,7 @@ class TypeSpecial(Statement):
               return checking
 
         for function in self.funciones:
-            if normaliza(self.nuevocontext.enfuncion.typefun)!="void" :
+            if ((function.idfun=="select_configuration" or function.idfun=="select_aceleration") and normaliza(function.typefun)!="void") or (function.idfun=="select_action" and normaliza(function.typefun)!="int") :
               return  CheckTypesError("error in the return value of the function","",self.token.line,self.token.column)
             
             checktypefunction=function.checktype(context)
@@ -343,7 +343,11 @@ class TypeSpecial(Statement):
 
          if evalvar>10:
            return RuntimeError("this variable must be less than or equal to 10","",self.token.line,self.token.column)
-         self.nuevocontext.variables[var.id].value=evalvar
+         if var.id=="cornering":
+             self.varsforRiders[3][2]=evalvar
+         else:
+             self.varsforRiders[4][2]=evalvar
+             # self.nuevocontext.variables[var.id].value=evalvar
 
     def addvars(self):
         if isinstance(self,RiderNode):
@@ -361,7 +365,7 @@ class TypeSpecial(Statement):
     def refreshContext(self,dict):    
        keys=dict.keys()
        for key in keys:
-            if self.nuevocontext.variables.keys().count(key)==1:
+            if list(self.nuevocontext.variables.keys()).count(key)==1:
                 self.nuevocontext.variables[key].value=dict[key]
  
 

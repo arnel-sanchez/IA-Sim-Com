@@ -939,16 +939,42 @@ class Agent:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.0001
 
     def select_action(self, section, weather):
-        edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
-        ans = call_ai("python ai/action.py")
-        return Agent_actions(ans)
-
+        if not self.flag_action:
+            edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
+            ans = call_ai("python ai/action.py")
+            return Agent_actions(ans)
+        else:
+            self.node.refreshContext(self.__dict__)
+            function=None
+            if self.node.funciones[0].idfun=="select_action":
+             function=self.node.funciones[0]
+            elif len(self.node.funciones) > 1 and self.node.funciones[1].idfun=="select_action":
+                function=self.node.funciones[1]
+            if function is None:
+                evaluation = 11
+            else:
+                evaluation = function.eval([],self.node.nuevocontext)
+            if evaluation > 11:
+              return Agent_actions(11)
+            else:
+                return Agent_actions(evaluation)
+            
     def select_aceleration(self, section, race, action):
+      if not self.flag_aceleration:  
         if action == Agent_actions.Brake:
             self.acceleration = (-1) * self.bike.acceleration/race.discrete_variable_generator()
         else:
             self.acceleration = self.bike.acceleration/race.discrete_variable_generator()
-
+      else:
+            self.node.refreshContext(self.__dict__)          
+            function=None
+            if self.node.funciones[0].idfun=="select_aceleration":
+                function=self.node.funciones[0]
+            else:
+                function=self.node.funciones[1]
+            function.eval([],self.node.nuevocontext)
+            self.acceleration=self.node.nuevocontext.variables["aceleration"].value
+            
     def status_analysis(self, section, race, action):
         prob = race.continuous_variable_generator()
 
@@ -993,15 +1019,8 @@ class Agent:
         return True
 
     def overcome_an_obstacle(self, section, race, weather):
-        if self.flag_action:
-            action = self.node
-        else:
-            action = self.select_action(section, weather)
-
-        if self.flag_aceleration:
-            self.node
-        else:
-            self.select_aceleration(section, race, action)
+        action = self.select_action(section, weather)
+        self.aceleration = self.select_aceleration(section, race, action)
 
         self.calc_final_speed(self.speed, section[2])
             
