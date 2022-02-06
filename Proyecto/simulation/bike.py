@@ -2,7 +2,6 @@ from enum import Enum
 from simulation.environment import Environment
 from ai.ai import edit_moto, call_ai
 from compilation.ast.nodes import Node
-import os
 
 class Tires(Enum):
     Slick_Soft = 0
@@ -28,8 +27,7 @@ class Bike:
     def select_configuration(self, environment: Environment):
         if self.node is None:
             edit_moto(environment.weather)
-            print(os.getcwd())
-            ans = call_ai("python ai/moto.py")
+            ans = call_ai("ls")
             self.change_tires(Tires(ans))
         else:
             self.node.refreshContext(self.__dict__)
