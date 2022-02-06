@@ -10,7 +10,7 @@ def call_ai(script: str):
 
 
 def edit_moto(weather):
-    facts = open("ai/moto_facts.kfb", "w")
+    facts = open("ai/moto_facts.kfb", "w+")
     facts.write("# moto_facts.kfb\n\n")
     facts.write("rainy({})\n".format(True if weather.weather_status.name.__contains__("Rainy") else False))
     facts.write("humidity({})\n".format(True if weather.humidity > 6 else False))
