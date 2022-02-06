@@ -158,9 +158,10 @@ class Program(Node):
                         else:
                             return "Nothing"
         if self.padre is not None:
-          if isinstance(self.padre,Def_Fun):              
-              if not isinstance(self.padre.padre,RiderNode) and not isinstance(self.padre.padre,BikeNode) :
-                context.clear()
+            if isinstance(self.padre, Def_Fun):
+                if not isinstance(self.padre.padre, RiderNode) and not isinstance(self.padre.padre, BikeNode):
+                    context.clear()
+
     @staticmethod
     def type() -> str:
         return "Program"
@@ -289,38 +290,37 @@ class Def_Fun(Statement):
         return self.body.checktype(self.nuevocontext)
 
     def eval(self, args, context: Context):
-        hayrecursividad=False
-        #Chequear contexto y si hay variables con valores implica que el contexto esta evaluado y hay recursividad y creamos un nuevo contexto 
+        hayrecursividad = False
+        # Chequear contexto y si hay variables con valores implica que el contexto esta evaluado y hay recursividad y creamos un nuevo contexto
         keys = list(self.nuevocontext.variables.keys())
         for key in keys:
-         if self.nuevocontext.variables[key].value!=None:
-           hayrecursividad=True
-           break
+            if self.nuevocontext.variables[key].value != None:
+                hayrecursividad = True
+                break
 
         if hayrecursividad:
-             contextopararecursividad=Context()
-             contextopararecursividad.funciones=self.nuevocontext.funciones
-             for key in keys:
-               value=D_Assign()
-               value.id=self.nuevocontext.variables[key].id
-               value.typevar= self.nuevocontext.variables[key].typevar
-               value.expr=self.nuevocontext.variables[key].expr
-               value.token=self.nuevocontext.variables[key].token
-               contextopararecursividad.variables.setdefault(key,value)
+            contextopararecursividad = Context()
+            contextopararecursividad.funciones = self.nuevocontext.funciones
+            for key in keys:
+                value = D_Assign()
+                value.id = self.nuevocontext.variables[key].id
+                value.typevar = self.nuevocontext.variables[key].typevar
+                value.expr = self.nuevocontext.variables[key].expr
+                value.token = self.nuevocontext.variables[key].token
+                contextopararecursividad.variables.setdefault(key, value)
 
-             contextopararecursividad.contextPadre=self.nuevocontext.contextPadre
+            contextopararecursividad.contextPadre = self.nuevocontext.contextPadre
 
-             index = 0
-             for arg in args:
+            index = 0
+            for arg in args:
                 evalexpression = arg.eval(context)
                 if not isinstance(evalexpression, RuntimeError):
-                   contextopararecursividad.variables[keys[index]].value = evalexpression
-                   index += 1
+                    contextopararecursividad.variables[keys[index]].value = evalexpression
+                    index += 1
                 else:
-                  return evalexpression  
-                  
-             return self.body.eval(contextopararecursividad)
+                    return evalexpression
 
+            return self.body.eval(contextopararecursividad)
 
         index = 0
         for arg in args:
@@ -330,11 +330,8 @@ class Def_Fun(Statement):
                 index += 1
             else:
                 return evalexpression
-        
-        
+
         return self.body.eval(self.nuevocontext)
-        
-         
 
     @staticmethod
     def type() -> str:
