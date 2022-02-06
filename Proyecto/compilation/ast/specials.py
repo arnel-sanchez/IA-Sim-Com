@@ -33,12 +33,12 @@ class D_Assign(Statement):
 
     def checktype(self, context: Context):
         typeExpression = self.expr.checktype(context)
-        type = normaliza(self.typevar)
+        type_ = normaliza(self.typevar)
         if isinstance(typeExpression, CheckTypesError):
             typeExpression.line = self.token.line
             typeExpression.column = self.token.column
             return typeExpression
-        if typeExpression == type:
+        if typeExpression == type_:
             return True
         return CheckTypesError("the induced type of the expression is different from the type of the variable", "",
                                self.token.line, self.token.column)

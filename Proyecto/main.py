@@ -38,11 +38,11 @@ def compilation():
         return False
     lines = split_lines(tokens)
     parser = Parser()
-    if parser.parse(lines)==True:
+    if parser.parse(lines) == True:
         validation = parser.validaAST()
-        if validation==True:
+        if validation == True:
             checktype = parser.checktypes()
-            if checktype==True:
+            if checktype == True:
                 exe = parser.execute()
                 if isinstance(exe, RuntimeError):
                     print(exe.__repr__())
@@ -129,13 +129,13 @@ def simulation(agents_lists):
         rider = Rider(b.name, b.cornering, b.step_by_line)
         bike = Bike(d.brand, d.max_speed, d.weight, None)
         agents.append(Agent(rider, bike, False, False, False))
-
+        
         m = Mir()
         s = Suzuki()
         rider = Rider(m.name, m.cornering, m.step_by_line)
         bike = Bike(s.brand, s.max_speed, s.weight, None)
         agents.append(Agent(rider, bike, False, False, False))
-
+        
         e = Espargaro()
         a = Aprilia()
         rider = Rider(e.name, e.cornering, e.step_by_line)
@@ -159,7 +159,7 @@ def simulation(agents_lists):
         rider = Rider(bi.name, bi.cornering, bi.step_by_line)
         bike = Bike(k.brand, k.max_speed, k.weight, None)
         agents.append(Agent(rider, bike, False, False, False))
-
+        
     race = Race(environment, agents, 5)
     s = Simulator()
     s.start(race)

@@ -1,30 +1,29 @@
-\subsection{Introducción a PSharp (P)}
+\subsection{Introducción a PySharp (P\#)}
 	\subsubsection{Hello world!}
 	
-		\begin{lstlisting}[language={PSharp}]
+		\begin{lstlisting}[language={PySharp}]
 			method void main() {
 				print("Hello World!");
 			}
 		\end{lstlisting}	
 		Los archivos de P\# suelen tener la extensión de archivo .pys.\par
 		
-		P\# permite almacenar el texto fuente de un programa en varios archivos fuente. Cuando se compila un programa P\# de varios archivos, todos los archivos de origen se procesan juntos y los archivos de origen pueden hacer referencia libremente entre sí; conceptualmente, es como si todos los archivos de origen estuvieran concatenados en un archivo grande antes de ser procesados.		
+		P\# permite almacenar el texto fuente de un programa en un archivo fuente.	
 		
 	\subsubsection{Estructura del Programa}
-		Los conceptos organizativos clave en P\# son programas, tipos y miembros. Los programas P\# constan de uno o más archivos fuente. Los programas declaran tipos y miembros. Las motocicletas y los motociclistas son ejemplos de tipos. Los métodos y propiedades son ejemplos de miembros.
+		Los conceptos organizativos clave en P\# son programas, tipos y miembros. Los programas P\# constan de un archivo fuente. Los programas declaran tipos y miembros. Las motocicletas y los motociclistas son ejemplos de tipos. Los métodos y propiedades son ejemplos de miembros.
 		
 	\subsubsection{Tipos y Variables}
-		Hay dos tipos de tipos en P\#: tipos de valor y tipos de referencia. Las variables de tipos de valor contienen directamente sus datos, mientras que las variables de tipos de referencia almacenan referencias a sus datos. Con los tipos de referencia, es posible que dos variables hagan referencia al mismo objeto y, por lo tanto, las operaciones en una variable afecten al objeto al que hace referencia la otra variable. Con los tipos de valor, cada una de las variables tiene su propia copia de los datos, y no es posible que las operaciones en una afecten a la otra.\par
+		En P\# solo existen tipos de valor, no hay de referencia. Por tanto, todas las variables contienen directamente sus datos, cada una tiene su propia copia y no es posible que las operaciones en una afecten a otra.\par
 		\begin{center}
 			\begin{tabular}{| c | c | m{5cm} | }
 				\hline
 				Categoría & Tipo & Descripción \\ \hline
-				\multirow{5}{*}{Tipos por Valor} & \multirow{4}{*}{Tipos Simples} & Entero con signo: int \\ \cline{3-3}
+				\multirow{5}{*}{Tipos} & \multirow{4}{*}{Tipos Simples} & Entero con signo: int \\ \cline{3-3}
 				 &  & Punto flotante IEEE: double \\ \cline{3-3}
 				 &  & Booleanos: bool \\ \cline{3-3}
 				 &  & Cadenas Unicode: string \\ \cline{2-3}
 				 & Tipos que aceptan valores NULL & Extensiones de todos los demás tipos de valor con un valor nulo \\ \hline
-				 Tipos por Referencia & Tipos de matrices & Unidimensionales, por ejemplo, int [] \\ \hline
 			\end{tabular}
 		\end{center}
 	\subsubsection{Expresiones}
@@ -62,15 +61,9 @@
 		
 		Un \textbf{bloque} permite escribir múltiples declaraciones en contextos donde se permite una sola declaración. Un bloque consta de una lista de declaraciones escritas entre los delimitadores\{y\}.
 		
-		La \textbf{declaración de inclusión} se utiliza para obtener y luego disponer de un recurso.
-		
-		\begin{lstlisting}[language={PSharp}]
-			include test;
-		\end{lstlisting}
-		
 		Las sentencias de \textbf{declaración} se utilizan para declarar variables, valga la redundancia.
 		
-		\begin{lstlisting}[language={PSharp}]
+		\begin{lstlisting}[language={PySharp}]
 			method void example() {
 				int a = 1;
 			}
@@ -78,7 +71,7 @@
 	
 		Las \textbf{declaraciones de expresión} se utilizan para evaluar expresiones. Las expresiones que se pueden usar como declaraciones incluyen invocaciones de métodos, asignaciones que usan = y los operadores de asignación compuesta.
 		
-		\begin{lstlisting}[language={PSharp}]
+		\begin{lstlisting}[language={PySharp}]
 			method void example() {
 				int a = 1;
 				print(a + 2);
@@ -87,7 +80,7 @@
 	
 		La \textbf{instrucción de selección} se utiliza para seleccionar una de varias declaraciones posibles para su ejecución en función del valor de alguna expresión. Este es el caso de la sentencia \textbf{if}.
 		
-		\begin{lstlisting}[language={PSharp}]
+		\begin{lstlisting}[language={PySharp}]
 			method void example(int a) {
 				if (a < 5) {
 					print(a);
@@ -100,7 +93,7 @@
 		
 		La \textbf{instrucción de iteración} se utiliza para ejecutar repetidamente una instrucción incorporada. Este es el caso de la instrucción \textbf{while}.
 		
-		\begin{lstlisting}[language={PSharp}]
+		\begin{lstlisting}[language={PySharp}]
 			method void example(int a) {
 				while (a > 5) {
 					print(a);
@@ -111,7 +104,7 @@
 		
 		Las \textbf{sentencias de salto} se utilizan para transferir el control. En este grupo están las declaraciones de \textbf{break}, \textbf{continue} y \textbf{return}.
 		
-		\begin{lstlisting}[language={PSharp}]
+		\begin{lstlisting}[language={PySharp}]
 			method int example() {
 				while (true) {
 					x = input()
@@ -127,10 +120,10 @@
 			}
 		\end{lstlisting}
 		
-	\subsubsection{Tipos}
-		Los \textbf{tipos} son los elementos más importantes de P\#. Un tipo es una estructura de bloques compuesta por acciones (métodos). Un tipo proporciona una definición para casos de, por ejemplo, motociclistas o motocicletas. Su declaración comienza con un encabezado que especifica qué tipo se va a crear y el nombre que se le dará a esta instancia. El encabezado va seguido del cuerpo del tipo, que consiste en una lista de declaraciones de miembros escritas entre los delimitadores\{y\}.
+	\subsubsection{Tipos especiales}
+		Los \textbf{tipos especiales} son los elementos más importantes de P\#, constituyen estructuras de bloques compuestas por acciones (métodos). Un tipo proporciona una definición para casos de, por ejemplo, motociclistas o motocicletas. Su declaración comienza con un encabezado que especifica qué tipo se va a crear y el nombre que se le dará a esta instancia. El encabezado va seguido del cuerpo del tipo, que consiste en una lista de declaraciones de miembros escritas entre los delimitadores\{y\}.
 		
-		\begin{lstlisting}[language={PSharp}]
+		\begin{lstlisting}[language={PySharp}]
 			rider Rossi() {
 				method int example() {    
 					return 0;
@@ -152,14 +145,14 @@
 		El cuerpo de un método especifica las declaraciones que se ejecutarán cuando se invoca el método. El cuerpo de un método puede declarar variables que son específicas de la invocación del método. Estas variables se denominan variables locales. Una declaración de variable local especifica un nombre de tipo, un nombre de variable y un valor inicial.
 		
 	\subsubsection{Operadores}
-		Un \textbf{operador} es un miembro que define el significado de aplicar un operador de expresión particular.\par
+		Un \textbf{operador} es un miembro que define el significado de aplicar un operador de expresión particular. Se pueden definir solamente operadores binarios.\par
 		
 		\textbf{Operadores Binarios:}
-		\begin{lstlisting}[language={PSharp}]
+		\begin{lstlisting}[language={PySharp}]
 			3+5;
 			true && false;
 		\end{lstlisting}
-	
+    
 	\subsubsection{Análisis Léxico}
 		\textbf{input}\par
 		: input\_element* new\_line\par
@@ -245,7 +238,6 @@
 		| 'else'\par
 		| 'false'\par
 		| 'if'\par
-		| 'include'\par
 		| 'int'\par
 		| 'method'\par
 		| 'null'\par
@@ -344,7 +336,6 @@
 		| '||=' \par
 		| '\textasciicircum{}=' \par
 		;\par
-		
 		\underline{\textbf{Directivas}}\par
 		\textbf{directive}\par
 		: 'include' '<Nombre\_del\_archivo.pys>' ';'\par
@@ -381,5 +372,4 @@
 	\subsection{Conexion Simulacion - Compilacion}
 	
 	El resultado del DSL si se hacen los 3 recorridos del AST sin error, son dos listas, una con todos los pilotos que fueron creados y otra con todas las motos , a partir de estas listas se crean los pilotos y las motos en la simulacion. En la simulacion los pilotos que no fueron creados en el código ejecutan sus métodos como normalmente, en el caso de un piloto que fue creado desde el DSL se ejecuta la función definida en el DSL, pero antes de ejecutarla se actualiza el contexto de la funcion para que dicha función pueda apoyarse en la situación actual. Luego de la ejecución de la función dependiendo que función se ejecutó se importa a la simulación la variable que se quiere desde el contexto del método. 		
-
 		

@@ -355,7 +355,7 @@ class Parser:
                                 self.estados[- 1] != Region.R_IF and self.estados[- 1] != Region.R_ELIF):
                             try:
                                 self.estados.pop()
-                            except:
+                            except Exception:
                                 self.error = UnbalancedBracketsError("unexpected end of region", "", line[self.i].line,
                                                                      line[self.i].column)
                                 return False

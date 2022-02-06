@@ -22,14 +22,14 @@ class Context:
         else:
             return evalexpr
 
-    def getFunction(self, id):
-        funContain = self.funciones.get(id, "NoEsta")
+    def getFunction(self, id_):
+        funContain = self.funciones.get(id_, "NoEsta")
         if funContain != "NoEsta":
             return funContain
         else:
             context = self.contextPadre
             while context is not None:
-                funContain = context.funciones.get(id, "NoEsta")
+                funContain = context.funciones.get(id_, "NoEsta")
                 if funContain != "NoEsta":
                     return funContain
                 context = context.contextPadre
@@ -122,13 +122,13 @@ class Context:
             self.funciones.setdefault(fun, node)
         return True
 
-    def define_var(self, id: str, var, token: Token):
-        varContain = self.variables.get(id, "NoEsta")
+    def define_var(self, id_: str, var, token: Token):
+        varContain = self.variables.get(id_, "NoEsta")
         if varContain != "NoEsta":
             return IncorrectCallError("a variable with this name already exists in this context", "", token.line,
                                       token.column)
         else:
-            self.variables.setdefault(id, var)
+            self.variables.setdefault(id_, var)
         return True
 
     def crearnuevocontexto(self):
