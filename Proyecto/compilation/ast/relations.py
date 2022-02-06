@@ -1,4 +1,4 @@
-from compilation.ast.operations import BinOp, same_type
+from compilation.ast.operations import BinOp
 from compilation.ast.nodes import Node
 from compilation.context import Context
 from compilation.errors import CheckTypesError
@@ -17,7 +17,7 @@ class Rel(BinOp):
             return checkexpr2
         if checkexpr1 == checkexpr2:
             return True
-        return CheckTypesError("cannot compare expressions with different types", "", "", "")
+        return CheckTypesError("cannot compare expressions with different types", "", 0, 0)
 
     @staticmethod
     def type() -> str:

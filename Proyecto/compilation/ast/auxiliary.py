@@ -118,7 +118,8 @@ class NodeQ(Node):
 
 
 class Nodepsilon(Node):
-    padre = None
+    def __init__(self):
+        self.padre = None
 
     @staticmethod
     def type() -> str:
