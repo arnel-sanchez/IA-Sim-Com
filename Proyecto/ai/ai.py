@@ -10,13 +10,30 @@ def call_ai(script: str):
     return int(ans.stdout.decode("utf-8")[-3])
 
 
-def edit_moto(weather):
+def edit_moto(environment):
+    weather = environment.weather
+    front = 0
+    back = 0
+    side = 0
+    for section in environment.track.sections:
+        if weather.is_front_wind(section[3]):
+            front += 1
+        elif weather.is_back_wind(section[3]):
+            back += 1
+        else:
+            side += 1
+    if front > back and front > side:
+        direction = 1
+    elif back > front and back > side:
+        direction = 3
+    else:
+        direction = 2
     facts = open("ai/moto_facts.kfb", "w+")
     facts.write("# moto_facts.kfb\n\n")
     facts.write("rainy({})\n".format(True if weather.weather_status.name.__contains__("Rainy") else False))
     facts.write("humidity({})\n".format(True if weather.humidity > 6 else False))
     facts.write("windy({})\n".format(True if weather.wind_intensity > 6 else False))
-    facts.write("wind_direction(3)\n")
+    facts.write("wind_direction({})\n".format(direction))
     facts.close()
 
 

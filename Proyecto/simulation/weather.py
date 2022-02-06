@@ -112,19 +112,19 @@ class Weather:
     def is_front_wind(self, wind: CardinalsPoints):
         if self.wind == CardinalsPoints.North and wind == CardinalsPoints.South:
             return True
-        elif if self.wind == CardinalsPoints.South and wind == CardinalsPoints.North:
+        elif self.wind == CardinalsPoints.South and wind == CardinalsPoints.North:
             return True
-        elif if self.wind == CardinalsPoints.East and wind == CardinalsPoints.West:
+        elif self.wind == CardinalsPoints.East and wind == CardinalsPoints.West:
             return True
-        elif if self.wind == CardinalsPoints.West and wind == CardinalsPoints.East:
+        elif self.wind == CardinalsPoints.West and wind == CardinalsPoints.East:
             return True
-        elif if self.wind == CardinalsPoints.Northeast and wind == CardinalsPoints.Southwest:
+        elif self.wind == CardinalsPoints.Northeast and wind == CardinalsPoints.Southwest:
             return True
-        elif if self.wind == CardinalsPoints.Southwest and wind == CardinalsPoints.Northeast:
+        elif self.wind == CardinalsPoints.Southwest and wind == CardinalsPoints.Northeast:
             return True
-        elif if self.wind == CardinalsPoints.Northwest and wind == CardinalsPoints.Southeast:
+        elif self.wind == CardinalsPoints.Northwest and wind == CardinalsPoints.Southeast:
             return True
-        elif if self.wind == CardinalsPoints.Southeast and wind == CardinalsPoints.Northwest:
+        elif self.wind == CardinalsPoints.Southeast and wind == CardinalsPoints.Northwest:
             return True
 
     def is_back_wind(self, wind: CardinalsPoints):
