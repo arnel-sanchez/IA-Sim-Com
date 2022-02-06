@@ -13,6 +13,7 @@ class Race:
         
         for agent in agents:
             agent.update_agent_initial_parameters(self.environment.weather, self.environment.track.sections[0])
+            agent.bike.select_configuration(environment)
 
     def change_lap(self):
         self.current_lap+=1
@@ -24,6 +25,7 @@ class Race:
             for agent in self.agents:
                 if agent.flag_to_pits:
                     agent.bike.select_configuration(self.environment)
+            self.environment.change_weather()
             print("\nUltima vuelta\n")
             self.print_ranking()
             return False
@@ -31,6 +33,7 @@ class Race:
             for agent in self.agents:
                 if agent.flag_to_pits:
                     agent.bike.select_configuration(self.environment)
+            self.environment.change_weather()
             print("\nVuelta {}\n".format(self.current_lap))
             self.print_ranking()
             return False
