@@ -2,6 +2,7 @@ from enum import Enum
 from simulation.environment import Environment
 from ai.ai import edit_moto, call_ai
 from compilation.ast.nodes import Node
+import os
 
 class Tires(Enum):
     Slick_Soft = 0

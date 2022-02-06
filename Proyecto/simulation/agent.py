@@ -3,9 +3,9 @@ from simulation.bike import Bike
 from enum import Enum
 from math import pow
 from math import sqrt
-from simulation.weather import Cardinals_Points
+from simulation.weather import CardinalsPoints
 from ai.ai import edit_action, call_ai
-from simulation.track import Track_Type
+from simulation.track import TrackType
 from compilation.ast.nodes import Node
 
 class Agent:
@@ -175,9 +175,9 @@ class Agent:
             else:
                 self.rider.probability_of_falling_off_the_motorcycle -= 0.001*(weather.temperature - 5)/3
 
-        if weather.wind == Cardinals_Points.North:
+        if weather.wind == CardinalsPoints.North:
             #De Frente
-            if section[3] == Cardinals_Points.North:
+            if section[3] == CardinalsPoints.North:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
                     self.rider.step_by_line = 0
                 else:
@@ -239,7 +239,7 @@ class Agent:
                     else:
                         self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
             #De Espaldas
-            elif section[3] == Cardinals_Points.South:
+            elif section[3] == CardinalsPoints.South:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
                     self.rider.step_by_line = 10
                 else:
@@ -316,9 +316,9 @@ class Agent:
                     self.rider.probability_of_falling_off_the_motorcycle = 1
                 else:
                     self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
-        elif weather.wind == Cardinals_Points.East:
+        elif weather.wind == CardinalsPoints.East:
             #De Frente
-            if section[3] == Cardinals_Points.East:
+            if section[3] == CardinalsPoints.East:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
                     self.rider.step_by_line = 0
                 else:
@@ -380,7 +380,7 @@ class Agent:
                     else:
                         self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
             #De Espaldas
-            elif section[3] == Cardinals_Points.West:
+            elif section[3] == CardinalsPoints.West:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
                     self.rider.step_by_line = 10
                 else:
@@ -457,9 +457,9 @@ class Agent:
                     self.rider.probability_of_falling_off_the_motorcycle = 1
                 else:
                     self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
-        elif weather.wind == Cardinals_Points.South:
+        elif weather.wind == CardinalsPoints.South:
             #De Frente
-            if section[3] == Cardinals_Points.South:
+            if section[3] == CardinalsPoints.South:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
                     self.rider.step_by_line = 0
                 else:
@@ -521,7 +521,7 @@ class Agent:
                     else:
                         self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
             #De Espaldas
-            elif section[3] == Cardinals_Points.North:
+            elif section[3] == CardinalsPoints.North:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
                     self.rider.step_by_line = 10
                 else:
@@ -600,7 +600,7 @@ class Agent:
                     self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
         else:
             #De Frente
-            if section[3] == Cardinals_Points.West:
+            if section[3] == CardinalsPoints.West:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
                     self.rider.step_by_line = 0
                 else:
@@ -662,7 +662,7 @@ class Agent:
                     else:
                         self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
             #De Espaldas
-            elif section[3] == Cardinals_Points.East:
+            elif section[3] == CardinalsPoints.East:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
                     self.rider.step_by_line = 10
                 else:
@@ -741,9 +741,9 @@ class Agent:
                     self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
 
     def update_agent_parameter(self, weather, new_weather, section):
-        if new_weather.wind == Cardinals_Points.North:
+        if new_weather.wind == CardinalsPoints.North:
             #De Frente
-            if section[3] == Cardinals_Points.North:
+            if section[3] == CardinalsPoints.North:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
                     self.rider.step_by_line = 0
                 else:
@@ -759,7 +759,7 @@ class Agent:
                 else:
                     self.bike.probability_of_exploding_tires += 0.0001
             #De Espaldas
-            elif section[3] == Cardinals_Points.South:
+            elif section[3] == CardinalsPoints.South:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
                     self.rider.step_by_line = 10
                 else:
@@ -790,9 +790,9 @@ class Agent:
                     self.bike.probability_of_falling_off_the_motorcycle = 1
                 else:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.0001
-        elif new_weather.wind == Cardinals_Points.East:
+        elif new_weather.wind == CardinalsPoints.East:
             #De Frente
-            if section[3] == Cardinals_Points.East:
+            if section[3] == CardinalsPoints.East:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
                     self.rider.step_by_line = 0
                 else:
@@ -808,7 +808,7 @@ class Agent:
                 else:
                     self.bike.probability_of_exploding_tires += 0.0001
             #De Espaldas
-            elif section[3] == Cardinals_Points.West:
+            elif section[3] == CardinalsPoints.West:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
                     self.rider.step_by_line = 10
                 else:
@@ -839,9 +839,9 @@ class Agent:
                     self.bike.probability_of_falling_off_the_motorcycle = 1
                 else:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.0001
-        elif new_weather.wind == Cardinals_Points.South:
+        elif new_weather.wind == CardinalsPoints.South:
             #De Frente
-            if section[3] == Cardinals_Points.South:
+            if section[3] == CardinalsPoints.South:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
                     self.rider.step_by_line = 0
                 else:
@@ -857,7 +857,7 @@ class Agent:
                 else:
                     self.bike.probability_of_exploding_tires += 0.0001
             #De Espaldas
-            elif section[3] == Cardinals_Points.North:
+            elif section[3] == CardinalsPoints.North:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
                     self.rider.step_by_line = 10
                 else:
@@ -890,7 +890,7 @@ class Agent:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.0001
         else:
             #De Frente
-            if section[3] == Cardinals_Points.West:
+            if section[3] == CardinalsPoints.West:
                 if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
                     self.rider.step_by_line = 0
                 else:
@@ -906,7 +906,7 @@ class Agent:
                 else:
                     self.bike.probability_of_exploding_tires += 0.0001
             #De Espaldas
-            elif section[3] == Cardinals_Points.East:
+            elif section[3] == CardinalsPoints.East:
                 if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
                     self.rider.step_by_line = 10
                 else:
