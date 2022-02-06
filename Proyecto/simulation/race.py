@@ -24,7 +24,7 @@ class Race:
             for agent in self.agents:
                 if agent.flag_to_pits:
                     agent.bike.select_configuration(self.environment)
-            self.environment.change_weather()
+            self.environment.change_weather_status()
             print("\nUltima vuelta\n")
             self.print_ranking()
             return False
@@ -32,7 +32,7 @@ class Race:
             for agent in self.agents:
                 if agent.flag_to_pits:
                     agent.bike.select_configuration(self.environment)
-            self.environment.change_weather()
+            self.environment.change_weather_status()
             print("\nVuelta {}\n".format(self.current_lap))
             self.print_ranking()
             return False
