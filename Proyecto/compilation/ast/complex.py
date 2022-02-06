@@ -293,7 +293,9 @@ class Def_Fun(Statement):
         hayrecursividad = False
         # Chequear contexto y si hay variables con valores implica que el contexto esta evaluado y hay recursividad y creamos un nuevo contexto
         keys = list(self.nuevocontext.variables.keys())
-        for key in keys:
+        
+        if self.padre is Program:
+          for key in keys:
             if self.nuevocontext.variables[key].value != None:
                 hayrecursividad = True
                 break
