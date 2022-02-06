@@ -20,6 +20,6 @@ jobs:
     - name: Install PyKE
       run: wget https://sourceforge.net/projects/pyke/files/pyke/1.1.1/pyke3-1.1.1.zip && unzip pyke3-1.1.1.zip && cd pyke-1.1.1 && python setup.py build && python setup.py install
     - name: Run Project
-      run: cd Proyecto && python ./Proyecto/main.py
+      run: cd Proyecto && python main.py
     - name: Run Test
       run: cd ./Proyecto/tester && python -m unittest 'test_tokenizer.py'
