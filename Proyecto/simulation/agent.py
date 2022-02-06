@@ -8,12 +8,12 @@ from simulation.weather import CardinalsPoints, WeatherStatus
 from simulation.bike import Tires
 from simulation.track import TrackType
 
-from compilation.ast.nodes import Node
+from compilation.ast.nodes import RiderNode
 from ai.ai import edit_action, call_ai
 
 
 class Agent:
-    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_acceleration, node: Node = None):
+    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_acceleration, node: RiderNode = None):
         self.rider = rider
         self.bike = bike
         self.speed = 0

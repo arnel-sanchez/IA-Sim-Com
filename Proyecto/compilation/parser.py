@@ -391,7 +391,7 @@ class Parser:
                 nuevonodo.token=token               
             else:
                 
-                nuevonodo=MotorcicleNode()
+                nuevonodo=BikeNode()
                 nuevonodo.token=token
             nuevonodo.padre=self.nodoactual
             self.nodoactual.statements.append(nuevonodo)
@@ -833,7 +833,7 @@ class Parser:
          self.estadoDAST=EstadoDAST.EnProgram 
        elif isinstance(self.nodoactual.padre,FunCall):
          self.estadoDAST=EstadoDAST.LlamadoAfuncion
-       elif isinstance(self.nodoactual.padre,RiderNode) or isinstance(self.nodoactual.padre,MotorcicleNode) :
+       elif isinstance(self.nodoactual.padre,RiderNode) or isinstance(self.nodoactual.padre, BikeNode) :
          self.estadoDAST=EstadoDAST.EnTipoEspecial
 
     
@@ -860,5 +860,5 @@ class Parser:
         for statement in self.nodopararecorrerast.statements:
             if isinstance(statement,RiderNode):
                 self.Riders.append(statement)
-            elif isinstance(statement,MotorcicleNode):
+            elif isinstance(statement, BikeNode):
                 self.Motorcicles.append(statement)

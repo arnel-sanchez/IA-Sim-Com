@@ -1,6 +1,6 @@
 from enum import Enum
 
-from compilation.ast.nodes import Node
+from compilation.ast.nodes import BikeNode
 from ai.ai import edit_moto, call_ai
 from simulation.environment import Environment
 
@@ -14,7 +14,7 @@ class Tires(Enum):
 
 
 class Bike:
-    def __init__(self, brand, max_speed, weight, node: Node = None, brakes=5, chassis_stiffness=8):
+    def __init__(self, brand, max_speed, weight, node: BikeNode = None, brakes=5, chassis_stiffness=8):
         self.brand = brand
         self.max_speed = max_speed
         self.weight = weight

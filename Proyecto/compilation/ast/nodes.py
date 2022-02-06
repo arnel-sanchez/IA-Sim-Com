@@ -125,7 +125,7 @@ class Program(Node):
          for statement in self.statements:
              if isinstance(statement,Def_Fun):                 
                  return False #Error ,No puede definir una funcion dentro de un while
-             elif isinstance(statement,RiderNode) or isinstance(statement,MotorcicleNode):                 
+             elif isinstance(statement,RiderNode) or isinstance(statement, BikeNode):
                  return False #Error ,No puede definir un tipo especial dentro de un while
                  #if isinstance(statement,Redefinition) or isinstance(statement,D_Assign) or isinstance(statement,WhileCond) or isinstance(statement,IfCond) or isinstance(statement,FunCall):  #estas son las declaraciones que pueden estar en cualquier ambito
              validationstatement=statement.validate(context)
@@ -136,7 +136,7 @@ class Program(Node):
          for statement in self.statements:
              if isinstance(statement,Def_Fun):
                 return False #Error ,No puede definir una funcion dentro de un If
-             elif isinstance(statement,RiderNode) or isinstance(statement,MotorcicleNode):                 
+             elif isinstance(statement,RiderNode) or isinstance(statement, BikeNode):
                  return False #Error ,No puede definir un tipo especial dentro de un if
              elif isinstance(statement,ReturnNode) and (statement.type=="continue"or statement.type=="break"):
                 if context.enwhile==None:
@@ -153,7 +153,7 @@ class Program(Node):
            for statement in self.statements:
              if isinstance(statement,Def_Fun):
                 return False #Error ,No puede definir una funcion dentro de una funcion
-             elif isinstance(statement,RiderNode) or isinstance(statement,MotorcicleNode):                 
+             elif isinstance(statement,RiderNode) or isinstance(statement, BikeNode):
                  return False #Error ,No puede definir un tipo especial dentro de una funcion
              elif isinstance(statement,ReturnNode) and  (statement.type=="continue"or statement.type=="break"):
                  return False #Error ,Esta declaracion no es valida dentro de una funcion    
@@ -201,7 +201,7 @@ class Program(Node):
                     
                    if isinstance(statement,Def_Fun):
                          return False #Error ,No puede definir una funcion en este ambito
-                   elif isinstance(statement,RiderNode) or isinstance(statement,MotorcicleNode):                 
+                   elif isinstance(statement,RiderNode) or isinstance(statement, BikeNode):
                         return False #Error ,No puede definir un tipo especial en este ambito
                    elif isinstance(statement,ReturnNode):
                        if (statement.type=="continue"or statement.type=="break") and context.enwhile==None:
@@ -299,7 +299,7 @@ class TypeSpecial(Statement):
        #Hay que agregarle las variables de las motos o los pilotos
        for function in self.funciones:
           
-           if isinstance(self,MotorcicleNode):
+           if isinstance(self, BikeNode):
               if self.functionsOfMotorcicles.count(function.idfun)!=0:
                  self.functionsOfMotorcicles.remove(function.idfun)
               else:
@@ -368,7 +368,7 @@ class TypeSpecial(Statement):
                 self.nuevocontext.variables[key].value=dict[key]
  
 
-class MotorcicleNode(TypeSpecial):
+class BikeNode(TypeSpecial):
    def __init__(self):  
      self.id=None
      self.padre=None
@@ -574,7 +574,7 @@ class Def_Fun(Statement):
       self.token=None 
 
     def validate(self, context : Context) -> bool:
-        if not isinstance(self.padre,RiderNode) and not isinstance(self.padre,MotorcicleNode):
+        if not isinstance(self.padre,RiderNode) and not isinstance(self.padre, BikeNode):
            self.nuevocontext = context.crearnuevocontexto()
         else:
             self.nuevocontext=context
