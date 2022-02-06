@@ -1,15 +1,19 @@
+from math import pow, sqrt
+from enum import Enum
+
 from simulation.rider import Rider
 from simulation.bike import Bike
-from enum import Enum
-from math import pow
-from math import sqrt
-from simulation.weather import CardinalsPoints
-from ai.ai import edit_action, call_ai
+
+from simulation.weather import CardinalsPoints, WeatherStatus
+from simulation.bike import Tires
 from simulation.track import TrackType
+
 from compilation.ast.nodes import Node
+from ai.ai import edit_action, call_ai
+
 
 class Agent:
-    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_acceleration, node: Node):
+    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_acceleration, node: Node = None):
         self.rider = rider
         self.bike = bike
         self.speed = 0
@@ -23,915 +27,891 @@ class Agent:
 
     def update_agent_initial_parameters(self, weather, section):
         if self.bike.chassis_stiffness > 5:
-            if self.rider.step_by_line + (self.bike.chassis_stiffness - 5)/2 >= 10:
+            if self.rider.step_by_line + (self.bike.chassis_stiffness - 5) / 2 >= 10:
                 self.rider.step_by_line = 10
             else:
-                self.rider.step_by_line += (self.bike.chassis_stiffness - 5)/2
-            if self.rider.cornering - (self.bike.chassis_stiffness)/2 <= 0:
-               self.rider.cornering = 0
+                self.rider.step_by_line += (self.bike.chassis_stiffness - 5) / 2
+            if self.rider.cornering - (self.bike.chassis_stiffness) / 2 <= 0:
+                self.rider.cornering = 0
             else:
-               self.rider.cornering -= self.bike.chassis_stiffness/2
+                self.rider.cornering -= self.bike.chassis_stiffness / 2
         elif self.bike.chassis_stiffness < 5:
-            if self.rider.cornering + (self.bike.chassis_stiffness - 5)/2 >= 10:
+            if self.rider.cornering + (self.bike.chassis_stiffness - 5) / 2 >= 10:
                 self.rider.cornering = 10
             else:
-                self.rider.cornering += (self.bike.chassis_stiffness - 5)/2
-            if self.rider.step_by_line - (self.bike.chassis_stiffness)/2 <= 0:
-               self.rider.step_by_line = 0
+                self.rider.cornering += (self.bike.chassis_stiffness - 5) / 2
+            if self.rider.step_by_line - (self.bike.chassis_stiffness) / 2 <= 0:
+                self.rider.step_by_line = 0
             else:
-               self.rider.step_by_line -= self.bike.chassis_stiffness/2
-
+                self.rider.step_by_line -= self.bike.chassis_stiffness / 2
         if self.bike.brakes < 5:
-            if self.rider.step_by_line + (self.bike.brakes - 5)/2 >= 10:
+            if self.rider.step_by_line + (self.bike.brakes - 5) / 2 >= 10:
                 self.rider.step_by_line = 10
             else:
-                self.rider.step_by_line += (self.bike.brakes - 5)/2
-            
-            if self.rider.cornering  - self.bike.brakes/2 <= 0:
-               self.rider.cornering = 0
+                self.rider.step_by_line += (self.bike.brakes - 5) / 2
+            if self.rider.cornering - self.bike.brakes / 2 <= 0:
+                self.rider.cornering = 0
             else:
-               self.rider.cornering -= self.bike.brakes/2
+                self.rider.cornering -= self.bike.brakes / 2
         elif self.bike.brakes > 5:
-            if self.rider.cornering + (self.bike.brakes - 5)/2 >= 10:
+            if self.rider.cornering + (self.bike.brakes - 5) / 2 >= 10:
                 self.rider.cornering = 10
             else:
-                self.rider.cornering += (self.bike.brakes - 5)/2
-            
-            if self.rider.step_by_line  - (self.bike.brakes)/2 <= 0:
-               self.rider.step_by_line = 0
+                self.rider.cornering += (self.bike.brakes - 5) / 2
+            if self.rider.step_by_line - (self.bike.brakes) / 2 <= 0:
+                self.rider.step_by_line = 0
             else:
-               self.rider.step_by_line -= self.bike.brakes/2
-
+                self.rider.step_by_line -= self.bike.brakes / 2
         if weather.temperature > 5:
-            if self.rider.step_by_line + (weather.temperature - 5)/3 >= 10:
+            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
                 self.rider.step_by_line = 10
             else:
-                self.rider.step_by_line += (weather.temperature - 5)/3
-            
-            if self.rider.cornering  + (weather.temperature - 5)/3 >= 10:
-               self.rider.cornering = 10
+                self.rider.step_by_line += (weather.temperature - 5) / 3
+            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
+                self.rider.cornering = 10
             else:
-               self.rider.cornering += (weather.temperature - 5)/3
-
-            if self.bike.probability_of_exploding_tires + 0.001*(weather.temperature - 5)/3 >= 1:
+                self.rider.cornering += (weather.temperature - 5) / 3
+            if self.bike.probability_of_exploding_tires + 0.001 * (weather.temperature - 5) / 3 >= 1:
                 self.bike.probability_of_exploding_tires = 1
             else:
-                self.bike.probability_of_exploding_tires += 0.001*(weather.temperature - 5)/3
-                    
-            if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*(weather.temperature - 5)/3 >= 1:
+                self.bike.probability_of_exploding_tires += 0.001 * (weather.temperature - 5) / 3
+            if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * (weather.temperature - 5) / 3 >= 1:
                 self.bike.probability_of_the_motorcycle_breaking_down = 1
             else:
-                self.bike.probability_of_the_motorcycle_breaking_down += 0.001*(weather.temperature - 5)/3
-
-            if self.rider.probability_of_falling_off_the_motorcycle - 0.001*(weather.temperature - 5)/2 <= 0:
+                self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_motorcycle - 0.001 * (weather.temperature - 5) / 2 <= 0:
                 self.rider.probability_of_falling_off_the_motorcycle = 0
             else:
-                self.rider.probability_of_falling_off_the_motorcycle -= 0.001*(weather.temperature - 5)/3
+                self.rider.probability_of_falling_off_the_motorcycle -= 0.001 * (weather.temperature - 5) / 3
         elif weather.temperature < 5:
-            if self.rider.step_by_line - (weather.temperature - 5)/3 <= 0:
+            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
                 self.rider.step_by_line = 0
             else:
-                self.rider.step_by_line -= (weather.temperature - 5)/3
-            
-            if self.rider.cornering  - (weather.temperature - 5)/3 <= 0:
-               self.rider.cornering = 0
+                self.rider.step_by_line -= (weather.temperature - 5) / 3
+            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
+                self.rider.cornering = 0
             else:
-               self.rider.cornering -= (weather.temperature - 5)/3
-
-            if self.bike.probability_of_exploding_tires - 0.001*(weather.temperature - 5)/3 <= 0:
+                self.rider.cornering -= (weather.temperature - 5) / 3
+            if self.bike.probability_of_exploding_tires - 0.001 * (weather.temperature - 5) / 3 <= 0:
                 self.bike.probability_of_exploding_tires = 0
             else:
-                self.bike.probability_of_exploding_tires -= 0.001*(weather.temperature - 5)/3
-                    
-            if self.bike.probability_of_the_motorcycle_breaking_down - 0.001*(weather.temperature - 5)/3 <= 0:
+                self.bike.probability_of_exploding_tires -= 0.001 * (weather.temperature - 5) / 3
+            if self.bike.probability_of_the_motorcycle_breaking_down - 0.001 * (weather.temperature - 5) / 3 <= 0:
                 self.bike.probability_of_the_motorcycle_breaking_down = 0
             else:
-                self.bike.probability_of_the_motorcycle_breaking_down -= 0.001*(weather.temperature - 5)/3
-
-            if self.rider.probability_of_falling_off_the_motorcycle + 0.001*(weather.temperature - 5)/2 >= 10:
+                self.bike.probability_of_the_motorcycle_breaking_down -= 0.001 * (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * (weather.temperature - 5) / 2 >= 10:
                 self.rider.probability_of_falling_off_the_motorcycle = 10
             else:
-                self.rider.probability_of_falling_off_the_motorcycle += 0.001*(weather.temperature - 5)/3
-        
+                self.rider.probability_of_falling_off_the_motorcycle += 0.001 * (weather.temperature - 5) / 3
         if weather.visibility > 5:
-            if self.rider.step_by_line + (weather.temperature - 5)/3 >= 10:
+            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
                 self.rider.step_by_line = 10
             else:
-                self.rider.step_by_line += (weather.temperature - 5)/3
-            
-            if self.rider.cornering  + (weather.temperature - 5)/3 >= 10:
-               self.rider.cornering = 10
+                self.rider.step_by_line += (weather.temperature - 5) / 3
+            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
+                self.rider.cornering = 10
             else:
-               self.rider.cornering += (weather.temperature - 5)/3
-
-            if self.rider.probability_of_falling_off_the_motorcycle - 0.001*(weather.temperature - 5)/2 <= 0:
+                self.rider.cornering += (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_motorcycle - 0.001 * (weather.temperature - 5) / 2 <= 0:
                 self.rider.probability_of_falling_off_the_motorcycle = 0
             else:
-                self.rider.probability_of_falling_off_the_motorcycle -= 0.001*(weather.temperature - 5)/3
+                self.rider.probability_of_falling_off_the_motorcycle -= 0.001 * (weather.temperature - 5) / 3
         elif weather.visibility < 5:
-            if self.rider.step_by_line - (weather.temperature - 5)/3 <= 0:
+            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
                 self.rider.step_by_line = 0
             else:
-                self.rider.step_by_line -= (weather.temperature - 5)/3
-            
-            if self.rider.cornering  - (weather.temperature - 5)/3 <= 0:
-               self.rider.cornering = 0
+                self.rider.step_by_line -= (weather.temperature - 5) / 3
+            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
+                self.rider.cornering = 0
             else:
-               self.rider.cornering -= (weather.temperature - 5)/3
-
-            if self.rider.probability_of_falling_off_the_motorcycle + 0.001*(weather.temperature - 5)/2 >= 1:
+                self.rider.cornering -= (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * (weather.temperature - 5) / 2 >= 1:
                 self.rider.probability_of_falling_off_the_motorcycle = 1
             else:
-                self.rider.probability_of_falling_off_the_motorcycle += 0.001*(weather.temperature - 5)/3
-
+                self.rider.probability_of_falling_off_the_motorcycle += 0.001 * (weather.temperature - 5) / 3
         if weather.humidity > 5:
-            if self.rider.step_by_line - (weather.temperature - 5)/3 <= 0:
+            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
                 self.rider.step_by_line = 0
             else:
-                self.rider.step_by_line -= (weather.temperature - 5)/3
-            
-            if self.rider.cornering  - (weather.temperature - 5)/3 <= 0:
-               self.rider.cornering = 0
+                self.rider.step_by_line -= (weather.temperature - 5) / 3
+            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
+                self.rider.cornering = 0
             else:
-               self.rider.cornering -= (weather.temperature - 5)/3
-
-            if self.rider.probability_of_falling_off_the_motorcycle + 0.001*(weather.temperature - 5)/2 >= 1:
+                self.rider.cornering -= (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * (weather.temperature - 5) / 2 >= 1:
                 self.rider.probability_of_falling_off_the_motorcycle = 1
             else:
-                self.rider.probability_of_falling_off_the_motorcycle += 0.001*(weather.temperature - 5)/3
+                self.rider.probability_of_falling_off_the_motorcycle += 0.001 * (weather.temperature - 5) / 3
         elif weather.humidity < 5:
-            if self.rider.step_by_line + (weather.temperature - 5)/3 >= 10:
+            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
                 self.rider.step_by_line = 10
             else:
-                self.rider.step_by_line += (weather.temperature - 5)/3
-            
-            if self.rider.cornering  + (weather.temperature - 5)/3 >= 10:
-               self.rider.cornering = 10
+                self.rider.step_by_line += (weather.temperature - 5) / 3
+            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
+                self.rider.cornering = 10
             else:
-               self.rider.cornering += (weather.temperature - 5)/3
-
-            if self.rider.probability_of_falling_off_the_motorcycle - 0.001*(weather.temperature - 5)/2 <= 0:
+                self.rider.cornering += (weather.temperature - 5) / 3
+            if self.rider.probability_of_falling_off_the_motorcycle - 0.001 * (weather.temperature - 5) / 2 <= 0:
                 self.rider.probability_of_falling_off_the_motorcycle = 0
             else:
-                self.rider.probability_of_falling_off_the_motorcycle -= 0.001*(weather.temperature - 5)/3
-
+                self.rider.probability_of_falling_off_the_motorcycle -= 0.001 * (weather.temperature - 5) / 3
         if weather.wind == CardinalsPoints.North:
-            #De Frente
+            # De Frente
             if section[3] == CardinalsPoints.North:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
-
-                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_exploding_tires + 0.002*weather.wind_intensity/4 >= 1:
+                    self.rider.cornering -= weather.wind_intensity / 4
+                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_exploding_tires + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_exploding_tires = 1
                     else:
-                        self.bike.probability_of_exploding_tires += 0.002*weather.wind_intensity/4
-                    
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_exploding_tires += 0.002 * weather.wind_intensity / 4
+
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-            #De Espaldas
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+            # De Espaldas
             elif section[3] == CardinalsPoints.South:
-                if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
+                if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                     self.rider.step_by_line = 10
                 else:
-                    self.rider.step_by_line += weather.wind_intensity/4
-                
-                if self.rider.cornering + weather.wind_intensity/4 >= 10:
+                    self.rider.step_by_line += weather.wind_intensity / 4
+
+                if self.rider.cornering + weather.wind_intensity / 4 >= 10:
                     self.rider.cornering = 10
                 else:
-                    self.rider.cornering += weather.wind_intensity/4
+                    self.rider.cornering += weather.wind_intensity / 4
 
-                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_exploding_tires + 0.002*weather.wind_intensity/4 >= 1:
+                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_exploding_tires + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_exploding_tires = 1
                     else:
-                        self.bike.probability_of_exploding_tires += 0.002*weather.wind_intensity/4
-                    
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_exploding_tires += 0.002 * weather.wind_intensity / 4
+
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-            #De Lado
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+            # De Lado
             else:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                     self.rider.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
+                    self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
         elif weather.wind == CardinalsPoints.East:
-            #De Frente
+            # De Frente
             if section[3] == CardinalsPoints.East:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
-                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_exploding_tires + 0.002*weather.wind_intensity/4 >= 1:
+                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_exploding_tires + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_exploding_tires = 1
                     else:
-                        self.bike.probability_of_exploding_tires += 0.002*weather.wind_intensity/4
-                    
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_exploding_tires += 0.002 * weather.wind_intensity / 4
+
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-            #De Espaldas
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+            # De Espaldas
             elif section[3] == CardinalsPoints.West:
-                if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
+                if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                     self.rider.step_by_line = 10
                 else:
-                    self.rider.step_by_line += weather.wind_intensity/4
-                
-                if self.rider.cornering + weather.wind_intensity/4 >= 10:
+                    self.rider.step_by_line += weather.wind_intensity / 4
+
+                if self.rider.cornering + weather.wind_intensity / 4 >= 10:
                     self.rider.cornering = 10
                 else:
-                    self.rider.cornering += weather.wind_intensity/4
+                    self.rider.cornering += weather.wind_intensity / 4
 
-                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_exploding_tires + 0.002*weather.wind_intensity/4 >= 1:
+                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_exploding_tires + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_exploding_tires = 1
                     else:
-                        self.bike.probability_of_exploding_tires += 0.002*weather.wind_intensity/4
-                    
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_exploding_tires += 0.002 * weather.wind_intensity / 4
+
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-            #De Lado
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+            # De Lado
             else:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                     self.rider.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
+                    self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
         elif weather.wind == CardinalsPoints.South:
-            #De Frente
+            # De Frente
             if section[3] == CardinalsPoints.South:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
-                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_exploding_tires + 0.002*weather.wind_intensity/4 >= 1:
+                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_exploding_tires + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_exploding_tires = 1
                     else:
-                        self.bike.probability_of_exploding_tires += 0.002*weather.wind_intensity/4
-                    
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_exploding_tires += 0.002 * weather.wind_intensity / 4
+
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-            #De Espaldas
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+            # De Espaldas
             elif section[3] == CardinalsPoints.North:
-                if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
+                if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                     self.rider.step_by_line = 10
                 else:
-                    self.rider.step_by_line += weather.wind_intensity/4
-                
-                if self.rider.cornering + weather.wind_intensity/4 >= 10:
+                    self.rider.step_by_line += weather.wind_intensity / 4
+
+                if self.rider.cornering + weather.wind_intensity / 4 >= 10:
                     self.rider.cornering = 10
                 else:
-                    self.rider.cornering += weather.wind_intensity/4
+                    self.rider.cornering += weather.wind_intensity / 4
 
-                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_exploding_tires + 0.002*weather.wind_intensity/4 >= 1:
+                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_exploding_tires + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_exploding_tires = 1
                     else:
-                        self.bike.probability_of_exploding_tires += 0.002*weather.wind_intensity/4
-                    
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_exploding_tires += 0.002 * weather.wind_intensity / 4
+
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-            #De Lado
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+            # De Lado
             else:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                     self.rider.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
+                    self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
         else:
-            #De Frente
+            # De Frente
             if section[3] == CardinalsPoints.West:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
-                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_exploding_tires + 0.002*weather.wind_intensity/4 >= 1:
+                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_exploding_tires + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_exploding_tires = 1
                     else:
-                        self.bike.probability_of_exploding_tires += 0.002*weather.wind_intensity/4
-                    
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_exploding_tires += 0.002 * weather.wind_intensity / 4
+
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-            #De Espaldas
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+            # De Espaldas
             elif section[3] == CardinalsPoints.East:
-                if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
+                if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                     self.rider.step_by_line = 10
                 else:
-                    self.rider.step_by_line += weather.wind_intensity/4
-                
-                if self.rider.cornering + weather.wind_intensity/4 >= 10:
+                    self.rider.step_by_line += weather.wind_intensity / 4
+
+                if self.rider.cornering + weather.wind_intensity / 4 >= 10:
                     self.rider.cornering = 10
                 else:
-                    self.rider.cornering += weather.wind_intensity/4
+                    self.rider.cornering += weather.wind_intensity / 4
 
-                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_exploding_tires + 0.002*weather.wind_intensity/4 >= 1:
+                if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_exploding_tires + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_exploding_tires = 1
                     else:
-                        self.bike.probability_of_exploding_tires += 0.002*weather.wind_intensity/4
-                    
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_exploding_tires += 0.002 * weather.wind_intensity / 4
+
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Sunny:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Sunny:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Medium and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == Rainy:
-                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Slick_Hard and weather.weather_status == WeatherStatus.Rainy:
+                    if self.rider.probability_of_falling_off_the_motorcycle + 0.003 * weather.wind_intensity / 4 >= 1:
                         self.rider.probability_of_falling_off_the_motorcycle = 1
                     else:
-                        self.rider.probability_of_falling_off_the_motorcycle += 0.003*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002*weather.wind_intensity/4 >= 1:
+                        self.rider.probability_of_falling_off_the_motorcycle += 0.003 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Soft and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.002 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002*weather.wind_intensity/4
-                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == Cloudy:
-                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001*weather.wind_intensity/4 >= 1:
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.002 * weather.wind_intensity / 4
+                elif self.bike.tires == Tires.Rain_Medium and weather.weather_status == WeatherStatus.Cloudy:
+                    if self.bike.probability_of_the_motorcycle_breaking_down + 0.001 * weather.wind_intensity / 4 >= 1:
                         self.bike.probability_of_the_motorcycle_breaking_down = 1
                     else:
-                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001*weather.wind_intensity/4
-            #De Lado
+                        self.bike.probability_of_the_motorcycle_breaking_down += 0.001 * weather.wind_intensity / 4
+            # De Lado
             else:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
-                if self.rider.probability_of_falling_off_the_motorcycle + 0.001*weather.wind_intensity/4 >= 1:
+                if self.rider.probability_of_falling_off_the_motorcycle + 0.001 * weather.wind_intensity / 4 >= 1:
                     self.rider.probability_of_falling_off_the_motorcycle = 1
                 else:
-                    self.rider.probability_of_falling_off_the_motorcycle += 0.001*weather.wind_intensity/4
+                    self.rider.probability_of_falling_off_the_motorcycle += 0.001 * weather.wind_intensity / 4
 
     def update_agent_parameter(self, weather, new_weather, section):
         if new_weather.wind == CardinalsPoints.North:
-            #De Frente
+            # De Frente
             if section[3] == CardinalsPoints.North:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
-                
+                    self.rider.cornering -= weather.wind_intensity / 4
+
                 if self.bike.probability_of_exploding_tires + 0.0001 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
                     self.bike.probability_of_exploding_tires += 0.0001
-            #De Espaldas
+            # De Espaldas
             elif section[3] == CardinalsPoints.South:
-                if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
+                if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                     self.rider.step_by_line = 10
                 else:
-                    self.rider.step_by_line += weather.wind_intensity/4
-                
-                if self.rider.cornering + weather.wind_intensity/4 >= 10:
+                    self.rider.step_by_line += weather.wind_intensity / 4
+
+                if self.rider.cornering + weather.wind_intensity / 4 >= 10:
                     self.rider.cornering = 10
                 else:
-                    self.rider.cornering += weather.wind_intensity/4
+                    self.rider.cornering += weather.wind_intensity / 4
 
                 if self.bike.probability_of_the_motorcycle_breaking_down + 0.0001 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
                     self.bike.probability_of_the_motorcycle_breaking_down += 0.0001
-            #De Lado
+            # De Lado
             else:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
                 if self.rider.probability_of_falling_off_the_motorcycle + 0.0001 >= 1:
                     self.bike.probability_of_falling_off_the_motorcycle = 1
                 else:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.0001
         elif new_weather.wind == CardinalsPoints.East:
-            #De Frente
+            # De Frente
             if section[3] == CardinalsPoints.East:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
                 if self.bike.probability_of_exploding_tires + 0.0001 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
                     self.bike.probability_of_exploding_tires += 0.0001
-            #De Espaldas
+            # De Espaldas
             elif section[3] == CardinalsPoints.West:
-                if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
+                if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                     self.rider.step_by_line = 10
                 else:
-                    self.rider.step_by_line += weather.wind_intensity/4
-                
-                if self.rider.cornering + weather.wind_intensity/4 >= 10:
+                    self.rider.step_by_line += weather.wind_intensity / 4
+
+                if self.rider.cornering + weather.wind_intensity / 4 >= 10:
                     self.rider.cornering = 10
                 else:
-                    self.rider.cornering += weather.wind_intensity/4
+                    self.rider.cornering += weather.wind_intensity / 4
 
                 if self.bike.probability_of_the_motorcycle_breaking_down + 0.0001 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
                     self.bike.probability_of_the_motorcycle_breaking_down += 0.0001
-            #De Lado
+            # De Lado
             else:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
                 if self.rider.probability_of_falling_off_the_motorcycle + 0.0001 >= 1:
                     self.bike.probability_of_falling_off_the_motorcycle = 1
                 else:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.0001
         elif new_weather.wind == CardinalsPoints.South:
-            #De Frente
+            # De Frente
             if section[3] == CardinalsPoints.South:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
                 if self.bike.probability_of_exploding_tires + 0.0001 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
                     self.bike.probability_of_exploding_tires += 0.0001
-            #De Espaldas
+            # De Espaldas
             elif section[3] == CardinalsPoints.North:
-                if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
+                if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                     self.rider.step_by_line = 10
                 else:
-                    self.rider.step_by_line += weather.wind_intensity/4
-                
-                if self.rider.cornering + weather.wind_intensity/4 >= 10:
+                    self.rider.step_by_line += weather.wind_intensity / 4
+
+                if self.rider.cornering + weather.wind_intensity / 4 >= 10:
                     self.rider.cornering = 10
                 else:
-                    self.rider.cornering += weather.wind_intensity/4
+                    self.rider.cornering += weather.wind_intensity / 4
 
                 if self.bike.probability_of_the_motorcycle_breaking_down + 0.0001 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
                     self.bike.probability_of_the_motorcycle_breaking_down += 0.0001
-            #De Lado
+            # De Lado
             else:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
                 if self.rider.probability_of_falling_off_the_motorcycle + 0.0001 >= 1:
                     self.bike.probability_of_falling_off_the_motorcycle = 1
                 else:
                     self.bike.probability_of_falling_off_the_motorcycle += 0.0001
         else:
-            #De Frente
+            # De Frente
             if section[3] == CardinalsPoints.West:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
                 if self.bike.probability_of_exploding_tires + 0.0001 >= 1:
                     self.bike.probability_of_exploding_tires = 1
                 else:
                     self.bike.probability_of_exploding_tires += 0.0001
-            #De Espaldas
+            # De Espaldas
             elif section[3] == CardinalsPoints.East:
-                if self.rider.step_by_line + weather.wind_intensity/4 >= 10:
+                if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                     self.rider.step_by_line = 10
                 else:
-                    self.rider.step_by_line += weather.wind_intensity/4
-                
-                if self.rider.cornering + weather.wind_intensity/4 >= 10:
+                    self.rider.step_by_line += weather.wind_intensity / 4
+
+                if self.rider.cornering + weather.wind_intensity / 4 >= 10:
                     self.rider.cornering = 10
                 else:
-                    self.rider.cornering += weather.wind_intensity/4
+                    self.rider.cornering += weather.wind_intensity / 4
 
                 if self.bike.probability_of_the_motorcycle_breaking_down + 0.0001 >= 1:
                     self.bike.probability_of_the_motorcycle_breaking_down = 1
                 else:
                     self.bike.probability_of_the_motorcycle_breaking_down += 0.0001
-            #De Lado
+            # De Lado
             else:
-                if self.rider.step_by_line - weather.wind_intensity/4 <= 0:
+                if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                     self.rider.step_by_line = 0
                 else:
-                    self.rider.step_by_line -= weather.wind_intensity/4
-                
-                if self.rider.cornering - weather.wind_intensity/4 <= 0:
+                    self.rider.step_by_line -= weather.wind_intensity / 4
+
+                if self.rider.cornering - weather.wind_intensity / 4 <= 0:
                     self.rider.cornering = 0
                 else:
-                    self.rider.cornering -= weather.wind_intensity/4
+                    self.rider.cornering -= weather.wind_intensity / 4
 
                 if self.rider.probability_of_falling_off_the_motorcycle + 0.0001 >= 1:
                     self.bike.probability_of_falling_off_the_motorcycle = 1
@@ -942,38 +922,38 @@ class Agent:
         if not self.flag_action:
             edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
             ans = call_ai("python ai/action.py")
-            return Agent_actions(ans)
+            return AgentActions(ans)
         else:
             self.node.refreshContext(self.__dict__)
-            function=None
-            if self.node.funciones[0].idfun=="select_action":
-             function=self.node.funciones[0]
-            elif len(self.node.funciones) > 1 and self.node.funciones[1].idfun=="select_action":
-                function=self.node.funciones[1]
+            function = None
+            if self.node.funciones[0].idfun == "select_action":
+                function = self.node.funciones[0]
+            elif len(self.node.funciones) > 1 and self.node.funciones[1].idfun == "select_action":
+                function = self.node.funciones[1]
             if function is None:
                 evaluation = 11
             else:
-                evaluation = function.eval([],self.node.nuevocontext)
+                evaluation = function.eval([], self.node.nuevocontext)
             if evaluation > 11:
-              return Agent_actions(11)
+                return AgentActions(11)
             else:
-                return Agent_actions(evaluation)
+                return AgentActions(evaluation)
             
     def select_acceleration(self, section, race, action):
-      if not self.flag_acceleration:  
-        if action == Agent_actions.Brake:
-            self.acceleration = (-1) * self.bike.acceleration/race.discrete_variable_generator()
-        else:
-            self.acceleration = self.bike.acceleration/race.discrete_variable_generator()
-      else:
-            self.node.refreshContext(self.__dict__)          
-            function=None
-            if self.node.funciones[0].idfun=="select_acceleration":
-                function=self.node.funciones[0]
+        if not self.flag_acceleration:
+            if action == AgentActions.Brake:
+                self.acceleration = (-1) * self.bike.acceleration / race.discrete_variable_generator()
             else:
-                function=self.node.funciones[1]
-            function.eval([],self.node.nuevocontext)
-            self.acceleration=self.node.nuevocontext.variables["acceleration"].value
+                self.acceleration = self.bike.acceleration / race.discrete_variable_generator()
+        else:
+            self.node.refreshContext(self.__dict__)
+            function = None
+            if self.node.funciones[0].idfun == "select_acceleration":
+                function = self.node.funciones[0]
+            else:
+                function = self.node.funciones[1]
+            function.eval([], self.node.nuevocontext)
+            self.acceleration = self.node.nuevocontext.variables["acceleration"].value
             
     def status_analysis(self, section, race, action):
         prob = race.continuous_variable_generator()
@@ -986,11 +966,11 @@ class Agent:
             print("El piloto {} ha roto el acelrador y su moto se ha detenido en plena carrera, ha sido descalificado".format(self.rider.name))
             return False
 
-        if section[4] == Track_Type.Straight:
+        if section[4] == TrackType.Straight:
             if action.value == 3 or action.value == 4 or action.value == 5 or action.value == 9 or action.value == 10 or action.value == 11:
                 print("El piloto {} ha doblado en plena recta y se ha ido al suelo".format(self.rider.name))
                 return False
-        elif section[4] == Track_Type.Curve:
+        elif section[4] == TrackType.Curve:
             if action.value != 3 and action.value != 4 and action.value != 5 and action.value != 9 and action.value != 10 and action.value != 11:
                 print("El piloto {} ha seguido de largo y no ha doblado, a roto la moto en la grava.".format(self.rider.name))
                 return False
@@ -1020,14 +1000,11 @@ class Agent:
 
     def overcome_an_obstacle(self, section, race, weather):
         action = self.select_action(section, weather)
-        self.acceleration = self.select_acceleration(section, race, action)
-
+        self.select_acceleration(section, race, action)
         self.calc_final_speed(self.speed, section[2])
-            
-        if self.status_analysis(section, race, action) == False:
+        if not self.status_analysis(section, race, action):
             race.agents.remove(self)
-        
-        if action is not None and action.value >= 6 and action.value <= 11:
+        if action is not None and 6 <= action.value <= 11:
             self.flag_to_pits = True
         return
 
@@ -1045,8 +1022,7 @@ class Agent:
             self.time_lap = 0
 
 
-
-class Agent_actions(Enum):
+class AgentActions(Enum):
     SpeedUp = 0
     KeepSpeed = 1
     Brake = 2
