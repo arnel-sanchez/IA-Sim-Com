@@ -485,70 +485,31 @@
 	;\par
 	
 	\subsection{Explicación de la Implementación}
-	
-        Para crear nuestra gramática nos apoyamos en los lenguajes Python y CSharp , de ahi el nombre de nuestro DSL PSharp 
+        Para crear nuestra gramática nos apoyamos en los lenguajes Python y CSharp, de ahí el nombre de nuestro DSL PySharp.
 
-        Luego de tener los tokens resultantes del tokenizer, acordamos qué tendríamos como una línea e implementamos el metodo split_lines , el cual
-        recibe los tokens y los convierte en líneas , estas líneas son pasadas al parser.
+        Luego de tener los tokens resultantes del tokenizer, acordamos qué tendríamos como una línea e implementamos el metodo $split_lines$, el cual recibe los tokens y los convierte en líneas, estas líneas son pasadas al parser.
 
-        El parser que decidimos desarrolar fue el parser LL , lo primero que hicimos fueron las producciones , donde decidimos como serían correctas
-        sintácticamente nuestras líneas.Las producciones generan todas las posibles cadenas válidas para nuestro lenguaje y no existen cadenas
-        que son generadas por nuestra grámatica que no pertenezcan a nuestro lenguaje.De esta forma con una gramática válida empezamos al proceso
-        de parsing.Nuestro parser necesitó un método "hacer_first" primeramente para hacer los first de cada cadena posible de nuestra gramatica,
-        luego llamamos un método auxiliar "calcular_first_restantes" el cual tiene la función de calcular los first de los no terminales que aún
-        no lo tienen calculado .Nos hace falta guardar los first de los no terminales pq los necesitamos para hallar los follows en el método  
-        "hacer_follow" .Luego de invocar a "hacer_follow" debemos invocar un método auxiliar "completar_follows" el cual se encarga de satisfacer
-        la regla de los follows que dice que el follow de la cabeza de la produccion es subconjunto del follow del ultimo no terminal , si el ultimo
-        no terminal puede ser el último elemento de la producción.
+        El parser que decidimos desarrolar fue el parser LL , lo primero que hicimos fueron las producciones , donde decidimos como serían correctas sintácticamente nuestras líneas. Las producciones generan todas las posibles cadenas válidas para nuestro lenguaje y no existen cadenas que son generadas por nuestra grámatica que no pertenezcan a nuestro lenguaje. De esta forma con una gramática válida empezamos al proceso de parsing. Nuestro parser necesitó un método $hacer_first$ primeramente para hacer los first de cada cadena posible de nuestra gramática, luego llamamos un método auxiliar $calcular_first_restantes$ el cual tiene la función de calcular los first de los no terminales que aún no lo tienen calculado. Nos hace falta guardar los first de los no terminales pq los necesitamos para hallar los follows en el método $hacer_follow$. Luego de invocar a $hacer_follow$ debemos invocar un método auxiliar $completar_follows$ el cual se encarga de satisfacer la regla de los follows que dice que el follow de la cabeza de la produccion es subconjunto del follow del último no terminal, si el útimo no terminal puede ser el último elemento de la producción.
 
-        Teniendo los first y los follows construimos la tabla LL(1) mediante el método "construir_tabla_LL" .Al tener la tabla ya podemos comprobar
-        que nuestra gramática no es ambigua , siempre existe solo una producción que aplicar. Luego creamos el método parsear al que hay que pasarle
-        todas las líneas de nuestro código una por una , este realiza la comprobación sintáctica y en este mismo método vamos a ir creando nuestro
-        AST para luego hacer el chequeo semántico.Para crear el AST utilizamos métodos como "CreaNododExpresion" ,  "CreaNodoCondicion" ,"CreaNododFuncion",
-        "EligeTipoDdeclaracion", entre muchos otros declarados en la clase Parser. 
+        Teniendo los first y los follows construimos la tabla LL(1) mediante el método $construir_tabla_LL$. Al tener la tabla ya podemos comprobar que nuestra gramática no es ambigua, siempre existe solo una producción que aplicar. Luego creamos el método parsear al que hay que pasarle todas las líneas de nuestro código una por una, este realiza la comprobación sintáctica y en este mismo método vamos a ir creando nuestro AST para luego hacer el chequeo semántico. Para crear el AST utilizamos métodos como $CreaNododExpresion$,  $CreaNodoCondicion$, $CreaNododFuncion$, $EligeTipoDdeclaracion$, entre muchos otros declarados en la clase Parser. 
 
-        Nuestro AST tiene un nodo por cada declaración que se puede realizar en el código.Tiene un nodo para una definición de función ,una 
-        definición de variables ,redefinición de variables , If , WHile , Rider , Bike , Return. En cada uno de estos nodos excepto Rider y Bike si existe
-        un ámbito como es el caso del nodo If ,el While y la definición de función cada uno de estos nodos tienen como atributo un tipo de nodo 
-        Program, el cual posee una lista de declaraciones y por lo tanto en el se pueden guardar la lista de declaraciones que se haga en el ámbito.
+        Nuestro AST tiene un nodo por cada declaración que se puede realizar en el código. Tiene un nodo para una definición de función ,una 
+        definición de variables, redefinición de variables, If, WHile, Rider, Bike, Return. En cada uno de estos nodos excepto Rider y Bike si existe un ámbito como es el caso del nodo If ,el While y la definición de función cada uno de estos nodos tienen como atributo un tipo de nodo Program, el cual posee una lista de declaraciones y por lo tanto en el se pueden guardar la lista de declaraciones que se haga en el ámbito.
 
-        Explicada la estructura del AST pasamos al chequeo semántico sobre este.Hacemos 3 recorridos sobre el AST, el primero para validar cada nodo.Un nodo
-        es válido si todo lo que tiene guardado en sus atributos que es dependiente del contexto puede ser utilizado desde ese contexto y de la forma que se quiere.
-        Decimos esto porque por ejemplo, las variables solo se pueden redefinir en el contexto en que fueron definidas.Decir que cada vez que creamos una función o un 
-        tipo creamos un contexto que responde a dicho nodo.Todo lo que se defina en dicho ambito pertenece a su contexto especificamnete , no importa si se define dentro de un
-        while o dentro de un If .En resumen los contextos en nuestro programa funcionan como en python con la particularidad de que no tenemos variables globales,si
-        quieres redefinir una variable debes hacerlo en el contexto donde fue definida y solo se crea un nuevo contexto cuando se crea una funcion fuera de un tipo 
-        o cuando se crea un tipo.Destacar que las funciones definidas dentro de los tipos no crean un contexto especifico para ellas, sino que su 
-        contexto es el mismo que el de el tipo, y no se le pueden pasar parametros.
+        Explicada la estructura del AST pasamos al chequeo semántico sobre este. Hacemos 3 recorridos sobre el AST, el primero para validar cada nodo. Un nodo es válido si todo lo que tiene guardado en sus atributos que es dependiente del contexto puede ser utilizado desde ese contexto y de la forma que se quiere. Decimos esto porque por ejemplo, las variables solo se pueden redefinir en el contexto en que fueron definidas. Decir que cada vez que creamos una función o un tipo creamos un contexto que responde a dicho nodo. Todo lo que se defina en dicho ambito pertenece a su contexto especificamnete, no importa si se define dentro de un While o dentro de un If. En resumen los contextos en nuestro programa funcionan como en python con la particularidad de que no tenemos variables globales, si quieres redefinir una variable debes hacerlo en el contexto donde fue definida y solo se crea un nuevo contexto cuando se crea una funcion fuera de un tipo o cuando se crea un tipo. Destacar que las funciones definidas dentro de los tipos no crean un contexto especifico para ellas, sino que su contexto es el mismo que el de el tipo, y no se le pueden pasar parametros.
 
-        Volviendo al AST, hacemos una segunda pasada, en esta pasada verificamos los tipos,en los nodos en que hay expresiones inducimos el tipo.Decir que 
-        una expresion para nosotros puede ser una expresión aritmética , un bool , o un string, podemos incluir variables y llamado a función en una expresión. La tercera pasada
-        la hacemos para evaluar nuestros nodos.Si encontramos un nodo Def_Fun no lo evaluamos,una definicion de funcion se evalua cuando se llama a la funcion.
+        Volviendo al AST, hacemos una segunda pasada, en esta pasada verificamos los tipos, en los nodos en que hay expresiones inducimos el tipo. Decir que una expresion para nosotros puede ser una expresión aritmética, un bool, o un string, podemos incluir variables y llamado a función en una expresión. La tercera pasada la hacemos para evaluar nuestros nodos. Si encontramos un nodo $Def_Fun$ no lo evaluamos, una definicion de funcion se evalua cuando se llama a la funcion.
 
+        Cuando se crea un tipo se importan las variables que puede tener ese tipo en la simulación. Dentro de un tipo Bike solo se puede redefinir una funcion, la función $select_configuration$ que debe ser void, aunque dentro de la función si se pueden redefinir las variables de Bike, en este caso el objetivo de $select_configuration$ es seleccionar el tipo de gomas dadas las características de la moto y por tanto modificar la variable "tires" del contexto del tipo, la cual utilizará el simulador. 
 
-        Cuando se crea un tipo se importan las variables que puede tener ese tipo en la simulación . Dentro de un tipo Bike solo se puede redefinir una funcion , la
-        función "select_configuration" que debe ser void , aunque dentro de la función si se pueden redefinir las variables de Bike, en este caso el objetivo de 
-        select_configuration es seleccionar el tipo de gomas dadas las características de la moto y por tanto modificar la variable "tires" del contexto del tipo , la cual
-        utilizará el simulador. 
-
-        Dentro de un tipo Rider existen en el contexto ,igual que en Bike, variables que pertenecen a Rider que fueron importadas desde la simulación .En este caso se pueden 
-        redefinir dos de ellas, "cornering" y "step_by_line" ,que posteriormente seran pasadas al simulador . Estas variables tienen mucha influencia en la simulación ya que son
-        la habilidad en recta y en curva de un piloto.Son variables enteras que lo máximo que pueden ser es 10 , en caso de que se entre un valor mayor se supondrá que se quiso 
-        entrar el máximo de habilidad y la variable será igual a 10.En cuanto a las funciones se podrán definir "select_action" que debe retornar un valor entero y es la encargada
-        de elegir que acción realizar, para hacer este método podemos tener en cuenta las características del piloto que pueden ser llamadas y están actualizadas.También podemos definir
-        la funcion "select_acceleration" la cual debe ser void y su función debe ser actualizar la aceleración de un agente.
+        Dentro de un tipo Rider existen en el contexto ,igual que en Bike, variables que pertenecen a Rider que fueron importadas desde la simulación. En este caso se pueden redefinir dos de ellas, $cornering$ y $step_by_line$, que posteriormente seran pasadas al simulador. Estas variables tienen mucha influencia en la simulación ya que son la habilidad en recta y en curva de un piloto.Son variables enteras que lo máximo que pueden ser es 10, en caso de que se entre un valor mayor se supondrá que se quiso entrar el máximo de habilidad y la variable será igual a 10. En cuanto a las funciones se podrán definir $select_action$ que debe retornar un valor entero y es la encargada de elegir que acción realizar, para hacer este método podemos tener en cuenta las características del piloto que pueden ser llamadas y están actualizadas. También podemos definir la funcion $select_acceleration$ la cual debe ser void y su función debe ser actualizar la aceleración de un agente.
 	
 	\subsection{Conexión Simulación - Compilación}
 	
-	El resultado del DSL si se hacen los 3 recorridos del AST sin error, son dos listas, una con todos los pilotos que fueron creados y otra con todas las motos . A partir de estas listas
-        se crean los pilotos y las motos en la simulación .En la simulación los pilotos que no fueron creados en el código ejecutan sus métodos normalmente. En el caso de un piloto que 
-        fue creado desde el DSL se ejecuta la función definida en el DSL, pero antes de ejecutarla se actualiza el contexto de la función para que esta pueda apoyarse en la situación actual.
-        Luego de la ejecución de la función dependiendo que función se ejecutó se importa a la simulación la variable que se quiere desde el contexto del método.  
-		
-	
-	
+	El resultado del DSL si se hacen los 3 recorridos del AST sin error, son dos listas, una con todos los pilotos que fueron creados y otra con todas las motos . A partir de estas listas se crean los pilotos y las motos en la simulación .En la simulación los pilotos que no fueron creados en el código ejecutan sus métodos normalmente. En el caso de un piloto que fue creado desde el DSL se ejecuta la función definida en el DSL, pero antes de ejecutarla se actualiza el contexto de la función para que esta pueda apoyarse en la situación actual. Luego de la ejecución de la función dependiendo que función se ejecutó se importa a la simulación la variable que se quiere desde el contexto del método.  
+			
 \section{Simulación}\cite{conferenciasS}\cite{garcia}
-	Nos propusimos simular una carrera de MotoGP contrareloj, compuesta por los agentes (tuplas moto-piloto) y el ambiente (tupla clima-pista). Una vez estos son generados, se simula cada sección de la pista, calculando la influencia que ejerce el ambiente sobre el agente y las propias interacciones del agente consigo mismo, el tiempo que le demora a cada piloto en circular dicha sección y la aceleración y la acción que escogerá dicho piloto en esa sección, ya sea mediante una función redefinida desde el DSL o por una Inteligencia Artificial.
+	Nos propusimos simular una carrera de MotoGP contrareloj, compuesta por los agentes( tuplas moto-piloto) y el ambiente( tupla clima-pista). Una vez estos son generados, se simula cada sección de la pista, calculando la influencia que ejerce el ambiente sobre el agente y las propias interacciones del mismo, el tiempo que le demora en circular dicha sección conjunto a la aceleración y la acción que escogerá en ese tramo, ya sea mediante una función redefinida desde el DSL o por una Inteligencia Artificial.
 	
 	\subsection{Clima}
 	En cada sección de la pista se hacen pequeñas variaciones a los parámetros del clima, pero no al estado de este. Para darle un poco más de complejidad al sistema, luego de cada vuelta sí se modifica completamente el estado del clima y sus parámetros. Estas simulaciones se realizan mediante la distribución normal, que nos permite generar una variable aleatoria pero sin cambios tan bruscos en el promedio de sus casos.
@@ -556,13 +517,13 @@
 	\subsection{Interacciones}
 	Como habíamos mencionado anteriormente, existen varias interacciones entre un agente y el ambiente, y dentro de un propio agente:
 	\begin{itemize}
-		\item Si la temperatura baja se enfrían los neumáticos y se pierde adherencia al pavimento
+		\item Si la temperatura baja, se enfrían los neumáticos y se pierde adherencia al pavimento
 		\begin{itemize}
 			\item Disminuye el paso por curva
 			\item Disminuye el paso por recta
 			\item Aumenta la probabilidad de caerse de la moto
 		\end{itemize} 
-		\item Si la temperatura aumenta se calientan los neumáticos y se gana adherencia al pavimento, se desgastan más rápido
+		\item Si la temperatura aumenta, se calientan los neumáticos y se gana adherencia al pavimento, se desgastan más rápido
 		\begin{itemize}
 			\item Aumenta el paso por curva
 			\item Aumenta el paso por recta
@@ -582,13 +543,13 @@
 			\item Aumenta el paso por recta
 			\item Disminuye la probabilidad de caerse de la moto
 		\end{itemize}
-		\item Si la humedad aumenta se pierde adherencia al pavimento
+		\item Si la humedad aumenta, se pierde adherencia al pavimento
 		\begin{itemize}
 			\item Disminuye el paso por curva
 			\item Disminuye el paso por recta
 			\item Aumenta la probabilidad de caerse de la moto
 		\end{itemize}
-		\item Si la humedad baja se gana adherencia al pavimento
+		\item Si la humedad baja, se gana adherencia al pavimento
 		\begin{itemize}
 			\item Aumenta el paso por curva
 			\item Aumenta el paso por recta
@@ -615,27 +576,27 @@
 			\item Aumenta la probabilidad de caerse de la moto
 		\end{itemize}
 		
-		\item Si el estado del clima es soleado aumenta la temperatura
-		\item Si el estado del clima es lluvioso aumenta la humedad
-		\item Si el estado del clima es nublado condiciones perfectas para correr
+		\item Si el estado del clima es soleado, aumenta la temperatura
+		\item Si el estado del clima es lluvioso, aumenta la humedad
+		\item Si el estado del clima es nublado, condiciones perfectas para correr
 		
-		\item Si disminuye la rigidez del chasis tiene más torsión
+		\item Si disminuye la rigidez del chasis, tiene más torsión
 		\begin{itemize}
 			\item Aumenta el paso por curva
 			\item Disminuye el paso por recta
 		\end{itemize}
-		\item Si aumenta la rigidez del chasis tiene menos torsión
+		\item Si aumenta la rigidez del chasis, tiene menos torsión
 		\begin{itemize}
 			\item Disminuye el paso por curva
 			\item Aumenta el paso por recta
 		\end{itemize}
 		
-		\item Si disminuye la frenada se frena en más distancia
+		\item Si disminuye la frenada, se frena en más distancia
 		\begin{itemize}
 			\item Aumenta el paso por curva
 			\item Disminuye el paso por recta
 		\end{itemize}
-		\item Si aumenta la frenada se frena en menos distancia
+		\item Si aumenta la frenada, se frena en menos distancia
 		\begin{itemize}
 			\item Disminuye el paso por curva
 			\item Aumenta el paso por recta
@@ -644,7 +605,7 @@
 	De acuerdo a las interacciones anteriores se debe escoger el neumático lo más preciso posible y este provocará una combinación entre estos factores.
 
 \section{Inteligencia Artificial}\cite{conferenciasIA}\cite{russell}
-	Como nuestro proyecto se basa en simular una carrera de MotoGP donde hay n corredores, aquellos que no hayan sido diseñados mediante DSL son controlados por IA, el comportamiento de la cual varía a partir de las condiciones del ambiente que lo rodea, las características de su moto y la experiencia del propio piloto.
+	Como nuestro proyecto se basa en simular una carrera de MotoGP donde hay $n$ corredores, aquellos que no hayan sido diseñados mediante DSL son controlados por IA, el comportamiento de la cual varía a partir de las condiciones del ambiente que lo rodea, las características de su moto y la experiencia del propio piloto.
 	
 	Para la implementación de la IA se utilizan Sistemas Expertos generados mediante el uso de un procedimiento declarativo/imperativo, apoyándonos en la biblioteca PyKE\cite{pyke} de Python.
 	
