@@ -243,10 +243,10 @@
 	
 	\begin{lstlisting}[language={PySharp}]
 		method int example(int a) {
-			while (a > 5) {
-				return a;
+			while (a > 5) {				
 				a -= 1;
 			}
+			return a;
 		}
 	\end{lstlisting}
 	
@@ -254,15 +254,15 @@
 	
 	\begin{lstlisting}[language={PySharp}]
 		method int example() {
-			while (true) {
-				x = "x"
-				if (x == "x") {
+			x = 10
+			while (true) {				
+				if (x < 100) {
+					x += 10;
 					continue;
 				}
-				elif (x == "") {
+				else {
 					break;
 				}
-				return x;
 			}
 			return 0;
 		}
