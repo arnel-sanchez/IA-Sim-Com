@@ -133,7 +133,7 @@
 	\end{center}	
 	
 \section{Estructura del Paddock}
-	El \textbf{Jefe Técnico} de cada estructura se configura como una personalidad de bastante importancia dentro de un box, pues es quién se encarga de dirigir y controlar que todo funcione como un excelente engranaje que gane carreras. De igual importancia es la telemetría dentro de un box en MotoGP. Al fin y al cabo, los \textbf{Ingenieros Telemétricos} son las personas que se encargan de analizar, leer y comprender todos los datos proporcionados por el piloto, así como transmitirselos en boca al protagonista. Se trata de una figura de la que depende mucha de la información acerca de cualquier cambio realizado en la moto o asumir los puntos más fuertes de sus pilotos. Los \textbf{Mecánicos} también desempeñan un papel fundamental a la hora de construir la máquina perfecta.
+	El \textbf{Jefe Técnico} de cada estructura se configura como una personalidad de bastante importancia dentro de un box, pues es quién se encarga de dirigir y controlar que todo funcione como un excelente engranaje que gane carreras. De igual importancia es la telemetría dentro de un box en MotoGP. Al fin y al cabo, los \textbf{Ingenieros Telemétricos} son las personas que se encargan de analizar, leer y comprender todos los datos proporcionados por el piloto, así como transmitírselos en boca al protagonista. Se trata de una figura de la que depende mucha de la información acerca de cualquier cambio realizado en la moto o asumir los puntos más fuertes de sus pilotos. Los \textbf{Mecánicos} también desempeñan un papel fundamental a la hora de construir la máquina perfecta.
 
 \section{Pista}
 	Se utilizará como referencia el circuito de Misano, Misano World Circuit Marco Simoncelli, autódromo localizado en la fracción de Santa Mónica, comuna de Misano Adriático (provincia de Rímini), región de Emilia-Romaña, Italia. 
@@ -144,7 +144,7 @@
 	
 \section{Definición del Problema}
 	Existirán varios pilotos con sus respectivas motos, las cuáles difieren entre sí en cuanto a sus prestaciones. Cada piloto posee su propio método de manejo, siendo algunos más cuidadosos y otros más agresivos. La pista se encuentra influenciada por el accionar del clima, puesto que no es lo mismo el manejo durante un día soleado que bajo la lluvia. Por tanto, el resultado de un piloto se verá condicionado por su moto, su modo de conducción y el clima.\par
-	Sin embargo, durante la carrera las condiciones pueden variar y es necesario realizar los ajustes necesarios para que el piloto mejore su rendimiento, los cuales se harán al pasar de una seccion a otra de la pista o al finalizar cada vuelta. Esto podrá hacerse utilizando un lenguaje imperativo, mediante el uso de palabras claves para que el piloto no necesite analizar situaciones complejas y pueda concentrarse en pilotar de la forma mas eficiente posible.\par
+	Sin embargo, durante la carrera las condiciones pueden variar y es necesario realizar los ajustes necesarios para que el piloto mejore su rendimiento, los cuales se harán al pasar de una sección a otra de la pista o al finalizar cada vuelta. Esto podrá hacerse utilizando un lenguaje imperativo, mediante el uso de palabras claves para que el piloto no necesite analizar situaciones complejas y pueda concentrarse en pilotar de la forma mas eficiente posible.\par
 	De esta manera, la simulación de la carrera será dinámica, puesto que entre las vueltas podrán existir variaciones provocadas por los ajustes propuestos por el Jefe Técnico, el cuál podrá ser una persona o una IA.\par
 	
 \section{Definición del Lenguaje}\cite{conferenciasC}\cite{ullman}
@@ -180,11 +180,7 @@
 		\begin{tabular}{| c | c | m{5cm} | }
 			\hline
 			Categoría & Expresión & Descripción \\ \hline
-			\multirow{2}{*}{Primaria} & x(...) & Invocación de método \\ \cline{2-3}
-			& x[...] & Acceso a matrices e indexadores \\ \hline
-			\multirow{3}{*}{Unaria} & +x & Identidad \\ \cline{2-3}
-			& -x & Negación \\ \cline{2-3}
-			& !x & Negación lógica \\ \hline
+			\multirow{2}{*}{Primaria} & x(...) & Invocación de método \\ \cline{2-3}		
 			\multirow{4}{*}{Multiplicativa} & x * y & Multiplicación \\ \cline{2-3}
 			& x / y & División \\ \cline{2-3}
 			& x \% y & Resto \\ \cline{2-3} 
@@ -283,10 +279,10 @@
 		}
 	\end{lstlisting}
 	\subsubsection{Métodos}
-	Un \textbf{método} es un miembro que implementa un cálculo o acción que se puede realizar por tipo. Los métodos tienen una lista (posiblemente vacía) de \textbf{parámetros}, que representan valores o referencias de variables pasadas al método, y un tipo de retorno, que especifica el tipo de valor calculado y devuelto por el método. El tipo de retorno de un método es nulo si no devuelve un valor.
+	Un \textbf{método} es un miembro que implementa un cálculo o acción que se puede realizar por tipo. Los métodos tienen una lista de \textbf{parámetros}, que representan valores de variables pasadas al método, y un tipo de retorno, que especifica el tipo de valor calculado y devuelto por el método. El tipo de retorno de un método es nulo si no devuelve un valor.
 	
 	\subsubsection{Parámetros}
-	Los \textbf{parámetros} se utilizan para pasar valores o referencias de variables a métodos. Los parámetros de un método obtienen sus valores reales de los \textbf{argumentos} que se especifican cuando se invoca el método. Las modificaciones de un valor de parámetro no afectan el argumento que se pasó para el parámetro.
+	Los \textbf{parámetros} se utilizan para pasar valores de variables a métodos. Los parámetros de un método obtienen sus valores reales de los \textbf{argumentos} que se especifican cuando se invoca el método. Las modificaciones de un valor de parámetro no afectan el argumento que se pasó para el parámetro.
 	
 	\subsubsection{Cuerpo del método y variables locales}
 	El cuerpo de un método especifica las declaraciones que se ejecutarán cuando se invoca el método. El cuerpo de un método puede declarar variables que son específicas de la invocación del método. Estas variables se denominan variables locales. Una declaración de variable local especifica un nombre de tipo, un nombre de variable y un valor inicial.
@@ -489,7 +485,7 @@
 	;\par
 	
 	\subsection{Explicación de la Implementación}
-	Para crear nuestra gramatica nos apoyamos en los lenguajes Python y CSharp, de ahi el nombre de nuestro DSL: PySharp.
+	Para crear nuestra gramática nos apoyamos en los lenguajes Python y CSharp, de ahi el nombre de nuestro DSL: PySharp.
 	
 	Cuando se recibe el código, este se tokeniza. Luego el método $split\_linese$ recibe los tokens y los convierte en líneas, las cuales son pasadas al parser.
 	
