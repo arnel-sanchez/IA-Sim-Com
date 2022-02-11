@@ -71,8 +71,8 @@ def simulation(agents_lists):
                           agents_lists[0][i].varsforRiders[4][2])
             if len(agents_lists[1]) > i:
                 bike = Bike(agents_lists[1][i].varsforBikes[0][2], agents_lists[1][i].varsforBikes[1][2],
-                            agents_lists[1][i].varsforBikes[2][2], agents_lists[1][i], agents_lists[1][i].varsforBikes[3][2],
-                            agents_lists[1][i].varsforBikes[4][2])
+                            agents_lists[1][i].varsforBikes[2][2], agents_lists[1][i], agents_lists[1][i].varsforBikes[4][2],
+                            agents_lists[1][i].varsforBikes[5][2])
                 if len(agents_lists[1][i].funciones) == 0:
                     flag_configuration = False
                 else:
@@ -101,7 +101,7 @@ def simulation(agents_lists):
             if len(agents_lists[1]) >= 1:
                 bike = Bike(agents_lists[1][0].varsforBikes[0][2], agents_lists[1][0].varsforBikes[1][2],
                             agents_lists[1][0].varsforBikes[2][2], agents_lists[1][0],
-                            agents_lists[1][0].varsforBikes[3][2], agents_lists[1][0].varsforBikes[4][2])
+                            agents_lists[1][0].varsforBikes[4][2], agents_lists[1][0].varsforBikes[5][2])
                 if len(agents_lists[1][0].funciones) == 0:
                     flag_configuration = False
                 else:
