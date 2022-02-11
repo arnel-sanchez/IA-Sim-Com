@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="codes\Prueba1.pys" />
+    <Content Include="codes\Prueba19.pys" />
     <Content Include="codes\Prueba2.pys" />
     <Content Include="codes\PruebaTipos.pys" />
   </ItemGroup>

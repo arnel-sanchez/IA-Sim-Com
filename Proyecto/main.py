@@ -31,7 +31,7 @@ def compilation():
     print("\nCOMPILACION:\n")
     tokenizer = Tokenizer()
     file = "console"
-    text = open(path[0]+"/codes/Prueba18, Dos pilotos y dos motos.pys").read()
+    text = open(path[0]+"/codes/Prueba19.pys").read()
     tokens, error = tokenizer.tokenize(file, text)
     if error is not None:
         print(error)
