@@ -15,6 +15,7 @@ class Parser:
     def __init__(self):
         self.estados = []  # Aqui guardamos los estados en forma de string , de forma que si el ultimo estado de la lista es el estado en el que estoy y si no hay estados en la lista ent estamos fuera de cualquier ambito del programa
         self.context = Context()
+        self.gramaticaAmbigua=None
         self.i = 0
         self.dentroDType = False
         self.Riders = []
@@ -157,7 +158,7 @@ class Parser:
         self.calcular_first_restantes()
         self.hacer_follow()
         self.completar_follows()
-        self.construir_tabla_LL()
+        self.gramaticaAmbigua= self.construir_tabla_LL()
         self.error = None
         # self.variables = dict()  # Scope de variables
 
@@ -272,10 +273,15 @@ class Parser:
                     for i in range(len(self.producciones[nt])):
                         esta = self.first.get(self.key(self.producciones[nt][i]), "NoEsta")
                         if esta != "NoEsta" and self.first[self.key(self.producciones[nt][i])].count(t) > 0:
+                            if self.matriz[fila][columna] is not None:
+                               return False
                             self.matriz[fila][columna] = self.producciones[nt][i]
                             break
                 if self.follow[nt].count(t) > 0 and self.se_va_en_epsilon(nt) and self.matriz[fila][columna] is None:
+                    if self.matriz[fila][columna] is not None:
+                               return False
                     self.matriz[fila][columna] = "e"
+                    
                 columna += 1
             fila += 1
 
