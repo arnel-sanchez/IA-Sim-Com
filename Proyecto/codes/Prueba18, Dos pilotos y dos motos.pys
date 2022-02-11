@@ -150,7 +150,7 @@ bike Suzuki{
                          
                      method void select_configuration()
                       {
-                        if (max_speed>100)
+                        if (max_speed>100.0)
                          {
                           tires=2;
                           }
