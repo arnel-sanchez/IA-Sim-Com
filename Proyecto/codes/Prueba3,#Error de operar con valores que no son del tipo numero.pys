@@ -1,6 +1,6 @@
 int x=7;
 int y=8+9;
-bool z=false;
+bool z=false+7;
 double t= y+9.0;
 
 
@@ -13,5 +13,4 @@ while(x<10)
 {
   x+=1;
 }
-
 

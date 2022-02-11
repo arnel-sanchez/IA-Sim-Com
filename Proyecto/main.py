@@ -31,7 +31,7 @@ def compilation():
     print("\nCOMPILACION:\n")
     tokenizer = Tokenizer()
     file = "console"
-    text = open(path[0]+"/codes/PruebaTipos.pys").read()
+    text = open(path[0]+"/codes/Prueba18, Dos pilotos y dos motos.pys").read()
     tokens, error = tokenizer.tokenize(file, text)
     if error is not None:
         print(error)
@@ -69,10 +69,10 @@ def simulation(agents_lists):
         for i in range(len(agents_lists[0])):
             rider = Rider(agents_lists[0][i].id, agents_lists[0][i].varsforRiders[3][2],
                           agents_lists[0][i].varsforRiders[4][2])
-            if len(agents_lists[1][i]) > 0:
+            if len(agents_lists[1]) > i:
                 bike = Bike(agents_lists[1][i].varsforBikes[0][2], agents_lists[1][i].varsforBikes[1][2],
-                            agents_lists[1][i].varsforBikes[2][2], agents_lists[1][i].varsforBikes[3][2],
-                            agents_lists[1][i].varsforBikes[4][2], agents_lists[1][i])
+                            agents_lists[1][i].varsforBikes[2][2], agents_lists[1][i], agents_lists[1][i].varsforBikes[3][2],
+                            agents_lists[1][i].varsforBikes[4][2])
                 if len(agents_lists[1][i].funciones) == 0:
                     flag_configuration = False
                 else:

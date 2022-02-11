@@ -1,0 +1,160 @@
+int c=10;
+double x=21.0+10;
+bool z=false;
+
+method double suma(int x , double y)
+{
+   
+   int u=10;
+   if (x==21)
+   {
+     return 10.5;
+   }
+   elif(z==true || u>=10)
+   {
+    return 10.4;
+   }
+  else
+  {
+   int o=4;
+   return 3+y;
+  }
+      
+
+}
+
+method bool EsPar(int k)
+{
+  int i= k%2;
+  if(i==0)
+  {
+     while(true)
+     {
+        
+       return true;
+      
+     }
+   return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+method int factorial(int x,int acumulado)
+{
+ if(x==1)
+ {
+   return acumulado;
+ }
+ else
+ {
+   
+   return factorial(x-1,acumulado*(x-1));
+ }   
+
+}
+
+c+=250;
+z ||= true;
+x*=10*10-25;
+x/=10;
+
+while(EsPar(100) && x>=101+130.2)
+{
+  bool j= false;
+  int fact= factorial(5,5)+10*5;
+  x=suma(20,5.6)+5.0+x;
+  if (x >= 10.0)
+  {
+    break;
+    int p=2300;
+  }
+  
+}
+
+
+
+rider Arnel{
+
+
+cornering=8;
+step_by_line=7;
+
+            method void select_acceleration()
+            {            if(time_lap<19.5)
+                         {
+                           acceleration+=30.3+suma(3,3.8);
+                         }  
+            }
+
+            }
+
+bike Carpati{
+
+
+                         
+                     method void select_configuration()
+                      {
+                          tires=3;
+                          return;
+
+                      }
+
+          }
+
+
+rider Valentino{
+
+
+cornering=9;
+step_by_line=8;
+
+            method void select_acceleration()
+            {            if(speed<100.0)
+                         {                           
+                           acceleration+=factorial(4,4);
+                         }  
+            }
+
+            method int select_action()
+            {                                       
+               if (speed<30.0)
+               {
+                 return 0;   
+               }
+               elif(speed<60.0)
+               { 
+                  if (cornering>5 && step_by_line>5)
+                  {
+                       return 1;
+                  }
+                  else
+                  {
+                        return 2;
+                  }
+
+               }
+                else
+                {
+                   return 2;
+                }
+                       
+            }
+
+            }
+
+bike Suzuki{
+
+                         
+                     method void select_configuration()
+                      {
+                        if (max_speed>100)
+                         {
+                          tires=2;
+                          }
+
+                      }
+
+          }

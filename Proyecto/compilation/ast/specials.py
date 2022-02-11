@@ -163,8 +163,9 @@ class TypeSpecial(Statement):
 class BikeNode(TypeSpecial):
     def __init__(self):
         super().__init__()
-        self.varsforBikes = [["brand", VariableType.STRING, "Honda"], ["max_speed", VariableType.INT, 0],
-                             ["weight", VariableType.INT, 0], ["tires", VariableType.INT, 5],
+
+        self.varsforBikes = [["brand", VariableType.STRING, "Ducati"], ["max_speed", VariableType.DOUBLE, 362.4],
+                             ["weight", VariableType.INT, 157], ["tires", VariableType.INT, 3],
                              ["brakes", VariableType.INT, 5], ["chassis_stiffness", VariableType.INT, 8]]
         self.functionsOfBikes = ["select_configuration"]
 

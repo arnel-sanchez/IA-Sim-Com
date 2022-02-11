@@ -4,7 +4,7 @@ bool z=false;
 double t= y+9.0;
 
 
-if (y==11+45 && z==true || y==4)
+if (y==11+4 || y==3.9)
 {
   y=100;
 }
@@ -13,4 +13,5 @@ while(x<10)
 {
   x+=1;
 }
+
 
