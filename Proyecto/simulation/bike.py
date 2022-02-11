@@ -32,7 +32,7 @@ class Bike:
             ans = call_ai("python ai/moto.py")
             self.change_tires(Tires(ans))
         elif len(self.node.funciones)==0:
-            edit_moto(environment.weather)
+            edit_moto(environment)
             ans = call_ai("python ai/moto.py")
             self.change_tires(Tires(ans))
         else:

@@ -1,0 +1,9 @@
+rider Arnel{
+
+cornering=10;
+step_by_line=7;
+            }
+
+bike Karpati{
+
+          }
