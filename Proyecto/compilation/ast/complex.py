@@ -363,11 +363,15 @@ class Condition(Node):
             if isinstance(checkExpr1, CheckTypesError):
                 return checkExpr1
             else:
-                return True
+                if checkExpr1=="bool":                 
+                  return True
+                else:
+                    return CheckTypesError("there is a condition that is not of the Boolean type", "",
+                                   self.token.line, self.token.column)
         else:
             checktypecomp = self.comparador.checktype(context)
             if isinstance(checktypecomp, CheckTypesError):
-                if checktypecomp.line == "":
+                if checktypecomp.line == -1:
                     checktypecomp.line = self.token.line
                     checktypecomp.column = self.token.column
                 return checktypecomp
@@ -382,7 +386,10 @@ class Condition(Node):
             #  return IncorrectCallError("Cannot compare two expressions with different types","","","")
 
     def eval(self, context: Context):
-        return self.comparador.eval(context)
+        if self.comparador is not None:
+         return self.comparador.eval(context)
+        else:
+            return
 
     @staticmethod
     def type() -> str:
