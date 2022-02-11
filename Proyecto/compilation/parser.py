@@ -372,7 +372,8 @@ class Parser:
                 self.EligeTipoDdeclaracion(termino, line[self.i], line)
                 if self.matriz[indice_nt][indice_t] is not None:
                     if self.matriz[indice_nt][indice_t] != "e":
-                        if self.parsear(line, self.matriz[indice_nt][indice_t]) == False:
+                           result=self.parsear(line, self.matriz[indice_nt][indice_t])
+                           if result==False: 
                             return False
                     if self.estadoDAST == EstadoDAST.EnExpresionAssign and termino != "A" and termino != "U" and termino != "Z" and termino != "H":
                         self.nodoactual.nododreconocimiento.refreshAST()
@@ -389,7 +390,18 @@ class Parser:
                         self.i].column)  ##Aqui debemos agregar el error , con ello la linea y la columna que fue para posteriormente comunicarselo al usuario
                     return False
             else:
-                break
+                if self.estadoDAST==EstadoDAST.EnExpresionAssign:
+                      self.error=UnexpectedCharacterError("the line is incomplete", "", line[self.i-1].line, line[
+                      self.i-1].column)
+                      return False
+                elif not self.se_va_en_epsilon(termino):
+                      self.error=UnexpectedCharacterError("the line is incomplete", "", line[self.i-1].line, line[
+                      self.i-1].column)
+                      return False
+
+
+                  
+                 
 
     def parse(self, lines: [[Token]]):
         for line in lines:
@@ -446,14 +458,15 @@ class Parser:
 
             if termino == TokenType.T_RETURN:
                 nuevonodo.type = "return"
-                self.nodoactual = nuevonodo
-                nodoparaExpression = Expression()
-                nodoparaExpression.padre = self.nodoactual
-                self.nodoactual.expr = nodoparaExpression
-                self.nodoactual = nodoparaExpression
+                
                 if self.i + 1 < len(line):
                     if line[self.i + 1].token_type != TokenType.T_SEMICOLON:
                         self.estadoDAST = EstadoDAST.EnExpresionAssign
+                        self.nodoactual = nuevonodo
+                        nodoparaExpression = Expression()
+                        nodoparaExpression.padre = self.nodoactual
+                        self.nodoactual.expr = nodoparaExpression
+                        self.nodoactual = nodoparaExpression
 
             elif termino == TokenType.T_BREAK:
                 nuevonodo.type = "break"
@@ -886,7 +899,7 @@ class Parser:
         return True
 
     def execute(self):
-        self.nodopararecorrerast.eval(self.context)
+       return self.nodopararecorrerast.eval(self.context)
 
     def LoadRidersAndBikes(self):
         for statement in self.nodopararecorrerast.statements:

@@ -235,7 +235,13 @@ class Redefinition(Statement):
             validationexpr.column = self.token.column
             return validationexpr
 
-        return context.check_var(self.id, self.token)
+        varContain = context.variables.get(self.id, "NoEsta")
+        if varContain != "NoEsta":
+            return True
+        else:
+            return CheckTypesError("this variable cannot be modified from this context", "",
+                                   self.token.line, self.token.column)
+        
 
     def checktype(self, context: Context):
         return self.op.checktype(context)
@@ -244,6 +250,9 @@ class Redefinition(Statement):
         evaloper = self.op.eval(context)
         if isinstance(evaloper, RuntimeError):
             return evaloper
+        if context.variables[self.id].value is None:
+            return RuntimeError("local variable {} referenced before assignment".format(self.id), "", self.token.line,
+                                    self.token.column)
         context.variables[self.id].value = evaloper
 
     @staticmethod
@@ -294,7 +303,7 @@ class Def_Fun(Statement):
         # Chequear contexto y si hay variables con valores implica que el contexto esta evaluado y hay recursividad y creamos un nuevo contexto
         keys = list(self.nuevocontext.variables.keys())
 
-        if self.padre is Program:
+        if isinstance(self.padre,Program):
             for key in keys:
                 if self.nuevocontext.variables[key].value is not None:
                     hayrecursividad = True
@@ -389,7 +398,7 @@ class Condition(Node):
         if self.comparador is not None:
          return self.comparador.eval(context)
         else:
-            return
+            return self.expression1.eval(context)
 
     @staticmethod
     def type() -> str:

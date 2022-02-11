@@ -172,7 +172,7 @@ class BikeNode(TypeSpecial):
 class RiderNode(TypeSpecial):
     def __init__(self):
         super().__init__()
-        self.varsforRiders = [["speed", VariableType.DOUBLE, 0], ["acceleration", VariableType.DOUBLE, 0],
-                              ["time_lap", VariableType.DOUBLE, 0], ["cornering", VariableType.INT, 5],
+        self.varsforRiders = [["speed", VariableType.DOUBLE, 0.0], ["acceleration", VariableType.DOUBLE, 0.0],
+                              ["time_lap", VariableType.DOUBLE, 0.0], ["cornering", VariableType.INT, 5],
                               ["step_by_line", VariableType.INT, 5]]
         self.functionsOfRiders = ["select_acceleration", "select_action"]
