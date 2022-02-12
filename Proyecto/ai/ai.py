@@ -1,4 +1,5 @@
 from subprocess import run, PIPE, STDOUT
+from sys import path
 from os.path import exists
 from shutil import rmtree
 
@@ -7,7 +8,8 @@ from pyke import knowledge_engine
 
 def call_ai(script: str):
     ans = run(script, stdout=PIPE, stderr=STDOUT)
-    return int(ans.stdout.decode("utf-8")[-3])
+    ans = ans.stdout.decode("utf-8")
+    return int(ans[-3])
 
 
 def edit_moto(environment):
