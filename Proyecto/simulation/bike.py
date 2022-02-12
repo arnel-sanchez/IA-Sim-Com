@@ -1,9 +1,9 @@
 from enum import Enum
+from sys import path
 
 from compilation.ast.specials import BikeNode
 from ai.ai import edit_moto, call_ai
 from simulation.environment import Environment
-import os
 
 
 class Tires(Enum):
@@ -30,11 +30,11 @@ class Bike:
     def select_configuration(self, environment: Environment):
         if self.node is None:
             edit_moto(environment)
-            ans = call_ai("python "+ os.path.abspath(os.getcwd()) +"/ai/moto.py")
+            ans = call_ai("python " + path[0] + "/ai/moto.py")
             self.change_tires(Tires(ans))
-        elif len(self.node.funciones)==0:
+        elif len(self.node.funciones) == 0:
             edit_moto(environment)
-            ans = call_ai("python "+ os.path.abspath(os.getcwd()) +"/ai/moto.py")
+            ans = call_ai("python " + path[0] + "/ai/moto.py")
             self.change_tires(Tires(ans))
         else:
             self.node.refreshContext(self.__dict__)
