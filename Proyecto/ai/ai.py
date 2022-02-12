@@ -9,6 +9,7 @@ from pyke import knowledge_engine
 def call_ai(script: str):
     ans = run(script, stdout=PIPE, stderr=STDOUT)
     ans = ans.stdout.decode("utf-8")
+    print(ans)
     return int(ans[-3])
 
 
