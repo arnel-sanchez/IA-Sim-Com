@@ -30,12 +30,11 @@ class Bike:
     def select_configuration(self, environment: Environment):
         if self.node is None:
             edit_moto(environment)
-            ans = call_ai("ls")
+            ans = call_ai("python " + path[0] + "/ia/moto.py")
             self.change_tires(Tires(ans))
         elif len(self.node.funciones)==0:
             edit_moto(environment)
-            text = "ls"
-            ans = call_ai(text)
+            ans = call_ai("python " + path[0] + "/ia/moto.py")
             self.change_tires(Tires(ans))
         else:
             self.node.refreshContext(self.__dict__)
