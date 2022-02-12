@@ -46,7 +46,13 @@ class Race:
         print()
 
     def ranking(self):
-        self.agents.sort(key=lambda agent: agent.time_lap)
+        self.agents.sort(key=lambda agent: agent.time_track)
+        self.agents[0].distance_to_nearest_behind = self.agents[0].time_track - self.agents[1].time_track
+        
+        for i in range(1,len(self.agents)-1):
+            self.agents[i].distance_to_nearest_forward = self.agents[i-1].distance_to_nearest_behind
+            self.agents[i].distance_to_nearest_behind = self.agents[i].time_track - self.agents[i+1].time_track
+            self.agents[i+1].distance_to_nearest_forward = self.agents[i].distance_to_nearest_behind
 
     def continuous_variable_generator(self):
         return normalvariate(0.5, 0.16)

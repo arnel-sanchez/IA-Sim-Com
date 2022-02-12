@@ -1,6 +1,6 @@
 # moto_facts.kfb
 
 rainy(True)
-humidity(True)
+humidity(False)
 windy(False)
 wind_direction(2)

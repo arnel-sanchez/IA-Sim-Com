@@ -18,11 +18,14 @@ class Agent:
         self.bike = bike
         self.speed = 0
         self.acceleration = 0
-        self.time_lap = 0
+        self.time_track = 0
         self.flag_configuration = flag_configuration
         self.flag_action = flag_action
         self.flag_acceleration = flag_acceleration
         self.flag_to_pits = False
+        self.distance_to_nearest_forward = 0
+        self.distance_to_nearest_behind = 0
+        self.shot_down = 0
         self.node = node
 
     def update_agent_initial_parameters(self, weather, section):
@@ -555,10 +558,6 @@ class Agent:
             if self.acceleration < 0:
                 if action.name.__contains__("SpeedUp"):
                     self.acceleration = 0
-            #if action == AgentActions.Brake:
-            #    self.acceleration *= -1 #) * self.bike.acceleration / race.discrete_variable_generator()
-            #else:
-            #    self.acceleration = self.bike.acceleration / race.discrete_variable_generator()
             x = 0
         else:
             self.node.refreshContext(self.__dict__)
@@ -570,7 +569,7 @@ class Agent:
             function.eval([], self.node.nuevocontext)
             self.acceleration = self.node.nuevocontext.variables["acceleration"].value
             
-    def status_analysis(self, section, race, action):
+    def status_analysis(self, section, race, action, forward_agent, behind_agent):
         prob = race.continuous_variable_generator()
 
         if action is None:
@@ -582,14 +581,27 @@ class Agent:
             return False
 
         if section[4] == TrackType.Straight:
-            if action.value == 3 or action.value == 4 or action.value == 5 or action.value == 9 or action.value == 10 or action.value == 11:
+            if action.value >= 3 or action.value <= 5 or action.value >= 9 or action.value <= 11 or action.value >= 15 or action.value <= 17 or action.value >= 21 or action.value <= 23 or action.value >= 27 or action.value <= 29 or action.value >= 33 or action.value <= 35:
                 print("El piloto {} ha doblado en plena recta y se ha ido al suelo".format(self.rider.name))
                 return False
         elif section[4] == TrackType.Curve:
-            if action.value != 3 and action.value != 4 and action.value != 5 and action.value != 9 and action.value != 10 and action.value != 11:
+            if (action.value <= 3 and action.value >= 5) or (action.value <= 9 and action.value >= 11) or (action.value <= 15 and action.value >= 17) or (action.value <= 21 and action.value >= 23) or (action.value <= 27 and action.value >= 29) or (action.value <= 33 and action.value >= 35):
                 print("El piloto {} ha seguido de largo y no ha doblado, ha roto la moto en la grava.".format(self.rider.name))
                 return False
-        
+
+        if action.value >= 12 and action.value <= 23 and self.rider.aggressiveness > prob:
+            print("El piloto {} ha intentado adelantar de una forma muy agresiva y se ha hido al suelo.".format(self.rider.name))
+            if forward_agent is not None and forward_agent.rider.aggressiveness > prob:
+                print("El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva y los 2 se han ido al suelo.".format(forward_agent.rider.name, self.rider.name))
+                self.shot_down = -1
+            return False
+        elif action.value >= 24 and action.value <= 35 and self.rider.aggressiveness > prob:
+            print("El piloto {} ha intentado bloquear de una forma muy agresiva y se ha hido al suelo.".format(self.rider.name))
+            if behind_agent is not None and behind_agent.rider.aggressiveness > prob:
+                print("El piloto {} ha sido defendido por el piloto {} de una forma muy agresiva y los 2 se han ido al suelo.".format(behind_agent.rider.name, self.rider.name))
+                self.shot_down = 1
+            return False
+
         if self.rider.probability_of_falling_off_the_bike > prob:
             print("El piloto {} ha perdido el control de su moto y se ha ido al suelo".format(self.rider.name))
             return False
@@ -613,15 +625,15 @@ class Agent:
             return False
         return True
 
-    def overcome_an_obstacle(self, section, race, weather):
+    def overcome_an_obstacle(self, section, race, weather, forward_agent, behind_agent):
         action = self.select_action(section, weather)
         self.select_acceleration(section, race, weather, action)
         self.calc_final_speed(section[2])
-        if not self.status_analysis(section, race, action):
-            race.agents.remove(self)
+        if not self.status_analysis(section, race, action, forward_agent, behind_agent):
+            return False
         if action is not None and 6 <= action.value <= 11:
             self.flag_to_pits = True
-        return
+        return True
 
     def calc_final_speed(self, max_speed):
         y = self.speed
@@ -632,7 +644,7 @@ class Agent:
             vf = 0
         if self.acceleration != 0:
             t = (vf - self.speed) / self.acceleration
-            self.time_lap += t
+            self.time_track += t
             self.speed = vf
         else:
             self.time_lap = 0
@@ -656,3 +668,29 @@ class AgentActions(Enum):
     SpeedUp_Turn_Pits = 9
     KeepSpeed_Turn_Pits = 10
     Brake_Turn_Pits = 11
+
+    Attack_SpeedUp = 12
+    Attack_KeepSpeed = 13
+    Attack_Brake = 14
+    Attack_SpeedUp_Turn = 15
+    Attack_KeepSpeed_Turn = 16
+    Attack_Brake_Turn = 17
+    Attack_SpeedUp_Pits = 18
+    Attack_KeepSpeed_Pits = 19
+    Attack_Brake_Pits = 20
+    Attack_SpeedUp_Turn_Pits = 21
+    Attack_KeepSpeed_Turn_Pits = 22
+    Attack_Brake_Turn_Pits = 23
+
+    Defend_SpeedUp = 24
+    Defend_KeepSpeed = 25
+    Defend_Brake = 26
+    Defend_SpeedUp_Turn = 27
+    Defend_KeepSpeed_Turn = 28
+    Defend_Brake_Turn = 29
+    Defend_SpeedUp_Pits = 30
+    Defend_KeepSpeed_Pits = 31
+    Defend_Brake_Pits = 32
+    Defend_SpeedUp_Turn_Pits = 33
+    Defend_KeepSpeed_Turn_Pits = 34
+    Defend_Brake_Turn_Pits = 35

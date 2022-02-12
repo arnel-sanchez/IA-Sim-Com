@@ -6,8 +6,29 @@ class Simulator:
         print("\nInicio de la carrera\n")
         while True:
             for section in race.environment.track.sections:
-                for agent in race.agents:
-                    agent.overcome_an_obstacle(section, race, race.environment.weather)
+                for i in range(0,len(race.agents)):
+                    if i == 0:
+                        if not rece.agents[i].overcome_an_obstacle(section, race, race.environment.weather, None, rece.agents[i+1]):
+                            race.agents.remove(race.agents[i])
+                            i-=1
+                        if rece.agents[i].shot_down == 1:
+                            race.agents.remove(race.agents[i+1])
+                    elif i == len(race.agents):
+                        if not rece.agents[i].overcome_an_obstacle(section, race, race.environment.weather, rece.agents[i-1], None):
+                            race.agents.remove(race.agents[i])
+                            i-=1
+                        if rece.agents[i].shot_down == -1:
+                            race.agents.remove(race.agents[i-1])
+                            i-=1
+                    else:
+                        if not rece.agents[i].overcome_an_obstacle(section, race, race.environment.weather, rece.agents[i-1], rece.agents[i+1]):
+                            race.agents.remove(race.agents[i])
+                            i-=1
+                        if rece.agents[i].shot_down == 1:
+                            race.agents.remove(race.agents[i+1])
+                        elif rece.agents[i].shot_down == -1:
+                            race.agents.remove(race.agents[i-1])
+                            i-=1
                 old_weather = race.environment.weather
                 race.environment.change_weather_params()
                 new_weather = race.environment.weather

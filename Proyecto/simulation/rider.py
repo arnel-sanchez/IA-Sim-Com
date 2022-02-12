@@ -7,6 +7,7 @@ class Rider:
         self.cornering = cornering
         self.step_by_line = step_by_line
         self.probability_of_falling_off_the_bike = 0.000001
+        self.aggressiveness = 0.001
         self.bike = None
 
     def assign_bike(self, bike: Bike, probability_of_falling_off_the_bike):
