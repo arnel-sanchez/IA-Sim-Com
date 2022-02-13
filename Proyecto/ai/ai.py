@@ -7,17 +7,19 @@ from pyke import knowledge_engine
 
 def call_ai(script: str):
     try:
-        ans = call_subprocess("python ", script)
-    except Exception:
         ans = call_subprocess("python3 ", script)
+    except Exception:
+        ans = call_subprocess("python ", script)
     return ans
 
 
 def call_subprocess(python: str, script: str):
     ans = run(python + path[0] + "/ai/" + script, shell=True, stdout=PIPE, stderr=STDOUT)
     ans = ans.stdout.decode("utf-8")
-    print(ans)
-    return int(ans[-3])
+    if ans.__contains__("not found"):
+        raise Exception
+    ans = ans[-2] if script.__contains__('3') else ans[-3]
+    return int(ans)
 
 
 def edit_moto(environment):
