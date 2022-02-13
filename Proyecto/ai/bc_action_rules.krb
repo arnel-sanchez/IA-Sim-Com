@@ -22,14 +22,20 @@ brake
 turn
     use select_action(3)
     when
-        action_facts.curve(True)
+        action_facts.section("Curve")
 
 
-pits
+pits_1
     use select_action(6)
     when
-        action_facts.tires($ans_1)
+        action_facts.slick_tires($ans_1)
         action_facts.rainy($ans_2)
         check $ans_1 == $ans_2
-        action_facts.humidity($ans_3)
-        check $ans_1 == $ans_3
+
+
+pits_2
+    use select_action(6)
+    when
+        action_facts.slick_tires($ans_1)
+        action_facts.high_humidity($ans_2)
+        check $ans_1 == $ans_2

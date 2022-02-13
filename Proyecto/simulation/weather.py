@@ -19,7 +19,8 @@ class CardinalsPoints(Enum):
 
 
 class Weather:
-    def __init__(self, temperature, visibility, wind_intensity, humidity, wind: CardinalsPoints, weather_status: WeatherStatus):
+    def __init__(self, temperature, visibility, wind_intensity, humidity, wind: CardinalsPoints,
+                 weather_status: WeatherStatus):
         self.weather_status = weather_status
         self.wind = wind
         self.temperature = temperature
@@ -124,22 +125,25 @@ class Weather:
     def is_front_wind(self, other_wind: CardinalsPoints):
         if self.wind == CardinalsPoints.South and other_wind.name.__contains__("North"):
             return True
-        elif self.wind == CardinalsPoints.Northeast and other_wind in [CardinalsPoints.South, CardinalsPoints.Southwest, CardinalsPoints.West]:
+        elif self.wind == CardinalsPoints.Northeast and other_wind in [CardinalsPoints.South, CardinalsPoints.Southwest,
+                                                                       CardinalsPoints.West]:
             return True
         elif self.wind == CardinalsPoints.West and other_wind.name.__contains__("East"):
             return True
-        elif self.wind == CardinalsPoints.Southeast and other_wind in [CardinalsPoints.North, CardinalsPoints.Northwest, CardinalsPoints.West]:
+        elif self.wind == CardinalsPoints.Southeast and other_wind in [CardinalsPoints.North, CardinalsPoints.Northwest,
+                                                                       CardinalsPoints.West]:
             return True
         elif self.wind == CardinalsPoints.North and other_wind.name.__contains__("South"):
             return True
-        elif self.wind == CardinalsPoints.Southwest and other_wind in [CardinalsPoints.North, CardinalsPoints.Northeast, CardinalsPoints.East]:
+        elif self.wind == CardinalsPoints.Southwest and other_wind in [CardinalsPoints.North, CardinalsPoints.Northeast,
+                                                                       CardinalsPoints.East]:
             return True
         elif self.wind == CardinalsPoints.East and other_wind.name.__contains__("West"):
             return True
-        elif self.wind == CardinalsPoints.Northwest and other_wind in [CardinalsPoints.South, CardinalsPoints.Southeast, CardinalsPoints.East]:
+        elif self.wind == CardinalsPoints.Northwest and other_wind in [CardinalsPoints.South, CardinalsPoints.Southeast,
+                                                                       CardinalsPoints.East]:
             return True
         return False
 
     def is_back_wind(self, wind: CardinalsPoints):
-        if self.wind == wind:
-            return True
+        return self.wind == wind

@@ -89,7 +89,7 @@ def turn(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('action_facts', 'curve', context,
+        with engine.prove('action_facts', 'section', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
@@ -101,7 +101,7 @@ def turn(rule, arg_patterns, arg_context):
     finally:
       context.done()
 
-def pits(rule, arg_patterns, arg_context):
+def pits_1(rule, arg_patterns, arg_context):
   engine = rule.rule_base.engine
   patterns = rule.goal_arg_patterns()
   if len(arg_patterns) == len(patterns):
@@ -113,28 +113,52 @@ def pits(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('action_facts', 'tires', context,
+        with engine.prove('action_facts', 'slick_tires', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
             assert x_1 is None, \
-              "bc_action_rules.pits: got unexpected plan from when clause 1"
+              "bc_action_rules.pits_1: got unexpected plan from when clause 1"
             with engine.prove('action_facts', 'rainy', context,
                               (rule.pattern(1),)) \
               as gen_2:
               for x_2 in gen_2:
                 assert x_2 is None, \
-                  "bc_action_rules.pits: got unexpected plan from when clause 2"
+                  "bc_action_rules.pits_1: got unexpected plan from when clause 2"
                 if context.lookup_data('ans_1') == context.lookup_data('ans_2'):
-                  with engine.prove('action_facts', 'humidity', context,
-                                    (rule.pattern(2),)) \
-                    as gen_4:
-                    for x_4 in gen_4:
-                      assert x_4 is None, \
-                        "bc_action_rules.pits: got unexpected plan from when clause 4"
-                      if context.lookup_data('ans_1') == context.lookup_data('ans_3'):
-                        rule.rule_base.num_bc_rule_successes += 1
-                        yield
+                  rule.rule_base.num_bc_rule_successes += 1
+                  yield
+        rule.rule_base.num_bc_rule_failures += 1
+    finally:
+      context.done()
+
+def pits_2(rule, arg_patterns, arg_context):
+  engine = rule.rule_base.engine
+  patterns = rule.goal_arg_patterns()
+  if len(arg_patterns) == len(patterns):
+    context = contexts.bc_context(rule)
+    try:
+      if all(map(lambda pat, arg:
+                   pat.match_pattern(context, context,
+                                     arg, arg_context),
+                 patterns,
+                 arg_patterns)):
+        rule.rule_base.num_bc_rules_matched += 1
+        with engine.prove('action_facts', 'slick_tires', context,
+                          (rule.pattern(0),)) \
+          as gen_1:
+          for x_1 in gen_1:
+            assert x_1 is None, \
+              "bc_action_rules.pits_2: got unexpected plan from when clause 1"
+            with engine.prove('action_facts', 'high_humidity', context,
+                              (rule.pattern(1),)) \
+              as gen_2:
+              for x_2 in gen_2:
+                assert x_2 is None, \
+                  "bc_action_rules.pits_2: got unexpected plan from when clause 2"
+                if context.lookup_data('ans_1') == context.lookup_data('ans_2'):
+                  rule.rule_base.num_bc_rule_successes += 1
+                  yield
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -164,15 +188,21 @@ def populate(engine):
                   turn, None,
                   (pattern.pattern_literal(3),),
                   (),
-                  (pattern.pattern_literal(True),))
+                  (pattern.pattern_literal("Curve"),))
   
-  bc_rule.bc_rule('pits', This_rule_base, 'select_action',
-                  pits, None,
+  bc_rule.bc_rule('pits_1', This_rule_base, 'select_action',
+                  pits_1, None,
                   (pattern.pattern_literal(6),),
                   (),
                   (contexts.variable('ans_1'),
-                   contexts.variable('ans_2'),
-                   contexts.variable('ans_3'),))
+                   contexts.variable('ans_2'),))
+  
+  bc_rule.bc_rule('pits_2', This_rule_base, 'select_action',
+                  pits_2, None,
+                  (pattern.pattern_literal(6),),
+                  (),
+                  (contexts.variable('ans_1'),
+                   contexts.variable('ans_2'),))
 
 
 Krb_filename = '..\\bc_action_rules.krb'
@@ -189,6 +219,8 @@ Krb_lineno_map = (
     ((116, 121), (31, 31)),
     ((122, 127), (32, 32)),
     ((128, 128), (33, 33)),
-    ((129, 134), (34, 34)),
-    ((135, 135), (35, 35)),
+    ((141, 145), (37, 37)),
+    ((147, 152), (39, 39)),
+    ((153, 158), (40, 40)),
+    ((159, 159), (41, 41)),
 )

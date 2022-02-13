@@ -9,8 +9,8 @@ class Simulator:
                 remove_agents = set()
                 for i in range(0, len(race.agents)):
                     if i == 0:
-                        if len(race.agents) > 1 and not race.agents[i].overcome_an_obstacle(section, race, race.environment.weather, None,
-                                                                   race.agents[i + 1]):
+                        if len(race.agents) > 1 and not race.agents[i].overcome_an_obstacle(
+                                section, race, race.environment.weather, None, race.agents[i + 1]):
                             remove_agents.add(race.agents[i])
                         if race.agents[i].shot_down == 1:
                             remove_agents.add(race.agents[i + 1])

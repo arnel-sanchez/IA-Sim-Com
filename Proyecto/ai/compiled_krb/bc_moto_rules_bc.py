@@ -17,20 +17,22 @@ def slick(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('moto_facts', 'rainy', context,
+        with engine.prove('moto_facts', 'weather', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
             assert x_1 is None, \
               "bc_moto_rules.slick: got unexpected plan from when clause 1"
-            with engine.prove('moto_facts', 'humidity', context,
-                              (rule.pattern(0),)) \
-              as gen_2:
-              for x_2 in gen_2:
-                assert x_2 is None, \
-                  "bc_moto_rules.slick: got unexpected plan from when clause 2"
-                rule.rule_base.num_bc_rule_successes += 1
-                yield
+            if context.lookup_data('ans_1') != "Rainy":
+              with engine.prove('moto_facts', 'humidity', context,
+                                (rule.pattern(1),)) \
+                as gen_3:
+                for x_3 in gen_3:
+                  assert x_3 is None, \
+                    "bc_moto_rules.slick: got unexpected plan from when clause 3"
+                  if context.lookup_data('ans_2') <= 6:
+                    rule.rule_base.num_bc_rule_successes += 1
+                    yield
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -47,7 +49,7 @@ def rain_1(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('moto_facts', 'rainy', context,
+        with engine.prove('moto_facts', 'weather', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
@@ -77,14 +79,16 @@ def rain_2(rule, arg_patterns, arg_context):
           for x_1 in gen_1:
             assert x_1 is None, \
               "bc_moto_rules.rain_2: got unexpected plan from when clause 1"
-            with engine.prove('moto_facts', 'humidity', context,
-                              (rule.pattern(1),)) \
-              as gen_2:
-              for x_2 in gen_2:
-                assert x_2 is None, \
-                  "bc_moto_rules.rain_2: got unexpected plan from when clause 2"
-                rule.rule_base.num_bc_rule_successes += 1
-                yield
+            if context.lookup_data('ans_1') != "Rainy":
+              with engine.prove('moto_facts', 'humidity', context,
+                                (rule.pattern(1),)) \
+                as gen_3:
+                for x_3 in gen_3:
+                  assert x_3 is None, \
+                    "bc_moto_rules.rain_2: got unexpected plan from when clause 3"
+                  if context.lookup_data('ans_2') > 6:
+                    rule.rule_base.num_bc_rule_successes += 1
+                    yield
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -101,20 +105,21 @@ def soft(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('moto_facts', 'windy', context,
+        with engine.prove('moto_facts', 'wind_intensity', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
             assert x_1 is None, \
               "bc_moto_rules.soft: got unexpected plan from when clause 1"
-            with engine.prove('moto_facts', 'wind_direction', context,
-                              (rule.pattern(1),)) \
-              as gen_2:
-              for x_2 in gen_2:
-                assert x_2 is None, \
-                  "bc_moto_rules.soft: got unexpected plan from when clause 2"
-                rule.rule_base.num_bc_rule_successes += 1
-                yield
+            if context.lookup_data('ans_1') > 6:
+              with engine.prove('moto_facts', 'wind_direction', context,
+                                (rule.pattern(1),)) \
+                as gen_3:
+                for x_3 in gen_3:
+                  assert x_3 is None, \
+                    "bc_moto_rules.soft: got unexpected plan from when clause 3"
+                  rule.rule_base.num_bc_rule_successes += 1
+                  yield
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -131,14 +136,15 @@ def medium_1(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('moto_facts', 'windy', context,
+        with engine.prove('moto_facts', 'wind_intensity', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
             assert x_1 is None, \
               "bc_moto_rules.medium_1: got unexpected plan from when clause 1"
-            rule.rule_base.num_bc_rule_successes += 1
-            yield
+            if context.lookup_data('ans_1') <= 6:
+              rule.rule_base.num_bc_rule_successes += 1
+              yield
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -155,20 +161,21 @@ def medium_2(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('moto_facts', 'windy', context,
+        with engine.prove('moto_facts', 'wind_intensity', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
             assert x_1 is None, \
               "bc_moto_rules.medium_2: got unexpected plan from when clause 1"
-            with engine.prove('moto_facts', 'wind_direction', context,
-                              (rule.pattern(1),)) \
-              as gen_2:
-              for x_2 in gen_2:
-                assert x_2 is None, \
-                  "bc_moto_rules.medium_2: got unexpected plan from when clause 2"
-                rule.rule_base.num_bc_rule_successes += 1
-                yield
+            if context.lookup_data('ans_1') > 6:
+              with engine.prove('moto_facts', 'wind_direction', context,
+                                (rule.pattern(1),)) \
+                as gen_3:
+                for x_3 in gen_3:
+                  assert x_3 is None, \
+                    "bc_moto_rules.medium_2: got unexpected plan from when clause 3"
+                  rule.rule_base.num_bc_rule_successes += 1
+                  yield
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -185,20 +192,21 @@ def hard(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('moto_facts', 'windy', context,
+        with engine.prove('moto_facts', 'wind_intensity', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:
             assert x_1 is None, \
               "bc_moto_rules.hard: got unexpected plan from when clause 1"
-            with engine.prove('moto_facts', 'wind_direction', context,
-                              (rule.pattern(1),)) \
-              as gen_2:
-              for x_2 in gen_2:
-                assert x_2 is None, \
-                  "bc_moto_rules.hard: got unexpected plan from when clause 2"
-                rule.rule_base.num_bc_rule_successes += 1
-                yield
+            if context.lookup_data('ans_1') > 6:
+              with engine.prove('moto_facts', 'wind_direction', context,
+                                (rule.pattern(1),)) \
+                as gen_3:
+                for x_3 in gen_3:
+                  assert x_3 is None, \
+                    "bc_moto_rules.hard: got unexpected plan from when clause 3"
+                  rule.rule_base.num_bc_rule_successes += 1
+                  yield
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -210,46 +218,47 @@ def populate(engine):
                   slick, None,
                   (pattern.pattern_literal(0),),
                   (),
-                  (pattern.pattern_literal(False),))
+                  (contexts.variable('ans_1'),
+                   contexts.variable('ans_2'),))
   
   bc_rule.bc_rule('rain_1', This_rule_base, 'select_type',
                   rain_1, None,
                   (pattern.pattern_literal(3),),
                   (),
-                  (pattern.pattern_literal(True),))
+                  (pattern.pattern_literal("Rainy"),))
   
   bc_rule.bc_rule('rain_2', This_rule_base, 'select_type',
                   rain_2, None,
                   (pattern.pattern_literal(3),),
                   (),
-                  (pattern.pattern_literal(False),
-                   pattern.pattern_literal(True),))
+                  (contexts.variable('ans_1'),
+                   contexts.variable('ans_2'),))
   
   bc_rule.bc_rule('soft', This_rule_base, 'select_tires',
                   soft, None,
                   (pattern.pattern_literal(0),),
                   (),
-                  (pattern.pattern_literal(True),
+                  (contexts.variable('ans_1'),
                    pattern.pattern_literal(3),))
   
   bc_rule.bc_rule('medium_1', This_rule_base, 'select_tires',
                   medium_1, None,
                   (pattern.pattern_literal(1),),
                   (),
-                  (pattern.pattern_literal(False),))
+                  (contexts.variable('ans_1'),))
   
   bc_rule.bc_rule('medium_2', This_rule_base, 'select_tires',
                   medium_2, None,
                   (pattern.pattern_literal(1),),
                   (),
-                  (pattern.pattern_literal(True),
+                  (contexts.variable('ans_1'),
                    pattern.pattern_literal(2),))
   
   bc_rule.bc_rule('hard', This_rule_base, 'select_tires',
                   hard, None,
                   (pattern.pattern_literal(2),),
                   (),
-                  (pattern.pattern_literal(True),
+                  (contexts.variable('ans_1'),
                    pattern.pattern_literal(1),))
 
 
@@ -257,21 +266,29 @@ Krb_filename = '..\\bc_moto_rules.krb'
 Krb_lineno_map = (
     ((14, 18), (5, 5)),
     ((20, 25), (7, 7)),
-    ((26, 31), (8, 8)),
-    ((44, 48), (12, 12)),
-    ((50, 55), (14, 14)),
-    ((68, 72), (18, 18)),
-    ((74, 79), (20, 20)),
-    ((80, 85), (21, 21)),
-    ((98, 102), (25, 25)),
-    ((104, 109), (27, 27)),
-    ((110, 115), (28, 28)),
-    ((128, 132), (32, 32)),
-    ((134, 139), (34, 34)),
-    ((152, 156), (38, 38)),
-    ((158, 163), (40, 40)),
-    ((164, 169), (41, 41)),
-    ((182, 186), (45, 45)),
-    ((188, 193), (47, 47)),
-    ((194, 199), (48, 48)),
+    ((26, 26), (8, 8)),
+    ((27, 32), (9, 9)),
+    ((33, 33), (10, 10)),
+    ((46, 50), (14, 14)),
+    ((52, 57), (16, 16)),
+    ((70, 74), (20, 20)),
+    ((76, 81), (22, 22)),
+    ((82, 82), (23, 23)),
+    ((83, 88), (24, 24)),
+    ((89, 89), (25, 25)),
+    ((102, 106), (29, 29)),
+    ((108, 113), (31, 31)),
+    ((114, 114), (32, 32)),
+    ((115, 120), (33, 33)),
+    ((133, 137), (37, 37)),
+    ((139, 144), (39, 39)),
+    ((145, 145), (40, 40)),
+    ((158, 162), (44, 44)),
+    ((164, 169), (46, 46)),
+    ((170, 170), (47, 47)),
+    ((171, 176), (48, 48)),
+    ((189, 193), (52, 52)),
+    ((195, 200), (54, 54)),
+    ((201, 201), (55, 55)),
+    ((202, 207), (56, 56)),
 )
