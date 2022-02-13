@@ -37,10 +37,11 @@ class Simulator:
                     agent.update_agent_parameter(old_weather, new_weather, section)
                 if len(race.agents) != 0:
                     print("La seccion {} ha sido superada".format(section[0]))
-                    race.ranking()
+                    if len(race.agents) > 1:
+                        race.ranking()
                 else:
                     break
             if race.change_lap() or len(race.agents) == 0:
-                if len(race.agents) != 0:
+                if len(race.agents) > 1:
                     race.ranking()
                 break
