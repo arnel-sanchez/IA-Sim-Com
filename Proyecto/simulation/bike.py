@@ -14,9 +14,10 @@ class Tires(Enum):
 
 
 class Bike:
-    def __init__(self, brand, max_speed, weight, node: BikeNode = None, brakes=5, chassis_stiffness=8,
+    def __init__(self, brand, model, max_speed, weight, node: BikeNode = None, brakes=5, chassis_stiffness=8,
                  probability_of_the_bike_breaking_down=1, probability_of_exploding_tires=1, tires=Tires.Slick_Medium):
         self.brand = brand
+        self.model = model
         self.max_speed = max_speed
         self.weight = weight
         self.tires = tires

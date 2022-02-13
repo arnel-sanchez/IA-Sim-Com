@@ -682,25 +682,34 @@ class Agent:
     def overcome_an_obstacle(self, section, race, weather, forward_agent, behind_agent):
         action = self.select_action(section, weather)
         self.select_acceleration(section, race, weather, action)
-        self.calc_final_speed(section[2])
+        self.calc_final_speed(section[2], section[1])
         if not self.status_analysis(section, race, action, forward_agent, behind_agent):
             return False
         if action is not None and 6 <= action.value <= 11:
             self.flag_to_pits = True
         return True
 
-    def calc_final_speed(self, max_speed):
-        vf = pow(self.speed, 2) + 2 * max_speed * self.acceleration
+    def calc_final_speed(self, max_speed, length):
+        vf = pow(self.speed/3.6, 2) + 2 * (max_speed/3.6) * self.acceleration
         if vf >= 0:
             vf = sqrt(vf)
         else:
             vf = 0
         if self.acceleration != 0:
-            t = (vf - self.speed) / self.acceleration
+            t = (vf - (self.speed/3.6)) / self.acceleration
             self.time_track += t
-            self.speed = vf
+            self.time_lap += t
+            self.speed = vf * 3.6
         else:
-            self.time_lap = 0
+            t = length/vf
+            self.time_track += t
+            self.time_lap += t
 
     def calc_max_acceleration(self, max_speed, length):
         return (pow(max_speed/3.6, 2) - pow(self.speed/3.6, 2))/(2*length)
+
+    def is_near(self, agent):
+        if self.time_track - agent.time_track <= 4:
+            return True
+        else:
+            return False
