@@ -19,12 +19,7 @@ def call_subprocess(python: str, script: str):
         raise Exception
     ans = ans.stdout.decode("utf-8")
     ans = ans.replace("\n", "").replace("\r", "")
-    try:
-        ans = int(ans[-1])
-    except:
-        print(ans)
-        raise Exception
-    return int(ans)
+    return int(ans[-1])
 
 
 def edit_moto(environment):

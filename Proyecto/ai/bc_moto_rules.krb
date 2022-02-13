@@ -19,7 +19,7 @@ rain_1
 rain_2
     use select_type(3)
     when
-        moto_facts.rainy($ans_1)
+        moto_facts.weather($ans_1)
         check $ans_1 != "Rainy"
         moto_facts.humidity($ans_2)
         check $ans_2 > 6
