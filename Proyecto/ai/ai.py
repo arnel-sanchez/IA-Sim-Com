@@ -65,10 +65,10 @@ def moto():
 
 
 def restart(rules: str):
-    if exists("compiled_krb"):
-        rmtree("compiled_krb")
-    if exists("ai/compiled_krb"):
-        rmtree("ai/compiled_krb")
+    if exists(path[0] + "/compiled_krb"):
+        rmtree(path[0] + "/compiled_krb")
+    if exists(path[0] + "/ai/compiled_krb"):
+        rmtree(path[0] + "/ai/compiled_krb")
     engine = knowledge_engine.engine(__file__)
     engine.reset()
     engine.activate(rules)
