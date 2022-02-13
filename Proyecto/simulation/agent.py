@@ -531,7 +531,8 @@ class Agent:
                 self.rider.probability_of_falling_off_the_bike += 0.001 * weather.wind_intensity / 4
 
     def select_action(self, section, weather):
-        if not self.flag_action:
+        prob = race.continuous_variable_generator()
+        if not self.flag_action or self.rider.independence > prob:
             edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
             ans = call_ai("action.py")
             return AgentActions(ans)
@@ -552,7 +553,8 @@ class Agent:
                 return AgentActions(evaluation)
 
     def select_acceleration(self, section, race, weather, action):
-        if not self.flag_acceleration:
+        prob = race.continuous_variable_generator()
+        if not self.flag_acceleration or self.rider.independence > prob:
             max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, section[2]), section[1])
             self.acceleration = acceleration(max_acceleration, weather, section, self.bike, self.rider)
             if self.acceleration < 0:
