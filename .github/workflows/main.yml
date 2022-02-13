@@ -22,4 +22,4 @@ jobs:
     - name: Run Project
       run: cd Proyecto && python main.py
     - name: Run Test
-      run: cd ./Proyecto/tester && python -m unittest 'test_tokenizer.py'
+      run: cd ./Proyecto/tester && python test1.py

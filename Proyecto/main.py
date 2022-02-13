@@ -27,11 +27,14 @@ from simulation.set_off_classes.bikes.ktm import KTM
 from simulation.set_off_classes.riders.brad_binder import Binder
 
 
-def compilation():
+def compilation(case: str):
     print("\nCOMPILACION:\n")
     tokenizer = Tokenizer()
     file = "console"
-    text = open(path[0] + "/codes/Prueba19.pys").read()
+    if case is None:
+        text = open(path[0] + "/codes/Prueba19.pys").read()
+    else:
+        text = open(path[0] + "/codes/" + case).read()
     tokens, error = tokenizer.tokenize(file, text)
     if error is not None:
         print(error)
@@ -165,12 +168,12 @@ def simulation(agents_lists):
     s.start(race)
 
 
-def main():
-    comp = compilation()
+def main(case: str):
+    comp = compilation(case)
     if comp:
         print("OK")
         simulation(comp)
 
 
 if __name__ == '__main__':
-    main()
+    main(None)
