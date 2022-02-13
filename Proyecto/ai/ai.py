@@ -5,14 +5,18 @@ from shutil import rmtree
 from pyke import knowledge_engine
 
 
-def call_ai(script: str, python: str = "python "):
+def call_ai(script: str):
     try:
-        ans = run(python + path[0] + "/ai/" + script, shell=True, stdout=PIPE, stderr=STDOUT)
-        ans = ans.stdout.decode("utf-8")
-        ans = int(ans[-3])
+        ans = call_subprocess("python ", script)
     except Exception:
-        ans = call_ai(script, "python3 ")
+        ans = call_subprocess("python3 ", script)
     return ans
+
+
+def call_subprocess(python: str, script: str):
+    ans = run(python + path[0] + "/ai/" + script, shell=True, stdout=PIPE, stderr=STDOUT)
+    ans = ans.stdout.decode("utf-8")
+    return int(ans[-3])
 
 
 def edit_moto(environment):
