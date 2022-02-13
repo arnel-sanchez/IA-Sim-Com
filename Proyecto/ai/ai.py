@@ -14,7 +14,7 @@ def call_ai(script: str):
 
 
 def call_subprocess(python: str, script: str):
-    ans = run(python + "./ai/" + script, shell=True, stdout=PIPE, stderr=STDOUT)
+    ans = run(python + path[0] + "/ai/" + script, shell=True, stdout=PIPE, stderr=STDOUT)
     if ans.returncode != 0:
         raise Exception
     ans = ans.stdout.decode("utf-8")
