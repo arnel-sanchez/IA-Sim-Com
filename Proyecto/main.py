@@ -32,7 +32,7 @@ def compilation(case: str):
     tokenizer = Tokenizer()
     file = "console"
     if case is None:
-        text = open(path[0] + "/codes/Prueba19.pys").read()
+        text = open(path[0] + "/codes/Prueba18, Dos pilotos y dos motos.pys").read()
     else:
         text = open(path[0] + "/codes/" + case).read()
     tokens, error = tokenizer.tokenize(file, text)
