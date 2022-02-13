@@ -8,8 +8,10 @@ from pyke import knowledge_engine
 def call_ai(script: str):
     try:
         ans = call_subprocess("python ", script)
+        print(ans)
     except Exception:
         ans = call_subprocess("python3 ", script)
+        print(ans)
     return ans
 
 
