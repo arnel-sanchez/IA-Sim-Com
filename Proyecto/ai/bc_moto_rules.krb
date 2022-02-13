@@ -4,45 +4,53 @@
 slick
     use select_type(0)
     when
-        moto_facts.rainy(False)
-        moto_facts.humidity(False)
+        moto_facts.weather($ans_1)
+        check $ans_1 != "Rainy"
+        moto_facts.humidity($ans_2)
+        check $ans_2 <= 6
 
 
 rain_1
     use select_type(3)
     when
-        moto_facts.rainy(True)
+        moto_facts.weather("Rainy")
 
 
 rain_2
     use select_type(3)
     when
-        moto_facts.rainy(False)
-        moto_facts.humidity(True)
+        moto_facts.rainy($ans_1)
+        check $ans_1 != "Rainy"
+        moto_facts.humidity($ans_2)
+        check $ans_2 > 6
 
 
 soft
     use select_tires(0)
     when
-        moto_facts.windy(True)
+        moto_facts.wind_intensity($ans_1)
+        check $ans_1 > 6
         moto_facts.wind_direction(3)
 
 
 medium_1
     use select_tires(1)
     when
-        moto_facts.windy(False)
+        moto_facts.wind_intensity($ans_1)
+        check $ans_1 <= 6
 
 
 medium_2
     use select_tires(1)
     when
-        moto_facts.windy(True)
+        moto_facts.wind_intensity($ans_1)
+        check $ans_1 > 6
         moto_facts.wind_direction(2)
 
 
 hard
     use select_tires(2)
     when
-        moto_facts.windy(True)
+        moto_facts.wind_intensity($ans_1)
+        check $ans_1 > 6
         moto_facts.wind_direction(1)

@@ -42,9 +42,9 @@ def edit_moto(environment):
         direction = 2
     facts = open(path[0] + "/ai/moto_facts.kfb", "w+")
     facts.write("# moto_facts.kfb\n\n")
-    facts.write("rainy({})\n".format(True if weather.weather_status.name.__contains__("Rainy") else False))
-    facts.write("humidity({})\n".format(True if weather.humidity > 6 else False))
-    facts.write("windy({})\n".format(True if weather.wind_intensity > 6 else False))
+    facts.write("weather({})\n".format(weather.weather_status.name))
+    facts.write("humidity({})\n".format(weather.humidity))
+    facts.write("wind_intensity({})\n".format(weather.wind_intensity))
     facts.write("wind_direction({})\n".format(direction))
     facts.close()
 
@@ -85,10 +85,10 @@ def edit_action(speed, bike_max_speed, section_max_speed, section_type, tires, w
     else:
         speed_cmp = 2
     facts.write("speed({})\n".format(speed_cmp))
-    facts.write("curve({})\n".format(True if section_type == "Curve" else False))
-    facts.write("tires({})\n".format(True if tires.__contains__("Slick") else False))
-    facts.write("rainy({})\n".format(True if weather.weather_status.name.__contains__("Rainy") else False))
-    facts.write("humidity({})\n".format(True if weather.humidity > 6 else False))
+    facts.write("section({})\n".format(section_type))
+    facts.write("slick_tires({})\n".format(True if tires.__contains__("Slick") else False))
+    facts.write("rainy({})\n".format(weather.weather_status.name))
+    facts.write("high_humidity({})\n".format(True if weather.humidity > 6 else False))
     facts.close()
 
 
