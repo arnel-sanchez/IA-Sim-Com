@@ -126,7 +126,7 @@ def simulation(agents_lists):
                 flag_acceleration = True
                 flag_action = True
             agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_acceleration, agents_lists[0][0]))
-        '''
+        
         b = Bagnaia()
         d = Ducati()
         rider = Rider(b.name, b.cornering, b.step_by_line)
@@ -162,7 +162,7 @@ def simulation(agents_lists):
         rider = Rider(bi.name, bi.cornering, bi.step_by_line)
         bike = Bike(k.brand, k.model, k.max_speed, k.weight, None)
         agents.append(Agent(rider, bike, False, False, False))
-        '''
+        
     race = Race(environment, agents, 5)
     s = Simulator()
     s.start(race)

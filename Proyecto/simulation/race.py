@@ -41,7 +41,11 @@ class Race:
         i = 1
         print("Posicion - Tiempo de Carrera: Piloto")
         for x in self.rank:
-            print("{} - {}: {} con la {}".format(i, round(x.time_track,5), x.rider.name, x.bike.brand + " " + x.bike.model))
+            spaces = ""
+            if 8 - self.digits_of_a_number(i) > 0:
+                for j in range(8 - self.digits_of_a_number(i)):
+                    spaces+=" "
+            print(spaces + "{} - {}: {} con la {}".format(i,self.convert_seconds_to_minutes(x.time_track), x.rider.name, x.bike.brand + " " + x.bike.model))
             i += 1
         print()
 
@@ -49,7 +53,11 @@ class Race:
         i = 1
         print("Posicion - Tiempo de Vuelta: Piloto")
         for x in self.rank:
-            print("{} - {}: {} con la {}".format(i, round(x.time_lap,5), x.rider.name, x.bike.brand + " " + x.bike.model))
+            spaces = ""
+            if 8 - self.digits_of_a_number(i) > 0:
+                for j in range(8 - self.digits_of_a_number(i)):
+                    spaces+=" "
+            print(spaces + "{} - {}: {} con la {}".format(i, self.convert_seconds_to_minutes(x.time_lap), x.rider.name, x.bike.brand + " " + x.bike.model))
             x.time_lap = 0
             i += 1
         print()
@@ -61,3 +69,15 @@ class Race:
             self.agents[i].distance_to_nearest_forward = self.agents[i - 1].distance_to_nearest_behind
             self.agents[i].distance_to_nearest_behind = self.agents[i].time_track - self.agents[i + 1].time_track
             self.agents[i + 1].distance_to_nearest_forward = self.agents[i].distance_to_nearest_behind
+
+    def digits_of_a_number(self, number):
+        return len(str(number))
+
+    def convert_seconds_to_minutes(self, seconds):
+        seconds = round(seconds,10)
+        minutes = int(seconds/60)
+        seconds -= minutes*60
+        seconds = round(seconds,10)
+        if seconds < 10:
+            return f"{minutes:02d}:0{seconds}"
+        return f"{minutes:02d}:{seconds}"
