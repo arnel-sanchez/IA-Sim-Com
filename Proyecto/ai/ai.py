@@ -8,16 +8,15 @@ from pyke import knowledge_engine
 def call_ai(script: str):
     try:
         ans = call_subprocess("python ", script)
-        print(ans)
     except Exception:
         ans = call_subprocess("python3 ", script)
-        print(ans)
     return ans
 
 
 def call_subprocess(python: str, script: str):
     ans = run(python + path[0] + "/ai/" + script, shell=True, stdout=PIPE, stderr=STDOUT)
     ans = ans.stdout.decode("utf-8")
+    print(ans)
     return int(ans[-3])
 
 
