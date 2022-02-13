@@ -3,4 +3,4 @@
 rainy(False)
 humidity(False)
 windy(False)
-wind_direction(2)
+wind_direction(1)
