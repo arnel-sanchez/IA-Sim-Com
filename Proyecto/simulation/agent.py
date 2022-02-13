@@ -658,6 +658,9 @@ class Agent:
                       format(behind_agent.rider.name, self.rider.name))
                 self.shot_down = 1
             return False
+        else:
+            if 24 <= action.value <= 35 or 12 <= action.value <= 23:
+                self.bike.probability_of_exploding_tires+= 0.0005
         if self.rider.probability_of_falling_off_the_bike > prob:
             print("El piloto {} ha perdido el control de su moto y se ha ido al suelo".format(self.rider.name))
             return False
@@ -670,7 +673,7 @@ class Agent:
         if section[2] < self.speed and prob < 0.001:
             print("El piloto {} ha perdido el control de su moto y se ha ido al suelo".format(self.rider.name))
             return False
-        elif section[2] > self.speed and prob < 0.0001:
+        elif section[2] > self.speed and prob < 0.00001:
             print("El piloto {} ha perdido el control de su moto y se ha ido al suelo".format(self.rider.name))
             return False
         elif self.speed > self.bike.max_speed:
