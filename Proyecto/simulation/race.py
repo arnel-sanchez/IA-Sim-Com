@@ -25,7 +25,7 @@ class Race:
                     agent.bike.select_configuration(self.environment)
                 agent.update_agent_initial_parameters(self.environment.weather, self.environment.track.sections[0])
             print("\nUltima vuelta\n")
-            self.print_ranking()
+            self.print_ranking_lap()
             return False
         else:
             self.environment.change_weather_status()
@@ -34,13 +34,23 @@ class Race:
                     agent.bike.select_configuration(self.environment)
                 agent.update_agent_initial_parameters(self.environment.weather, self.environment.track.sections[0])
             print("\nVuelta {}\n".format(self.current_lap))
-            self.print_ranking()
+            self.print_ranking_lap()
             return False
 
     def print_ranking(self):
         i = 1
+        print("Posicion - Tiempo de Carrera: Piloto")
         for x in self.rank:
-            print("{} - {}: {} con la {}".format(i, x.time_track, x.rider.name, x.bike.brand))
+            print("{} - {}: {} con la {}".format(i, round(x.time_track,5), x.rider.name, x.bike.brand + " " + x.bike.model))
+            i += 1
+        print()
+
+    def print_ranking_lap(self):
+        i = 1
+        print("Posicion - Tiempo de Vuelta: Piloto")
+        for x in self.rank:
+            print("{} - {}: {} con la {}".format(i, round(x.time_lap,5), x.rider.name, x.bike.brand + " " + x.bike.model))
+            x.time_lap = 0
             i += 1
         print()
 
