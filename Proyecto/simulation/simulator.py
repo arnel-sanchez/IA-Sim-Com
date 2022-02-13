@@ -29,6 +29,7 @@ class Simulator:
                         elif race.agents[i].shot_down == -1:
                             remove_agents.add(race.agents[i - 1])
                 for x in remove_agents:
+                    print(x)
                     race.agents.remove(x)
                 old_weather = race.environment.weather
                 race.environment.change_weather_params()
