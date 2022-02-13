@@ -44,7 +44,6 @@
     <Compile Include="test16.py" />
     <Compile Include="test17.py" />
     <Compile Include="test18.py" />
-    <Compile Include="test19.py" />
     <Compile Include="test2.py" />
     <Compile Include="test3.py" />
     <Compile Include="test4.py" />
