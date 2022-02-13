@@ -41,7 +41,7 @@ class Race:
     def print_ranking(self):
         i = 1
         for x in self.rank:
-            print("{}: {}".format(i, x.rider.name))
+            print("{} - {}: {} con la {}".format(i, x.time_track, x.rider.name, x.bike.brand))
             i += 1
         print()
 

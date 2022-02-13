@@ -27,28 +27,46 @@
     <Compile Include="bike.py" />
     <Compile Include="race.py" />
     <Compile Include="rider.py" />
-    <Compile Include="SetOffClasses\Bikes\aprilia.py" />
-    <Compile Include="SetOffClasses\Bikes\ducati.py" />
-    <Compile Include="SetOffClasses\Bikes\honda.py" />
-    <Compile Include="SetOffClasses\Bikes\ktm.py" />
-    <Compile Include="SetOffClasses\Bikes\suzuki.py" />
-    <Compile Include="SetOffClasses\Bikes\yamaha.py" />
-    <Compile Include="SetOffClasses\Riders\aleix_espargaro.py" />
-    <Compile Include="SetOffClasses\Riders\brad_binder.py" />
-    <Compile Include="SetOffClasses\Riders\fabio_quartararo.py" />
-    <Compile Include="SetOffClasses\Riders\joan_mir.py" />
-    <Compile Include="SetOffClasses\Riders\marc_marquez.py" />
-    <Compile Include="SetOffClasses\Riders\pecco_bagnaia.py" />
-    <Compile Include="SetOffClasses\Tracks\misano.py" />
+    <Compile Include="set_off_classes\bikes\aprilia.py" />
+    <Compile Include="set_off_classes\bikes\ducati.py" />
+    <Compile Include="set_off_classes\bikes\honda.py" />
+    <Compile Include="set_off_classes\bikes\ktm.py" />
+    <Compile Include="set_off_classes\bikes\suzuki.py" />
+    <Compile Include="set_off_classes\bikes\yamaha.py" />
+    <Compile Include="set_off_classes\riders\aleix_espargaro.py" />
+    <Compile Include="set_off_classes\riders\brad_binder.py" />
+    <Compile Include="set_off_classes\riders\fabio_quartararo.py" />
+    <Compile Include="set_off_classes\riders\joan_mir.py" />
+    <Compile Include="set_off_classes\riders\marc_marquez.py" />
+    <Compile Include="set_off_classes\riders\pecco_bagnaia.py" />
+    <Compile Include="set_off_classes\tracks\misano.py" />
     <Compile Include="simulator.py" />
     <Compile Include="track.py" />
     <Compile Include="weather.py" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="SetOffClasses\" />
-    <Folder Include="SetOffClasses\Bikes\" />
-    <Folder Include="SetOffClasses\Riders\" />
-    <Folder Include="SetOffClasses\Tracks\" />
+    <Folder Include="set_off_classes\" />
+    <Folder Include="set_off_classes\bikes\" />
+    <Folder Include="set_off_classes\bikes\__pycache__\" />
+    <Folder Include="set_off_classes\riders\" />
+    <Folder Include="set_off_classes\riders\__pycache__\" />
+    <Folder Include="set_off_classes\tracks\" />
+    <Folder Include="set_off_classes\tracks\__pycache__\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="set_off_classes\bikes\__pycache__\aprilia.cpython-39.pyc" />
+    <Content Include="set_off_classes\bikes\__pycache__\ducati.cpython-39.pyc" />
+    <Content Include="set_off_classes\bikes\__pycache__\honda.cpython-39.pyc" />
+    <Content Include="set_off_classes\bikes\__pycache__\ktm.cpython-39.pyc" />
+    <Content Include="set_off_classes\bikes\__pycache__\suzuki.cpython-39.pyc" />
+    <Content Include="set_off_classes\bikes\__pycache__\yamaha.cpython-39.pyc" />
+    <Content Include="set_off_classes\riders\__pycache__\aleix_espargaro.cpython-39.pyc" />
+    <Content Include="set_off_classes\riders\__pycache__\brad_binder.cpython-39.pyc" />
+    <Content Include="set_off_classes\riders\__pycache__\fabio_quartararo.cpython-39.pyc" />
+    <Content Include="set_off_classes\riders\__pycache__\joan_mir.cpython-39.pyc" />
+    <Content Include="set_off_classes\riders\__pycache__\marc_marquez.cpython-39.pyc" />
+    <Content Include="set_off_classes\riders\__pycache__\pecco_bagnaia.cpython-39.pyc" />
+    <Content Include="set_off_classes\tracks\__pycache__\misano.cpython-39.pyc" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
