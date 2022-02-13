@@ -1,6 +1,5 @@
 from simulation.bike import Bike
 
-
 class Rider:
     def __init__(self, name, cornering, step_by_line, probability_of_falling_off_the_bike = 1, aggressiveness = 1, bike = None, independence = 1):
         self.name = name

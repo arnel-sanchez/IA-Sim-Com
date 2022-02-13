@@ -1,5 +1,6 @@
 from math import pow, sqrt
 from enum import Enum
+from random import normalvariate
 
 from simulation.rider import Rider
 from simulation.bike import Bike
@@ -531,7 +532,7 @@ class Agent:
                 self.rider.probability_of_falling_off_the_bike += 0.001 * weather.wind_intensity / 4
 
     def select_action(self, section, weather):
-        prob = race.continuous_variable_generator()
+        prob = self.continuous_variable_generator()
         if not self.flag_action or self.rider.independence > prob:
             edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
             ans = call_ai("action.py")
@@ -553,7 +554,7 @@ class Agent:
                 return AgentActions(evaluation)
 
     def select_acceleration(self, section, race, weather, action):
-        prob = race.continuous_variable_generator()
+        prob = self.continuous_variable_generator()
         if not self.flag_acceleration or self.rider.independence > prob:
             max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, section[2]), section[1])
             self.acceleration = acceleration(max_acceleration, weather, section, self.bike, self.rider)
@@ -656,6 +657,8 @@ class Agent:
     def calc_max_acceleration(self, max_speed, length):
         return (pow(max_speed/3.6, 2) - pow(self.speed/3.6, 2))/(2*length)
 
+    def continuous_variable_generator(self):
+        return normalvariate(0.5, 0.16)
 
 class AgentActions(Enum):
     SpeedUp = 0
