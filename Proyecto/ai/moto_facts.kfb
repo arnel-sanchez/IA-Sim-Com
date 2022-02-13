@@ -2,5 +2,5 @@
 
 rainy(True)
 humidity(False)
-windy(False)
-wind_direction(2)
+windy(True)
+wind_direction(1)

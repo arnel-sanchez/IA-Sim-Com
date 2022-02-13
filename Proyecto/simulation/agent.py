@@ -581,7 +581,7 @@ class Agent:
             return False
 
         if section[4] == TrackType.Straight:
-            if action.value >= 3 or action.value <= 5 or action.value >= 9 or action.value <= 11 or action.value >= 15 or action.value <= 17 or action.value >= 21 or action.value <= 23 or action.value >= 27 or action.value <= 29 or action.value >= 33 or action.value <= 35:
+            if (action.value >= 3 and action.value <= 5) or (action.value >= 9 and action.value <= 11) or (action.value >= 15 and action.value <= 17) or (action.value >= 21 and action.value <= 23) or (action.value >= 27 and action.value <= 29) or (action.value >= 33 and action.value <= 35):
                 print("El piloto {} ha doblado en plena recta y se ha ido al suelo".format(self.rider.name))
                 return False
         elif section[4] == TrackType.Curve:

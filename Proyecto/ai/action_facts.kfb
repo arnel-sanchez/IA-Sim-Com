@@ -2,6 +2,6 @@
 
 speed(3)
 curve(False)
-tires(True)
-rainy(False)
+tires(False)
+rainy(True)
 humidity(False)
