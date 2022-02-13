@@ -7,4 +7,4 @@ path[1]=dirname(SCRIPT_DIR)
 from main import main
 
 if __name__ == '__main__':
-    main("Prueba9, #Error,No hay ninguna variable con este nombre accesible desde este ámbito.pys")
+    main("Prueba9, #Error,No hay ninguna variable con este nombre accesible desde este ambito.pys")

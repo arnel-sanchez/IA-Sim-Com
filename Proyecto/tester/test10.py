@@ -7,4 +7,4 @@ path[1]=dirname(SCRIPT_DIR)
 from main import main
 
 if __name__ == '__main__':
-    main("Prueba10,#Error,No se puede operar aritméticamente con tokens que no sean de tipo número.pys")
+    main("Prueba10,#Error,No se puede operar aritmeticamente con tokens que no sean de tipo numero.pys")

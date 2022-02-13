@@ -7,4 +7,4 @@ path[1]=dirname(SCRIPT_DIR)
 from main import main
 
 if __name__ == '__main__':
-    main("Prueba17,#Error,No es válido definir un método con este nombre en este contexto.pys")
+    main("Prueba17,#Error,No es valido definir un metodo con este nombre en este contexto.pys")
