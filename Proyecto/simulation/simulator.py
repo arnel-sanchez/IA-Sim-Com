@@ -5,29 +5,29 @@ class Simulator:
     def start(self, race: Race):
         print("\nInicio de la carrera\n")
         while True:
-            remove_agents = []
+            remove_agents = set()
             for section in race.environment.track.sections:
                 for i in range(0, len(race.agents)):
                     if i == 0:
                         if not race.agents[i].overcome_an_obstacle(section, race, race.environment.weather, None,
                                                                    race.agents[i + 1]):
-                            remove_agents.append(race.agents[i])
+                            remove_agents.add(race.agents[i])
                         if race.agents[i].shot_down == 1:
-                            remove_agents.append(race.agents[i + 1])
+                            remove_agents.add(race.agents[i + 1])
                     elif i == len(race.agents)-1:
                         if not race.agents[i].overcome_an_obstacle(section, race, race.environment.weather,
                                                                    race.agents[i - 1], None):
-                            remove_agents.append(race.agents[i])
+                            remove_agents.add(race.agents[i])
                         if race.agents[i].shot_down == -1:
-                            remove_agents.append(race.agents[i - 1])
+                            remove_agents.add(race.agents[i - 1])
                     else:
                         if not race.agents[i].overcome_an_obstacle(section, race, race.environment.weather,
                                                                    race.agents[i - 1], race.agents[i + 1]):
-                            remove_agents.append(race.agents[i])
+                            remove_agents.add(race.agents[i])
                         if race.agents[i].shot_down == 1:
-                            remove_agents.append(race.agents[i + 1])
+                            remove_agents.add(race.agents[i + 1])
                         elif race.agents[i].shot_down == -1:
-                            remove_agents.append(race.agents[i - 1])
+                            remove_agents.add(race.agents[i - 1])
                 for x in remove_agents:
                     race.agents.remove(x)
                 old_weather = race.environment.weather
