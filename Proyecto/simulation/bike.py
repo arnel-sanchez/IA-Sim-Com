@@ -24,8 +24,8 @@ class Bike:
         self.brakes = brakes
         self.chassis_stiffness = chassis_stiffness
         self.acceleration = 69.444
-        self.probability_of_the_bike_breaking_down = probability_of_the_bike_breaking_down / 1000000
-        self.probability_of_exploding_tires = probability_of_exploding_tires / 1000000
+        self.probability_of_the_bike_breaking_down = probability_of_the_bike_breaking_down / 10000
+        self.probability_of_exploding_tires = probability_of_exploding_tires / 10000
         self.node = node
 
     def select_configuration(self, environment: Environment):

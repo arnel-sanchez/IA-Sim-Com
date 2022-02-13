@@ -7,9 +7,9 @@ class Rider:
         self.name = name
         self.cornering = cornering
         self.step_by_line = step_by_line
-        self.probability_of_falling_off_the_bike = probability_of_falling_off_the_bike / 1000000
-        self.independence = independence / 1000000
-        self.expertise = expertise / 1000000
+        self.probability_of_falling_off_the_bike = probability_of_falling_off_the_bike / 10000
+        self.independence = independence / 10000
+        self.expertise = expertise / 10000
         self.aggressiveness = aggressiveness / 1000
         self.bike = bike
 
