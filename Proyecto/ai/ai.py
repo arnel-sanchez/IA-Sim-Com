@@ -18,6 +18,7 @@ def call_subprocess(python: str, script: str):
     ans = ans.stdout.decode("utf-8")
     if ans.__contains__("not found"):
         raise Exception
+    print(ans)
     ans = ans[-2] if script.__contains__('3') else ans[-3]
     return int(ans)
 
