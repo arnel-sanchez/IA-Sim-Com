@@ -22,4 +22,7 @@ jobs:
     - name: Run Project
       run: cd Proyecto && python main.py
     - name: Run Test
-      run: cd ./Proyecto/tester && python test1.py
+      run: |
+        cd ./Proyecto/tester
+        python test1.py
+        python test2.py
