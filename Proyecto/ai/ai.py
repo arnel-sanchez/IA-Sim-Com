@@ -2,15 +2,17 @@ from subprocess import run, PIPE, STDOUT
 from sys import path
 from os.path import exists
 from shutil import rmtree
-
 from pyke import knowledge_engine
 
 
-def call_ai(script: str):
-    ans = run(script, stdout=PIPE, stderr=STDOUT)
-    ans = ans.stdout.decode("utf-8")
-    print(ans)
-    return int(ans[-3])
+def call_ai(script: str, python: str = "python "):
+    try:
+        ans = run(python + path[0] + "/ai/" + script, shell=True, stdout=PIPE, stderr=STDOUT)
+        ans = ans.stdout.decode("utf-8")
+        ans = int(ans[-3])
+    except Exception:
+        ans = call_ai(script, "python3 ")
+    return ans
 
 
 def edit_moto(environment):
