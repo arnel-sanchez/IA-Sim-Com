@@ -18,9 +18,7 @@ def call_subprocess(python: str, script: str):
     ans = ans.stdout.decode("utf-8")
     if ans.__contains__("not found"):
         raise Exception
-    print(ans)
     ans = ans.replace("\n", "").replace("\r", "")
-    print(ans)
     return int(ans[-1])
 
 
