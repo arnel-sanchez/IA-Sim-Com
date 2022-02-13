@@ -3,5 +3,5 @@
 speed(3)
 section(Straight)
 slick_tires(True)
-rainy(Sunny)
+rainy(False)
 high_humidity(False)

@@ -87,7 +87,7 @@ def edit_action(speed, bike_max_speed, section_max_speed, section_type, tires, w
     facts.write("speed({})\n".format(speed_cmp))
     facts.write("section({})\n".format(section_type))
     facts.write("slick_tires({})\n".format(True if tires.__contains__("Slick") else False))
-    facts.write("rainy({})\n".format(weather.weather_status.name))
+    facts.write("rainy({})\n".format(True if weather.weather_status.name == "Rainy" else False))
     facts.write("high_humidity({})\n".format(True if weather.humidity > 6 else False))
     facts.close()
 
