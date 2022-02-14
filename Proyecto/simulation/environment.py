@@ -18,11 +18,11 @@ class Environment:
 
     def change_weather_params(self):
         if self.weather.weather_status is WeatherStatus.Rainy:
-            self.weather.increase_humidity(5)
-            self.weather.decrease_temperature(5)
+            self.weather.increase_humidity(1)
+            self.weather.decrease_temperature(1)
         elif self.weather.weather_status is WeatherStatus.Sunny:
-            self.weather.decrease_humidity(5)
-            self.weather.increase_temperature(5)
+            self.weather.decrease_humidity(1)
+            self.weather.increase_temperature(1)
         visibility = int(normalvariate(5, 2))
         wind_intensity = int(normalvariate(5, 2))
         self.weather.change_visibility(visibility)
