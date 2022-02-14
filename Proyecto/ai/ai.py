@@ -103,19 +103,22 @@ def action():
     print(sum(actions))
 
 
-def acceleration(max_acceleration, weather, section, bike, rider):
-    aggressiveness = rider.aggressiveness
-    new_acceleration = max_acceleration
+def acceleration(max_acceleration, race, section, agent):
+    new_acceleration = max_acceleration / 5
+    weather = race.environment.weather
     weather_status = [weather.weather_status == 1,
                       3 < weather.humidity < 7,
                       3 < weather.temperature < 7,
                       3 < weather.visibility < 7,
                       3 < weather.wind_intensity < 7]
+    rider = agent.rider
+    aggressiveness = rider.aggressiveness
     for w in weather_status:
         if not w:
             new_acceleration -= random(1)
         else:
             aggressiveness += random(0.01)
+    bike = agent.bike
     if section[4].name == "Straight":
         if bike.brakes < 8 and bike.chassis_stiffness < 8:
             new_acceleration -= random(1)
@@ -134,8 +137,26 @@ def acceleration(max_acceleration, weather, section, bike, rider):
             new_acceleration -= random(1)
         else:
             aggressiveness += random(0.03)
-    return max_acceleration if aggressiveness > random(1) else new_acceleration
+    for i in range(len(race.agents)):
+        agent = race.agents[i]
+        if agent.rider == rider:
+            if i > 0:
+                if agent.time_track - race.agents[i - 1].time_track < 1:
+                    aggressiveness += random(0.1)
+            elif i < len(race.agents) - 1:
+                dif = agent.time_track - race.agents[i + 1].time_track
+                if dif > 4:
+                    new_acceleration -= random(1)
+                else:
+                    aggressiveness += random(0.1)
+    if race.current_lap == 0:
+        new_acceleration += random(1)
+    elif race.current_lap == race.laps - 1:
+        aggressiveness += random(0.1)
+    if len(race.agents) > 1 and aggressiveness > random(1):
+        new_acceleration += random(new_acceleration / 5)
+    return new_acceleration
 
 
 def random(n: float):
-    return uniform(0, n)
+    return uniform(0.001, n)

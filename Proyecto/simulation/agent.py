@@ -608,13 +608,15 @@ class Agent:
             else:
                 return AgentActions(evaluation)
 
-    def select_acceleration(self, section, race, weather, action):
+    def select_acceleration(self, section, race, action):
         prob = continuous_variable_generator()
         if not self.flag_acceleration or self.rider.independence > prob:
             max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, section[2]), section[1])
-            self.acceleration = acceleration(max_acceleration, weather, section, self.bike, self.rider)
+            self.acceleration = acceleration(max_acceleration, race, section, self)
             if self.acceleration < 0:
-                if action.name.__contains__("SpeedUp"):
+                if race.current_lap == 0 and section[0] == "recta1":
+                    self.acceleration = 0.1
+                elif action.name.__contains__("SpeedUp"):
                     self.acceleration = 0
         else:
             self.node.refreshContext(self.__dict__)
@@ -691,7 +693,7 @@ class Agent:
 
     def overcome_an_obstacle(self, section, race, weather, forward_agent, behind_agent):
         action = self.select_action(section, weather)
-        self.select_acceleration(section, race, weather, action)
+        self.select_acceleration(section, race, action)
         self.calc_final_speed(section[2], section[1])
         if not self.status_analysis(section, race, action, forward_agent, behind_agent):
             return False
@@ -719,7 +721,4 @@ class Agent:
         return (pow(max_speed / 3.6, 2) - pow(self.speed / 3.6, 2)) / (2 * length)
 
     def is_near(self, agent):
-        if self.time_track - agent.time_track <= 4:
-            return True
-        else:
-            return False
+        return self.time_track - agent.time_track < 5

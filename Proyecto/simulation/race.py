@@ -1,6 +1,26 @@
 from simulation.environment import Environment
 
 
+def number_digits(number):
+    return len(str(number))
+
+
+def seconds_to_minutes(seconds):
+    seconds = round(seconds, 10)
+    minutes = int(seconds / 60)
+    seconds -= minutes * 60
+    seconds = round(seconds, 10)
+    if seconds < 10:
+        while number_digits(seconds) < 12:
+            seconds = str(seconds) + "0"
+        time = f"{minutes:02d}:0{seconds}"
+    else:
+        while number_digits(seconds) < 13:
+            seconds = str(seconds) + "0"
+        time = f"{minutes:02d}:{seconds}"
+    return time
+
+
 class Race:
     def __init__(self, environment: Environment, agents, laps):
         self.environment = environment
@@ -41,15 +61,16 @@ class Race:
 
     def print_ranking(self):
         i = 1
-        print("Posicion - Tiempo de Carrera: Piloto")
+        print("Posicion - Tiempo de Carrera - Tiempo de Vuelta: Piloto")
         for x in self.rank:
             spaces = ""
-            if 8 - self.digits_of_a_number(i) > 0:
-                for j in range(8 - self.digits_of_a_number(i)):
+            if 8 - number_digits(i) > 0:
+                for j in range(8 - number_digits(i)):
                     spaces += " "
             print(
-                spaces + "{} - {}: {} con la {}".format(i, self.convert_seconds_to_minutes(x.time_track), x.rider.name,
-                                                        x.bike.brand + " " + x.bike.model))
+                spaces + "{} - {}  - {}: {} con la {}".format(i, seconds_to_minutes(x.time_track),
+                                                              seconds_to_minutes(x.time_lap),
+                                                              x.rider.name, x.bike.brand + " " + x.bike.model))
             i += 1
         print()
 
@@ -58,11 +79,12 @@ class Race:
         print("Posicion - Tiempo Acumulado - Tiempo de Vuelta: Piloto")
         for x in self.rank:
             spaces = ""
-            if 8 - self.digits_of_a_number(i) > 0:
-                for j in range(8 - self.digits_of_a_number(i)):
+            if 8 - number_digits(i) > 0:
+                for j in range(8 - number_digits(i)):
                     spaces += " "
-            print(spaces + "{} - {} - {}: {} con la {}".format(i, self.convert_seconds_to_minutes(x.time_track), self.convert_seconds_to_minutes(x.time_lap), x.rider.name,
-                                                          x.bike.brand + " " + x.bike.model))
+            print(spaces + "{} - {} - {}: {} con la {}".format(i, seconds_to_minutes(x.time_track),
+                                                               seconds_to_minutes(x.time_lap),
+                                                               x.rider.name, x.bike.brand + " " + x.bike.model))
             x.time_lap = 0
             i += 1
         print()
@@ -74,17 +96,3 @@ class Race:
             self.agents[i].distance_to_nearest_forward = self.agents[i - 1].distance_to_nearest_behind
             self.agents[i].distance_to_nearest_behind = self.agents[i].time_track - self.agents[i + 1].time_track
             self.agents[i + 1].distance_to_nearest_forward = self.agents[i].distance_to_nearest_behind
-
-    def digits_of_a_number(self, number):
-        return len(str(number))
-
-    def convert_seconds_to_minutes(self, seconds):
-        seconds = round(seconds, 10)
-        minutes = int(seconds / 60)
-        seconds -= minutes * 60
-        seconds = round(seconds, 10)
-        if seconds < 10:
-            return f"{minutes:02d}:0{seconds}"
-        if self.digits_of_a_number(seconds) < 13:
-            seconds = str(seconds) + "0"
-        return f"{minutes:02d}:{seconds}"

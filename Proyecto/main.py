@@ -1,4 +1,5 @@
 from sys import path
+from random import shuffle
 
 from compilation.tokenizer import Tokenizer
 from compilation.utils import split_lines
@@ -162,7 +163,8 @@ def simulation(agents_lists):
         rider = Rider(bi.name, bi.cornering, bi.step_by_line)
         bike = Bike(k.brand, k.model, k.max_speed, k.weight, None)
         agents.append(Agent(rider, bike, False, False, False))
-        
+
+    shuffle(agents)
     race = Race(environment, agents, 5)
     s = Simulator()
     s.start(race)
