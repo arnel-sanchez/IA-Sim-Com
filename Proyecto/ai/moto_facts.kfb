@@ -1,6 +1,6 @@
 # moto_facts.kfb
 
-weather(Rainy)
-humidity(5)
-wind_intensity(4)
-wind_direction(2)
+weather(Sunny)
+humidity(3)
+wind_intensity(6)
+wind_direction(1)

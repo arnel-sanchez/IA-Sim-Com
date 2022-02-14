@@ -113,25 +113,25 @@ def acceleration(max_acceleration, weather, section, bike, rider):
                       3 < weather.wind_intensity < 7]
     for w in weather_status:
         if not w:
-            new_acceleration -= random(0.1)
+            new_acceleration -= random(1)
         else:
             aggressiveness += random(0.01)
     if section[4].name == "Straight":
         if bike.brakes < 8 and bike.chassis_stiffness < 8:
-            new_acceleration -= random(0.2)
+            new_acceleration -= random(1)
         else:
-            aggressiveness += random(0.02)
+            aggressiveness += random(0.06)
         if rider.step_by_line < 8:
-            new_acceleration -= random(0.3)
+            new_acceleration -= random(1)
         else:
             aggressiveness += random(0.03)
     else:
         if bike.brakes != 5 and bike.chassis_stiffness != 5:
-            new_acceleration -= random(0.2)
+            new_acceleration -= random(1)
         else:
             aggressiveness += random(0.02)
         if rider.cornering < 8:
-            new_acceleration -= random(0.3)
+            new_acceleration -= random(1)
         else:
             aggressiveness += random(0.03)
     return max_acceleration if aggressiveness > random(1) else new_acceleration

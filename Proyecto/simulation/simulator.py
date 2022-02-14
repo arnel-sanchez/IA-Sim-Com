@@ -3,6 +3,8 @@ from simulation.race import Race
 
 class Simulator:
     def start(self, race: Race):
+        print("\nPista: {}".format(race.environment.track.name))
+        print("\nClima: {}".format(race.environment.weather.weather_status))
         print("\nPilotos:")
         for i in range(len(race.rank)):
             print("{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
