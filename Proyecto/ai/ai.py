@@ -105,7 +105,7 @@ def action():
 
 def acceleration(max_acceleration, weather, section, bike, rider):
     aggressiveness = rider.aggressiveness
-    new_acceleration = max_acceleration
+    new_acceleration = max_acceleration / 3
     weather_status = [weather.weather_status == 1,
                       3 < weather.humidity < 7,
                       3 < weather.temperature < 7,
@@ -134,7 +134,7 @@ def acceleration(max_acceleration, weather, section, bike, rider):
             new_acceleration -= random(1)
         else:
             aggressiveness += random(0.03)
-    return max_acceleration if aggressiveness > random(1) else new_acceleration
+    return new_acceleration + random(new_acceleration / 2) if aggressiveness > random(1) else new_acceleration
 
 
 def random(n: float):

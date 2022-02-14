@@ -83,6 +83,6 @@ class Race:
         seconds = round(seconds, 10)
         if seconds < 10:
             return f"{minutes:02d}:0{seconds}"
-        if self.digits_of_a_number(seconds) < 13:
+        while self.digits_of_a_number(seconds) < 13:
             seconds = str(seconds) + "0"
         return f"{minutes:02d}:{seconds}"

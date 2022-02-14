@@ -3,13 +3,7 @@ from simulation.race import Race
 
 class Simulator:
     def start(self, race: Race):
-        print("\nPista: {}".format(race.environment.track.name))
-        print("\nClima: {}".format(race.environment.weather.weather_status))
-        print("\nPilotos:")
-        for i in range(len(race.rank)):
-            print("{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
-                                             race.rank[i].bike.brand + " " + race.rank[i].bike.model))
-        print("\nInicio de la carrera\n")
+        self.print_race(race)
         while True:
             for section in race.environment.track.sections:
                 remove_agents = set()
@@ -57,3 +51,19 @@ class Simulator:
                 if len(race.agents) > 1:
                     race.ranking()
                 break
+
+    def print_race(self, race: Race):
+        print("\nPista: {}".format(race.environment.track.name))
+        weather = ["Soleado", "Nublado", "Lluvioso"]
+        print("\nClima: {}".format(weather[race.environment.weather.weather_status.value]))
+        print("Humedad: {}".format("Alta" if race.environment.weather.humidity > 6
+                                   else "Baja" if race.environment.weather.humidity < 4 else "Media"))
+        print("Temperatura: {}".format("Alta" if race.environment.weather.humidity > 6
+                                       else "Baja" if race.environment.weather.humidity < 4 else "Media"))
+        print("Viento: {}".format("Fuerte" if race.environment.weather.humidity > 6
+                                  else "Debil" if race.environment.weather.humidity < 4 else "Medio"))
+        print("\nPilotos:")
+        for i in range(len(race.rank)):
+            print("{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
+                                             race.rank[i].bike.brand + " " + race.rank[i].bike.model))
+        print("\nInicio de la carrera\n")
