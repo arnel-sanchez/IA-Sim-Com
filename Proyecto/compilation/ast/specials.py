@@ -40,7 +40,7 @@ class D_Assign(Statement):
             return typeExpression
         if typeExpression == type_:
             return True
-        return CheckTypesError("the induced type of the expression is different from the type of the variable", "",
+        return CheckTypesError("The induced type of the expression is different from the type of the variable", "",
                                self.token.line, self.token.column)
 
     def eval(self, context: Context):
@@ -70,7 +70,7 @@ class TypeSpecial(Statement):
         if isinstance(self, RiderNode):
             for var in self.variables:
                 if not isinstance(var.op, Assign):
-                    return IncorrectCallError("in this context they can only be redefined with the equal operator", "",
+                    return IncorrectCallError("In this context they can only be redefined with the equal operator", "",
                                               self.token.line, self.token.column)
                 keys = list(self.nuevocontext.variables.keys())
                 if keys.count(var.id) == 0 or (var.id != "cornering" and var.id != "step_by_line"):
@@ -85,7 +85,7 @@ class TypeSpecial(Statement):
                     return validationexpr
         else:
             if len(self.variables) > 0:
-                return IncorrectCallError("within a bike type you can not redefine variables", "", self.token.line,
+                return IncorrectCallError("Within a bike type you can not redefine variables", "", self.token.line,
                                           self.token.column)
         # Hay que agregarle las variables de las motos o los pilotos
         for function in self.funciones:
@@ -104,7 +104,7 @@ class TypeSpecial(Statement):
                         "the method was already defined or it is not valid to define a method with this name in this context",
                         "", self.token.line, self.token.column)
             if len(function.args) > 0:
-                return IncorrectCallError("methods defined within a type must have no arguments", "", self.token.line,
+                return IncorrectCallError("Methods defined within a type must have no arguments", "", self.token.line,
                                           self.token.column)
             validationfun = function.validate(self.nuevocontext)
             if not isinstance(validationfun, bool):
@@ -120,7 +120,7 @@ class TypeSpecial(Statement):
             if ((function.idfun == "select_configuration" or function.idfun == "select_acceleration") and normaliza(
                     function.typefun) != "void") or (
                     function.idfun == "select_action" and normaliza(function.typefun) != "int"):
-                return CheckTypesError("error in the return value of the function", "", self.token.line,
+                return CheckTypesError("Error in the return value of the function", "", self.token.line,
                                        self.token.column)
             checktypefunction = function.checktype(context)
             if isinstance(checktypefunction, CheckTypesError):
@@ -133,7 +133,7 @@ class TypeSpecial(Statement):
             if isinstance(evalvar, RuntimeError):
                 return evalvar
             if evalvar > 10:
-                return RuntimeError("this variable must be less than or equal to 10", "", self.token.line,
+                return RuntimeError("This variable must be less than or equal to 10", "", self.token.line,
                                     self.token.column)
             if var.id == "cornering":
                 self.varsforRiders[3][2] = evalvar

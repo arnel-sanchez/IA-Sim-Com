@@ -23,7 +23,7 @@ class Assign(Node):
         if checkexpr == normaliza(context.gettypevar(self.node_id)):
             return True
         else:
-            return CheckTypesError("the expression to be assigned is not of the same type as the variable", "",
+            return CheckTypesError("The expression to be assigned is not of the same type as the variable", "",
                                    self.token.line, self.token.column)
 
     def eval(self, context: Context):
@@ -51,7 +51,7 @@ class OpAs(Assign):
             if checkexpr == "int":
                 return True
             else:
-                return CheckTypesError("the induced type of the expression is different from the type of the variable",
+                return CheckTypesError("The induced type of the expression is different from the type of the variable",
                                        "", self.token.line, self.token.column)
         elif normaliza(context.gettypevar(self.node_id)) == "double":
             if checkexpr == "int" or checkexpr == "double":
@@ -77,7 +77,7 @@ class AddAs(OpAs):
 
     def eval(self, context: Context):
         if context.variables[self.node_id].value is None:
-            return RuntimeError("local variable {} referenced before assignment".format(self.node_id), "",
+            return RuntimeError("Local variable {} referenced before assignment".format(self.node_id), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
         if isinstance(evalexpression, RuntimeError):
@@ -107,7 +107,7 @@ class SubAs(ArAs):
 
     def eval(self, context: Context):
         if context.variables[self.node_id].value is None:
-            return RuntimeError("local variable {} referenced before assignment".format(self.node_id), "",
+            return RuntimeError("Local variable {} referenced before assignment".format(self.node_id), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
         if isinstance(evalexpression, RuntimeError):
@@ -128,7 +128,7 @@ class MulAs(OpAs):
 
     def eval(self, context: Context):
         if context.variables[self.node_id].value is None:
-            return RuntimeError("local variable {} referenced before assignment".format(self.node_id), "",
+            return RuntimeError("Local variable {} referenced before assignment".format(self.node_id), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
         if isinstance(evalexpression, RuntimeError):
@@ -149,13 +149,13 @@ class DivAs(ArAs):
 
     def eval(self, context: Context):
         if context.variables[self.node_id].value is None:
-            return RuntimeError("local variable {} referenced before assignment".format(self.node_id), "",
+            return RuntimeError("Local variable {} referenced before assignment".format(self.node_id), "",
                                 self.token.line, self.token.column)
         nododDivision = self.expression.eval(context)
         if isinstance(nododDivision, RuntimeError):
             return nododDivision
         if nododDivision == 0:
-            return RuntimeError("division by zero", "", self.token.line, self.token.column)
+            return RuntimeError("Division by zero", "", self.token.line, self.token.column)
         elif context.variables[self.node_id].typevar == VariableType.INT:
             return int(context.variables[self.node_id].value / nododDivision)
         else:
@@ -172,13 +172,13 @@ class ModAs(DivAs):
 
     def eval(self, context: Context):
         if context.variables[self.node_id].value is None:
-            return RuntimeError("local variable {} referenced before assignment".format(self.node_id), "",
+            return RuntimeError("Local variable {} referenced before assignment".format(self.node_id), "",
                                 self.token.line, self.token.column)
         nododDivision = self.expression.eval(context)
         if isinstance(nododDivision, RuntimeError):
             return nododDivision
         if nododDivision == 0:
-            return RuntimeError("division by zero", "", self.token.line, self.token.column)
+            return RuntimeError("Division by zero", "", self.token.line, self.token.column)
         elif context.variables[self.node_id].typevar == VariableType.INT:
             return int(context.variables[self.node_id].value % nododDivision)
         else:
@@ -204,14 +204,14 @@ class ExpAs(ArAs):
             if checkexpr == "int":
                 return True
             else:
-                return CheckTypesError("the exponent must be an integer", "", self.token.line, self.token.column)
+                return CheckTypesError("The exponent must be an integer", "", self.token.line, self.token.column)
         else:
-            return CheckTypesError("incorrect variable type for power operation", "", self.token.line,
+            return CheckTypesError("Incorrect variable type for power operation", "", self.token.line,
                                    self.token.column)
 
     def eval(self, context: Context):
         if context.variables[self.node_id].value is None:
-            return RuntimeError("local variable {} referenced before assignment".format(self.node_id), "",
+            return RuntimeError("Local variable {} referenced before assignment".format(self.node_id), "",
                                 self.token.line, self.token.column)
         exponente = self.expression.eval(context)
         if isinstance(exponente, RuntimeError):
@@ -239,7 +239,7 @@ class BoolAs(OpAs):
         if checkexpr == normaliza(context.gettypevar(self.node_id)):
             return True
         else:
-            return CheckTypesError("the expression to be assigned is not of the same type as the variable", "",
+            return CheckTypesError("The expression to be assigned is not of the same type as the variable", "",
                                    self.token.line, self.token.column)
 
     @staticmethod
@@ -253,7 +253,7 @@ class AndAs(BoolAs):
 
     def eval(self, context: Context):
         if context.variables[self.node_id].value is None:
-            return RuntimeError("local variable {} referenced before assignment".format(self.node_id), "",
+            return RuntimeError("Local variable {} referenced before assignment".format(self.node_id), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
         if isinstance(evalexpression, RuntimeError):
@@ -271,7 +271,7 @@ class OrAs(BoolAs):
 
     def eval(self, context: Context):
         if context.variables[self.node_id].value is None:
-            return RuntimeError("local variable {} referenced before assignment".format(self.node_id), "",
+            return RuntimeError("Local variable {} referenced before assignment".format(self.node_id), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
         if isinstance(evalexpression, RuntimeError):
@@ -289,7 +289,7 @@ class XorAs(BoolAs):
 
     def eval(self, context: Context):
         if context.variables[self.node_id].value is None:
-            return RuntimeError("local variable {} referenced before assignment".format(self.node_id), "",
+            return RuntimeError("Local variable {} referenced before assignment".format(self.node_id), "",
                                 self.token.line, self.token.column)
         evalexpression = self.expression.eval(context)
         if isinstance(evalexpression, RuntimeError):

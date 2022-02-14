@@ -161,7 +161,7 @@ class DivOp(ArOp):
         if evaluatenoderight != 0:
             return evaluatenodeleft / evaluatenoderight
         else:
-            return RuntimeError("division by zero", "", self.token.line, self.token.column)
+            return RuntimeError("Division by zero", "", self.token.line, self.token.column)
 
     @staticmethod
     def type() -> str:
@@ -183,7 +183,7 @@ class ModOp(DivOp):
         if evaluatenoderight != 0:
             return evaluatenodeleft % evaluatenoderight
         else:
-            return RuntimeError("division by zero", "", self.token.line, self.token.column)
+            return RuntimeError("Division by zero", "", self.token.line, self.token.column)
 
     @staticmethod
     def type() -> str:

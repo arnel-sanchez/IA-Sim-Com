@@ -214,7 +214,7 @@ class FunCall(Node):
             if isinstance(typeExp, CheckTypesError):
                 return typeExp
             if typeExp != normaliza(definitionfuncion.nuevocontext.variables[keys[index]].typevar):
-                return CheckTypesError("the parameter entered is not of the expected type", "", self.token.line,
+                return CheckTypesError("The parameter entered is not of the expected type", "", self.token.line,
                                        self.token.column)  ##Anadir error (el parametro ingresado no es del tipo esperado)
             index += 1
         type_ = context.gettypefun(self.id)

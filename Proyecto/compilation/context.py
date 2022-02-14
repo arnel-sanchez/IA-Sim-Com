@@ -39,7 +39,7 @@ class Context:
             if self.variables[var].value is not None:
                 return self.variables[var].value
             else:
-                return RuntimeError("local variable {} referenced before assignment".format(var), "", token.line,
+                return RuntimeError("Local variable {} referenced before assignment".format(var), "", token.line,
                                     token.column)
         else:
             context = self.contextPadre
@@ -49,7 +49,7 @@ class Context:
                     if retorno is not None:
                         return retorno
                     else:
-                        return RuntimeError("local variable {} referenced before assignment".format(var), "",
+                        return RuntimeError("Local variable {} referenced before assignment".format(var), "",
                                             token.line, token.column)
                 context = context.padre
 
@@ -88,7 +88,7 @@ class Context:
                 if varContain != "NoEsta":
                     return True
                 context = context.contextPadre
-            return IncorrectCallError("there is no variable with this name accessible from this scope", "", token.line,
+            return IncorrectCallError("There is no variable with this name accessible from this scope", "", token.line,
                                       token.column)
 
     def check_fun(self, fun: str, args: int, token: Token):
@@ -97,7 +97,7 @@ class Context:
             if args == len(funContain.args):
                 return True
             else:
-                return IncorrectCallError("the number of parameters entered into the function is not correct", "",
+                return IncorrectCallError("The number of parameters entered into the function is not correct", "",
                                           token.line, token.column)
         else:
             context = self.contextPadre
@@ -107,16 +107,16 @@ class Context:
                     if args == len(funContain.args):
                         return True
                     else:
-                        return IncorrectCallError("the number of parameters entered into the function is not correct",
+                        return IncorrectCallError("The number of parameters entered into the function is not correct",
                                                   "", token.line, token.column)
                 context = context.contextPadre
-            return IncorrectCallError("there is no function with this name accessible from this scope", "", token.line,
+            return IncorrectCallError("There is no function with this name accessible from this scope", "", token.line,
                                       token.column)
 
     def define_fun(self, fun: str, node, token: Token):
         funContain = self.funciones.get(fun, "NoEsta")
         if funContain != "NoEsta":
-            return IncorrectCallError("a function with this name already exists in this context", "", token.line,
+            return IncorrectCallError("A function with this name already exists in this context", "", token.line,
                                       token.column)
         else:
             self.funciones.setdefault(fun, node)
@@ -125,7 +125,7 @@ class Context:
     def define_var(self, id_: str, var, token: Token):
         varContain = self.variables.get(id_, "NoEsta")
         if varContain != "NoEsta":
-            return IncorrectCallError("a variable with this name already exists in this context", "", token.line,
+            return IncorrectCallError("A variable with this name already exists in this context", "", token.line,
                                       token.column)
         else:
             self.variables.setdefault(id_, var)

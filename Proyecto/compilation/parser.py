@@ -362,7 +362,7 @@ class Parser:
                             try:
                                 self.estados.pop()
                             except Exception:
-                                self.error = UnbalancedBracketsError("unexpected end of region", "", line[self.i].line,
+                                self.error = UnbalancedBracketsError("Unexpected end of region", "", line[self.i].line,
                                                                      line[self.i].column)
                                 return False
                     self.EligeTipoDdeclaracion(termino, line[self.i], line)
@@ -397,11 +397,11 @@ class Parser:
                     return False
             else:
                 if self.estadoDAST==EstadoDAST.EnExpresionAssign:
-                      self.error=UnexpectedCharacterError("the line is incomplete", "", line[self.i-1].line, line[
+                      self.error=UnexpectedCharacterError("The line is incomplete", "", line[self.i-1].line, line[
                       self.i-1].column)
                       return False
                 elif not self.se_va_en_epsilon(termino):
-                      self.error=UnexpectedCharacterError("the line is incomplete", "", line[self.i-1].line, line[
+                      self.error=UnexpectedCharacterError("The line is incomplete", "", line[self.i-1].line, line[
                       self.i-1].column)
                       return False
 

@@ -73,7 +73,7 @@ def rain_2(rule, arg_patterns, arg_context):
                  patterns,
                  arg_patterns)):
         rule.rule_base.num_bc_rules_matched += 1
-        with engine.prove('moto_facts', 'rainy', context,
+        with engine.prove('moto_facts', 'weather', context,
                           (rule.pattern(0),)) \
           as gen_1:
           for x_1 in gen_1:

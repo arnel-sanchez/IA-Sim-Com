@@ -17,7 +17,7 @@ class Rel(BinOp):
             return checkexpr2
         if checkexpr1 == checkexpr2:
             return True
-        return CheckTypesError("cannot compare expressions with different types", "", -1, -1)
+        return CheckTypesError("Cannot compare expressions with different types", "", -1, -1)
 
     @staticmethod
     def type() -> str:

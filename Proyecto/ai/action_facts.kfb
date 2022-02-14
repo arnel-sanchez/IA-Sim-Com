@@ -1,7 +1,7 @@
 # action_facts.kfb
 
-speed(3)
+speed(1)
 section(Straight)
-slick_tires(True)
-rainy(False)
+slick_tires(False)
+rainy(True)
 high_humidity(False)

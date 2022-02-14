@@ -44,8 +44,10 @@ class Race:
             spaces = ""
             if 8 - self.digits_of_a_number(i) > 0:
                 for j in range(8 - self.digits_of_a_number(i)):
-                    spaces+=" "
-            print(spaces + "{} - {}: {} con la {}".format(i,self.convert_seconds_to_minutes(x.time_track), x.rider.name, x.bike.brand + " " + x.bike.model))
+                    spaces += " "
+            print(
+                spaces + "{} - {}: {} con la {}".format(i, self.convert_seconds_to_minutes(x.time_track), x.rider.name,
+                                                        x.bike.brand + " " + x.bike.model))
             i += 1
         print()
 
@@ -56,8 +58,9 @@ class Race:
             spaces = ""
             if 8 - self.digits_of_a_number(i) > 0:
                 for j in range(8 - self.digits_of_a_number(i)):
-                    spaces+=" "
-            print(spaces + "{} - {}: {} con la {}".format(i, self.convert_seconds_to_minutes(x.time_lap), x.rider.name, x.bike.brand + " " + x.bike.model))
+                    spaces += " "
+            print(spaces + "{} - {}: {} con la {}".format(i, self.convert_seconds_to_minutes(x.time_lap), x.rider.name,
+                                                          x.bike.brand + " " + x.bike.model))
             x.time_lap = 0
             i += 1
         print()
@@ -74,10 +77,10 @@ class Race:
         return len(str(number))
 
     def convert_seconds_to_minutes(self, seconds):
-        seconds = round(seconds,10)
-        minutes = int(seconds/60)
-        seconds -= minutes*60
-        seconds = round(seconds,10)
+        seconds = round(seconds, 10)
+        minutes = int(seconds / 60)
+        seconds -= minutes * 60
+        seconds = round(seconds, 10)
         if seconds < 10:
             return f"{minutes:02d}:0{seconds}"
         return f"{minutes:02d}:{seconds}"

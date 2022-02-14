@@ -3,6 +3,10 @@ from simulation.race import Race
 
 class Simulator:
     def start(self, race: Race):
+        print("\nPilotos:")
+        for i in range(len(race.rank)):
+            print("{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
+                                             race.rank[i].bike.brand + " " + race.rank[i].bike.model))
         print("\nInicio de la carrera\n")
         while True:
             for section in race.environment.track.sections:

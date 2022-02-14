@@ -239,7 +239,7 @@ class Redefinition(Statement):
         if varContain != "NoEsta":
             return True
         else:
-            return CheckTypesError("this variable cannot be modified from this context", "",
+            return CheckTypesError("This variable cannot be modified from this context", "",
                                    self.token.line, self.token.column)
         
 
@@ -251,7 +251,7 @@ class Redefinition(Statement):
         if isinstance(evaloper, RuntimeError):
             return evaloper
         if context.variables[self.id].value is None:
-            return RuntimeError("local variable {} referenced before assignment".format(self.id), "", self.token.line,
+            return RuntimeError("Local variable {} referenced before assignment".format(self.id), "", self.token.line,
                                     self.token.column)
         context.variables[self.id].value = evaloper
 
@@ -375,7 +375,7 @@ class Condition(Node):
                 if checkExpr1=="bool":                 
                   return True
                 else:
-                    return CheckTypesError("there is a condition that is not of the Boolean type", "",
+                    return CheckTypesError("There is a condition that is not of the Boolean type", "",
                                    self.token.line, self.token.column)
         else:
             checktypecomp = self.comparador.checktype(context)
