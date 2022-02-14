@@ -1,4 +1,4 @@
-from ai import action
+from ai import call_action
 
 
-action()
+call_action()

@@ -28,14 +28,10 @@ class Bike:
         self.node = node
 
     def select_configuration(self, environment: Environment):
-        if self.node is None:
+        if self.node is None or len(self.node.funciones) == 0:
             edit_moto(environment)
-            ans = call_ai("moto.py")
-            self.change_tires(Tires(ans))
-        elif len(self.node.funciones) == 0:
-            edit_moto(environment)
-            ans = call_ai("moto.py")
-            self.change_tires(Tires(ans))
+            tires = call_ai("moto.py")
+            self.change_tires(Tires(tires))
         else:
             self.node.refreshContext(self.__dict__)
             self.node.funciones[0].eval([], self.node.nuevocontext)

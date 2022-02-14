@@ -20,7 +20,7 @@ def call_subprocess(python: str, script: str):
     if ans.returncode != 0:
         raise Exception
     ans = ans.stdout.decode("utf-8")
-    ans = ans.replace("\n", "").replace("\r", "")
+    ans = ans.replace("\n", "").replace("\r", "").split(".py")
     return int(ans[-1])
 
 
@@ -51,7 +51,7 @@ def edit_moto(environment):
     facts.close()
 
 
-def moto():
+def call_moto():
     engine = restart("bc_moto_rules")
     tires = [[], []]
     with engine.prove_goal("bc_moto_rules.select_type($select)") as gen:
@@ -77,34 +77,66 @@ def restart(rules: str):
     return engine
 
 
-def edit_action(speed, bike_max_speed, section_max_speed, section_type, tires, weather):
-    facts = open(path[0] + "/ai/action_facts.kfb", "w")
-    facts.write("# action_facts.kfb\n\n")
-    if speed > bike_max_speed or speed > section_max_speed:
+def edit_action(race, section, agent):
+    speed = agent.speed
+    bike = agent.bike
+    section_max_speed = section[2]
+    if speed > bike.max_speed or speed > section_max_speed:
         speed_cmp = 1
-    elif speed < bike_max_speed and speed < section_max_speed:
+    elif speed < bike.max_speed and speed < section_max_speed:
         speed_cmp = 3
     else:
         speed_cmp = 2
+    section_type = section[4].name
+    weather = race.environment.weather
+    nearest_previous, nearest_next = nearest(race, agent.rider)
+    facts = open(path[0] + "/ai/action_facts.kfb", "w")
+    facts.write("# action_facts.kfb\n\n")
     facts.write("speed({})\n".format(speed_cmp))
     facts.write("section({})\n".format(section_type))
-    facts.write("slick_tires({})\n".format(True if tires.__contains__("Slick") else False))
+    facts.write("slick_tires({})\n".format(True if bike.tires.name.__contains__("Slick") else False))
     facts.write("rainy({})\n".format(True if weather.weather_status.name == "Rainy" else False))
     facts.write("high_humidity({})\n".format(True if weather.humidity > 6 else False))
+    facts.write("nearest_previous({})\n".format(nearest_previous))
+    facts.write("nearest_next({})\n".format(nearest_next))
     facts.close()
 
 
-def action():
+def nearest(race, rider):
+    nearest_previous = 60
+    nearest_next = 60
+    for i in range(len(race.agents)):
+        agent = race.agents[i]
+        if agent.rider == rider:
+            if i > 0:
+                nearest_previous = how_close(agent, race.agents[i - 1])
+            elif i < len(race.agents) - 1:
+                nearest_next = how_close(agent, race.agents[i + 1])
+    return nearest_previous, nearest_next
+
+
+def how_close(agent_1, agent_2):
+    return abs(agent_1.time_track - agent_2.time_track)
+
+
+def call_action():
     engine = restart("bc_action_rules")
     actions = []
     with engine.prove_goal("bc_action_rules.select_action($select)") as gen:
         for ans, plan in gen:
             actions.append(int(ans["select"]))
-    print(sum(actions))
+    action = 0
+    for a in actions:
+        if a > 11 and (action > 11 or random(1) < 0.5):
+            continue
+        action += a
+    print(action)
 
 
-def acceleration(max_acceleration, race, section, agent):
-    new_acceleration = max_acceleration / 5
+def acceleration(race, section, agent, action, max_acceleration):
+    if action.name.__contains__("KeepSpeed"):
+        return 0
+    new_acceleration = max_acceleration# / 5
     weather = race.environment.weather
     weather_status = [weather.weather_status == 1,
                       3 < weather.humidity < 7,
@@ -137,25 +169,17 @@ def acceleration(max_acceleration, race, section, agent):
             new_acceleration -= random(1)
         else:
             aggressiveness += random(0.03)
-    for i in range(len(race.agents)):
-        agent = race.agents[i]
-        if agent.rider == rider:
-            if i > 0:
-                if agent.time_track - race.agents[i - 1].time_track < 1:
-                    aggressiveness += random(0.1)
-            elif i < len(race.agents) - 1:
-                dif = agent.time_track - race.agents[i + 1].time_track
-                if dif > 4:
-                    new_acceleration -= random(1)
-                else:
-                    aggressiveness += random(0.1)
+    if action.name.__contains__("Attack") or action.name.__contains__("Defend"):
+        aggressiveness += random(0.1)
     if race.current_lap == 0:
         new_acceleration += random(1)
     elif race.current_lap == race.laps - 1:
         aggressiveness += random(0.1)
+    if new_acceleration < 0 and action.name.__contains__("SpeedUp"):
+        new_acceleration *= -1
     if len(race.agents) > 1 and aggressiveness > random(1):
-        new_acceleration += random(new_acceleration / 5)
-    return new_acceleration
+        new_acceleration += random(0.1)
+    return new_acceleration / 50
 
 
 def random(n: float):

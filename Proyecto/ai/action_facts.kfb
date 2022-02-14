@@ -1,7 +1,9 @@
 # action_facts.kfb
 
-speed(1)
-section(Curve)
+speed(3)
+section(Straight)
 slick_tires(True)
 rainy(False)
 high_humidity(False)
+nearest_previous(0.9183949228113875)
+nearest_next(60)

@@ -25,41 +25,50 @@ class AgentActions(Enum):
     SpeedUp = 0
     KeepSpeed = 1
     Brake = 2
+    
     SpeedUp_Turn = 3
     KeepSpeed_Turn = 4
     Brake_Turn = 5
+    
     SpeedUp_Pits = 6
     KeepSpeed_Pits = 7
     Brake_Pits = 8
+    
     SpeedUp_Turn_Pits = 9
     KeepSpeed_Turn_Pits = 10
     Brake_Turn_Pits = 11
 
-    Attack_SpeedUp = 12
-    Attack_KeepSpeed = 13
-    Attack_Brake = 14
-    Attack_SpeedUp_Turn = 15
-    Attack_KeepSpeed_Turn = 16
-    Attack_Brake_Turn = 17
-    Attack_SpeedUp_Pits = 18
-    Attack_KeepSpeed_Pits = 19
-    Attack_Brake_Pits = 20
-    Attack_SpeedUp_Turn_Pits = 21
-    Attack_KeepSpeed_Turn_Pits = 22
-    Attack_Brake_Turn_Pits = 23
+    SpeedUp_Attack = 12
+    KeepSpeed_Attack = 13
+    Brake_Attack = 14
+    
+    SpeedUp_Turn_Attack = 15
+    KeepSpeed_Turn_Attack = 16
+    Brake_Turn_Attack = 17
+    
+    SpeedUp_Pits_Attack = 18
+    KeepSpeed_Pits_Attack = 19
+    Brake_Pits_Attack = 20
+    
+    SpeedUp_Turn_Pits_Attack = 21
+    KeepSpeed_Turn_Pits_Attack = 22
+    Brake_Turn_Pits_Attack = 23
 
-    Defend_SpeedUp = 24
-    Defend_KeepSpeed = 25
-    Defend_Brake = 26
-    Defend_SpeedUp_Turn = 27
-    Defend_KeepSpeed_Turn = 28
-    Defend_Brake_Turn = 29
-    Defend_SpeedUp_Pits = 30
-    Defend_KeepSpeed_Pits = 31
-    Defend_Brake_Pits = 32
-    Defend_SpeedUp_Turn_Pits = 33
-    Defend_KeepSpeed_Turn_Pits = 34
-    Defend_Brake_Turn_Pits = 35
+    SpeedUp_Defend = 24
+    KeepSpeed_Defend = 25
+    Brake_Defend = 26
+    
+    SpeedUp_Turn_Defend = 27
+    KeepSpeed_Turn_Defend = 28
+    Brake_Turn_Defend = 29
+    
+    SpeedUp_Pits_Defend = 30
+    KeepSpeed_Pits_Defend = 31
+    Brake_Pits_Defend = 32
+
+    SpeedUp_Turn_Pits_Defend = 33
+    KeepSpeed_Turn_Pits_Defend = 34
+    Brake_Turn_Pits_Defend = 35
 
 
 class Agent:
@@ -579,19 +588,19 @@ class Agent:
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * weather.wind_intensity / 4
 
-    def select_action(self, section, weather):
+    def select_action(self, race, section):
         prob = continuous_variable_generator()
         if not self.flag_action or self.rider.independence > prob:
-            edit_action(self.speed, self.bike.max_speed, section[2], section[4].name, self.bike.tires.name, weather)
-            ans = call_ai("action.py")
+            edit_action(race, section, self)
+            action = call_ai("action.py")
             prob = continuous_variable_generator()
             if self.rider.expertise > 1 - prob:
-                ans += randint(-1, 1)
-                if ans < 0:
-                    ans = 0
-                if ans > 35:
-                    ans = 35
-            return AgentActions(ans)
+                action += randint(-1, 1)
+                if action < 0:
+                    action = 0
+                if action > 35:
+                    action = 35
+            return AgentActions(action)
         else:
             self.node.refreshContext(self.__dict__)
             function = None
@@ -612,12 +621,7 @@ class Agent:
         prob = continuous_variable_generator()
         if not self.flag_acceleration or self.rider.independence > prob:
             max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, section[2]), section[1])
-            self.acceleration = acceleration(max_acceleration, race, section, self)
-            if self.acceleration < 0:
-                if race.current_lap == 0 and section[0] == "recta1":
-                    self.acceleration = 0.1
-                elif action.name.__contains__("SpeedUp"):
-                    self.acceleration = 0
+            self.acceleration = acceleration(race, section, self, action, max_acceleration)
         else:
             self.node.refreshContext(self.__dict__)
             if self.node.funciones[0].idfun == "select_acceleration":
@@ -693,8 +697,8 @@ class Agent:
             return False
         return True
 
-    def overcome_an_obstacle(self, section, race, weather, forward_agent, behind_agent):
-        action = self.select_action(section, weather)
+    def overcome_an_obstacle(self, section, race, forward_agent, behind_agent):
+        action = self.select_action(race, section)
         self.select_acceleration(section, race, action)
         self.calc_final_speed(section[2], section[1])
         if not self.status_analysis(section, race, action, forward_agent, behind_agent):
@@ -721,6 +725,3 @@ class Agent:
 
     def calc_max_acceleration(self, max_speed, length):
         return (pow(max_speed / 3.6, 2) - pow(self.speed / 3.6, 2)) / (2 * length)
-
-    def is_near(self, agent):
-        return self.time_track - agent.time_track < 5

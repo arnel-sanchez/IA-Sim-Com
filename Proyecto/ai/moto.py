@@ -1,4 +1,4 @@
-from ai import moto
+from ai import call_moto
 
 
-moto()
+call_moto()

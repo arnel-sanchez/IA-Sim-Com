@@ -39,3 +39,35 @@ pits_2
         action_facts.slick_tires($ans_1)
         action_facts.high_humidity($ans_2)
         check $ans_1 == $ans_2
+
+
+attack_1
+    use select_action(12)
+    when
+        action_facts.section("Curve")
+        action_facts.nearest_previous($ans)
+        check $ans < 2
+
+
+attack_2
+    use select_action(12)
+    when
+        action_facts.section("Straight")
+        action_facts.nearest_previous($ans)
+        check $ans < 4
+
+
+defend_1
+    use select_action(12)
+    when
+        action_facts.section("Curve")
+        action_facts.nearest_next($ans)
+        check $ans < 2
+
+
+defend_2
+    use select_action(12)
+    when
+        action_facts.section("Straight")
+        action_facts.nearest_next($ans)
+        check $ans < 4
