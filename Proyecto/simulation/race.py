@@ -53,13 +53,13 @@ class Race:
 
     def print_ranking_lap(self):
         i = 1
-        print("Posicion - Tiempo de Vuelta: Piloto")
+        print("Posicion - Tiempo Acumulado - Tiempo de Vuelta: Piloto")
         for x in self.rank:
             spaces = ""
             if 8 - self.digits_of_a_number(i) > 0:
                 for j in range(8 - self.digits_of_a_number(i)):
                     spaces += " "
-            print(spaces + "{} - {}: {} con la {}".format(i, self.convert_seconds_to_minutes(x.time_lap), x.rider.name,
+            print(spaces + "{} - {} - {}: {} con la {}".format(i, self.convert_seconds_to_minutes(x.time_track), self.convert_seconds_to_minutes(x.time_lap), x.rider.name,
                                                           x.bike.brand + " " + x.bike.model))
             x.time_lap = 0
             i += 1
