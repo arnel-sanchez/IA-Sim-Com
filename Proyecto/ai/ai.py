@@ -4,6 +4,8 @@ from os.path import exists
 from shutil import rmtree
 from pyke import knowledge_engine
 
+from random import uniform
+
 
 def call_ai(script: str):
     try:
@@ -102,6 +104,8 @@ def action():
 
 
 def acceleration(max_acceleration, weather, section, bike, rider):
+    aggressiveness = rider.aggressiveness
+    new_acceleration = max_acceleration
     weather_status = [weather.weather_status == 1,
                       3 < weather.humidity < 7,
                       3 < weather.temperature < 7,
@@ -109,15 +113,29 @@ def acceleration(max_acceleration, weather, section, bike, rider):
                       3 < weather.wind_intensity < 7]
     for w in weather_status:
         if not w:
-            max_acceleration -= 1
+            new_acceleration -= random(0.1)
+        else:
+            aggressiveness += random(0.01)
     if section[4].name == "Straight":
-        if bike.brakes < 9 and bike.chassis_stiffness < 9:
-            max_acceleration -= 1
-        if rider.step_by_line < 9:
-            max_acceleration -= 1
+        if bike.brakes < 8 and bike.chassis_stiffness < 8:
+            new_acceleration -= random(0.2)
+        else:
+            aggressiveness += random(0.02)
+        if rider.step_by_line < 8:
+            new_acceleration -= random(0.3)
+        else:
+            aggressiveness += random(0.03)
     else:
         if bike.brakes != 5 and bike.chassis_stiffness != 5:
-            max_acceleration -= 1
-        if rider.cornering < 9:
-            max_acceleration -= 1
-    return max_acceleration
+            new_acceleration -= random(0.2)
+        else:
+            aggressiveness += random(0.02)
+        if rider.cornering < 8:
+            new_acceleration -= random(0.3)
+        else:
+            aggressiveness += random(0.03)
+    return max_acceleration if aggressiveness > random(1) else new_acceleration
+
+
+def random(n: float):
+    return uniform(0, n)
