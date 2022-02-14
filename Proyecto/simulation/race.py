@@ -19,20 +19,22 @@ class Race:
             self.print_ranking()
             return True
         elif self.current_lap == self.laps - 1:
+            weather = self.environment.weather
             self.environment.change_weather_status()
             for agent in self.agents:
                 if agent.flag_to_pits:
                     agent.bike.select_configuration(self.environment)
-                agent.update_agent_initial_parameters(self.environment.weather, self.environment.track.sections[0])
+                agent.update_agent_parameter(weather,self.environment.weather, self.environment.track.sections[0])
             print("\nUltima vuelta\n")
             self.print_ranking_lap()
             return False
         else:
+            weather = self.environment.weather
             self.environment.change_weather_status()
             for agent in self.agents:
                 if agent.flag_to_pits:
                     agent.bike.select_configuration(self.environment)
-                agent.update_agent_initial_parameters(self.environment.weather, self.environment.track.sections[0])
+                agent.update_agent_parameter(weather,self.environment.weather, self.environment.track.sections[0])
             print("\nVuelta {}\n".format(self.current_lap))
             self.print_ranking_lap()
             return False

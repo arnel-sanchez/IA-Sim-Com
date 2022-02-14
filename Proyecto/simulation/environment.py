@@ -17,20 +17,22 @@ class Environment:
                                WeatherStatus(weather_status))
 
     def change_weather_params(self):
-        temperature = int(normalvariate(5, 2))
+        if self.weather.weather_status is WeatherStatus.Rainy:
+            self.weather.increase_humidity(5)
+            self.weather.decrease_temperature(5)
+        elif self.weather.weather_status is WeatherStatus.Sunny:
+            self.weather.decrease_humidity(5)
+            self.weather.increase_temperature(5)
         visibility = int(normalvariate(5, 2))
-        humidity = int(normalvariate(5, 2))
         wind_intensity = int(normalvariate(5, 2))
-        self.weather.change_temperature(temperature)
         self.weather.change_visibility(visibility)
-        self.weather.change_humidity(humidity)
         self.weather.change_wind_intensity(wind_intensity)
 
     def change_weather_status(self):
         wind = randint(0, 7)
         weather_status = randint(0, 2)
         self.weather.change_wind(CardinalsPoints(wind))
-        self.weather.change_weather_status(WeatherStatus(weather_status))
+        self.weather.change_weather_status(weather_status)
 
     def print(self):
         return

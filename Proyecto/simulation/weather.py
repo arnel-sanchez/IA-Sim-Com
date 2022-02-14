@@ -62,7 +62,7 @@ class Weather:
         if self.visibility - decrease_visibility <= 0:
             self.visibility = 0
         else:
-            self.visibility += decrease_visibility
+            self.visibility -= decrease_visibility
     
     def increase_wind_intensity(self, increase_wind):
         if self.wind_intensity + increase_wind >= 10:
@@ -74,7 +74,7 @@ class Weather:
         if self.wind_intensity - decrease_wind <= 0:
             self.wind_intensity = 0
         else:
-            self.wind_intensity += decrease_wind
+            self.wind_intensity -= decrease_wind
 
     def change_temperature(self, temperature):
         self.temperature = temperature

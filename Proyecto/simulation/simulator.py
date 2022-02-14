@@ -4,7 +4,13 @@ from simulation.race import Race
 class Simulator:
     def start(self, race: Race):
         print("\nPista: {}".format(race.environment.track.name))
-        print("\nClima: {}".format(race.environment.weather.weather_status))
+        print("\nClima:")
+        print("Estado: {}".format(race.environment.weather.weather_status))
+        print("Humedad: {}".format(race.environment.weather.humidity))
+        print("Temperatura: {}".format(race.environment.weather.temperature))
+        print("Visibilidad: {}".format(race.environment.weather.visibility))
+        print("Viento: {}".format(race.environment.weather.wind))
+        print("Intensidad del Viento: {}".format(race.environment.weather.wind_intensity))
         print("\nPilotos:")
         for i in range(len(race.rank)):
             print("{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
@@ -53,7 +59,17 @@ class Simulator:
                         race.ranking()
                 else:
                     break
-            if race.change_lap() or len(race.agents) == 0:
-                if len(race.agents) > 1:
-                    race.ranking()
+            if len(race.agents) == 0:
                 break
+
+            if race.change_lap():
+                race.ranking()
+                break
+            else:
+                print("\nClima:")
+                print("Estado: {}".format(race.environment.weather.weather_status))
+                print("Humedad: {}".format(race.environment.weather.humidity))
+                print("Temperatura: {}".format(race.environment.weather.temperature))
+                print("Visibilidad: {}".format(race.environment.weather.visibility))
+                print("Viento: {}".format(race.environment.weather.wind))
+                print("Intensidad del Viento: {}".format(race.environment.weather.wind_intensity))

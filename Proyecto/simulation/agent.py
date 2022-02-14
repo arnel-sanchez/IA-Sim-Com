@@ -68,7 +68,6 @@ class Agent:
         self.rider = rider
         self.bike = bike
         self.speed = 0
-        self.acceleration = 0
         self.time_track = 0
         self.flag_configuration = flag_configuration
         self.flag_action = flag_action
