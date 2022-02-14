@@ -650,22 +650,24 @@ class Agent:
                     self.rider.name))
                 return False
         if 12 <= action.value <= 23 and self.rider.aggressiveness > prob:
-            print("El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
-                  format(self.rider.name))
             if forward_agent is not None and forward_agent.rider.aggressiveness > prob:
                 print(
                     "El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva y los 2 se han ido al suelo.".
                     format(forward_agent.rider.name, self.rider.name))
                 self.shot_down = -1
+            else:
+                print("El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
+                  format(self.rider.name))
             return False
         elif 24 <= action.value <= 35 and self.rider.aggressiveness > prob:
-            print("El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
-                  format(self.rider.name))
             if behind_agent is not None and behind_agent.rider.aggressiveness > prob:
                 print(
                     "El piloto {} ha sido defendido por el piloto {} de una forma muy agresiva y los 2 se han ido al suelo.".
                     format(behind_agent.rider.name, self.rider.name))
                 self.shot_down = 1
+            else:
+                print("El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
+                  format(self.rider.name))
             return False
         else:
             if 24 <= action.value <= 35 or 12 <= action.value <= 23:
