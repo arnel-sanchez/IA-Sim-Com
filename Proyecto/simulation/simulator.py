@@ -1,5 +1,5 @@
 from simulation.race import Race
-
+from colorama import init, Fore, Back, Style
 
 class Simulator:
     def start(self, race: Race):
@@ -13,7 +13,7 @@ class Simulator:
         while True:
             print("Vuelta {}:".format(race.current_lap + 1))
             for section in race.environment.track.sections:
-                print("\n\e[31m-> Inicia la seccion {}.\e[0m".format(section[0]))
+                print("\n"+Fore.RED+"-> Inicia la seccion {}.".format(section[0]))
                 remove_agents = set()
                 for i in range(len(race.agents)):
                     if remove_agents.__contains__(race.agents[i]):

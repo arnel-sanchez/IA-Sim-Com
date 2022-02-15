@@ -591,7 +591,7 @@ class Agent:
     def overcome_an_obstacle(self, section, race, forward_agent, behind_agent):
         action = self.select_action(race, section)
         self.select_acceleration(section, race, action)
-        self.calc_final_speed(section[1])
+        self.calc_final_speed(section[2], section[1])
         if not self.status_analysis(section, race, action, forward_agent, behind_agent):
             return False
         if action is not None and action.name.__contains__("Pits"):
