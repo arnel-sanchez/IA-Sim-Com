@@ -1,5 +1,6 @@
 from sys import path
 from random import shuffle
+from colorama import init, Fore
 
 from compilation.tokenizer import Tokenizer
 from compilation.utils import split_lines
@@ -29,7 +30,7 @@ from simulation.set_off_classes.riders.brad_binder import Binder
 
 
 def compilation(case: str):
-    print("\nCOMPILACION:\n")
+    print("\n"+Fore.MAGENTA+"COMPILACION:\n")
     tokenizer = Tokenizer()
     file = "console"
     if case is None:
@@ -65,7 +66,7 @@ def compilation(case: str):
 
 
 def simulation(agents_lists):
-    print("\n\nSIMULACION:")
+    print("\n\n"+Fore.MAGENTA+"SIMULACION:")
     track = Misano()
     environment = Environment(Track(track.name, track.length, track.sections))
     agents = []
@@ -173,7 +174,7 @@ def simulation(agents_lists):
 def main(case: str = None):
     comp = compilation(case)
     if comp:
-        print("Ok")
+        print(Fore.BLUE+"Ok")
         simulation(comp)
 
 
