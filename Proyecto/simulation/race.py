@@ -35,7 +35,7 @@ class Race:
     def change_lap(self):
         self.current_lap += 1
         if self.current_lap == self.laps:
-            print("\nCarrera terminada")
+            print("\n" + Fore.BLUE + "Carrera terminada")
             self.print_ranking()
             return True
         elif self.current_lap == self.laps - 1:
@@ -46,7 +46,7 @@ class Race:
                     agent.add_time_for_pits()
                     agent.bike.select_configuration(self.environment)
                 agent.update_agent_parameter(weather,self.environment.weather, self.environment.track.sections[0])
-            print("\nUltima vuelta\n")
+            print("\n" + Fore.BLUE + "Ultima vuelta\n")
             self.print_ranking_lap()
             return False
         else:
@@ -61,8 +61,8 @@ class Race:
             return False
 
     def print_ranking(self):
-        print("\nResultado final:")
-        print("Posicion - Tiempo de Carrera - Tiempo de Vuelta: Piloto")
+        print("\n" + Fore.BLUE + "Resultado final:")
+        print(Fore.BLUE + "Posicion" + Fore.WHITE + " -" + Fore.CYAN + " Tiempo de Carrera" + Fore.WHITE + " -" + Fore.GREEN + " Tiempo de Vuelta:" + Fore.RED + " Piloto")
         i = 1
         for x in self.rank:
             spaces = ""
@@ -70,7 +70,7 @@ class Race:
                 for j in range(8 - number_digits(i)):
                     spaces += " "
             print(
-                spaces + "{} - {}  - {}: {} con la {}".format(i, seconds_to_minutes(x.time_track),
+                spaces + Fore.BLUE + "{}" + Fore.WHITE + " -" + Fore.CYAN + " {}" + Fore.WHITE + " -" + Fore.GREEN + " {}:" + Fore.RED + " {} con la {}".format(i, seconds_to_minutes(x.time_track),
                                                               seconds_to_minutes(x.time_lap),
                                                               x.rider.name, x.bike.brand + " " + x.bike.model))
             i += 1

@@ -9,7 +9,7 @@ class Simulator:
         for i in range(len(race.rank)):
             print(Fore.CYAN+"{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
                                              race.rank[i].bike.brand + " " + race.rank[i].bike.model))
-        print(Fore.BLUE+"\nInicio de la carrera\n")
+        print("\n" + Fore.BLUE + "Inicio de la carrera\n")
         while True:
             print(Fore.CYAN+"Vuelta {}:".format(race.current_lap + 1))
             for section in race.environment.track.sections:
