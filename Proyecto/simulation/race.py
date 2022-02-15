@@ -61,7 +61,7 @@ class Race:
             return False
 
     def print_ranking(self):
-        print("\n" + Fore.BLUE + "Resultado final:")
+        print("\n" + Fore.MAGENTA + "Resultado final:")
         print(Fore.BLUE + "Posicion" + Fore.WHITE + " -" + Fore.CYAN + " Tiempo de Carrera" + Fore.WHITE + " -" + Fore.GREEN + " Tiempo de Vuelta:" + Fore.RED + " Piloto")
         i = 1
         for x in self.rank:
@@ -77,18 +77,18 @@ class Race:
         print()
 
     def print_ranking_lap(self):
-        print("\nResultados de la vuelta {}:".format(self.current_lap))
-        print("Posicion - Tiempo Acumulado - Tiempo de Vuelta: Piloto")
+        print("\n" + Fore.MAGENTA + "Resultados de la vuelta" + Fore.CYAN + " {}:".format(self.current_lap))
+        print(Fore.BLUE + "Posicion" + Fore.WHITE + " -" + Fore.CYAN + " Tiempo de Carrera" + Fore.WHITE + " -" + Fore.GREEN + " Tiempo de Vuelta:" + Fore.RED + " Piloto")
         i = 1
         for x in self.rank:
             spaces = ""
             if 8 - number_digits(i) > 0:
                 for j in range(8 - number_digits(i)):
                     spaces += " "
-            print(spaces + "{} - {} - {}: {} con la {}".format(i, seconds_to_minutes(x.time_track),
-                                                               seconds_to_minutes(x.time_lap),
-                                                               x.rider.name, x.bike.brand + " " + x.bike.model))
-            x.time_lap = 0
+            print(
+                spaces + Fore.BLUE + "{}" + Fore.WHITE + " -" + Fore.CYAN + " {}" + Fore.WHITE + " -" + Fore.GREEN + " {}:" + Fore.RED + " {} con la {}".format(i, seconds_to_minutes(x.time_track),
+                                                              seconds_to_minutes(x.time_lap),
+                                                              x.rider.name, x.bike.brand + " " + x.bike.model))
             i += 1
         print()
 
