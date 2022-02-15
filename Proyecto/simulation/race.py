@@ -67,6 +67,7 @@ class Race:
             print(spaces + Fore.BLUE + str(i) + Fore.WHITE + " - " + Fore.CYAN + seconds_to_minutes(x.time_track) +
                   Fore.WHITE + "  - " + Fore.GREEN + seconds_to_minutes(x.time_lap) + ": " + Fore.RED +
                   "{} con la {} {}".format(x.rider.name, x.bike.brand, x.bike.model))
+            x.time_lap = 0
             i += 1
         print()
 
