@@ -23,14 +23,13 @@ class Simulator:
                         if not race.agents[i].overcome_an_obstacle(section, race, None, None):
                             remove_agents.add(race.agents[i])
                     else:
-                        if i == 0:
-                            if not race.agents[i].overcome_an_obstacle(section, race, None, race.agents[i + 1]):
-                                remove_agents.add(race.agents[i])
-                        elif i == len(race.agents) - 1:
-                            if not race.agents[i].overcome_an_obstacle(section, race, race.agents[i - 1], None):
-                                remove_agents.add(race.agents[i])
-                        elif not race.agents[i].overcome_an_obstacle(section, race, race.agents[i - 1],
-                                                                     race.agents[i + 1]):
+                        forward_agent = None
+                        if i > 0 and not remove_agents.__contains__(race.agents[i - 1]):
+                            forward_agent = race.agents[i - 1]
+                        behind_agent = None
+                        if i < len(race.agents) - 1 and not remove_agents.__contains__(race.agents[i + 1]):
+                            behind_agent = race.agents[i + 1]
+                        if not race.agents[i].overcome_an_obstacle(section, race, forward_agent, behind_agent):
                             remove_agents.add(race.agents[i])
                     if race.agents[i].shot_down == 1:
                         remove_agents.add(race.agents[i + 1])
