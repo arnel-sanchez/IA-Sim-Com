@@ -8,7 +8,7 @@ class Simulator:
         self.print_race(race)
         print(Fore.MAGENTA + "Pilotos:")
         for i in range(len(race.rank)):
-            print(Fore.CYAN+"{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
+            print(Fore.CYAN + "{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
                                                        race.rank[i].bike.brand + " " + race.rank[i].bike.model))
         print(Fore.BLUE + "\nInicio de la carrera\n")
         while True:

@@ -30,7 +30,7 @@ from simulation.set_off_classes.riders.brad_binder import Binder
 
 
 def compilation(case: str):
-    print("\n"+Fore.MAGENTA+"COMPILACION:\n")
+    print(Fore.MAGENTA + "\nCOMPILACION:\n")
     tokenizer = Tokenizer()
     file = "console"
     if case is None:
@@ -66,7 +66,7 @@ def compilation(case: str):
 
 
 def simulation(agents_lists):
-    print("\n\n"+Fore.MAGENTA+"SIMULACION:")
+    print(Fore.MAGENTA + "\n\nSIMULACION:")
     track = Misano()
     environment = Environment(Track(track.name, track.length, track.sections))
     agents = []
@@ -174,7 +174,7 @@ def simulation(agents_lists):
 def main(case: str = None):
     comp = compilation(case)
     if comp:
-        print(Fore.BLUE+"Ok")
+        print(Fore.BLUE + "Ok")
         simulation(comp)
 
 
