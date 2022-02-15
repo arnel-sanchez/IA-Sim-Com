@@ -5,18 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f6df1ae7-b934-4f30-a0fa-9569583274a1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/compilation/ast/auxiliary.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/assignments.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/ast/assignments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/initializations.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/ast/initializations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/nodes.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/ast/nodes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/nodes_yy.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/ast/complex.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/nodes_zz.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/operations.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/ast/operations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/parser_xx.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/enums.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/variables.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/action_facts.kfb" beforeDir="false" afterPath="$PROJECT_DIR$/ai/action_facts.kfb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/ai.py" beforeDir="false" afterPath="$PROJECT_DIR$/ai/ai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/bc_action_rules.krb" beforeDir="false" afterPath="$PROJECT_DIR$/ai/bc_action_rules.krb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/compiled_krb/action_facts.fbc" beforeDir="false" afterPath="$PROJECT_DIR$/ai/compiled_krb/action_facts.fbc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/compiled_krb/bc_action_rules_bc.py" beforeDir="false" afterPath="$PROJECT_DIR$/ai/compiled_krb/bc_action_rules_bc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/compiled_krb/compiled_pyke_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/ai/compiled_krb/compiled_pyke_files.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/compiled_krb/moto_facts.fbc" beforeDir="false" afterPath="$PROJECT_DIR$/ai/compiled_krb/moto_facts.fbc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/moto_facts.kfb" beforeDir="false" afterPath="$PROJECT_DIR$/ai/moto_facts.kfb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/agent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/environment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/race.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/race.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/rider.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/rider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/simulator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,12 +133,24 @@
       </map>
     </option>
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Proyecto$test_nodes.coverage" NAME="test_nodes Coverage Results" MODIFIED="1639959578342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/compilation/ast" />
     <SUITE FILE_PATH="coverage/Proyecto$misano.coverage" NAME="misano Coverage Results" MODIFIED="1642353701852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Downloads/Telegram Desktop" />
     <SUITE FILE_PATH="coverage/Proyecto$assignments.coverage" NAME="assignments Coverage Results" MODIFIED="1639698156044" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/compilation" />
     <SUITE FILE_PATH="coverage/Proyecto$start.coverage" NAME="start Coverage Results" MODIFIED="1639701394053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Proyecto$main.coverage" NAME="main Coverage Results" MODIFIED="1642468471116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Proyecto$main.coverage" NAME="main Coverage Results" MODIFIED="1644907094239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Proyecto$action.coverage" NAME="action Coverage Results" MODIFIED="1644861306680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ai" />
     <SUITE FILE_PATH="coverage/Proyecto$.coverage" NAME=" Coverage Results" MODIFIED="1639159054883" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tester" />
   </component>
 </project>

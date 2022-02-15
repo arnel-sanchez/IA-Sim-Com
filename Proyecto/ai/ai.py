@@ -116,6 +116,8 @@ def nearest(race, rider):
 
 
 def how_close(agent_1, agent_2):
+    if agent_1.time_track == 0 or agent_2.time_track == 0:
+        return 60
     return abs(agent_1.time_track - agent_2.time_track)
 
 
@@ -136,7 +138,6 @@ def call_action():
 def acceleration(race, section, agent, action, max_acceleration):
     if action.name.__contains__("KeepSpeed"):
         return 0
-    new_acceleration = max_acceleration# / 5
     weather = race.environment.weather
     weather_status = [weather.weather_status == 1,
                       3 < weather.humidity < 7,
@@ -147,39 +148,35 @@ def acceleration(race, section, agent, action, max_acceleration):
     aggressiveness = rider.aggressiveness
     for w in weather_status:
         if not w:
-            new_acceleration -= random(1)
+            max_acceleration -= random(0.1)
         else:
             aggressiveness += random(0.01)
     bike = agent.bike
     if section[4].name == "Straight":
         if bike.brakes < 8 and bike.chassis_stiffness < 8:
-            new_acceleration -= random(1)
+            max_acceleration -= random(0.3)
+        else:
+            aggressiveness += random(0.03)
+        if rider.step_by_line < 8:
+            max_acceleration -= random(0.6)
         else:
             aggressiveness += random(0.06)
-        if rider.step_by_line < 8:
-            new_acceleration -= random(1)
-        else:
-            aggressiveness += random(0.03)
     else:
         if bike.brakes != 5 and bike.chassis_stiffness != 5:
-            new_acceleration -= random(1)
-        else:
-            aggressiveness += random(0.02)
-        if rider.cornering < 8:
-            new_acceleration -= random(1)
+            max_acceleration -= random(0.3)
         else:
             aggressiveness += random(0.03)
+        if rider.cornering < 8:
+            max_acceleration -= random(0.6)
+        else:
+            aggressiveness += random(0.06)
     if action.name.__contains__("Attack") or action.name.__contains__("Defend"):
         aggressiveness += random(0.1)
-    if race.current_lap == 0:
-        new_acceleration += random(1)
-    elif race.current_lap == race.laps - 1:
-        aggressiveness += random(0.1)
-    if new_acceleration < 0 and action.name.__contains__("SpeedUp"):
-        new_acceleration *= -1
+    if max_acceleration < 0 and action.name.__contains__("SpeedUp"):
+        max_acceleration = (- max_acceleration) / 10
     if len(race.agents) > 1 and aggressiveness > random(1):
-        new_acceleration += random(0.1)
-    return new_acceleration / 50
+        max_acceleration += random(0.1)
+    return max_acceleration
 
 
 def random(n: float):
