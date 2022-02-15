@@ -3,7 +3,7 @@ from colorama import init, Fore
 
 class Simulator:
     def start(self, race: Race):
-        print(Fore.MAGENTA+"\nPista: {}".format(race.environment.track.name))
+        print("\n" + Fore.MAGENTA+"Pista: " + Fore.CYAN + " {}".format(race.environment.track.name))
         self.print_race(race)
         print(Fore.MAGENTA+"Pilotos:")
         for i in range(len(race.rank)):
