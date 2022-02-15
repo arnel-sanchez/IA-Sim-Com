@@ -1,6 +1,6 @@
 # moto_facts.kfb
 
 weather(Cloudy)
-humidity(3)
-wind_intensity(6)
-wind_direction(2)
+humidity(5)
+wind_intensity(3)
+wind_direction(1)

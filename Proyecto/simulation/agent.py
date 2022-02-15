@@ -2,6 +2,8 @@ from math import pow, sqrt
 from enum import Enum
 from random import uniform, randint
 
+from colorama import init, Fore
+
 from simulation.rider import Rider
 from simulation.bike import Bike
 
@@ -659,21 +661,21 @@ class Agent:
 
     def status_analysis(self, section, race, action, forward_agent, behind_agent):
         if action is None:
-            print("El piloto {} se ha quedado perplejo y no ha reaccionado. Ha sido descalificado.".
+            print(Fore.RED+"El piloto {} se ha quedado perplejo y no ha reaccionado. Ha sido descalificado.".
                   format(self.rider.name))
             return False
         if self.speed == 0:
-            print("El piloto {} ha roto el acelerador y su moto se ha detenido en plena carrera. Ha sido descalificado.".
+            print(Fore.RED+"El piloto {} ha roto el acelerador y su moto se ha detenido en plena carrera. Ha sido descalificado.".
                   format(self.rider.name))
             return False
         if section[4] == TrackType.Straight:
             if action.name.__contains__("Turn"):
-                print("El piloto {} ha doblado en plena recta y se ha ido al suelo.".format(self.rider.name))
+                print(Fore.RED+"El piloto {} ha doblado en plena recta y se ha ido al suelo.".format(self.rider.name))
                 return False
             expertise = self.rider.step_by_line / 1000
         else:
             if not action.name.__contains__("Turn"):
-                print("El piloto {} ha seguido de largo y no ha doblado. Ha roto la moto en la grava.".
+                print(Fore.RED+"El piloto {} ha seguido de largo y no ha doblado. Ha roto la moto en la grava.".
                       format(self.rider.name))
                 return False
             expertise = self.rider.cornering / 1000
@@ -684,31 +686,31 @@ class Agent:
             if expertise > 1 - prob:
                 prob = continuous_variable_generator()
                 if prob < 1 / 6:
-                    print("El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
+                    print(Fore.RED+"El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
                           format(forward_agent.rider.name, self.rider.name))
                     self.shot_down = -1
                 elif prob < 2 / 6:
-                    print("El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
+                    print(Fore.RED+"El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
                           format(self.rider.name))
                 elif prob < 3 / 6:
-                    print("El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
+                    print(Fore.RED+"El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
                           format(forward_agent.rider.name, self.rider.name))
                 elif prob < 4 / 6:
-                    print("El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
+                    print(Fore.RED+"El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
                           format(forward_agent.rider.name, self.rider.name))
                     self.shot_down = 1
                 elif prob < 5 / 6:
-                    print("El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
+                    print(Fore.RED+"El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
                           format(forward_agent.rider.name))
                 else:
-                    print("El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
+                    print(Fore.RED+"El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
                           format(self.rider.name, forward_agent.rider.name))
                 return False
             else:
                 prob = continuous_variable_generator()
                 t = continuous_variable_generator()
                 if prob - self.rider.expertise < 1 / 3:
-                    print("El piloto {} ha adelantado al piloto {}.".format(self.rider.name, forward_agent.rider.name))
+                    print(Fore.GREEN+"El piloto {} ha adelantado al piloto {}.".format(self.rider.name, forward_agent.rider.name))
                     forward_agent.time_track = self.time_track + t
                     forward_agent.time_lap = self.time_lap + t
                     for i in range(len(race.agents)):
@@ -718,7 +720,7 @@ class Agent:
                             race.agents[i] = a
                             break
                 else:
-                    print("El piloto {} ha defendido su posicion frente al piloto {}.".format(forward_agent.rider.name,
+                    print(Fore.YELLOW+"El piloto {} ha defendido su posicion frente al piloto {}.".format(forward_agent.rider.name,
                                                                                               self.rider.name))
                     self.time_track = forward_agent.time_track + t
                     self.time_lap = forward_agent.time_lap + t
@@ -768,16 +770,16 @@ class Agent:
                 return True
         """
         if self.speed > section[2] or self.rider.probability_of_falling_off_the_bike > prob:
-            print("El piloto {} ha perdido el control de su moto y se ha ido al suelo.".format(self.rider.name))
+            print(Fore.RED+"El piloto {} ha perdido el control de su moto y se ha ido al suelo.".format(self.rider.name))
             return False
         if self.bike.probability_of_the_bike_breaking_down > prob:
-            print("El piloto {} ha explotado el motor de su moto.".format(self.rider.name))
+            print(Fore.RED+"El piloto {} ha explotado el motor de su moto.".format(self.rider.name))
             return False
         if self.bike.probability_of_exploding_tires > prob:
-            print("El piloto {} ha reventado los neumaticos de su moto.".format(self.rider.name))
+            print(Fore.RED+"El piloto {} ha reventado los neumaticos de su moto.".format(self.rider.name))
             return False
         if self.speed > self.bike.max_speed:
-            print("El piloto {} ha sobrepasado la velocidad maxima de su moto y ha explotado el motor.".
+            print(Fore.RED+"El piloto {} ha sobrepasado la velocidad maxima de su moto y ha explotado el motor.".
                   format(self.rider.name))
             return False
         return True

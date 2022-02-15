@@ -1,5 +1,5 @@
 from simulation.race import Race
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore
 
 class Simulator:
     def start(self, race: Race):
@@ -13,7 +13,7 @@ class Simulator:
         while True:
             print("Vuelta {}:".format(race.current_lap + 1))
             for section in race.environment.track.sections:
-                print("\n"+Fore.RED+"-> Inicia la seccion {}.".format(section[0]))
+                print("\n"+Fore.BLUE+"-> Inicia la seccion {}.".format(section[0]))
                 remove_agents = set()
                 for i in range(len(race.agents)):
                     if remove_agents.__contains__(race.agents[i]):
@@ -38,7 +38,7 @@ class Simulator:
                 for x in remove_agents:
                     race.agents.remove(x)
                 if len(race.agents) > 0:
-                    print("-> La seccion {} ha sido superada.\n".format(section[0]))
+                    print(Fore.BLUE+"-> La seccion {} ha sido superada.\n".format(section[0]))
                     if len(race.agents) > 1:
                         race.ranking()
                 else:
@@ -49,7 +49,7 @@ class Simulator:
                 for agent in race.agents:
                     agent.update_agent_parameter(old_weather, new_weather, section)
             if len(race.agents) == 0:
-                print("\nNingun piloto ha terminado la carrera.\n")
+                print("\n"+Fore.BLUE+"Ningun piloto ha terminado la carrera.\n")
                 break
             if race.change_lap():
                 race.ranking()
