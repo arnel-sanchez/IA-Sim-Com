@@ -66,9 +66,9 @@ class Simulator:
         print(Fore.CYAN + "Estado: {}".format(translate_weather[weather.weather_status.value]))
         print(Fore.CYAN + "Humedad: {}".format(self.rank(weather.humidity)))
         print(Fore.CYAN + "Temperatura: {}".format(self.rank(weather.temperature)))
-        print(Fore.CYAN + "Visibilidad: {}\n".format(self.rank(weather.visibility)))
+        print(Fore.CYAN + "Visibilidad: {}".format(self.rank(weather.visibility)))
         print(Fore.CYAN + "Viento: {}".format(translate_direction[weather.wind.value]))
-        print(Fore.CYAN + "Intensidad del viento: {}".format(self.rank(weather.wind_intensity)))
+        print(Fore.CYAN + "Intensidad del viento: {}\n".format(self.rank(weather.wind_intensity)))
 
     def rank(self, number):
         return "Alta" if number > 6 else "Baja" if number < 4 else "Media"
