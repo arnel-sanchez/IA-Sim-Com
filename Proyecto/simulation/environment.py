@@ -12,7 +12,7 @@ class Environment:
         humidity = int(normalvariate(5, 2))
         wind_intensity = int(normalvariate(5, 2))
         wind = randint(0, 7)
-        weather_status_random = normalvariate(1,0.4)
+        weather_status_random = normalvariate(1, 0.4)
         weather_status = 1
         if weather_status_random < 0.5:
             weather_status = 0
@@ -35,14 +35,14 @@ class Environment:
 
     def change_weather_status(self):
         wind = randint(0, 7)
-        weather_status_random = normalvariate(1,0.4)
+        weather_status_random = normalvariate(1, 0.4)
         weather_status = 1
         if weather_status_random < 0.5:
             weather_status = 0
         elif weather_status_random > 1.5:
             weather_status = 2
         self.weather.change_wind(CardinalsPoints(wind))
-        self.weather.change_weather_status(weather_status)
+        self.weather.change_weather_status(WeatherStatus(weather_status))
 
     def print(self):
         return

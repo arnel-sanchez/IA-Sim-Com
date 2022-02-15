@@ -25,15 +25,15 @@ class AgentActions(Enum):
     SpeedUp = 0
     KeepSpeed = 1
     Brake = 2
-    
+
     SpeedUp_Turn = 3
     KeepSpeed_Turn = 4
     Brake_Turn = 5
-    
+
     SpeedUp_Pits = 6
     KeepSpeed_Pits = 7
     Brake_Pits = 8
-    
+
     SpeedUp_Turn_Pits = 9
     KeepSpeed_Turn_Pits = 10
     Brake_Turn_Pits = 11
@@ -41,15 +41,15 @@ class AgentActions(Enum):
     SpeedUp_Attack = 12
     KeepSpeed_Attack = 13
     Brake_Attack = 14
-    
+
     SpeedUp_Turn_Attack = 15
     KeepSpeed_Turn_Attack = 16
     Brake_Turn_Attack = 17
-    
+
     SpeedUp_Pits_Attack = 18
     KeepSpeed_Pits_Attack = 19
     Brake_Pits_Attack = 20
-    
+
     SpeedUp_Turn_Pits_Attack = 21
     KeepSpeed_Turn_Pits_Attack = 22
     Brake_Turn_Pits_Attack = 23
@@ -57,11 +57,11 @@ class AgentActions(Enum):
     SpeedUp_Defend = 24
     KeepSpeed_Defend = 25
     Brake_Defend = 26
-    
+
     SpeedUp_Turn_Defend = 27
     KeepSpeed_Turn_Defend = 28
     Brake_Turn_Defend = 29
-    
+
     SpeedUp_Pits_Defend = 30
     KeepSpeed_Pits_Defend = 31
     Brake_Pits_Defend = 32
@@ -76,7 +76,8 @@ class Agent:
                  node: RiderNode = None):
         self.rider = rider
         self.bike = bike
-        self.speed = 0
+        self.speed = bike.max_speed / 3
+        self.acceleration = 0
         self.time_track = 0
         self.flag_configuration = flag_configuration
         self.flag_action = flag_action
@@ -452,7 +453,6 @@ class Agent:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
-
         if new_weather.is_front_wind(section[3]):
             if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                 self.rider.step_by_line = 0
@@ -588,6 +588,16 @@ class Agent:
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * weather.wind_intensity / 4
 
+    def overcome_an_obstacle(self, section, race, forward_agent, behind_agent):
+        action = self.select_action(race, section)
+        self.select_acceleration(section, race, action)
+        self.calc_final_speed(section[1])
+        if not self.status_analysis(section, race, action, forward_agent, behind_agent):
+            return False
+        if action is not None and action.name.__contains__("Pits"):
+            self.flag_to_pits = True
+        return True
+
     def select_action(self, race, section):
         prob = continuous_variable_generator()
         if not self.flag_action or self.rider.independence > prob:
@@ -631,80 +641,145 @@ class Agent:
             function.eval([], self.node.nuevocontext)
             self.acceleration = self.node.nuevocontext.variables["acceleration"].value
 
+    def calc_max_acceleration(self, max_speed, length):
+        return (pow(max_speed / 3.6, 2) - pow(self.speed / 3.6, 2)) / (2 * length)
+
+    def calc_final_speed(self, length):
+        if self.acceleration != 0:
+            v0 = self.speed / 3.6
+            vf = sqrt(pow(v0, 2) + 2 * self.acceleration * length)
+            t = (vf - v0) / self.acceleration
+            self.time_lap += t
+            self.time_track += t
+            self.speed = vf * 3.6
+        else:
+            t = length / self.speed
+            self.time_lap += t
+            self.time_track += t
+
     def status_analysis(self, section, race, action, forward_agent, behind_agent):
-        prob = continuous_variable_generator()
         if action is None:
-            print("El piloto {} se ha quedado perplejo y no ha reaccionado, ha sido descalificado.".
+            print("El piloto {} se ha quedado perplejo y no ha reaccionado. Ha sido descalificado.".
                   format(self.rider.name))
             return False
         if self.speed == 0:
-            print("El piloto {} ha roto el acelerador y su moto se ha detenido en plena carrera, ha sido descalificado.".
+            print("El piloto {} ha roto el acelerador y su moto se ha detenido en plena carrera. Ha sido descalificado.".
                   format(self.rider.name))
             return False
         if section[4] == TrackType.Straight:
-            if (3 <= action.value <= 5) or (9 <= action.value <= 11) or (15 <= action.value <= 17) or \
-                    (21 <= action.value <= 23) or (27 <= action.value <= 29) or (33 <= action.value <= 35):
+            if action.name.__contains__("Turn"):
                 print("El piloto {} ha doblado en plena recta y se ha ido al suelo.".format(self.rider.name))
                 return False
-        elif section[4] == TrackType.Curve:
-            if (action.value <= 3 and action.value >= 5) or (action.value <= 9 and action.value >= 11) or \
-                    (action.value <= 15 and action.value >= 17) or (action.value <= 21 and action.value >= 23) or \
-                    (action.value <= 27 and action.value >= 29) or (action.value <= 33 and action.value >= 35):
-                print("El piloto {} ha seguido de largo y no ha doblado, ha roto la moto en la grava.".format(
-                    self.rider.name))
-                return False
-        if 12 <= action.value <= 23 and self.rider.aggressiveness > prob:
-            if forward_agent is not None and forward_agent.rider.aggressiveness > prob:
-                print(
-                    "El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva y los 2 se han ido al suelo.".
-                    format(forward_agent.rider.name, self.rider.name))
-                self.shot_down = -1
-            else:
-                print("El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
-                  format(self.rider.name))
-            return False
-        elif 24 <= action.value <= 35 and self.rider.aggressiveness > prob:
-            if behind_agent is not None and behind_agent.rider.aggressiveness > prob:
-                print(
-                    "El piloto {} ha sido defendido por el piloto {} de una forma muy agresiva y los 2 se han ido al suelo.".
-                    format(behind_agent.rider.name, self.rider.name))
-                self.shot_down = 1
-            else:
-                print("El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
-                  format(self.rider.name))
-            return False
+            expertise = self.rider.step_by_line / 1000
         else:
-            if 24 <= action.value <= 35 or 12 <= action.value <= 23:
-                self.bike.probability_of_exploding_tires += 0.0005
-        if self.rider.probability_of_falling_off_the_bike > prob:
+            if not action.name.__contains__("Turn"):
+                print("El piloto {} ha seguido de largo y no ha doblado. Ha roto la moto en la grava.".
+                      format(self.rider.name))
+                return False
+            expertise = self.rider.cornering / 1000
+        expertise += self.rider.expertise
+        prob = continuous_variable_generator()
+        if action.name.__contains__("Attack") or (forward_agent is not None and
+                                                  self.time_track < forward_agent.time_track):
+            if expertise > 1 - prob:
+                prob = continuous_variable_generator()
+                if prob < 1 / 6:
+                    print("El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
+                          format(forward_agent.rider.name, self.rider.name))
+                    self.shot_down = -1
+                elif prob < 2 / 6:
+                    print("El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
+                          format(self.rider.name))
+                elif prob < 3 / 6:
+                    print("El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
+                          format(forward_agent.rider.name, self.rider.name))
+                elif prob < 4 / 6:
+                    print("El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
+                          format(forward_agent.rider.name, self.rider.name))
+                    self.shot_down = 1
+                elif prob < 5 / 6:
+                    print("El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
+                          format(forward_agent.rider.name))
+                else:
+                    print("El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
+                          format(self.rider.name, forward_agent.rider.name))
+                return False
+            else:
+                prob = continuous_variable_generator()
+                t = continuous_variable_generator()
+                if prob - self.rider.expertise < 1 / 3:
+                    print("El piloto {} ha adelantado al piloto {}.".format(self.rider.name, forward_agent.rider.name))
+                    forward_agent.time_track = self.time_track + t
+                    forward_agent.time_lap = self.time_lap + t
+                    for i in range(len(race.agents)):
+                        if race.agents[i] == self:
+                            a = race.agents[i - 1]
+                            race.agents[i - 1] = race.agents[i]
+                            race.agents[i] = a
+                            break
+                else:
+                    print("El piloto {} ha defendido su posicion frente al piloto {}.".format(forward_agent.rider.name,
+                                                                                              self.rider.name))
+                    self.time_track = forward_agent.time_track + t
+                    self.time_lap = forward_agent.time_lap + t
+                    if behind_agent is not None and self.time_track > behind_agent.time_track > 0:
+                        x = 0
+                self.bike.probability_of_the_bike_breaking_down += 0.0001
+                self.bike.probability_of_exploding_tires += 0.0001
+                return True
+        """
+        elif action.name.__contains__("Defend"):
+            if expertise > 1 - prob:
+                prob = continuous_variable_generator()
+                if prob < 1 / 3:
+                    print("El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
+                          format(self.rider.name, behind_agent.rider.name))
+                    self.shot_down = 1
+                elif prob < 2 / 3:
+                    print("El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
+                          format(self.rider.name))
+                else:
+                    print("El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
+                          format(forward_agent.rider.name, self.rider.name))
+                return False
+            else:
+                prob = continuous_variable_generator()
+                t = continuous_variable_generator()
+                if prob - self.rider.expertise < 2 / 3:
+                    print("El piloto {} ha defendido su posicion frente al piloto {}.".
+                          format(self.rider.name, behind_agent.rider.name))
+                    behind_agent.time_track = self.time_track + t
+                    behind_agent.time_lap = self.time_lap + t
+                    if behind_agent is not None and behind_agent.time_track > behind_agent.behind_agent.time_track > 0:
+                        x = 0
+                else:
+                    print("El piloto {} no ha podido defender su posicion frente al piloto {}.".
+                          format(self.rider.name, behind_agent.rider.name))
+                    self.time_track = behind_agent.time_track + t
+                    self.time_lap = behind_agent.time_lap + t
+                    for i in range(len(race.agents)):
+                        if race.agents[i] == self:
+                            a = race.agents[i + 1]
+                            race.agents[i + 1] = race.agents[i]
+                            race.agents[i] = a
+                            break
+                self.bike.probability_of_the_bike_breaking_down += 0.0001
+                self.bike.probability_of_exploding_tires += 0.0001
+                return True
+        """
+        if self.speed > section[2] or self.rider.probability_of_falling_off_the_bike > prob:
             print("El piloto {} ha perdido el control de su moto y se ha ido al suelo.".format(self.rider.name))
             return False
         if self.bike.probability_of_the_bike_breaking_down > prob:
-            print("El piloto {} ha reventado el motor de su moto.".format(self.rider.name))
+            print("El piloto {} ha explotado el motor de su moto.".format(self.rider.name))
             return False
         if self.bike.probability_of_exploding_tires > prob:
             print("El piloto {} ha reventado los neumaticos de su moto.".format(self.rider.name))
             return False
-        if section[2] < self.speed and prob < 0.0001:
-            print("El piloto {} ha perdido el control de su moto y se ha ido al suelo.".format(self.rider.name))
-            return False
-        elif section[2] > self.speed and prob < 0.00001:
-            print("El piloto {} ha perdido el control de su moto y se ha ido al suelo.".format(self.rider.name))
-            return False
-        elif self.speed > self.bike.max_speed:
+        if self.speed > self.bike.max_speed:
             print("El piloto {} ha sobrepasado la velocidad maxima de su moto y ha explotado el motor.".
                   format(self.rider.name))
             return False
-        return True
-
-    def overcome_an_obstacle(self, section, race, forward_agent, behind_agent):
-        action = self.select_action(race, section)
-        self.select_acceleration(section, race, action)
-        self.calc_final_speed(section[2], section[1])
-        if not self.status_analysis(section, race, action, forward_agent, behind_agent):
-            return False
-        if action is not None and 6 <= action.value <= 11:
-            self.flag_to_pits = True
         return True
 
     def calc_final_speed(self, max_speed, length):

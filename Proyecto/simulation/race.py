@@ -35,7 +35,7 @@ class Race:
     def change_lap(self):
         self.current_lap += 1
         if self.current_lap == self.laps:
-            print("\nCarrera terminada\n")
+            print("\nCarrera terminada")
             self.print_ranking()
             return True
         elif self.current_lap == self.laps - 1:
@@ -56,14 +56,14 @@ class Race:
                 if agent.flag_to_pits:
                     agent.add_time_for_pits()
                     agent.bike.select_configuration(self.environment)
-                agent.update_agent_parameter(weather,self.environment.weather, self.environment.track.sections[0])
-            print("\nVuelta {}\n".format(self.current_lap))
+                agent.update_agent_parameter(weather, self.environment.weather, self.environment.track.sections[0])
             self.print_ranking_lap()
             return False
 
     def print_ranking(self):
-        i = 1
+        print("\nResultado final:")
         print("Posicion - Tiempo de Carrera - Tiempo de Vuelta: Piloto")
+        i = 1
         for x in self.rank:
             spaces = ""
             if 8 - number_digits(i) > 0:
@@ -77,8 +77,9 @@ class Race:
         print()
 
     def print_ranking_lap(self):
-        i = 1
+        print("\nResultados de la vuelta {}:".format(self.current_lap))
         print("Posicion - Tiempo Acumulado - Tiempo de Vuelta: Piloto")
+        i = 1
         for x in self.rank:
             spaces = ""
             if 8 - number_digits(i) > 0:
@@ -93,8 +94,9 @@ class Race:
 
     def ranking(self):
         self.agents.sort(key=lambda agent: agent.time_track)
-        self.agents[0].distance_to_nearest_behind = self.agents[0].time_track - self.agents[1].time_track
+        if len(self.agents) < 2:
+            return
+        self.agents[0].distance_to_nearest_forward = 0
         for i in range(1, len(self.agents) - 1):
-            self.agents[i].distance_to_nearest_forward = self.agents[i - 1].distance_to_nearest_behind
-            self.agents[i].distance_to_nearest_behind = self.agents[i].time_track - self.agents[i + 1].time_track
-            self.agents[i + 1].distance_to_nearest_forward = self.agents[i].distance_to_nearest_behind
+            self.agents[i].distance_to_nearest_forward = self.agents[i].time_track - self.agents[i - 1].time_track
+            self.agents[i].distance_to_nearest_behind = self.agents[i + 1].time_track - self.agents[i].time_track

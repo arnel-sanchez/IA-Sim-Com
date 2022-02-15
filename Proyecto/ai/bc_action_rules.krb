@@ -58,7 +58,7 @@ attack_2
 
 
 defend_1
-    use select_action(12)
+    use select_action(24)
     when
         action_facts.section("Curve")
         action_facts.nearest_next($ans)
@@ -66,7 +66,7 @@ defend_1
 
 
 defend_2
-    use select_action(12)
+    use select_action(24)
     when
         action_facts.section("Straight")
         action_facts.nearest_next($ans)
