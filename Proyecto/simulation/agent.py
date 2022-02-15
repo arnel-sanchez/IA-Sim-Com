@@ -9,7 +9,7 @@ from simulation.bike import Bike
 
 from simulation.weather import WeatherStatus
 from simulation.bike import Tires
-from simulation.track import TrackType
+from simulation.track import SectionType
 
 from compilation.ast.specials import RiderNode
 from ai.ai import edit_action, call_ai, acceleration
@@ -669,7 +669,7 @@ class Agent:
                 Fore.RED + "El piloto {} ha roto el acelerador y su moto se ha detenido en plena carrera. Ha sido descalificado.".
                 format(self.rider.name))
             return False
-        if section[4] == TrackType.Straight:
+        if section[4] == SectionType.Straight:
             if action.name.__contains__("Turn"):
                 print(Fore.RED + "El piloto {} ha doblado en plena recta y se ha ido al suelo.".format(self.rider.name))
                 return False
