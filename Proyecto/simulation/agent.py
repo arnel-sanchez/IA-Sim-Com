@@ -796,3 +796,13 @@ class Agent:
 
     def add_time_for_pits(self):
         self.time_lap += uniform(8, 3)
+
+    def __lt__(self, other):
+        if not isinstance(other, Agent):
+            return False
+        return self.time_track < other.time_track
+
+    def __gt__(self, other):
+        if not isinstance(other, Agent):
+            return False
+        return self.time_track > other.time_track
