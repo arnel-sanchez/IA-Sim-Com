@@ -13,6 +13,7 @@ class Simulator:
         while True:
             print("Vuelta {}:".format(race.current_lap + 1))
             for section in race.environment.track.sections:
+                print("\n\e[31m-> Inicia la seccion {}.\e[0m".format(section[0]))
                 remove_agents = set()
                 for i in range(len(race.agents)):
                     if remove_agents.__contains__(race.agents[i]):
@@ -37,7 +38,7 @@ class Simulator:
                 for x in remove_agents:
                     race.agents.remove(x)
                 if len(race.agents) > 0:
-                    print("-> La seccion {} ha sido superada.".format(section[0]))
+                    print("-> La seccion {} ha sido superada.\n".format(section[0]))
                     if len(race.agents) > 1:
                         race.ranking()
                 else:
