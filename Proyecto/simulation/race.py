@@ -37,7 +37,7 @@ class Race:
     def change_lap(self):
         self.current_lap += 1
         if self.current_lap == self.laps:
-            print("\n" + Fore.BLUE + "Carrera terminada")
+            print(Fore.BLUE + "\nCarrera terminada")
             self.print_ranking()
             return True
         else:
@@ -52,7 +52,7 @@ class Race:
             return False
 
     def print_ranking_lap(self):
-        print("\n" + Fore.MAGENTA + "Resultados de la vuelta" + Fore.CYAN + " {}:".format(self.current_lap))
+        print(Fore.MAGENTA + "\nResultados de la vuelta" + Fore.CYAN + " {}:".format(self.current_lap))
         self.printer()
 
     def printer(self):
@@ -72,7 +72,7 @@ class Race:
         print()
 
     def print_ranking(self):
-        print("\n" + Fore.MAGENTA + "Resultado final:")
+        print(Fore.MAGENTA + "\nResultado final:")
         self.printer()
 
     def ranking(self):

@@ -4,20 +4,20 @@ from colorama import init, Fore
 
 class Simulator:
     def start(self, race: Race):
-        print(Fore.MAGENTA + "\nPista: " + Fore.CYAN + " {}".format(race.environment.track.name))
+        print(Fore.MAGENTA + "\nPista: " + Fore.CYAN + " {}\n".format(race.environment.track.name))
         self.print_race(race)
         print(Fore.MAGENTA + "Pilotos:")
         for i in range(len(race.rank)):
             print(Fore.CYAN+"{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
                                                        race.rank[i].bike.brand + " " + race.rank[i].bike.model))
-        print("\n" + Fore.BLUE + "Inicio de la carrera\n")
+        print(Fore.BLUE + "\nInicio de la carrera\n")
         while True:
             if race.current_lap < race.laps - 1:
                 print(Fore.CYAN + "Vuelta {}:".format(race.current_lap + 1))
             else:
                 print(Fore.CYAN + "Ultima vuelta:")
             for section in race.environment.track.sections:
-                print("\n" + Fore.BLUE + "-> Inicia la seccion {}.".format(section[0]))
+                print(Fore.BLUE + "\n-> Inicia la seccion {}.".format(section[0]))
                 remove_agents = set()
                 for i in range(len(race.agents)):
                     if remove_agents.__contains__(race.agents[i]):
@@ -51,7 +51,7 @@ class Simulator:
                 for agent in race.agents:
                     agent.update_agent_parameter(old_weather, new_weather, section)
             if len(race.agents) == 0:
-                print("\n" + Fore.BLUE + "Ningun piloto ha terminado la carrera.\n")
+                print(Fore.MAGENTA + "\nNingun piloto ha terminado la carrera.\n")
                 break
             if race.change_lap():
                 race.ranking()
@@ -63,13 +63,13 @@ class Simulator:
         weather = race.environment.weather
         translate_weather = ["Soleado", "Nublado", "Lluvioso"]
         translate_direction = ["Norte", "Noreste", "Este", "Sureste", "Sur", "Suroeste", "Oeste", "Noroeste"]
-        print("\n" + Fore.MAGENTA + "Clima:")
+        print(Fore.MAGENTA + "Clima:")
         print(Fore.CYAN + "Estado: {}".format(translate_weather[weather.weather_status.value]))
         print(Fore.CYAN + "Humedad: {}".format(self.rank(weather.humidity)))
         print(Fore.CYAN + "Temperatura: {}".format(self.rank(weather.temperature)))
         print(Fore.CYAN + "Visibilidad: {}".format(self.rank(weather.visibility)))
-        print(Fore.CYAN + "Viento: {}".format(translate_direction[weather.wind.value]))
-        print(Fore.CYAN + "Intensidad del viento: {}\n".format(self.rank(weather.wind_intensity)))
+        print(Fore.CYAN + "Viento: {}, Intensidad {}\n".format(translate_direction[weather.wind.value],
+                                                               self.rank(weather.wind_intensity)))
 
     def rank(self, number):
         return "Alta" if number > 6 else "Baja" if number < 4 else "Media"
