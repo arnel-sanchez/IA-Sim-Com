@@ -45,7 +45,7 @@ class Race:
                 if agent.flag_to_pits:
                     agent.add_time_for_pits()
                     agent.bike.select_configuration(self.environment)
-                agent.update_agent_parameter(weather,self.environment.weather, self.environment.track.sections[0])
+                agent.update_agent_parameter(weather, self.environment.weather, self.environment.track.sections[0])
             print("\nUltima vuelta\n")
             self.print_ranking_lap()
             return False

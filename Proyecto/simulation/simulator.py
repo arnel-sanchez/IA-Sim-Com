@@ -1,19 +1,20 @@
 from simulation.race import Race
 from colorama import init, Fore
 
+
 class Simulator:
     def start(self, race: Race):
-        print("\n" + Fore.MAGENTA+"Pista: " + Fore.CYAN + " {}".format(race.environment.track.name))
+        print(Fore.MAGENTA + "\nPista: " + Fore.CYAN + " {}".format(race.environment.track.name))
         self.print_race(race)
-        print(Fore.MAGENTA+"Pilotos:")
+        print(Fore.MAGENTA + "Pilotos:")
         for i in range(len(race.rank)):
-            print(Fore.CYAN+"{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
-                                             race.rank[i].bike.brand + " " + race.rank[i].bike.model))
-        print(Fore.BLUE+"\nInicio de la carrera\n")
+            print(Fore.CYAN + "{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
+                                                         race.rank[i].bike.brand + " " + race.rank[i].bike.model))
+        print(Fore.BLUE + "\nInicio de la carrera\n")
         while True:
-            print(Fore.CYAN+"Vuelta {}:".format(race.current_lap + 1))
+            print(Fore.CYAN + "Vuelta {}:".format(race.current_lap + 1))
             for section in race.environment.track.sections:
-                print("\n"+Fore.BLUE+"-> Inicia la seccion {}.".format(section[0]))
+                print("\n" + Fore.BLUE + "-> Inicia la seccion {}.".format(section[0]))
                 remove_agents = set()
                 for i in range(len(race.agents)):
                     if remove_agents.__contains__(race.agents[i]):
@@ -38,7 +39,7 @@ class Simulator:
                 for x in remove_agents:
                     race.agents.remove(x)
                 if len(race.agents) > 0:
-                    print(Fore.BLUE+"-> La seccion {} ha sido superada.\n".format(section[0]))
+                    print(Fore.BLUE + "-> La seccion {} ha sido superada.\n".format(section[0]))
                     if len(race.agents) > 1:
                         race.ranking()
                 else:
@@ -49,7 +50,7 @@ class Simulator:
                 for agent in race.agents:
                     agent.update_agent_parameter(old_weather, new_weather, section)
             if len(race.agents) == 0:
-                print("\n"+Fore.BLUE+"Ningun piloto ha terminado la carrera.\n")
+                print("\n" + Fore.BLUE + "Ningun piloto ha terminado la carrera.\n")
                 break
             if race.change_lap():
                 race.ranking()
@@ -61,13 +62,13 @@ class Simulator:
         weather = race.environment.weather
         translate_weather = ["Soleado", "Nublado", "Lluvioso"]
         translate_direction = ["Norte", "Noreste", "Este", "Sureste", "Sur", "Suroeste", "Oeste", "Noroeste"]
-        print("\n"+Fore.MAGENTA+"Clima:")
-        print(Fore.CYAN+"Estado: {}".format(translate_weather[weather.weather_status.value]))
-        print(Fore.CYAN+"Humedad: {}".format(self.rank(weather.humidity)))
-        print(Fore.CYAN+"Temperatura: {}".format(self.rank(weather.temperature)))
-        print(Fore.CYAN+"Visibilidad: {}\n".format(self.rank(weather.visibility)))
-        print(Fore.CYAN+"Viento: {}".format(translate_direction[weather.wind.value]))
-        print(Fore.CYAN+"Intensidad del viento: {}".format(self.rank(weather.wind_intensity)))
+        print("\n" + Fore.MAGENTA + "Clima:")
+        print(Fore.CYAN + "Estado: {}".format(translate_weather[weather.weather_status.value]))
+        print(Fore.CYAN + "Humedad: {}".format(self.rank(weather.humidity)))
+        print(Fore.CYAN + "Temperatura: {}".format(self.rank(weather.temperature)))
+        print(Fore.CYAN + "Visibilidad: {}\n".format(self.rank(weather.visibility)))
+        print(Fore.CYAN + "Viento: {}".format(translate_direction[weather.wind.value]))
+        print(Fore.CYAN + "Intensidad del viento: {}".format(self.rank(weather.wind_intensity)))
 
     def rank(self, number):
         return "Alta" if number > 6 else "Baja" if number < 4 else "Media"
