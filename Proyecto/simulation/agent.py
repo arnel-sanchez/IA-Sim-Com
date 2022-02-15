@@ -725,3 +725,6 @@ class Agent:
 
     def calc_max_acceleration(self, max_speed, length):
         return (pow(max_speed / 3.6, 2) - pow(self.speed / 3.6, 2)) / (2 * length)
+
+    def add_time_for_pits(self):
+        self.time_lap += normalvariate(8,3)

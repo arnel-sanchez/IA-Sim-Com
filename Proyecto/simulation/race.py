@@ -43,6 +43,7 @@ class Race:
             self.environment.change_weather_status()
             for agent in self.agents:
                 if agent.flag_to_pits:
+                    agent.add_time_for_pits()
                     agent.bike.select_configuration(self.environment)
                 agent.update_agent_parameter(weather,self.environment.weather, self.environment.track.sections[0])
             print("\nUltima vuelta\n")
@@ -53,6 +54,7 @@ class Race:
             self.environment.change_weather_status()
             for agent in self.agents:
                 if agent.flag_to_pits:
+                    agent.add_time_for_pits()
                     agent.bike.select_configuration(self.environment)
                 agent.update_agent_parameter(weather,self.environment.weather, self.environment.track.sections[0])
             print("\nVuelta {}\n".format(self.current_lap))
