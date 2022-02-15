@@ -9,10 +9,13 @@ class Simulator:
         print(Fore.MAGENTA + "Pilotos:")
         for i in range(len(race.rank)):
             print(Fore.CYAN+"{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
-                                             race.rank[i].bike.brand + " " + race.rank[i].bike.model))
+                                                       race.rank[i].bike.brand + " " + race.rank[i].bike.model))
         print("\n" + Fore.BLUE + "Inicio de la carrera\n")
         while True:
-            print(Fore.CYAN + "Vuelta {}:".format(race.current_lap + 1))
+            if race.current_lap < race.laps - 1:
+                print(Fore.CYAN + "Vuelta {}:".format(race.current_lap + 1))
+            else:
+                print(Fore.CYAN + "Ultima vuelta:")
             for section in race.environment.track.sections:
                 print("\n" + Fore.BLUE + "-> Inicia la seccion {}.".format(section[0]))
                 remove_agents = set()
@@ -38,7 +41,7 @@ class Simulator:
                 for x in remove_agents:
                     race.agents.remove(x)
                 if len(race.agents) > 0:
-                    print(Fore.BLUE + "-> La seccion {} ha sido superada.\n".format(section[0]))
+                    print(Fore.BLUE + "-> La seccion {} ha sido superada.".format(section[0]))
                     if len(race.agents) > 1:
                         race.ranking()
                 else:

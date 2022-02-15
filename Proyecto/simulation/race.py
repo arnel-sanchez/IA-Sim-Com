@@ -40,17 +40,6 @@ class Race:
             print("\n" + Fore.BLUE + "Carrera terminada")
             self.print_ranking()
             return True
-        elif self.current_lap == self.laps - 1:
-            weather = self.environment.weather
-            self.environment.change_weather_status()
-            for agent in self.agents:
-                if agent.flag_to_pits:
-                    agent.add_time_for_pits()
-                    agent.bike.select_configuration(self.environment)
-                agent.update_agent_parameter(weather,self.environment.weather, self.environment.track.sections[0])
-            print("\n" + Fore.BLUE + "Ultima vuelta\n")
-            self.print_ranking_lap()
-            return False
         else:
             weather = self.environment.weather
             self.environment.change_weather_status()
@@ -64,35 +53,26 @@ class Race:
 
     def print_ranking(self):
         print("\n" + Fore.MAGENTA + "Resultado final:")
-        print(Fore.BLUE + "Posicion" + Fore.WHITE + " -" + Fore.CYAN + " Tiempo de Carrera" + Fore.WHITE + " -" + Fore.GREEN + " Tiempo de Vuelta:" + Fore.RED + " Piloto")
+        self.printer()
+
+    def printer(self):
+        print(Fore.BLUE + "Posicion" + Fore.WHITE + " - " + Fore.CYAN + "Tiempo de Carrera" + Fore.WHITE + " - " +
+              Fore.GREEN + "Tiempo de Vuelta: " + Fore.RED + "Piloto")
         i = 1
         for x in self.rank:
             spaces = ""
             if 8 - number_digits(i) > 0:
                 for j in range(8 - number_digits(i)):
                     spaces += " "
-            print(
-                spaces + Fore.BLUE + "{}" + Fore.WHITE + " -" + Fore.CYAN + " {}" + Fore.WHITE + " -" + Fore.GREEN + " {}:" + Fore.RED + " {} con la {}".format(i, seconds_to_minutes(x.time_track),
-                                                              seconds_to_minutes(x.time_lap),
-                                                              x.rider.name, x.bike.brand + " " + x.bike.model))
+            print(spaces + Fore.BLUE + str(i) + Fore.WHITE + " - " + Fore.CYAN + str(seconds_to_minutes(x.time_track)) +
+                  Fore.WHITE + " - " + Fore.GREEN + str(seconds_to_minutes(x.time_lap)) + ": " + Fore.RED +
+                  "{} con la {} {}".format(x.rider.name, x.bike.brand, + x.bike.model))
             i += 1
         print()
 
     def print_ranking_lap(self):
         print("\n" + Fore.MAGENTA + "Resultados de la vuelta" + Fore.CYAN + " {}:".format(self.current_lap))
-        print(Fore.BLUE + "Posicion" + Fore.WHITE + " -" + Fore.CYAN + " Tiempo de Carrera" + Fore.WHITE + " -" + Fore.GREEN + " Tiempo de Vuelta:" + Fore.RED + " Piloto")
-        i = 1
-        for x in self.rank:
-            spaces = ""
-            if 8 - number_digits(i) > 0:
-                for j in range(8 - number_digits(i)):
-                    spaces += " "
-            print(
-                spaces + Fore.BLUE + "{}" + Fore.WHITE + " -" + Fore.CYAN + " {}" + Fore.WHITE + " -" + Fore.GREEN + " {}:" + Fore.RED + " {} con la {}".format(i, seconds_to_minutes(x.time_track),
-                                                              seconds_to_minutes(x.time_lap),
-                                                              x.rider.name, x.bike.brand + " " + x.bike.model))
-            i += 1
-        print()
+        self.printer()
 
     def ranking(self):
         self.agents.sort(key=lambda agent: agent.time_track)
