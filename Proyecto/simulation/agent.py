@@ -693,25 +693,28 @@ class Agent:
                     self.shot_down = -1
                 elif prob < 2 / 6:
                     print(
-                        Fore.RED + "El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
-                        format(self.rider.name))
-                elif prob < 3 / 6:
-                    print(
-                        Fore.RED + "El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
-                        format(forward_agent.rider.name, self.rider.name))
-                elif prob < 4 / 6:
-                    print(
                         Fore.RED + "El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
                         format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down = 1
-                elif prob < 5 / 6:
+                    self.shot_down = -1
+                elif prob < 3 / 6:
                     print(
-                        Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
-                        format(forward_agent.rider.name))
-                else:
+                        Fore.RED + "El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
+                        format(self.rider.name))
+                elif prob < 4 / 6:
                     print(
                         Fore.RED + "El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
                         format(self.rider.name, forward_agent.rider.name))
+                else:
+                    if prob < 5 / 6:
+                        print(
+                            Fore.RED + "El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
+                            format(forward_agent.rider.name, self.rider.name))
+                    else:
+                        print(
+                            Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
+                            format(forward_agent.rider.name))
+                    self.shot_down = -1
+                    return True
                 return False
             else:
                 prob = continuous_variable_generator()

@@ -34,10 +34,9 @@ class Simulator:
                             behind_agent = race.agents[i + 1]
                         if not race.agents[i].overcome_an_obstacle(section, race, forward_agent, behind_agent):
                             remove_agents.add(race.agents[i])
-                    if race.agents[i].shot_down == 1:
-                        remove_agents.add(race.agents[i + 1])
-                    elif race.agents[i].shot_down == -1:
-                        remove_agents.add(race.agents[i - 1])
+                    shot_down = race.agents[i].shot_down
+                    if shot_down != 0:
+                        remove_agents.add(race.agents[i + shot_down])
                 for x in remove_agents:
                     race.agents.remove(x)
                 if len(race.agents) > 0:

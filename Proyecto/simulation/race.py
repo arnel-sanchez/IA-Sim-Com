@@ -65,7 +65,7 @@ class Race:
                 for j in range(8 - number_digits(i)):
                     spaces += " "
             print(spaces + Fore.BLUE + str(i) + Fore.WHITE + " - " + Fore.CYAN + seconds_to_minutes(x.time_track) +
-                  Fore.WHITE + " - " + Fore.GREEN + seconds_to_minutes(x.time_lap) + ": " + Fore.RED +
+                  Fore.WHITE + "  - " + Fore.GREEN + seconds_to_minutes(x.time_lap) + ": " + Fore.RED +
                   "{} con la {} {}".format(x.rider.name, x.bike.brand, x.bike.model))
             i += 1
         print()
