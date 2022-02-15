@@ -1,3 +1,5 @@
+from colorama import init, Fore
+
 from simulation.environment import Environment
 
 
