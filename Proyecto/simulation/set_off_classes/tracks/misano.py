@@ -1,7 +1,5 @@
-﻿from simulation.track import Track
+﻿from simulation.track import Track, Section, SectionType
 from simulation.weather import CardinalsPoints
-from simulation.track import SectionType
-from simulation.track import Section
 
 
 class Misano(Track):

@@ -89,7 +89,7 @@ def edit_action(race, agent):
         speed_cmp = 2
     section_type = agent.section.type.name
     weather = race.environment.weather
-    nearest_previous, nearest_next = nearest(race, agent.rider)
+    nearest_forward, nearest_behind = nearest(race, agent)
     facts = open(path[0] + "/ai/action_facts.kfb", "w")
     facts.write("# action_facts.kfb\n\n")
     facts.write("speed({})\n".format(speed_cmp))
@@ -97,22 +97,21 @@ def edit_action(race, agent):
     facts.write("slick_tires({})\n".format(True if bike.tires.name.__contains__("Slick") else False))
     facts.write("rainy({})\n".format(True if weather.weather_status.name == "Rainy" else False))
     facts.write("high_humidity({})\n".format(True if weather.humidity > 6 else False))
-    facts.write("nearest_previous({})\n".format(nearest_previous))
-    facts.write("nearest_next({})\n".format(nearest_next))
+    facts.write("nearest_forward({})\n".format(nearest_forward))
+    facts.write("nearest_behind({})\n".format(nearest_behind))
     facts.close()
 
 
-def nearest(race, rider):
-    nearest_previous = 60
-    nearest_next = 60
+def nearest(race, agent):
+    nearest_forward = 60
+    nearest_behind = 60
     for i in range(len(race.agents)):
-        agent = race.agents[i]
-        if agent.rider == rider:
+        if agent == race.agents[i]:
             if i > 0:
-                nearest_previous = how_close(agent, race.agents[i - 1])
+                nearest_forward = how_close(agent, race.agents[i - 1])
             elif i < len(race.agents) - 1:
-                nearest_next = how_close(agent, race.agents[i + 1])
-    return nearest_previous, nearest_next
+                nearest_behind = how_close(agent, race.agents[i + 1])
+    return nearest_forward, nearest_behind
 
 
 def how_close(agent_1, agent_2):

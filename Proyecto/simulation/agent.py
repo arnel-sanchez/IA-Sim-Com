@@ -1,26 +1,19 @@
-from math import pow, sqrt
-from enum import Enum
 from random import uniform, randint
-
-from colorama import init, Fore
+from enum import Enum
+from math import pow, sqrt
+from colorama import Fore
 
 from simulation.rider import Rider
 from simulation.bike import Bike
-
 from simulation.weather import WeatherStatus
 from simulation.bike import Tires
 from simulation.track import SectionType
-
 from compilation.ast.specials import RiderNode
 from ai.ai import edit_action, call_ai, acceleration
 
 
 def continuous_variable_generator():
     return uniform(0, 1)
-
-
-def discrete_variable_generator():
-    return randint(1, 10)
 
 
 class AgentActions(Enum):
@@ -74,7 +67,8 @@ class AgentActions(Enum):
 
 
 class Agent:
-    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_acceleration, section, node: RiderNode = None):
+    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_acceleration, section,
+                 node: RiderNode = None):
         self.rider = rider
         self.bike = bike
         self.speed = bike.max_speed / 3
@@ -362,7 +356,7 @@ class Agent:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * weather.wind_intensity / 4
-    
+
     def change_section(self, section, last):
         self.section = section
         if last:
@@ -466,7 +460,7 @@ class Agent:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
-        if new_weather.is_front_wind(self.section[3]):
+        if new_weather.is_front_wind(self.section.orientation):
             if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                 self.rider.step_by_line = 0
             else:
@@ -526,7 +520,7 @@ class Agent:
                     self.bike.probability_of_the_bike_breaking_down = 1
                 else:
                     self.bike.probability_of_the_bike_breaking_down += 0.0001 * weather.wind_intensity / 4
-        elif new_weather.is_back_wind(self.section[3]):
+        elif new_weather.is_back_wind(self.section.orientation):
             if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                 self.rider.step_by_line = 10
             else:
@@ -701,33 +695,31 @@ class Agent:
                     print(
                         Fore.RED + "El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
                         format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down_behind = True
+                    self.shot_down_forward = True
                 elif prob < 2 / 6:
                     print(
                         Fore.RED + "El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
                         format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down = -1
+                    self.shot_down_forward = True
                 elif prob < 3 / 6:
                     print(
                         Fore.RED + "El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
                         format(self.rider.name))
-                elif prob < 3 / 6:
-                    print(
-                        Fore.RED + "El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
-                        format(forward_agent.rider.name, self.rider.name))
                 elif prob < 4 / 6:
-                    print(
-                        Fore.RED + "El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
-                        format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down_forward = True
-                elif prob < 5 / 6:
-                    print(
-                        Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
-                        format(forward_agent.rider.name))
-                else:
                     print(
                         Fore.RED + "El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
                         format(self.rider.name, forward_agent.rider.name))
+                else:
+                    if prob < 5 / 6:
+                        print(
+                            Fore.RED + "El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
+                            format(forward_agent.rider.name, self.rider.name))
+                    else:
+                        print(
+                            Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
+                            format(forward_agent.rider.name))
+                    self.shot_down_forward = True
+                    return True
                 return False
             else:
                 prob = continuous_variable_generator()
@@ -753,13 +745,13 @@ class Agent:
                 self.bike.probability_of_exploding_tires += 0.0001
                 return True
         """
-        elif behind_agent is not None and (action.name.__contains__("Defend") or 
-                                           self.time_track > behind_agent.time_track):
+        elif following_agent is not None and (action.name.__contains__("Defend") or 
+                                           self.time_track > following_agent.time_track):
             if expertise > 1 - prob:
                 prob = continuous_variable_generator()
                 if prob < 1 / 3:
                     print("El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
-                          format(self.rider.name, behind_agent.rider.name))
+                          format(self.rider.name, following_agent.rider.name))
                     self.shot_down = 1
                 elif prob < 2 / 3:
                     print("El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
@@ -773,14 +765,14 @@ class Agent:
                 t = continuous_variable_generator()
                 if prob - self.rider.expertise < 2 / 3:
                     print("El piloto {} ha defendido su posicion frente al piloto {}.".
-                          format(self.rider.name, behind_agent.rider.name))
-                    behind_agent.time_track = self.time_track + t
-                    behind_agent.time_lap = self.time_lap + t
+                          format(self.rider.name, following_agent.rider.name))
+                    following_agent.time_track = self.time_track + t
+                    following_agent.time_lap = self.time_lap + t
                 else:
                     print("El piloto {} no ha podido defender su posicion frente al piloto {}.".
-                          format(self.rider.name, behind_agent.rider.name))
-                    self.time_track = behind_agent.time_track + t
-                    self.time_lap = behind_agent.time_lap + t
+                          format(self.rider.name, following_agent.rider.name))
+                    self.time_track = following_agent.time_track + t
+                    self.time_lap = following_agent.time_lap + t
                     for i in range(len(race.agents)):
                         if race.agents[i] == self:
                             a = race.agents[i + 1]

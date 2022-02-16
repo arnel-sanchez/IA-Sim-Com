@@ -1,16 +1,18 @@
+from colorama import Fore
+from heapq import heappush, heappop, heapify
+
 from simulation.race import Race
-from colorama import init, Fore
-from heapq import heappush, heappop
- 
+
+
 class Simulator:
     def start(self, race: Race):
         print(Fore.MAGENTA + "\nPista: " + Fore.CYAN + " {}\n".format(race.environment.track.name))
         self.print_race(race)
         print(Fore.MAGENTA + "Pilotos:")
         for i in range(len(race.rank)):
-            print(Fore.CYAN+"{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
-                                             race.rank[i].bike.brand + " " + race.rank[i].bike.model))
-        print("\n" + Fore.BLUE + "Inicio de la carrera\n")
+            print(Fore.CYAN + "{} - {} con la {}".format(i + 1, race.rank[i].rider.name,
+                                                         race.rank[i].bike.brand + " " + race.rank[i].bike.model))
+        print(Fore.BLUE + "\nInicio de la carrera\n")
         h = []
         for x in race.agents:
             heappush(h, x)
@@ -25,8 +27,7 @@ class Simulator:
                 for agent_1 in race.agents:
                     if agent_1 == agent:
                         break
-                    else:
-                        i+=1
+                    i += 1
                 if i == 0:
                     if not race.agents[i].overcome_an_obstacle(race, None, race.agents[i + 1]):
                         if race.agents[i].shot_down_behind:
@@ -37,7 +38,8 @@ class Simulator:
                             race.flag_laps = True
                             race.agents[i].change_section(race.environment.track.sections[0], True)
                         else:
-                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1], False)
+                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1],
+                                                          False)
                 elif i == len(race.agents) - 1:
                     if not race.agents[i].overcome_an_obstacle(race, race.agents[i - 1], None):
                         if race.agents[i].shot_down_forward:
@@ -48,10 +50,11 @@ class Simulator:
                             race.flag_laps = True
                             race.agents[i].change_section(race.environment.track.sections[0], True)
                         else:
-                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1], False)
+                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1],
+                                                          False)
                 else:
                     if not race.agents[i].overcome_an_obstacle(race, race.agents[i - 1],
-                                                                race.agents[i + 1]):
+                                                               race.agents[i + 1]):
                         if race.agents[i].shot_down_forward:
                             remove_agents.append(race.agents[i - 1])
                         if race.agents[i].shot_down_behind:
@@ -62,7 +65,8 @@ class Simulator:
                             race.flag_laps = True
                             race.agents[i].change_section(race.environment.track.sections[0], True)
                         else:
-                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1], False)
+                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1],
+                                                          False)
             if len(remove_agents) != 0:
                 for remove in remove_agents:
                     if remove != agent:
@@ -72,21 +76,19 @@ class Simulator:
                         race.agents.remove(remove)
             else:
                 heappush(h, agent)
-
-            if len(h) == 0:
-                print("\n" + Fore.BLUE + "Ningun piloto ha terminado la carrera.\n")
+            if len(h) < 1:
+                print(Fore.BLUE + "\nNingun piloto ha terminado la carrera.\n")
                 break
             if race.end_lap():
                 race.ranking()
                 if race.change_lap():
                     break
-                else:
-                    old_weather = race.environment.weather
-                    race.environment.change_weather_params()
-                    new_weather = race.environment.weather
-                    for agent in race.agents:
-                        agent.update_agent_parameter(old_weather, new_weather)
-                    self.print_race(race)
+                old_weather = race.environment.weather
+                race.environment.change_weather_params()
+                new_weather = race.environment.weather
+                for agent in race.agents:
+                    agent.update_agent_parameter(old_weather, new_weather)
+                self.print_race(race)
 
     def print_race(self, race: Race):
         weather = race.environment.weather

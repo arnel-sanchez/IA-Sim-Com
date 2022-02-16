@@ -45,7 +45,7 @@ attack_1
     use select_action(12)
     when
         action_facts.section("Curve")
-        action_facts.nearest_previous($ans)
+        action_facts.nearest_forward($ans)
         check $ans < 2
 
 
@@ -53,7 +53,7 @@ attack_2
     use select_action(12)
     when
         action_facts.section("Straight")
-        action_facts.nearest_previous($ans)
+        action_facts.nearest_forward($ans)
         check $ans < 4
 
 
@@ -61,7 +61,7 @@ defend_1
     use select_action(24)
     when
         action_facts.section("Curve")
-        action_facts.nearest_next($ans)
+        action_facts.nearest_behind($ans)
         check $ans < 2
 
 
@@ -69,5 +69,5 @@ defend_2
     use select_action(24)
     when
         action_facts.section("Straight")
-        action_facts.nearest_next($ans)
+        action_facts.nearest_behind($ans)
         check $ans < 4

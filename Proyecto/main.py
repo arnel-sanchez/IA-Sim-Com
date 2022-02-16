@@ -1,6 +1,6 @@
 from sys import path
+from colorama import Fore
 from random import shuffle
-from colorama import init, Fore
 
 from compilation.tokenizer import Tokenizer
 from compilation.utils import split_lines
@@ -98,7 +98,8 @@ def simulation(agents_lists):
             else:
                 flag_acceleration = True
                 flag_action = True
-            agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_acceleration, track.sections[0], agents_lists[0][i]))
+            agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_acceleration, track.sections[0],
+                                agents_lists[0][i]))
     else:
         if len(agents_lists[0]) == 1:
             rider = Rider(agents_lists[0][0].id, agents_lists[0][0].varsforRiders[3][2],
@@ -127,7 +128,8 @@ def simulation(agents_lists):
             else:
                 flag_acceleration = True
                 flag_action = True
-            agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_acceleration, track.sections[0], agents_lists[0][0]))
+            agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_acceleration, track.sections[0],
+                                agents_lists[0][0]))
         
         b = Bagnaia()
         d = Ducati()
