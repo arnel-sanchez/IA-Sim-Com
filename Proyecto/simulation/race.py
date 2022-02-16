@@ -1,3 +1,5 @@
+from colorama import init, Fore
+
 from simulation.environment import Environment
 from colorama import init, Fore
 
@@ -37,7 +39,7 @@ class Race:
         self.flag_laps = False
         self.current_lap += 1
         if self.current_lap == self.laps:
-            print("\n" + Fore.BLUE + "Carrera terminada")
+            print(Fore.BLUE + "\nCarrera terminada")
             self.print_ranking()
             return True
         elif self.current_lap == self.laps - 1:
@@ -96,6 +98,8 @@ class Race:
                     spaces += " "
             print(
                 spaces + Fore.BLUE + "{}".format(i) + Fore.WHITE + " -" + Fore.CYAN + " {}".format(seconds_to_minutes(x.time_track)) + Fore.WHITE + " -" + Fore.GREEN + " {}:".format(seconds_to_minutes(x.time_lap)) + Fore.RED + " {} con la {}".format(x.rider.name, x.bike.brand + " " + x.bike.model))
+            i += 1
+        print()
             i += 1
         print()
 

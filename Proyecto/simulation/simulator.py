@@ -4,7 +4,7 @@ from heapq import heappush, heappop
  
 class Simulator:
     def start(self, race: Race):
-        print(Fore.MAGENTA + "\nPista: " + Fore.CYAN + " {}".format(race.environment.track.name))
+        print(Fore.MAGENTA + "\nPista: " + Fore.CYAN + " {}\n".format(race.environment.track.name))
         self.print_race(race)
         print(Fore.MAGENTA + "Pilotos:")
         for i in range(len(race.rank)):
@@ -92,13 +92,13 @@ class Simulator:
         weather = race.environment.weather
         translate_weather = ["Soleado", "Nublado", "Lluvioso"]
         translate_direction = ["Norte", "Noreste", "Este", "Sureste", "Sur", "Suroeste", "Oeste", "Noroeste"]
-        print("\n" + Fore.MAGENTA + "Clima:")
+        print(Fore.MAGENTA + "Clima:")
         print(Fore.CYAN + "Estado: {}".format(translate_weather[weather.weather_status.value]))
         print(Fore.CYAN + "Humedad: {}".format(self.rank(weather.humidity)))
         print(Fore.CYAN + "Temperatura: {}".format(self.rank(weather.temperature)))
-        print(Fore.CYAN + "Visibilidad: {}\n".format(self.rank(weather.visibility)))
-        print(Fore.CYAN + "Viento: {}".format(translate_direction[weather.wind.value]))
-        print(Fore.CYAN + "Intensidad del viento: {}".format(self.rank(weather.wind_intensity)))
+        print(Fore.CYAN + "Visibilidad: {}".format(self.rank(weather.visibility)))
+        print(Fore.CYAN + "Viento: {}, Intensidad {}\n".format(translate_direction[weather.wind.value],
+                                                               self.rank(weather.wind_intensity)))
 
     def rank(self, number):
         return "Alta" if number > 6 else "Baja" if number < 4 else "Media"

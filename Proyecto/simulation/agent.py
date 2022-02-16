@@ -9,7 +9,7 @@ from simulation.bike import Bike
 
 from simulation.weather import WeatherStatus
 from simulation.bike import Tires
-from simulation.track import TrackType
+from simulation.track import SectionType
 
 from compilation.ast.specials import RiderNode
 from ai.ai import edit_action, call_ai, acceleration
@@ -693,8 +693,8 @@ class Agent:
             expertise = self.rider.cornering / 1000
         expertise += self.rider.expertise
         prob = continuous_variable_generator()
-        if action.name.__contains__("Attack") or (forward_agent is not None and
-                                                  self.time_track < forward_agent.time_track):
+        if forward_agent is not None and (action.name.__contains__("Attack") or
+                                          self.time_track < forward_agent.time_track):
             if expertise > 1 - prob:
                 prob = continuous_variable_generator()
                 if prob < 1 / 6:
@@ -703,6 +703,11 @@ class Agent:
                         format(forward_agent.rider.name, self.rider.name))
                     self.shot_down_behind = True
                 elif prob < 2 / 6:
+                    print(
+                        Fore.RED + "El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
+                        format(forward_agent.rider.name, self.rider.name))
+                    self.shot_down = -1
+                elif prob < 3 / 6:
                     print(
                         Fore.RED + "El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
                         format(self.rider.name))
@@ -744,13 +749,12 @@ class Agent:
                         self.rider.name))
                     self.time_track = forward_agent.time_track + t
                     self.time_lap = forward_agent.time_lap + t
-                    if behind_agent is not None and self.time_track > behind_agent.time_track > 0:
-                        x = 0
                 self.bike.probability_of_the_bike_breaking_down += 0.0001
                 self.bike.probability_of_exploding_tires += 0.0001
                 return True
         """
-        elif action.name.__contains__("Defend"):
+        elif behind_agent is not None and (action.name.__contains__("Defend") or 
+                                           self.time_track > behind_agent.time_track):
             if expertise > 1 - prob:
                 prob = continuous_variable_generator()
                 if prob < 1 / 3:
@@ -772,8 +776,6 @@ class Agent:
                           format(self.rider.name, behind_agent.rider.name))
                     behind_agent.time_track = self.time_track + t
                     behind_agent.time_lap = self.time_lap + t
-                    if behind_agent is not None and behind_agent.time_track > behind_agent.behind_agent.time_track > 0:
-                        x = 0
                 else:
                     print("El piloto {} no ha podido defender su posicion frente al piloto {}.".
                           format(self.rider.name, behind_agent.rider.name))
