@@ -113,6 +113,15 @@ class Weather:
     def change_wind(self, new_wind: CardinalsPoints):
         self.wind = CardinalsPoints(new_wind)
 
+    def print(self):
+        print("Clima: ", end="")
+        if self.weather_status == 0:
+            print("Soleado")
+        elif self.weather_status == 1:
+            print("Nublado")
+        else:
+            print("Lluvioso")
+
     def is_front_wind(self, other_wind: CardinalsPoints):
         if self.wind == CardinalsPoints.South and other_wind.name.__contains__("North"):
             return True

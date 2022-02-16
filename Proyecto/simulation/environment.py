@@ -43,3 +43,6 @@ class Environment:
             weather_status = 2
         self.weather.change_wind(CardinalsPoints(wind))
         self.weather.change_weather_status(WeatherStatus(weather_status))
+
+    def print(self):
+        return

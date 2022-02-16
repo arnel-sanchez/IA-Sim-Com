@@ -1,8 +1,8 @@
 from enum import Enum
 
 from compilation.ast.specials import BikeNode
-from simulation.environment import Environment
 from ai.ai import edit_moto, call_ai
+from simulation.environment import Environment
 
 
 class Tires(Enum):
@@ -50,3 +50,6 @@ class Bike:
 
     def change_brakes(self, brakes):
         self.brakes = brakes
+
+    def print(self):
+        print("Motocicleta: {}".format(self.brand))

@@ -1,7 +1,7 @@
 rider Arnel{
 
-turning_curves=10;
-driving_straight=7;
+cornering=10;
+step_by_line=7;
             }
 
 bike Karpati{

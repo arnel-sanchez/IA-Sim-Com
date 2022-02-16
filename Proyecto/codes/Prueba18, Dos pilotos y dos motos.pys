@@ -79,8 +79,8 @@ while(EsPar(100) && x>=101+130.2)
 rider Arnel{
 
 
-turning_curves=8;
-driving_straight=7;
+cornering=8;
+step_by_line=7;
 
             method void select_acceleration()
             {            if(time_lap<19.5)
@@ -108,8 +108,8 @@ bike Carpati{
 rider Valentino{
 
 
-turning_curves=9;
-driving_straight=8;
+cornering=9;
+step_by_line=8;
 
             method void select_acceleration()
             {            if(speed<100.0)
@@ -126,7 +126,7 @@ driving_straight=8;
                }
                elif(speed<60.0)
                { 
-                  if (turning_curves>5 && driving_straight>5)
+                  if (cornering>5 && step_by_line>5)
                   {
                        return 1;
                   }
