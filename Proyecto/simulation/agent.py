@@ -466,7 +466,7 @@ class Agent:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
-        if new_weather.is_front_wind(self.section[3]):
+        if new_weather.is_front_wind(self.section.orientation):
             if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                 self.rider.step_by_line = 0
             else:
@@ -526,7 +526,7 @@ class Agent:
                     self.bike.probability_of_the_bike_breaking_down = 1
                 else:
                     self.bike.probability_of_the_bike_breaking_down += 0.0001 * weather.wind_intensity / 4
-        elif new_weather.is_back_wind(self.section[3]):
+        elif new_weather.is_back_wind(self.section.orientation):
             if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                 self.rider.step_by_line = 10
             else:

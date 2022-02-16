@@ -35,6 +35,8 @@ class Simulator:
                     else:
                         if race.agents[i].sections == len(race.environment.track.sections) - 1:
                             race.flag_laps = True
+                            race.rank.append(race.agents[i])
+                            race.print_ranking()
                             race.agents[i].change_section(race.environment.track.sections[0], True)
                         else:
                             race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1], False)
@@ -46,6 +48,8 @@ class Simulator:
                     else:
                         if race.agents[i].sections == len(race.environment.track.sections) - 1:
                             race.flag_laps = True
+                            race.rank.append(race.agents[i])
+                            race.print_ranking()
                             race.agents[i].change_section(race.environment.track.sections[0], True)
                         else:
                             race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1], False)
@@ -60,6 +64,8 @@ class Simulator:
                     else:
                         if race.agents[i].sections == len(race.environment.track.sections) - 1:
                             race.flag_laps = True
+                            race.rank.append(race.agents[i])
+                            race.print_ranking()
                             race.agents[i].change_section(race.environment.track.sections[0], True)
                         else:
                             race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1], False)
@@ -77,7 +83,6 @@ class Simulator:
                 print("\n" + Fore.BLUE + "Ningun piloto ha terminado la carrera.\n")
                 break
             if race.end_lap():
-                race.ranking()
                 if race.change_lap():
                     break
                 else:
