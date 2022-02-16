@@ -20,8 +20,8 @@ class Simulator:
             agent = heappop(h)
             remove_agents = []
             if len(race.agents) == 1:
-                if not race.agents[i].overcome_an_obstacle(race, None, None):
-                    remove_agents.append(race.agents[i])
+                if not race.agents[0].overcome_an_obstacle(race, None, None):
+                    remove_agents.append(race.agents[0])
             else:
                 i = 0
                 for agent_1 in race.agents:
