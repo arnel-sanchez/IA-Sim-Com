@@ -1,7 +1,7 @@
-from colorama import init, Fore
+from colorama import Fore
 
 from simulation.environment import Environment
-from colorama import init, Fore
+
 
 def number_digits(number):
     return len(str(number))
@@ -53,7 +53,7 @@ class Race:
                     agent.add_time_for_pits()
                     agent.bike.select_configuration(self.environment)
                 agent.update_agent_parameter(weather,self.environment.weather)
-            print("\n" + Fore.BLUE + "Ultima vuelta\n")
+            print(Fore.BLUE + "\nUltima vuelta\n")
             self.print_ranking_lap()
             self.rank = []
             return False
@@ -79,16 +79,22 @@ class Race:
         return True
 
     def print_ranking(self):
-        print("\n" + Fore.MAGENTA + "Resultado final:")
-        print(Fore.BLUE + "Posicion" + Fore.WHITE + " -" + Fore.CYAN + " Tiempo de Carrera" + Fore.WHITE + " -" + Fore.GREEN + " Tiempo de Vuelta:" + Fore.RED + " Piloto")
+        print(Fore.MAGENTA + "\nResultado final:")
+        self.printer()
+
+    def printer(self):
+        print(Fore.BLUE + "Posicion" + Fore.WHITE + " -" + Fore.CYAN + " Tiempo de Carrera" + Fore.WHITE + " -" +
+              Fore.GREEN + " Tiempo de Vuelta:" + Fore.RED + " Piloto")
         i = 1
         for x in self.rank:
             spaces = ""
             if 8 - number_digits(i) > 0:
                 for j in range(8 - number_digits(i)):
                     spaces += " "
-            print(
-                spaces + Fore.BLUE + "{}".format(i) + Fore.WHITE + " -" + Fore.CYAN + " {}".format(seconds_to_minutes(x.time_track)) + Fore.WHITE + " -" + Fore.GREEN + " {}:".format(seconds_to_minutes(x.time_lap)) + Fore.RED + " {} con la {}".format(x.rider.name, x.bike.brand + " " + x.bike.model))
+            print(spaces + Fore.BLUE + "{}".format(i) + Fore.WHITE + " -" + Fore.CYAN + " {}".format(
+                seconds_to_minutes(x.time_track)) + Fore.WHITE + " -" + Fore.GREEN + " {}:".format(
+                seconds_to_minutes(x.time_lap)) + Fore.RED + " {} con la {}".format(
+                x.rider.name, x.bike.brand + " " + x.bike.model))
             i += 1
         print()
 
