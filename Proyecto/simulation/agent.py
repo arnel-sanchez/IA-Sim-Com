@@ -1,26 +1,19 @@
-from math import pow, sqrt
-from enum import Enum
 from random import uniform, randint
-
-from colorama import init, Fore
+from enum import Enum
+from math import pow, sqrt
+from colorama import Fore
 
 from simulation.rider import Rider
 from simulation.bike import Bike
-
 from simulation.weather import WeatherStatus
 from simulation.bike import Tires
 from simulation.track import SectionType
-
 from compilation.ast.specials import RiderNode
 from ai.ai import edit_action, call_ai, acceleration
 
 
 def continuous_variable_generator():
     return uniform(0, 1)
-
-
-def discrete_variable_generator():
-    return randint(1, 10)
 
 
 class AgentActions(Enum):
@@ -74,7 +67,8 @@ class AgentActions(Enum):
 
 
 class Agent:
-    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_acceleration, section, node: RiderNode = None):
+    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_acceleration, section,
+                 node: RiderNode = None):
         self.rider = rider
         self.bike = bike
         self.speed = bike.max_speed / 3
@@ -84,10 +78,10 @@ class Agent:
         self.flag_action = flag_action
         self.flag_acceleration = flag_acceleration
         self.flag_to_pits = False
-        self.distance_to_nearest_forward = 0
-        self.distance_to_nearest_behind = 0
-        self.shot_down_forward = False
-        self.shot_down_behind = False
+        self.distance_to_nearest_previous = 0
+        self.distance_to_following_rider = 0
+        self.previous_shot_down = False
+        self.following_shot_down = False
         self.node = node
         self.time_lap = 0
         self.section = section
@@ -96,50 +90,50 @@ class Agent:
 
     def update_agent_initial_parameters(self, weather):
         if self.bike.chassis_stiffness > 5:
-            if self.rider.step_by_line + self.bike.chassis_stiffness - 5 / 2 >= 10:
-                self.rider.step_by_line = 10
+            if self.rider.driving_straight + self.bike.chassis_stiffness - 5 / 2 >= 10:
+                self.rider.driving_straight = 10
             else:
-                self.rider.step_by_line += (self.bike.chassis_stiffness - 5) / 2
-            if self.rider.cornering - self.bike.chassis_stiffness / 2 <= 0:
-                self.rider.cornering = 0
+                self.rider.driving_straight += (self.bike.chassis_stiffness - 5) / 2
+            if self.rider.turning_curves - self.bike.chassis_stiffness / 2 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= self.bike.chassis_stiffness / 2
+                self.rider.turning_curves -= self.bike.chassis_stiffness / 2
         elif self.bike.chassis_stiffness < 5:
-            if self.rider.cornering + self.bike.chassis_stiffness - 5 / 2 >= 10:
-                self.rider.cornering = 10
+            if self.rider.turning_curves + self.bike.chassis_stiffness - 5 / 2 >= 10:
+                self.rider.turning_curves = 10
             else:
-                self.rider.cornering += (self.bike.chassis_stiffness - 5) / 2
-            if self.rider.step_by_line - self.bike.chassis_stiffness / 2 <= 0:
-                self.rider.step_by_line = 0
+                self.rider.turning_curves += (self.bike.chassis_stiffness - 5) / 2
+            if self.rider.driving_straight - self.bike.chassis_stiffness / 2 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= self.bike.chassis_stiffness / 2
+                self.rider.driving_straight -= self.bike.chassis_stiffness / 2
         if self.bike.brakes < 5:
-            if self.rider.step_by_line + (self.bike.brakes - 5) / 2 >= 10:
-                self.rider.step_by_line = 10
+            if self.rider.driving_straight + (self.bike.brakes - 5) / 2 >= 10:
+                self.rider.driving_straight = 10
             else:
-                self.rider.step_by_line += (self.bike.brakes - 5) / 2
-            if self.rider.cornering - self.bike.brakes / 2 <= 0:
-                self.rider.cornering = 0
+                self.rider.driving_straight += (self.bike.brakes - 5) / 2
+            if self.rider.turning_curves - self.bike.brakes / 2 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= self.bike.brakes / 2
+                self.rider.turning_curves -= self.bike.brakes / 2
         elif self.bike.brakes > 5:
-            if self.rider.cornering + (self.bike.brakes - 5) / 2 >= 10:
-                self.rider.cornering = 10
+            if self.rider.turning_curves + (self.bike.brakes - 5) / 2 >= 10:
+                self.rider.turning_curves = 10
             else:
-                self.rider.cornering += (self.bike.brakes - 5) / 2
-            if self.rider.step_by_line - self.bike.brakes / 2 <= 0:
-                self.rider.step_by_line = 0
+                self.rider.turning_curves += (self.bike.brakes - 5) / 2
+            if self.rider.driving_straight - self.bike.brakes / 2 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= self.bike.brakes / 2
+                self.rider.driving_straight -= self.bike.brakes / 2
         if weather.temperature > 5:
-            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
-                self.rider.step_by_line = 10
+            if self.rider.driving_straight + (weather.temperature - 5) / 3 >= 10:
+                self.rider.driving_straight = 10
             else:
-                self.rider.step_by_line += (weather.temperature - 5) / 3
-            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
-                self.rider.cornering = 10
+                self.rider.driving_straight += (weather.temperature - 5) / 3
+            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.turning_curves = 10
             else:
-                self.rider.cornering += (weather.temperature - 5) / 3
+                self.rider.turning_curves += (weather.temperature - 5) / 3
             if self.bike.probability_of_exploding_tires + 0.0001 * (weather.temperature - 5) / 3 >= 1:
                 self.bike.probability_of_exploding_tires = 1
             else:
@@ -153,14 +147,14 @@ class Agent:
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
         elif weather.temperature < 5:
-            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
-                self.rider.step_by_line = 0
+            if self.rider.driving_straight - (weather.temperature - 5) / 3 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= (weather.temperature - 5) / 3
-            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
-                self.rider.cornering = 0
+                self.rider.driving_straight -= (weather.temperature - 5) / 3
+            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= (weather.temperature - 5) / 3
+                self.rider.turning_curves -= (weather.temperature - 5) / 3
             if self.bike.probability_of_exploding_tires - 0.0001 * (weather.temperature - 5) / 3 <= 0:
                 self.bike.probability_of_exploding_tires = 0
             else:
@@ -174,68 +168,68 @@ class Agent:
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * (weather.temperature - 5) / 3
         if weather.visibility > 5:
-            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
-                self.rider.step_by_line = 10
+            if self.rider.driving_straight + (weather.temperature - 5) / 3 >= 10:
+                self.rider.driving_straight = 10
             else:
-                self.rider.step_by_line += (weather.temperature - 5) / 3
-            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
-                self.rider.cornering = 10
+                self.rider.driving_straight += (weather.temperature - 5) / 3
+            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.turning_curves = 10
             else:
-                self.rider.cornering += (weather.temperature - 5) / 3
+                self.rider.turning_curves += (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike - 0.0001 * (weather.temperature - 5) / 2 <= 0:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
         elif weather.visibility < 5:
-            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
-                self.rider.step_by_line = 0
+            if self.rider.driving_straight - (weather.temperature - 5) / 3 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= (weather.temperature - 5) / 3
-            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
-                self.rider.cornering = 0
+                self.rider.driving_straight -= (weather.temperature - 5) / 3
+            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= (weather.temperature - 5) / 3
+                self.rider.turning_curves -= (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * (weather.temperature - 5) / 2 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * (weather.temperature - 5) / 3
         if weather.humidity > 5:
-            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
-                self.rider.step_by_line = 0
+            if self.rider.driving_straight - (weather.temperature - 5) / 3 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= (weather.temperature - 5) / 3
-            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
-                self.rider.cornering = 0
+                self.rider.driving_straight -= (weather.temperature - 5) / 3
+            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= (weather.temperature - 5) / 3
+                self.rider.turning_curves -= (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * (weather.temperature - 5) / 2 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * (weather.temperature - 5) / 3
         elif weather.humidity < 5:
-            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
-                self.rider.step_by_line = 10
+            if self.rider.driving_straight + (weather.temperature - 5) / 3 >= 10:
+                self.rider.driving_straight = 10
             else:
-                self.rider.step_by_line += (weather.temperature - 5) / 3
-            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
-                self.rider.cornering = 10
+                self.rider.driving_straight += (weather.temperature - 5) / 3
+            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.turning_curves = 10
             else:
-                self.rider.cornering += (weather.temperature - 5) / 3
+                self.rider.turning_curves += (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike - 0.0001 * (weather.temperature - 5) / 2 <= 0:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
 
-        if weather.is_front_wind(self.section[3]):
-            if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
-                self.rider.step_by_line = 0
+        if weather.is_front_wind(self.section.orientation):
+            if self.rider.driving_straight - weather.wind_intensity / 4 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= weather.wind_intensity / 4
+                self.rider.driving_straight -= weather.wind_intensity / 4
 
-            if self.rider.cornering - weather.wind_intensity / 4 <= 0:
-                self.rider.cornering = 0
+            if self.rider.turning_curves - weather.wind_intensity / 4 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= weather.wind_intensity / 4
+                self.rider.turning_curves -= weather.wind_intensity / 4
             if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
                 if self.bike.probability_of_exploding_tires + 0.0002 * weather.wind_intensity / 4 >= 1:
                     self.bike.probability_of_exploding_tires = 1
@@ -286,16 +280,16 @@ class Agent:
                     self.bike.probability_of_the_bike_breaking_down = 1
                 else:
                     self.bike.probability_of_the_bike_breaking_down += 0.0001 * weather.wind_intensity / 4
-        elif weather.is_back_wind(self.section[3]):
-            if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
-                self.rider.step_by_line = 10
+        elif weather.is_back_wind(self.section.orientation):
+            if self.rider.driving_straight + weather.wind_intensity / 4 >= 10:
+                self.rider.driving_straight = 10
             else:
-                self.rider.step_by_line += weather.wind_intensity / 4
+                self.rider.driving_straight += weather.wind_intensity / 4
 
-            if self.rider.cornering + weather.wind_intensity / 4 >= 10:
-                self.rider.cornering = 10
+            if self.rider.turning_curves + weather.wind_intensity / 4 >= 10:
+                self.rider.turning_curves = 10
             else:
-                self.rider.cornering += weather.wind_intensity / 4
+                self.rider.turning_curves += weather.wind_intensity / 4
 
             if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
                 if self.bike.probability_of_exploding_tires + 0.0002 * weather.wind_intensity / 4 >= 1:
@@ -348,21 +342,21 @@ class Agent:
                 else:
                     self.bike.probability_of_the_bike_breaking_down += 0.0001 * weather.wind_intensity / 4
         else:
-            if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
-                self.rider.step_by_line = 0
+            if self.rider.driving_straight - weather.wind_intensity / 4 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= weather.wind_intensity / 4
+                self.rider.driving_straight -= weather.wind_intensity / 4
 
-            if self.rider.cornering - weather.wind_intensity / 4 <= 0:
-                self.rider.cornering = 0
+            if self.rider.turning_curves - weather.wind_intensity / 4 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= weather.wind_intensity / 4
+                self.rider.turning_curves -= weather.wind_intensity / 4
 
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * weather.wind_intensity / 4 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * weather.wind_intensity / 4
-    
+
     def change_section(self, section, last):
         self.section = section
         if last:
@@ -373,14 +367,14 @@ class Agent:
 
     def update_agent_parameter(self, weather, new_weather):
         if new_weather.temperature > 5 and weather.temperature < 5:
-            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
-                self.rider.step_by_line = 10
+            if self.rider.driving_straight + (weather.temperature - 5) / 3 >= 10:
+                self.rider.driving_straight = 10
             else:
-                self.rider.step_by_line += (weather.temperature - 5) / 3
-            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
-                self.rider.cornering = 10
+                self.rider.driving_straight += (weather.temperature - 5) / 3
+            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.turning_curves = 10
             else:
-                self.rider.cornering += (weather.temperature - 5) / 3
+                self.rider.turning_curves += (weather.temperature - 5) / 3
             if self.bike.probability_of_exploding_tires + 0.0001 * (weather.temperature - 5) / 3 >= 1:
                 self.bike.probability_of_exploding_tires = 1
             else:
@@ -394,14 +388,14 @@ class Agent:
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
         elif new_weather.temperature < 5 and weather.temperature > 5:
-            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
-                self.rider.step_by_line = 0
+            if self.rider.driving_straight - (weather.temperature - 5) / 3 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= (weather.temperature - 5) / 3
-            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
-                self.rider.cornering = 0
+                self.rider.driving_straight -= (weather.temperature - 5) / 3
+            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= (weather.temperature - 5) / 3
+                self.rider.turning_curves -= (weather.temperature - 5) / 3
             if self.bike.probability_of_exploding_tires - 0.0001 * (weather.temperature - 5) / 3 <= 0:
                 self.bike.probability_of_exploding_tires = 0
             else:
@@ -415,67 +409,67 @@ class Agent:
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * (weather.temperature - 5) / 3
         if new_weather.visibility > 5 and weather.visibility < 5:
-            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
-                self.rider.step_by_line = 10
+            if self.rider.driving_straight + (weather.temperature - 5) / 3 >= 10:
+                self.rider.driving_straight = 10
             else:
-                self.rider.step_by_line += (weather.temperature - 5) / 3
-            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
-                self.rider.cornering = 10
+                self.rider.driving_straight += (weather.temperature - 5) / 3
+            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.turning_curves = 10
             else:
-                self.rider.cornering += (weather.temperature - 5) / 3
+                self.rider.turning_curves += (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike - 0.0001 * (weather.temperature - 5) / 2 <= 0:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
         elif new_weather.visibility < 5 and weather.visibility > 5:
-            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
-                self.rider.step_by_line = 0
+            if self.rider.driving_straight - (weather.temperature - 5) / 3 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= (weather.temperature - 5) / 3
-            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
-                self.rider.cornering = 0
+                self.rider.driving_straight -= (weather.temperature - 5) / 3
+            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= (weather.temperature - 5) / 3
+                self.rider.turning_curves -= (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * (weather.temperature - 5) / 2 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * (weather.temperature - 5) / 3
         if new_weather.humidity > 5 and weather.humidity < 5:
-            if self.rider.step_by_line - (weather.temperature - 5) / 3 <= 0:
-                self.rider.step_by_line = 0
+            if self.rider.driving_straight - (weather.temperature - 5) / 3 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= (weather.temperature - 5) / 3
-            if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
-                self.rider.cornering = 0
+                self.rider.driving_straight -= (weather.temperature - 5) / 3
+            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= (weather.temperature - 5) / 3
+                self.rider.turning_curves -= (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * (weather.temperature - 5) / 2 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * (weather.temperature - 5) / 3
         elif new_weather.humidity < 5 and weather.humidity > 5:
-            if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
-                self.rider.step_by_line = 10
+            if self.rider.driving_straight + (weather.temperature - 5) / 3 >= 10:
+                self.rider.driving_straight = 10
             else:
-                self.rider.step_by_line += (weather.temperature - 5) / 3
-            if self.rider.cornering + (weather.temperature - 5) / 3 >= 10:
-                self.rider.cornering = 10
+                self.rider.driving_straight += (weather.temperature - 5) / 3
+            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.turning_curves = 10
             else:
-                self.rider.cornering += (weather.temperature - 5) / 3
+                self.rider.turning_curves += (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike - 0.0001 * (weather.temperature - 5) / 2 <= 0:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
-        if new_weather.is_front_wind(self.section[3]):
-            if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
-                self.rider.step_by_line = 0
+        if new_weather.is_front_wind(self.section.orientation):
+            if self.rider.driving_straight - weather.wind_intensity / 4 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= weather.wind_intensity / 4
+                self.rider.driving_straight -= weather.wind_intensity / 4
 
-            if self.rider.cornering - weather.wind_intensity / 4 <= 0:
-                self.rider.cornering = 0
+            if self.rider.turning_curves - weather.wind_intensity / 4 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= weather.wind_intensity / 4
+                self.rider.turning_curves -= weather.wind_intensity / 4
             if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
                 if self.bike.probability_of_exploding_tires + 0.0002 * weather.wind_intensity / 4 >= 1:
                     self.bike.probability_of_exploding_tires = 1
@@ -526,16 +520,16 @@ class Agent:
                     self.bike.probability_of_the_bike_breaking_down = 1
                 else:
                     self.bike.probability_of_the_bike_breaking_down += 0.0001 * weather.wind_intensity / 4
-        elif new_weather.is_back_wind(self.section[3]):
-            if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
-                self.rider.step_by_line = 10
+        elif new_weather.is_back_wind(self.section.orientation):
+            if self.rider.driving_straight + weather.wind_intensity / 4 >= 10:
+                self.rider.driving_straight = 10
             else:
-                self.rider.step_by_line += weather.wind_intensity / 4
+                self.rider.driving_straight += weather.wind_intensity / 4
 
-            if self.rider.cornering + weather.wind_intensity / 4 >= 10:
-                self.rider.cornering = 10
+            if self.rider.turning_curves + weather.wind_intensity / 4 >= 10:
+                self.rider.turning_curves = 10
             else:
-                self.rider.cornering += weather.wind_intensity / 4
+                self.rider.turning_curves += weather.wind_intensity / 4
 
             if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
                 if self.bike.probability_of_exploding_tires + 0.0002 * weather.wind_intensity / 4 >= 1:
@@ -588,24 +582,24 @@ class Agent:
                 else:
                     self.bike.probability_of_the_bike_breaking_down += 0.0001 * weather.wind_intensity / 4
         else:
-            if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
-                self.rider.step_by_line = 0
+            if self.rider.driving_straight - weather.wind_intensity / 4 <= 0:
+                self.rider.driving_straight = 0
             else:
-                self.rider.step_by_line -= weather.wind_intensity / 4
-            if self.rider.cornering - weather.wind_intensity / 4 <= 0:
-                self.rider.cornering = 0
+                self.rider.driving_straight -= weather.wind_intensity / 4
+            if self.rider.turning_curves - weather.wind_intensity / 4 <= 0:
+                self.rider.turning_curves = 0
             else:
-                self.rider.cornering -= weather.wind_intensity / 4
+                self.rider.turning_curves -= weather.wind_intensity / 4
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * weather.wind_intensity / 4 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * weather.wind_intensity / 4
 
-    def overcome_an_obstacle(self, race, forward_agent, behind_agent):
+    def overcome_section(self, race, previous_agent, following_agent):
         action = self.select_action(race)
         self.select_acceleration(race, action)
         self.calc_final_speed()
-        if not self.status_analysis(race, action, forward_agent, behind_agent):
+        if not self.status_analysis(race, action, previous_agent, following_agent):
             return False
         if action is not None and action.name.__contains__("Pits"):
             self.flag_to_pits = True
@@ -643,7 +637,7 @@ class Agent:
     def select_acceleration(self, race, action):
         prob = continuous_variable_generator()
         if not self.flag_acceleration or self.rider.independence > prob:
-            max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, self.section[2]))
+            max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, self.section.max_speed))
             self.acceleration = acceleration(race, self, action, max_acceleration)
         else:
             self.node.refreshContext(self.__dict__)
@@ -655,22 +649,22 @@ class Agent:
             self.acceleration = self.node.nuevocontext.variables["acceleration"].value
 
     def calc_max_acceleration(self, max_speed):
-        return (pow(max_speed / 3.6, 2) - pow(self.speed / 3.6, 2)) / (2 * self.section[1])
+        return (pow(max_speed / 3.6, 2) - pow(self.speed / 3.6, 2)) / (2 * self.section.length)
 
     def calc_final_speed(self):
         if self.acceleration != 0:
             v0 = self.speed / 3.6
-            vf = sqrt(pow(v0, 2) + 2 * self.acceleration * self.section[1])
+            vf = sqrt(pow(v0, 2) + 2 * self.acceleration * self.section.length)
             t = (vf - v0) / self.acceleration
             self.time_lap += t
             self.time_track += t
             self.speed = vf * 3.6
         else:
-            t = self.section[1] / self.speed
+            t = self.section.length / self.speed
             self.time_lap += t
             self.time_track += t
 
-    def status_analysis(self, race, action, forward_agent, behind_agent):
+    def status_analysis(self, race, action, previous_agent, following_agent):
         if action is None:
             print(Fore.RED + "El piloto {} se ha quedado perplejo y no ha reaccionado. Ha sido descalificado.".
                   format(self.rider.name))
@@ -680,63 +674,61 @@ class Agent:
                 Fore.RED + "El piloto {} ha roto el acelerador y su moto se ha detenido en plena carrera. Ha sido descalificado.".
                 format(self.rider.name))
             return False
-        if self.section[4] == TrackType.Straight:
+        if self.section.type == SectionType.Straight:
             if action.name.__contains__("Turn"):
                 print(Fore.RED + "El piloto {} ha doblado en plena recta y se ha ido al suelo.".format(self.rider.name))
                 return False
-            expertise = self.rider.step_by_line / 1000
+            expertise = self.rider.driving_straight / 1000
         else:
             if not action.name.__contains__("Turn"):
                 print(Fore.RED + "El piloto {} ha seguido de largo y no ha doblado. Ha roto la moto en la grava.".
                       format(self.rider.name))
                 return False
-            expertise = self.rider.cornering / 1000
+            expertise = self.rider.turning_curves / 1000
         expertise += self.rider.expertise
         prob = continuous_variable_generator()
-        if forward_agent is not None and (action.name.__contains__("Attack") or
-                                          self.time_track < forward_agent.time_track):
+        if previous_agent is not None and (action.name.__contains__("Attack") or
+                                           self.time_track < previous_agent.time_track):
             if expertise > 1 - prob:
                 prob = continuous_variable_generator()
                 if prob < 1 / 6:
                     print(
                         Fore.RED + "El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
-                        format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down_behind = True
+                        format(previous_agent.rider.name, self.rider.name))
+                    self.following_shot_down = True
                 elif prob < 2 / 6:
                     print(
                         Fore.RED + "El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
-                        format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down = -1
+                        format(previous_agent.rider.name, self.rider.name))
+                    self.following_shot_down = True
                 elif prob < 3 / 6:
                     print(
                         Fore.RED + "El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
                         format(self.rider.name))
-                elif prob < 3 / 6:
-                    print(
-                        Fore.RED + "El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
-                        format(forward_agent.rider.name, self.rider.name))
                 elif prob < 4 / 6:
                     print(
-                        Fore.RED + "El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
-                        format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down_forward = True
-                elif prob < 5 / 6:
-                    print(
-                        Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
-                        format(forward_agent.rider.name))
-                else:
-                    print(
                         Fore.RED + "El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
-                        format(self.rider.name, forward_agent.rider.name))
+                        format(self.rider.name, previous_agent.rider.name))
+                else:
+                    if prob < 5 / 6:
+                        print(
+                            Fore.RED + "El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
+                            format(previous_agent.rider.name, self.rider.name))
+                    else:
+                        print(
+                            Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
+                            format(previous_agent.rider.name))
+                    self.following_shot_down = True
+                    return True
                 return False
             else:
                 prob = continuous_variable_generator()
                 t = continuous_variable_generator()
                 if prob - self.rider.expertise < 1 / 3:
                     print(Fore.GREEN + "El piloto {} ha adelantado al piloto {}.".format(self.rider.name,
-                                                                                         forward_agent.rider.name))
-                    forward_agent.time_track = self.time_track + t
-                    forward_agent.time_lap = self.time_lap + t
+                                                                                         previous_agent.rider.name))
+                    previous_agent.time_track = self.time_track + t
+                    previous_agent.time_lap = self.time_lap + t
                     for i in range(len(race.agents)):
                         if race.agents[i] == self:
                             a = race.agents[i - 1]
@@ -745,42 +737,42 @@ class Agent:
                             break
                 else:
                     print(Fore.YELLOW + "El piloto {} ha defendido su posicion frente al piloto {}.".format(
-                        forward_agent.rider.name,
+                        previous_agent.rider.name,
                         self.rider.name))
-                    self.time_track = forward_agent.time_track + t
-                    self.time_lap = forward_agent.time_lap + t
+                    self.time_track = previous_agent.time_track + t
+                    self.time_lap = previous_agent.time_lap + t
                 self.bike.probability_of_the_bike_breaking_down += 0.0001
                 self.bike.probability_of_exploding_tires += 0.0001
                 return True
         """
-        elif behind_agent is not None and (action.name.__contains__("Defend") or 
-                                           self.time_track > behind_agent.time_track):
+        elif following_agent is not None and (action.name.__contains__("Defend") or 
+                                           self.time_track > following_agent.time_track):
             if expertise > 1 - prob:
                 prob = continuous_variable_generator()
                 if prob < 1 / 3:
                     print("El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
-                          format(self.rider.name, behind_agent.rider.name))
+                          format(self.rider.name, following_agent.rider.name))
                     self.shot_down = 1
                 elif prob < 2 / 3:
                     print("El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
                           format(self.rider.name))
                 else:
                     print("El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
-                          format(forward_agent.rider.name, self.rider.name))
+                          format(previous_agent.rider.name, self.rider.name))
                 return False
             else:
                 prob = continuous_variable_generator()
                 t = continuous_variable_generator()
                 if prob - self.rider.expertise < 2 / 3:
                     print("El piloto {} ha defendido su posicion frente al piloto {}.".
-                          format(self.rider.name, behind_agent.rider.name))
-                    behind_agent.time_track = self.time_track + t
-                    behind_agent.time_lap = self.time_lap + t
+                          format(self.rider.name, following_agent.rider.name))
+                    following_agent.time_track = self.time_track + t
+                    following_agent.time_lap = self.time_lap + t
                 else:
                     print("El piloto {} no ha podido defender su posicion frente al piloto {}.".
-                          format(self.rider.name, behind_agent.rider.name))
-                    self.time_track = behind_agent.time_track + t
-                    self.time_lap = behind_agent.time_lap + t
+                          format(self.rider.name, following_agent.rider.name))
+                    self.time_track = following_agent.time_track + t
+                    self.time_lap = following_agent.time_lap + t
                     for i in range(len(race.agents)):
                         if race.agents[i] == self:
                             a = race.agents[i + 1]
@@ -791,7 +783,7 @@ class Agent:
                 self.bike.probability_of_exploding_tires += 0.0001
                 return True
         """
-        if self.speed > self.section[2] or self.rider.probability_of_falling_off_the_bike > prob:
+        if self.speed > self.section.max_speed or self.rider.probability_of_falling_off_the_bike > prob:
             print(Fore.RED + "El piloto {} ha perdido el control de su moto y se ha ido al suelo.".format(
                 self.rider.name))
             return False

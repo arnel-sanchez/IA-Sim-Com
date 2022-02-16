@@ -30,9 +30,9 @@ def edit_moto(environment):
     back = 0
     side = 0
     for section in environment.track.sections:
-        if weather.is_front_wind(section[3]):
+        if weather.is_front_wind(section.orientation):
             front += 1
-        elif weather.is_back_wind(section[3]):
+        elif weather.is_back_wind(section.orientation):
             back += 1
         else:
             side += 1
@@ -77,19 +77,20 @@ def restart(rules: str):
     return engine
 
 
-def edit_action(race, section, agent):
+def edit_action(race, agent):
+    section = agent.section
     speed = agent.speed
     bike = agent.bike
-    section_max_speed = section[2]
+    section_max_speed = section.max_speed
     if speed > bike.max_speed or speed > section_max_speed:
         speed_cmp = 1
     elif speed < bike.max_speed and speed < section_max_speed:
         speed_cmp = 3
     else:
         speed_cmp = 2
-    section_type = section[4].name
+    section_type = section.type.name
     weather = race.environment.weather
-    nearest_previous, nearest_next = nearest(race, agent.rider)
+    nearest_previous, nearest_next = nearest(race, agent)
     facts = open(path[0] + "/ai/action_facts.kfb", "w")
     facts.write("# action_facts.kfb\n\n")
     facts.write("speed({})\n".format(speed_cmp))
@@ -102,12 +103,11 @@ def edit_action(race, section, agent):
     facts.close()
 
 
-def nearest(race, rider):
+def nearest(race, agent):
     nearest_previous = 60
     nearest_next = 60
     for i in range(len(race.agents)):
-        agent = race.agents[i]
-        if agent.rider == rider:
+        if agent == race.agents[i]:
             if i > 0:
                 nearest_previous = how_close(agent, race.agents[i - 1])
             elif i < len(race.agents) - 1:
@@ -116,7 +116,7 @@ def nearest(race, rider):
 
 
 def how_close(agent_1, agent_2):
-    if agent_1.time_track == 0 or agent_2.time_track == 0:
+    if agent_1.time_track == 0 or agent_2.time_track == 0: #or agent_1.section != agent_2.section:
         return 60
     return abs(agent_1.time_track - agent_2.time_track)
 
@@ -135,7 +135,7 @@ def call_action():
     print(action)
 
 
-def acceleration(race, section, agent, action, max_acceleration):
+def acceleration(race, agent, action, max_acceleration):
     if action.name.__contains__("KeepSpeed"):
         return 0
     weather = race.environment.weather
@@ -151,13 +151,14 @@ def acceleration(race, section, agent, action, max_acceleration):
             max_acceleration -= random(0.1)
         else:
             aggressiveness += random(0.01)
+    section = agent.section
     bike = agent.bike
-    if section[4].name == "Straight":
+    if section.type.name == "Straight":
         if bike.brakes < 8 and bike.chassis_stiffness < 8:
             max_acceleration -= random(0.3)
         else:
             aggressiveness += random(0.03)
-        if rider.step_by_line < 8:
+        if rider.driving_straight < 8:
             max_acceleration -= random(0.6)
         else:
             aggressiveness += random(0.06)
@@ -166,7 +167,7 @@ def acceleration(race, section, agent, action, max_acceleration):
             max_acceleration -= random(0.3)
         else:
             aggressiveness += random(0.03)
-        if rider.cornering < 8:
+        if rider.turning_curves < 8:
             max_acceleration -= random(0.6)
         else:
             aggressiveness += random(0.06)

@@ -1,6 +1,6 @@
 from sys import path
+from colorama import Fore
 from random import shuffle
-from colorama import init, Fore
 
 from compilation.tokenizer import Tokenizer
 from compilation.utils import split_lines
@@ -131,37 +131,37 @@ def simulation(agents_lists):
         
         b = Bagnaia()
         d = Ducati()
-        rider = Rider(b.name, b.cornering, b.step_by_line)
+        rider = Rider(b.name, b.turning_curves, b.driving_straight)
         bike = Bike(d.brand, d.model, d.max_speed, d.weight, None)
         agents.append(Agent(rider, bike, False, False, False, track.sections[0]))
         
         m = Mir()
         s = Suzuki()
-        rider = Rider(m.name, m.cornering, m.step_by_line)
+        rider = Rider(m.name, m.turning_curves, m.driving_straight)
         bike = Bike(s.brand, s.model, s.max_speed, s.weight, None)
         agents.append(Agent(rider, bike, False, False, False, track.sections[0]))
         
         e = Espargaro()
         a = Aprilia()
-        rider = Rider(e.name, e.cornering, e.step_by_line)
+        rider = Rider(e.name, e.turning_curves, e.driving_straight)
         bike = Bike(a.brand, a.model, a.max_speed, a.weight, None)
         agents.append(Agent(rider, bike, False, False, False, track.sections[0]))
 
         ma = Marquez()
         h = Honda()
-        rider = Rider(ma.name, ma.cornering, ma.step_by_line)
+        rider = Rider(ma.name, ma.turning_curves, ma.driving_straight)
         bike = Bike(h.brand, h.model, h.max_speed, h.weight, None)
         agents.append(Agent(rider, bike, False, False, False, track.sections[0]))
 
         q = Quartararo()
         y = Yamaha()
-        rider = Rider(q.name, q.cornering, q.step_by_line)
+        rider = Rider(q.name, q.turning_curves, q.driving_straight)
         bike = Bike(y.brand, y.model, y.max_speed, y.weight, None)
         agents.append(Agent(rider, bike, False, False, False, track.sections[0]))
 
         bi = Binder()
         k = KTM()
-        rider = Rider(bi.name, bi.cornering, bi.step_by_line)
+        rider = Rider(bi.name, bi.turning_curves, bi.driving_straight)
         bike = Bike(k.brand, k.model, k.max_speed, k.weight, None)
         agents.append(Agent(rider, bike, False, False, False, track.sections[0]))
 
