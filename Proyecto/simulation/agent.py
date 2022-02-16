@@ -74,8 +74,7 @@ class AgentActions(Enum):
 
 
 class Agent:
-    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_acceleration,
-                 node: RiderNode = None):
+    def __init__(self, rider: Rider, bike: Bike, flag_configuration, flag_action, flag_acceleration, section, node: RiderNode = None):
         self.rider = rider
         self.bike = bike
         self.speed = bike.max_speed / 3
@@ -87,11 +86,15 @@ class Agent:
         self.flag_to_pits = False
         self.distance_to_nearest_forward = 0
         self.distance_to_nearest_behind = 0
-        self.shot_down = 0
+        self.shot_down_forward = False
+        self.shot_down_behind = False
         self.node = node
         self.time_lap = 0
+        self.section = section
+        self.sections = 0
+        self.current_lap = 0
 
-    def update_agent_initial_parameters(self, weather, section):
+    def update_agent_initial_parameters(self, weather):
         if self.bike.chassis_stiffness > 5:
             if self.rider.step_by_line + self.bike.chassis_stiffness - 5 / 2 >= 10:
                 self.rider.step_by_line = 10
@@ -223,7 +226,7 @@ class Agent:
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
 
-        if weather.is_front_wind(section[3]):
+        if weather.is_front_wind(self.section[3]):
             if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                 self.rider.step_by_line = 0
             else:
@@ -283,7 +286,7 @@ class Agent:
                     self.bike.probability_of_the_bike_breaking_down = 1
                 else:
                     self.bike.probability_of_the_bike_breaking_down += 0.0001 * weather.wind_intensity / 4
-        elif weather.is_back_wind(section[3]):
+        elif weather.is_back_wind(self.section[3]):
             if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                 self.rider.step_by_line = 10
             else:
@@ -359,8 +362,16 @@ class Agent:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * weather.wind_intensity / 4
+    
+    def change_section(self, section, last):
+        self.section = section
+        if last:
+            self.sections = 0
+            self.current_lap += 1
+        else:
+            self.sections += 1
 
-    def update_agent_parameter(self, weather, new_weather, section):
+    def update_agent_parameter(self, weather, new_weather):
         if new_weather.temperature > 5 and weather.temperature < 5:
             if self.rider.step_by_line + (weather.temperature - 5) / 3 >= 10:
                 self.rider.step_by_line = 10
@@ -455,7 +466,7 @@ class Agent:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
-        if new_weather.is_front_wind(section[3]):
+        if new_weather.is_front_wind(self.section[3]):
             if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                 self.rider.step_by_line = 0
             else:
@@ -515,7 +526,7 @@ class Agent:
                     self.bike.probability_of_the_bike_breaking_down = 1
                 else:
                     self.bike.probability_of_the_bike_breaking_down += 0.0001 * weather.wind_intensity / 4
-        elif new_weather.is_back_wind(section[3]):
+        elif new_weather.is_back_wind(self.section[3]):
             if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                 self.rider.step_by_line = 10
             else:
@@ -590,20 +601,20 @@ class Agent:
             else:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * weather.wind_intensity / 4
 
-    def overcome_an_obstacle(self, section, race, forward_agent, behind_agent):
-        action = self.select_action(race, section)
-        self.select_acceleration(section, race, action)
-        self.calc_final_speed(section[1])
-        if not self.status_analysis(section, race, action, forward_agent, behind_agent):
+    def overcome_an_obstacle(self, race, forward_agent, behind_agent):
+        action = self.select_action(race)
+        self.select_acceleration(race, action)
+        self.calc_final_speed()
+        if not self.status_analysis(race, action, forward_agent, behind_agent):
             return False
         if action is not None and action.name.__contains__("Pits"):
             self.flag_to_pits = True
         return True
 
-    def select_action(self, race, section):
+    def select_action(self, race):
         prob = continuous_variable_generator()
         if not self.flag_action or self.rider.independence > prob:
-            edit_action(race, section, self)
+            edit_action(race, self)
             action = call_ai("action.py")
             prob = continuous_variable_generator()
             if self.rider.expertise > 1 - prob:
@@ -629,11 +640,11 @@ class Agent:
             else:
                 return AgentActions(evaluation)
 
-    def select_acceleration(self, section, race, action):
+    def select_acceleration(self, race, action):
         prob = continuous_variable_generator()
         if not self.flag_acceleration or self.rider.independence > prob:
-            max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, section[2]), section[1])
-            self.acceleration = acceleration(race, section, self, action, max_acceleration)
+            max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, self.section[2]))
+            self.acceleration = acceleration(race, self, action, max_acceleration)
         else:
             self.node.refreshContext(self.__dict__)
             if self.node.funciones[0].idfun == "select_acceleration":
@@ -643,23 +654,23 @@ class Agent:
             function.eval([], self.node.nuevocontext)
             self.acceleration = self.node.nuevocontext.variables["acceleration"].value
 
-    def calc_max_acceleration(self, max_speed, length):
-        return (pow(max_speed / 3.6, 2) - pow(self.speed / 3.6, 2)) / (2 * length)
+    def calc_max_acceleration(self, max_speed):
+        return (pow(max_speed / 3.6, 2) - pow(self.speed / 3.6, 2)) / (2 * self.section[1])
 
-    def calc_final_speed(self, length):
+    def calc_final_speed(self):
         if self.acceleration != 0:
             v0 = self.speed / 3.6
-            vf = sqrt(pow(v0, 2) + 2 * self.acceleration * length)
+            vf = sqrt(pow(v0, 2) + 2 * self.acceleration * self.section[1])
             t = (vf - v0) / self.acceleration
             self.time_lap += t
             self.time_track += t
             self.speed = vf * 3.6
         else:
-            t = length / self.speed
+            t = self.section[1] / self.speed
             self.time_lap += t
             self.time_track += t
 
-    def status_analysis(self, section, race, action, forward_agent, behind_agent):
+    def status_analysis(self, race, action, forward_agent, behind_agent):
         if action is None:
             print(Fore.RED + "El piloto {} se ha quedado perplejo y no ha reaccionado. Ha sido descalificado.".
                   format(self.rider.name))
@@ -669,7 +680,7 @@ class Agent:
                 Fore.RED + "El piloto {} ha roto el acelerador y su moto se ha detenido en plena carrera. Ha sido descalificado.".
                 format(self.rider.name))
             return False
-        if section[4] == TrackType.Straight:
+        if self.section[4] == TrackType.Straight:
             if action.name.__contains__("Turn"):
                 print(Fore.RED + "El piloto {} ha doblado en plena recta y se ha ido al suelo.".format(self.rider.name))
                 return False
@@ -690,7 +701,7 @@ class Agent:
                     print(
                         Fore.RED + "El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
                         format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down = -1
+                    self.shot_down_behind = True
                 elif prob < 2 / 6:
                     print(
                         Fore.RED + "El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
@@ -703,7 +714,7 @@ class Agent:
                     print(
                         Fore.RED + "El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
                         format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down = 1
+                    self.shot_down_forward = True
                 elif prob < 5 / 6:
                     print(
                         Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
@@ -778,7 +789,7 @@ class Agent:
                 self.bike.probability_of_exploding_tires += 0.0001
                 return True
         """
-        if self.speed > section[2] or self.rider.probability_of_falling_off_the_bike > prob:
+        if self.speed > self.section[2] or self.rider.probability_of_falling_off_the_bike > prob:
             print(Fore.RED + "El piloto {} ha perdido el control de su moto y se ha ido al suelo.".format(
                 self.rider.name))
             return False
@@ -796,3 +807,13 @@ class Agent:
 
     def add_time_for_pits(self):
         self.time_lap += uniform(8, 3)
+
+    def __lt__(self, other):
+        if not isinstance(other, Agent):
+            return False
+        return self.time_track < other.time_track
+
+    def __gt__(self, other):
+        if not isinstance(other, Agent):
+            return False
+        return self.time_track > other.time_track

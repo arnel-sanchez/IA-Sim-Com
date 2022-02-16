@@ -1,5 +1,5 @@
 from simulation.environment import Environment
-
+from colorama import init, Fore
 
 def number_digits(number):
     return len(str(number))
@@ -28,11 +28,13 @@ class Race:
         self.laps = laps
         self.current_lap = 0
         self.rank = agents
+        self.flag_laps = False
         for agent in agents:
-            agent.update_agent_initial_parameters(self.environment.weather, self.environment.track.sections[0])
+            agent.update_agent_initial_parameters(self.environment.weather)
             agent.bike.select_configuration(environment)
 
     def change_lap(self):
+        self.flag_laps = False
         self.current_lap += 1
         if self.current_lap == self.laps:
             print("\n" + Fore.BLUE + "Carrera terminada")
@@ -45,7 +47,7 @@ class Race:
                 if agent.flag_to_pits:
                     agent.add_time_for_pits()
                     agent.bike.select_configuration(self.environment)
-                agent.update_agent_parameter(weather,self.environment.weather, self.environment.track.sections[0])
+                agent.update_agent_parameter(weather,self.environment.weather)
             print("\n" + Fore.BLUE + "Ultima vuelta\n")
             self.print_ranking_lap()
             return False
@@ -56,9 +58,18 @@ class Race:
                 if agent.flag_to_pits:
                     agent.add_time_for_pits()
                     agent.bike.select_configuration(self.environment)
-                agent.update_agent_parameter(weather, self.environment.weather, self.environment.track.sections[0])
+                agent.update_agent_parameter(weather, self.environment.weather)
             self.print_ranking_lap()
             return False
+    
+    def end_lap(self):
+        if not self.flag_laps:
+            return False
+        lap = self.agents[0].current_lap
+        for x in self.agents:
+            if x.current_lap != lap:
+                return False
+        return True
 
     def print_ranking(self):
         print("\n" + Fore.MAGENTA + "Resultado final:")
@@ -70,9 +81,7 @@ class Race:
                 for j in range(8 - number_digits(i)):
                     spaces += " "
             print(
-                spaces + Fore.BLUE + "{}" + Fore.WHITE + " -" + Fore.CYAN + " {}" + Fore.WHITE + " -" + Fore.GREEN + " {}:" + Fore.RED + " {} con la {}".format(i, seconds_to_minutes(x.time_track),
-                                                              seconds_to_minutes(x.time_lap),
-                                                              x.rider.name, x.bike.brand + " " + x.bike.model))
+                spaces + Fore.BLUE + "{}".format(i) + Fore.WHITE + " -" + Fore.CYAN + " {}".format(seconds_to_minutes(x.time_track)) + Fore.WHITE + " -" + Fore.GREEN + " {}:".format(seconds_to_minutes(x.time_lap)) + Fore.RED + " {} con la {}".format(x.rider.name, x.bike.brand + " " + x.bike.model))
             i += 1
         print()
 
@@ -86,14 +95,12 @@ class Race:
                 for j in range(8 - number_digits(i)):
                     spaces += " "
             print(
-                spaces + Fore.BLUE + "{}" + Fore.WHITE + " -" + Fore.CYAN + " {}" + Fore.WHITE + " -" + Fore.GREEN + " {}:" + Fore.RED + " {} con la {}".format(i, seconds_to_minutes(x.time_track),
-                                                              seconds_to_minutes(x.time_lap),
-                                                              x.rider.name, x.bike.brand + " " + x.bike.model))
+                spaces + Fore.BLUE + "{}".format(i) + Fore.WHITE + " -" + Fore.CYAN + " {}".format(seconds_to_minutes(x.time_track)) + Fore.WHITE + " -" + Fore.GREEN + " {}:".format(seconds_to_minutes(x.time_lap)) + Fore.RED + " {} con la {}".format(x.rider.name, x.bike.brand + " " + x.bike.model))
             i += 1
         print()
 
     def ranking(self):
-        self.agents.sort(key=lambda agent: agent.time_track)
+        self.agents.sort(key=lambda agent: [-1 * agent.current_lap, -1 * agent.sections, agent.time_track])
         if len(self.agents) < 2:
             return
         self.agents[0].distance_to_nearest_forward = 0
