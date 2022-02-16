@@ -79,7 +79,7 @@ while(EsPar(100) && x>=101+130.2)
 rider Arnel{
 
 x=8;
-turning_curves=10;
+taking_curves=10;
 driving_straight=7;
 
             method void select_acceleration()

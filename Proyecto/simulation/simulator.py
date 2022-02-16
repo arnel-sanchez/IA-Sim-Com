@@ -30,7 +30,7 @@ class Simulator:
             following_agent = None
             if i < len(race.agents) - 1:
                 following_agent = race.agents[i + 1]
-            if not agent.overcome_section(race, following_agent, previous_agent):
+            if not agent.overcome_section(race, previous_agent, following_agent):
                 race.agents.remove(agent)
             else:
                 if race.agents[i].sections == len(race.environment.track.sections) - 1:

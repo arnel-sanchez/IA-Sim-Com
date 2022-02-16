@@ -100,7 +100,10 @@ class Race:
     def ranking(self):
         if len(self.agents) < 2:
             return
-        self.agents.sort(key=lambda agent: [-1 * agent.current_lap, -1 * agent.sections, agent.time_track])
+        #self.agents.sort(key=lambda agent: [-1 * agent.current_lap, -1 * agent.sections, agent.time_track])
+        self.agents.sort(key=lambda agent: agent.time_track)
+        self.agents.sort(key=lambda agent: agent.sections, reverse=True)
+        self.agents.sort(key=lambda agent: agent.current_lap, reverse=True)
         self.agents[0].distance_to_previous_rider = 0
         for i in range(1, len(self.agents) - 1):
             self.agents[i].distance_to_previous_rider = self.agents[i].time_track - self.agents[i - 1].time_track

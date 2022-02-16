@@ -94,15 +94,15 @@ class Agent:
                 self.rider.driving_straight = 10
             else:
                 self.rider.driving_straight += (self.bike.chassis_stiffness - 5) / 2
-            if self.rider.turning_curves - self.bike.chassis_stiffness / 2 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - self.bike.chassis_stiffness / 2 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= self.bike.chassis_stiffness / 2
+                self.rider.taking_curves -= self.bike.chassis_stiffness / 2
         elif self.bike.chassis_stiffness < 5:
-            if self.rider.turning_curves + self.bike.chassis_stiffness - 5 / 2 >= 10:
-                self.rider.turning_curves = 10
+            if self.rider.taking_curves + self.bike.chassis_stiffness - 5 / 2 >= 10:
+                self.rider.taking_curves = 10
             else:
-                self.rider.turning_curves += (self.bike.chassis_stiffness - 5) / 2
+                self.rider.taking_curves += (self.bike.chassis_stiffness - 5) / 2
             if self.rider.driving_straight - self.bike.chassis_stiffness / 2 <= 0:
                 self.rider.driving_straight = 0
             else:
@@ -112,15 +112,15 @@ class Agent:
                 self.rider.driving_straight = 10
             else:
                 self.rider.driving_straight += (self.bike.brakes - 5) / 2
-            if self.rider.turning_curves - self.bike.brakes / 2 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - self.bike.brakes / 2 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= self.bike.brakes / 2
+                self.rider.taking_curves -= self.bike.brakes / 2
         elif self.bike.brakes > 5:
-            if self.rider.turning_curves + (self.bike.brakes - 5) / 2 >= 10:
-                self.rider.turning_curves = 10
+            if self.rider.taking_curves + (self.bike.brakes - 5) / 2 >= 10:
+                self.rider.taking_curves = 10
             else:
-                self.rider.turning_curves += (self.bike.brakes - 5) / 2
+                self.rider.taking_curves += (self.bike.brakes - 5) / 2
             if self.rider.driving_straight - self.bike.brakes / 2 <= 0:
                 self.rider.driving_straight = 0
             else:
@@ -130,10 +130,10 @@ class Agent:
                 self.rider.driving_straight = 10
             else:
                 self.rider.driving_straight += (weather.temperature - 5) / 3
-            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
-                self.rider.turning_curves = 10
+            if self.rider.taking_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.taking_curves = 10
             else:
-                self.rider.turning_curves += (weather.temperature - 5) / 3
+                self.rider.taking_curves += (weather.temperature - 5) / 3
             if self.bike.probability_of_exploding_tires + 0.0001 * (weather.temperature - 5) / 3 >= 1:
                 self.bike.probability_of_exploding_tires = 1
             else:
@@ -151,10 +151,10 @@ class Agent:
                 self.rider.driving_straight = 0
             else:
                 self.rider.driving_straight -= (weather.temperature - 5) / 3
-            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= (weather.temperature - 5) / 3
+                self.rider.taking_curves -= (weather.temperature - 5) / 3
             if self.bike.probability_of_exploding_tires - 0.0001 * (weather.temperature - 5) / 3 <= 0:
                 self.bike.probability_of_exploding_tires = 0
             else:
@@ -172,10 +172,10 @@ class Agent:
                 self.rider.driving_straight = 10
             else:
                 self.rider.driving_straight += (weather.temperature - 5) / 3
-            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
-                self.rider.turning_curves = 10
+            if self.rider.taking_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.taking_curves = 10
             else:
-                self.rider.turning_curves += (weather.temperature - 5) / 3
+                self.rider.taking_curves += (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike - 0.0001 * (weather.temperature - 5) / 2 <= 0:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
@@ -185,10 +185,10 @@ class Agent:
                 self.rider.driving_straight = 0
             else:
                 self.rider.driving_straight -= (weather.temperature - 5) / 3
-            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= (weather.temperature - 5) / 3
+                self.rider.taking_curves -= (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * (weather.temperature - 5) / 2 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
@@ -198,10 +198,10 @@ class Agent:
                 self.rider.driving_straight = 0
             else:
                 self.rider.driving_straight -= (weather.temperature - 5) / 3
-            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= (weather.temperature - 5) / 3
+                self.rider.taking_curves -= (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * (weather.temperature - 5) / 2 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
@@ -211,10 +211,10 @@ class Agent:
                 self.rider.driving_straight = 10
             else:
                 self.rider.driving_straight += (weather.temperature - 5) / 3
-            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
-                self.rider.turning_curves = 10
+            if self.rider.taking_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.taking_curves = 10
             else:
-                self.rider.turning_curves += (weather.temperature - 5) / 3
+                self.rider.taking_curves += (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike - 0.0001 * (weather.temperature - 5) / 2 <= 0:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
@@ -226,10 +226,10 @@ class Agent:
             else:
                 self.rider.driving_straight -= weather.wind_intensity / 4
 
-            if self.rider.turning_curves - weather.wind_intensity / 4 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - weather.wind_intensity / 4 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= weather.wind_intensity / 4
+                self.rider.taking_curves -= weather.wind_intensity / 4
             if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
                 if self.bike.probability_of_exploding_tires + 0.0002 * weather.wind_intensity / 4 >= 1:
                     self.bike.probability_of_exploding_tires = 1
@@ -286,10 +286,10 @@ class Agent:
             else:
                 self.rider.driving_straight += weather.wind_intensity / 4
 
-            if self.rider.turning_curves + weather.wind_intensity / 4 >= 10:
-                self.rider.turning_curves = 10
+            if self.rider.taking_curves + weather.wind_intensity / 4 >= 10:
+                self.rider.taking_curves = 10
             else:
-                self.rider.turning_curves += weather.wind_intensity / 4
+                self.rider.taking_curves += weather.wind_intensity / 4
 
             if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
                 if self.bike.probability_of_exploding_tires + 0.0002 * weather.wind_intensity / 4 >= 1:
@@ -347,10 +347,10 @@ class Agent:
             else:
                 self.rider.driving_straight -= weather.wind_intensity / 4
 
-            if self.rider.turning_curves - weather.wind_intensity / 4 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - weather.wind_intensity / 4 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= weather.wind_intensity / 4
+                self.rider.taking_curves -= weather.wind_intensity / 4
 
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * weather.wind_intensity / 4 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
@@ -371,10 +371,10 @@ class Agent:
                 self.rider.driving_straight = 10
             else:
                 self.rider.driving_straight += (weather.temperature - 5) / 3
-            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
-                self.rider.turning_curves = 10
+            if self.rider.taking_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.taking_curves = 10
             else:
-                self.rider.turning_curves += (weather.temperature - 5) / 3
+                self.rider.taking_curves += (weather.temperature - 5) / 3
             if self.bike.probability_of_exploding_tires + 0.0001 * (weather.temperature - 5) / 3 >= 1:
                 self.bike.probability_of_exploding_tires = 1
             else:
@@ -392,10 +392,10 @@ class Agent:
                 self.rider.driving_straight = 0
             else:
                 self.rider.driving_straight -= (weather.temperature - 5) / 3
-            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= (weather.temperature - 5) / 3
+                self.rider.taking_curves -= (weather.temperature - 5) / 3
             if self.bike.probability_of_exploding_tires - 0.0001 * (weather.temperature - 5) / 3 <= 0:
                 self.bike.probability_of_exploding_tires = 0
             else:
@@ -413,10 +413,10 @@ class Agent:
                 self.rider.driving_straight = 10
             else:
                 self.rider.driving_straight += (weather.temperature - 5) / 3
-            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
-                self.rider.turning_curves = 10
+            if self.rider.taking_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.taking_curves = 10
             else:
-                self.rider.turning_curves += (weather.temperature - 5) / 3
+                self.rider.taking_curves += (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike - 0.0001 * (weather.temperature - 5) / 2 <= 0:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
@@ -426,10 +426,10 @@ class Agent:
                 self.rider.driving_straight = 0
             else:
                 self.rider.driving_straight -= (weather.temperature - 5) / 3
-            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= (weather.temperature - 5) / 3
+                self.rider.taking_curves -= (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * (weather.temperature - 5) / 2 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
@@ -439,10 +439,10 @@ class Agent:
                 self.rider.driving_straight = 0
             else:
                 self.rider.driving_straight -= (weather.temperature - 5) / 3
-            if self.rider.turning_curves - (weather.temperature - 5) / 3 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - (weather.temperature - 5) / 3 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= (weather.temperature - 5) / 3
+                self.rider.taking_curves -= (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * (weather.temperature - 5) / 2 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
@@ -452,10 +452,10 @@ class Agent:
                 self.rider.driving_straight = 10
             else:
                 self.rider.driving_straight += (weather.temperature - 5) / 3
-            if self.rider.turning_curves + (weather.temperature - 5) / 3 >= 10:
-                self.rider.turning_curves = 10
+            if self.rider.taking_curves + (weather.temperature - 5) / 3 >= 10:
+                self.rider.taking_curves = 10
             else:
-                self.rider.turning_curves += (weather.temperature - 5) / 3
+                self.rider.taking_curves += (weather.temperature - 5) / 3
             if self.rider.probability_of_falling_off_the_bike - 0.0001 * (weather.temperature - 5) / 2 <= 0:
                 self.rider.probability_of_falling_off_the_bike = 0
             else:
@@ -466,10 +466,10 @@ class Agent:
             else:
                 self.rider.driving_straight -= weather.wind_intensity / 4
 
-            if self.rider.turning_curves - weather.wind_intensity / 4 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - weather.wind_intensity / 4 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= weather.wind_intensity / 4
+                self.rider.taking_curves -= weather.wind_intensity / 4
             if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
                 if self.bike.probability_of_exploding_tires + 0.0002 * weather.wind_intensity / 4 >= 1:
                     self.bike.probability_of_exploding_tires = 1
@@ -526,10 +526,10 @@ class Agent:
             else:
                 self.rider.driving_straight += weather.wind_intensity / 4
 
-            if self.rider.turning_curves + weather.wind_intensity / 4 >= 10:
-                self.rider.turning_curves = 10
+            if self.rider.taking_curves + weather.wind_intensity / 4 >= 10:
+                self.rider.taking_curves = 10
             else:
-                self.rider.turning_curves += weather.wind_intensity / 4
+                self.rider.taking_curves += weather.wind_intensity / 4
 
             if self.bike.tires == Tires.Slick_Soft and weather.weather_status == WeatherStatus.Sunny:
                 if self.bike.probability_of_exploding_tires + 0.0002 * weather.wind_intensity / 4 >= 1:
@@ -586,10 +586,10 @@ class Agent:
                 self.rider.driving_straight = 0
             else:
                 self.rider.driving_straight -= weather.wind_intensity / 4
-            if self.rider.turning_curves - weather.wind_intensity / 4 <= 0:
-                self.rider.turning_curves = 0
+            if self.rider.taking_curves - weather.wind_intensity / 4 <= 0:
+                self.rider.taking_curves = 0
             else:
-                self.rider.turning_curves -= weather.wind_intensity / 4
+                self.rider.taking_curves -= weather.wind_intensity / 4
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * weather.wind_intensity / 4 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
@@ -684,7 +684,7 @@ class Agent:
                 print(Fore.RED + "El piloto {} ha seguido de largo y no ha doblado. Ha roto la moto en la grava.".
                       format(self.rider.name))
                 return False
-            expertise = self.rider.turning_curves / 1000
+            expertise = self.rider.taking_curves / 1000
         expertise += self.rider.expertise
         prob = continuous_variable_generator()
         if previous_agent is not None and (action.name.__contains__("Attack") or

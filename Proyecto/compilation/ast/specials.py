@@ -73,9 +73,9 @@ class TypeSpecial(Statement):
                     return IncorrectCallError("In this context they can only be redefined with the equal operator", "",
                                               self.token.line, self.token.column)
                 keys = list(self.nuevocontext.variables.keys())
-                if keys.count(var.id) == 0 or (var.id != "turning_curves" and var.id != "driving_straight"):
+                if keys.count(var.id) == 0 or (var.id != "taking_curves" and var.id != "driving_straight"):
                     return IncorrectCallError(
-                        "only turning_curves variables and driving_straight belonging to the type can be redefined", "",
+                        "only taking_curves variables and driving_straight belonging to the type can be redefined", "",
                         self.token.line, self.token.column)
 
                 validationexpr = var.expr.validate(context)
@@ -135,7 +135,7 @@ class TypeSpecial(Statement):
             if evalvar > 10:
                 return RuntimeError("This variable must be less than or equal to 10", "", self.token.line,
                                     self.token.column)
-            if var.id == "turning_curves":
+            if var.id == "taking_curves":
                 self.varsforRiders[3][2] = evalvar
             else:
                 self.varsforRiders[4][2] = evalvar
@@ -174,6 +174,6 @@ class RiderNode(TypeSpecial):
     def __init__(self):
         super().__init__()
         self.varsforRiders = [["speed", VariableType.DOUBLE, 0.0], ["acceleration", VariableType.DOUBLE, 0.0],
-                              ["time_lap", VariableType.DOUBLE, 0.0], ["turning_curves", VariableType.INT, 5],
+                              ["time_lap", VariableType.DOUBLE, 0.0], ["taking_curves", VariableType.INT, 5],
                               ["driving_straight", VariableType.INT, 5]]
         self.functionsOfRiders = ["select_acceleration", "select_action"]

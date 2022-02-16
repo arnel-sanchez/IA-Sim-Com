@@ -167,7 +167,7 @@ def acceleration(race, agent, action, max_acceleration):
             max_acceleration -= random(0.3)
         else:
             aggressiveness += random(0.03)
-        if rider.turning_curves < 8:
+        if rider.taking_curves < 8:
             max_acceleration -= random(0.6)
         else:
             aggressiveness += random(0.06)
