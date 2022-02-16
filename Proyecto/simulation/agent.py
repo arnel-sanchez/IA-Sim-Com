@@ -226,7 +226,7 @@ class Agent:
             else:
                 self.rider.probability_of_falling_off_the_bike -= 0.0001 * (weather.temperature - 5) / 3
 
-        if weather.is_front_wind(self.section[3]):
+        if weather.is_front_wind(self.section.orientation):
             if self.rider.step_by_line - weather.wind_intensity / 4 <= 0:
                 self.rider.step_by_line = 0
             else:
@@ -286,7 +286,7 @@ class Agent:
                     self.bike.probability_of_the_bike_breaking_down = 1
                 else:
                     self.bike.probability_of_the_bike_breaking_down += 0.0001 * weather.wind_intensity / 4
-        elif weather.is_back_wind(self.section[3]):
+        elif weather.is_back_wind(self.section.orientation):
             if self.rider.step_by_line + weather.wind_intensity / 4 >= 10:
                 self.rider.step_by_line = 10
             else:
@@ -643,7 +643,7 @@ class Agent:
     def select_acceleration(self, race, action):
         prob = continuous_variable_generator()
         if not self.flag_acceleration or self.rider.independence > prob:
-            max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, self.section[2]))
+            max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, self.section.max_speed))
             self.acceleration = acceleration(race, self, action, max_acceleration)
         else:
             self.node.refreshContext(self.__dict__)
@@ -655,18 +655,18 @@ class Agent:
             self.acceleration = self.node.nuevocontext.variables["acceleration"].value
 
     def calc_max_acceleration(self, max_speed):
-        return (pow(max_speed / 3.6, 2) - pow(self.speed / 3.6, 2)) / (2 * self.section[1])
+        return (pow(max_speed / 3.6, 2) - pow(self.speed / 3.6, 2)) / (2 * self.section.length)
 
     def calc_final_speed(self):
         if self.acceleration != 0:
             v0 = self.speed / 3.6
-            vf = sqrt(pow(v0, 2) + 2 * self.acceleration * self.section[1])
+            vf = sqrt(pow(v0, 2) + 2 * self.acceleration * self.section.length)
             t = (vf - v0) / self.acceleration
             self.time_lap += t
             self.time_track += t
             self.speed = vf * 3.6
         else:
-            t = self.section[1] / self.speed
+            t = self.section.length / self.speed
             self.time_lap += t
             self.time_track += t
 
@@ -680,7 +680,7 @@ class Agent:
                 Fore.RED + "El piloto {} ha roto el acelerador y su moto se ha detenido en plena carrera. Ha sido descalificado.".
                 format(self.rider.name))
             return False
-        if self.section[4] == TrackType.Straight:
+        if self.section.type == SectionType.Straight:
             if action.name.__contains__("Turn"):
                 print(Fore.RED + "El piloto {} ha doblado en plena recta y se ha ido al suelo.".format(self.rider.name))
                 return False
@@ -791,7 +791,7 @@ class Agent:
                 self.bike.probability_of_exploding_tires += 0.0001
                 return True
         """
-        if self.speed > self.section[2] or self.rider.probability_of_falling_off_the_bike > prob:
+        if self.speed > self.section.max_speed or self.rider.probability_of_falling_off_the_bike > prob:
             print(Fore.RED + "El piloto {} ha perdido el control de su moto y se ha ido al suelo.".format(
                 self.rider.name))
             return False

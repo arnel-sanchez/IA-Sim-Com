@@ -16,7 +16,7 @@ def call_ai(script: str):
 
 
 def call_subprocess(python: str, script: str):
-    ans = run(python + path[0] + "/ai/" + script, shell=True, stdout=PIPE, stderr=STDOUT)
+    ans = run(python + "./ai/" + script, shell=True, stdout=PIPE, stderr=STDOUT)
     if ans.returncode != 0:
         raise Exception
     ans = ans.stdout.decode("utf-8")
@@ -30,9 +30,9 @@ def edit_moto(environment):
     back = 0
     side = 0
     for section in environment.track.sections:
-        if weather.is_front_wind(section[3]):
+        if weather.is_front_wind(section.orientation):
             front += 1
-        elif weather.is_back_wind(section[3]):
+        elif weather.is_back_wind(section.orientation):
             back += 1
         else:
             side += 1
@@ -77,17 +77,17 @@ def restart(rules: str):
     return engine
 
 
-def edit_action(race, section, agent):
+def edit_action(race, agent):
     speed = agent.speed
     bike = agent.bike
-    section_max_speed = section[2]
+    section_max_speed = agent.section.max_speed
     if speed > bike.max_speed or speed > section_max_speed:
         speed_cmp = 1
     elif speed < bike.max_speed and speed < section_max_speed:
         speed_cmp = 3
     else:
         speed_cmp = 2
-    section_type = section[4].name
+    section_type = agent.section.type.name
     weather = race.environment.weather
     nearest_previous, nearest_next = nearest(race, agent.rider)
     facts = open(path[0] + "/ai/action_facts.kfb", "w")
@@ -135,7 +135,7 @@ def call_action():
     print(action)
 
 
-def acceleration(race, section, agent, action, max_acceleration):
+def acceleration(race, agent, action, max_acceleration):
     if action.name.__contains__("KeepSpeed"):
         return 0
     weather = race.environment.weather
@@ -152,7 +152,7 @@ def acceleration(race, section, agent, action, max_acceleration):
         else:
             aggressiveness += random(0.01)
     bike = agent.bike
-    if section[4].name == "Straight":
+    if agent.section.type.name == "Straight":
         if bike.brakes < 8 and bike.chassis_stiffness < 8:
             max_acceleration -= random(0.3)
         else:

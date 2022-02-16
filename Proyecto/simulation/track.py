@@ -1,6 +1,5 @@
 from enum import Enum
-
-from weather import CardinalsPoints
+from simulation.weather import CardinalsPoints
 
 
 class SectionType(Enum):
