@@ -86,7 +86,7 @@ class Agent:
         self.section = section
         self.sections = 0
         self.current_lap = 0
-        self.rank = -1
+        self.ranking = 0
 
     def update_agent_initial_parameters(self, weather):
         if self.bike.chassis_stiffness > 5:
@@ -703,7 +703,7 @@ class Agent:
         expertise += self.rider.expertise
         if action.name.__contains__("Attack"):
             if expertise > 1 - prob:
-                forward_agent = race.agents[self.rank - 1]
+                forward_agent = race.agents[self.ranking - 1]
                 prob = continuous_variable_generator()
                 if prob < 1 / 3:
                     print(
@@ -727,7 +727,7 @@ class Agent:
                 return True
         elif action.name.__contains__("Defend"):
             if expertise > 1 - prob:
-                behind_agent = race.agents[self.rank + 1]
+                behind_agent = race.agents[self.ranking + 1]
                 prob = continuous_variable_generator()
                 if prob < 1 / 3:
                     print(
@@ -756,7 +756,7 @@ class Agent:
     def attack(self, race):
         self.bike.probability_of_the_bike_breaking_down += 0.0001
         self.bike.probability_of_exploding_tires += 0.0001
-        forward_agent = race.agents[self.rank - 1]
+        forward_agent = race.agents[self.ranking - 1]
         prob = continuous_variable_generator()
         t = continuous_variable_generator()
         if prob - self.rider.expertise < 1 / 3:
@@ -764,10 +764,10 @@ class Agent:
                                                                                  forward_agent.rider.name))
             forward_agent.time_track = self.time_track + t
             forward_agent.time_lap = self.time_lap + t
-            self.rank -= 1
-            race.agents[self.rank] = self
-            forward_agent.rank += 1
-            race.agents[forward_agent.rank] = forward_agent
+            self.ranking -= 1
+            race.agents[self.ranking] = self
+            forward_agent.ranking += 1
+            race.agents[forward_agent.ranking] = forward_agent
             forward_agent.review(race)
         else:
             print(Fore.YELLOW + "El piloto {} ha defendido su posicion frente al piloto {}.".
@@ -777,17 +777,19 @@ class Agent:
         self.review(race)
 
     def review(self, race):
-        if self.rank < 0:
-            return
-        if self.rank > 0 and self.time_track < race.agents[self.rank - 1].time_track:
-            self.attack(race)
-        if self.rank < len(race.agents) - 1 and self.time_track > race.agents[self.rank + 1].time_track:
-            self.defend(race)
+        if self.ranking > 0:
+            forward_time = race.agents[self.ranking - 1].time_track
+            if forward_time > 0 and self.time_track < forward_time:
+                self.attack(race)
+        if self.ranking < len(race.agents) - 1:
+            behind_time = race.agents[self.ranking - 1].time_track
+            if self.time_track > behind_time > 0:
+                self.defend(race)
 
     def defend(self, race):
         self.bike.probability_of_the_bike_breaking_down += 0.0001
         self.bike.probability_of_exploding_tires += 0.0001
-        behind_agent = race.agents[self.rank + 1]
+        behind_agent = race.agents[self.ranking + 1]
         prob = continuous_variable_generator()
         t = continuous_variable_generator()
         if prob - self.rider.expertise < 2 / 3:
@@ -801,10 +803,10 @@ class Agent:
                                                                                  self.rider.name))
             self.time_track = behind_agent.time_track + t
             self.time_lap = behind_agent.time_lap + t
-            behind_agent.rank += 1
-            race.agents[behind_agent.rank] = behind_agent
-            self.rank += 1
-            race.agents[self.rank] = self
+            behind_agent.ranking -= 1
+            race.agents[behind_agent.ranking] = behind_agent
+            self.ranking += 1
+            race.agents[self.ranking] = self
             self.review(race)
 
     def add_time_for_pits(self):

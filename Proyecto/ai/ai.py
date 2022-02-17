@@ -150,8 +150,9 @@ def acceleration(race, agent, action, max_acceleration):
             max_acceleration -= random(0.1)
         else:
             aggressiveness += random(0.01)
+    section = agent.section
     bike = agent.bike
-    if agent.section.type.name == "Straight":
+    if section.type.name == "Straight":
         if bike.brakes < 8 and bike.chassis_stiffness < 8:
             max_acceleration -= random(0.3)
         else:
@@ -174,9 +175,9 @@ def acceleration(race, agent, action, max_acceleration):
     if max_acceleration < 0 and action.name.__contains__("SpeedUp"):
         max_acceleration = (- max_acceleration) / 10
     if len(race.agents) > 1 and aggressiveness > random(1):
-        max_acceleration += random(0.1)
+        max_acceleration += random(0.01)
     return max_acceleration
 
 
 def random(n: float):
-    return uniform(0.001, n)
+    return uniform(0, n)

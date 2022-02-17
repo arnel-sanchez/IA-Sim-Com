@@ -30,7 +30,7 @@ class Race:
         self.agents = agents
         self.laps = laps
         self.current_lap = 0
-        self.rank = agents
+        self.ranking = agents
         self.flag_laps = False
         for agent in agents:
             agent.update_agent_initial_parameters(self.environment.weather)
@@ -72,11 +72,11 @@ class Race:
         return True
 
     def clear(self):
-        with open(path[0] + "/output.log", 'r+') as f:
+        with open(path[0] + "/output.log", "w") as f:
             f.truncate(0)
 
     def printer(self, res):
-        with open(path[0] + "/output.log", 'a') as f:
+        with open(path[0] + "/output.log", "a") as f:
             f.write(res)
 
     def print_ranking(self, ended):
@@ -99,12 +99,13 @@ class Race:
         res += Fore.BLUE + "Posicion" + Fore.WHITE + " -" + Fore.CYAN + " Tiempo de Carrera" + Fore.WHITE + " -" + Fore.GREEN + " Tiempo de Vuelta:" + Fore.RED + " Piloto"
         return res
 
-    def print_agent(self, agent, pos):
+    def print_agent(self, agent):
+        ranking = agent.ranking
         spaces = ""
-        if 8 - number_digits(pos) > 0:
-            for j in range(8 - number_digits(pos)):
+        if 8 - number_digits(ranking) > 0:
+            for j in range(8 - number_digits(ranking)):
                 spaces += " "
-        return spaces + Fore.BLUE + "{}".format(pos) + Fore.WHITE + " -" + Fore.CYAN + " {}".format(
+        return spaces + Fore.BLUE + "{}".format(ranking) + Fore.WHITE + " -" + Fore.CYAN + " {}".format(
                 seconds_to_minutes(agent.time_track)) + Fore.WHITE + " -" + Fore.GREEN + " {}:".format(
                 seconds_to_minutes(agent.time_lap)) + Fore.RED + " {} con la {}".format(
                 agent.rider.name, agent.bike.brand + " " + agent.bike.model) + "\n"
