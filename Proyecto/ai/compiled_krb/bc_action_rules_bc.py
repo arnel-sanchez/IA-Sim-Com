@@ -187,7 +187,7 @@ def attack_1(rule, arg_patterns, arg_context):
               for x_2 in gen_2:
                 assert x_2 is None, \
                   "bc_action_rules.attack_1: got unexpected plan from when clause 2"
-                if context.lookup_data('ans') < 2:
+                if context.lookup_data('ans') <= 1:
                   rule.rule_base.num_bc_rule_successes += 1
                   yield
         rule.rule_base.num_bc_rule_failures += 1
@@ -218,7 +218,7 @@ def attack_2(rule, arg_patterns, arg_context):
               for x_2 in gen_2:
                 assert x_2 is None, \
                   "bc_action_rules.attack_2: got unexpected plan from when clause 2"
-                if context.lookup_data('ans') < 4:
+                if context.lookup_data('ans') <= 2:
                   rule.rule_base.num_bc_rule_successes += 1
                   yield
         rule.rule_base.num_bc_rule_failures += 1
@@ -249,7 +249,7 @@ def defend_1(rule, arg_patterns, arg_context):
               for x_2 in gen_2:
                 assert x_2 is None, \
                   "bc_action_rules.defend_1: got unexpected plan from when clause 2"
-                if context.lookup_data('ans') < 2:
+                if context.lookup_data('ans') >= -1:
                   rule.rule_base.num_bc_rule_successes += 1
                   yield
         rule.rule_base.num_bc_rule_failures += 1
@@ -280,7 +280,7 @@ def defend_2(rule, arg_patterns, arg_context):
               for x_2 in gen_2:
                 assert x_2 is None, \
                   "bc_action_rules.defend_2: got unexpected plan from when clause 2"
-                if context.lookup_data('ans') < 4:
+                if context.lookup_data('ans') >= -2:
                   rule.rule_base.num_bc_rule_successes += 1
                   yield
         rule.rule_base.num_bc_rule_failures += 1
