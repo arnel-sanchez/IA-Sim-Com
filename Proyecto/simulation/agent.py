@@ -646,7 +646,7 @@ class Agent:
         expertise += self.rider.expertise
         prob = continuous_variable_generator()
         if action.name.__contains__("Attack"):
-            if prob < 0.1:
+            if expertise > 1 - prob:
                 forward_agent = race.agents[self.ranking - 1]
                 prob = continuous_variable_generator()
                 if prob < 1 / 3:
@@ -670,7 +670,7 @@ class Agent:
                 self.bike.probability_of_exploding_tires += 0.0001
                 self.attack(race)
         elif action.name.__contains__("Defend"):
-            if prob > 0.9:
+            if expertise > 1 - prob:
                 if self.ranking + 1 == len(race.agents):
                     return
                 behind_agent = race.agents[self.ranking + 1]
