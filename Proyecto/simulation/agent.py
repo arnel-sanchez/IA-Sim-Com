@@ -360,7 +360,6 @@ class Agent:
     def change_section(self, section, last):
         self.section = section
         if last:
-            self.time_lap = 0
             self.sections = 0
             self.current_lap += 1
         else:
@@ -647,7 +646,7 @@ class Agent:
         expertise += self.rider.expertise
         prob = continuous_variable_generator()
         if action.name.__contains__("Attack"):
-            if expertise > 1 - prob:
+            if prob < 0.1:
                 forward_agent = race.agents[self.ranking - 1]
                 prob = continuous_variable_generator()
                 if prob < 1 / 3:
@@ -671,7 +670,9 @@ class Agent:
                 self.bike.probability_of_exploding_tires += 0.0001
                 self.attack(race)
         elif action.name.__contains__("Defend"):
-            if expertise > 1 - prob:
+            if prob > 0.9:
+                if self.ranking + 1 == len(race.agents):
+                    return
                 behind_agent = race.agents[self.ranking + 1]
                 prob = continuous_variable_generator()
                 if prob < 1 / 3:
@@ -732,6 +733,8 @@ class Agent:
                 self.defend(race)
 
     def defend(self, race):
+        if self.ranking + 1 == len(race.agents):
+            return
         behind_agent = race.agents[self.ranking + 1]
         prob = continuous_variable_generator()
         t = continuous_variable_generator()

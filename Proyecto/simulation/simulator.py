@@ -14,47 +14,47 @@ class Simulator:
             print(Fore.CYAN + "{} - {} con la {}".format(i + 1, race.ranking[i].rider.name,
                                                          race.ranking[i].bike.brand + " " + race.ranking[i].bike.model))
         print(Fore.BLUE + "\nInicio de la carrera\n")
-        heap = []
         for i in range(len(race.agents)):
             race.agents[i].ranking = i
-            heappush(heap, race.agents[i])
         race.printer(race.print_ranking(False))
         end_lap = 0
         while True:
-            if race.current_lap == race.laps:
-                race.clear()
-                race.printer(race.print_ranking(True))
-            if end_lap == len(race.agents):
-                race.clear()
-                end_lap = 0
-                race.printer(race.print_ranking(False))
-            agent = heappop(heap)
-            remove_agents = []
-            if not agent.overcome_an_obstacle(race):
-                remove_agents.append(agent)
-            else:
-                if agent.sections == len(race.environment.track.sections) - 1:
-                    race.flag_laps = True
-                    agent.change_section(race.environment.track.sections[0], True)
-                    race.printer(race.print_agent(agent))
-                    end_lap += 1
-                else:
-                    agent.change_section(race.environment.track.sections[agent.sections + 1], False)
-            if agent.shot_down is not None:
-                remove_agents.append(agent.shot_down)
-                agent.shot_down = None
-            if not remove_agents.__contains__(agent):
-                heappush(heap, agent)
-            if len(remove_agents) > 0:
-                for ra in remove_agents:
-                    if ra != agent:
-                        heap.remove(ra)
-                    race.agents.remove(ra)
-                if len(heap) < 1:
-                    print(Fore.BLUE + "\nNingun piloto ha terminado la carrera.\n")
+            k = 0
+            while True:
+                remove_agents = []
+                if k == len(race.agents):
                     break
-                for i in range(len(race.agents)):
-                    race.agents[i].ranking = i
+                if race.current_lap == race.laps:
+                    race.clear()
+                    race.printer(race.print_ranking(True))
+                if end_lap == len(race.agents):
+                    race.clear()
+                    end_lap = 0
+                    race.printer(race.print_ranking(False))
+                if not race.agents[k].overcome_an_obstacle(race):
+                    remove_agents.append(race.agents[k])
+                else:
+                    if race.agents[k].sections == len(race.environment.track.sections) - 1:
+                        race.flag_laps = True
+                        race.agents[k].change_section(race.environment.track.sections[0], True)
+                        race.printer(race.print_agent(race.agents[k]))
+                        end_lap += 1
+                    else:
+                        race.agents[k].change_section(race.environment.track.sections[race.agents[k].sections + 1], False)
+                if race.agents[k].shot_down is not None:
+                    remove_agents.append(race.agents[k].shot_down)
+                    race.agents[k].shot_down = None
+                if len(remove_agents) > 0:
+                    for ra in remove_agents:
+                        k-=1
+                        race.agents.remove(ra)
+                    remove_agents = []
+                    if len(race.agents) < 1:
+                        print(Fore.BLUE + "\nNingun piloto ha terminado la carrera.\n")
+                        return
+                    for i in range(len(race.agents)):
+                        race.agents[i].ranking = i
+                k+=1
             if race.end_lap():
                 if race.change_lap():
                     break
@@ -64,8 +64,6 @@ class Simulator:
                 for agent in race.agents:
                     agent.update_agent_parameter(old_weather, new_weather)
                 self.print_race(race)
-            if len(remove_agents) > 0:
-                heapify(heap)
 
     def print_race(self, race: Race):
         weather = race.environment.weather

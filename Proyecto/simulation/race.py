@@ -9,16 +9,16 @@ def number_digits(number):
 
 
 def seconds_to_minutes(seconds):
-    seconds = round(seconds, 10)
+    seconds = round(seconds, 11)
     minutes = int(seconds / 60)
     seconds -= minutes * 60
-    seconds = round(seconds, 10)
-    if seconds < 10:
-        while number_digits(seconds) < 12:
+    seconds = round(seconds, 11)
+    if number_digits(seconds) < 12:
+        while number_digits(seconds) < 14:
             seconds = str(seconds) + "0"
         time = f"{minutes:02d}:0{seconds}"
     else:
-        while number_digits(seconds) < 13:
+        while number_digits(seconds) < 15:
             seconds = str(seconds) + "0"
         time = f"{minutes:02d}:{seconds}"
     return time
@@ -94,18 +94,21 @@ class Race:
                 seconds_to_minutes(x.time_lap)) + Fore.RED + " {} con la {}".format(
                 x.rider.name, x.bike.brand + " " + x.bike.model) + "\n"
                 i += 1
+                agent.time_lap = 0
         else:
             res += Fore.MAGENTA + "Resultados de la vuelta" + Fore.CYAN + " {}:".format(self.current_lap + 1)+"\n"
-        res += Fore.BLUE + "Posicion" + Fore.WHITE + " -" + Fore.CYAN + " Tiempo de Carrera" + Fore.WHITE + " -" + Fore.GREEN + " Tiempo de Vuelta:" + Fore.RED + " Piloto"
+        res += Fore.BLUE + "Posicion" + Fore.WHITE + " -" + Fore.CYAN + " Tiempo de Carrera" + Fore.WHITE + " -" + Fore.GREEN + "  Tiempo de Vuelta:" + Fore.RED + " Piloto"
         return res
 
     def print_agent(self, agent):
         ranking = agent.ranking
-        spaces = ""
+        res = ""
         if 8 - number_digits(ranking) > 0:
             for j in range(8 - number_digits(ranking)):
-                spaces += " "
-        return spaces + Fore.BLUE + "{}".format(ranking) + Fore.WHITE + " -" + Fore.CYAN + " {}".format(
+                res += " "
+        res += Fore.BLUE + "{}".format(ranking + 1) + Fore.WHITE + " -" + Fore.CYAN + " {}".format(
                 seconds_to_minutes(agent.time_track)) + Fore.WHITE + " -" + Fore.GREEN + " {}:".format(
                 seconds_to_minutes(agent.time_lap)) + Fore.RED + " {} con la {}".format(
                 agent.rider.name, agent.bike.brand + " " + agent.bike.model) + "\n"
+        agent.time_lap = 0
+        return res
