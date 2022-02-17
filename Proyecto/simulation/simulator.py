@@ -6,6 +6,7 @@ from simulation.race import Race
 
 class Simulator:
     def start(self, race: Race):
+        race.clear()
         print(Fore.MAGENTA + "\nPista: " + Fore.CYAN + " {}\n".format(race.environment.track.name))
         self.print_race(race)
         print(Fore.MAGENTA + "Pilotos:")
@@ -16,7 +17,16 @@ class Simulator:
         h = []
         for x in race.agents:
             heappush(h, x)
+        race.printer(race.print_ranking(False))
+        end_lap = 0
         while True:
+            if race.current_lap == race.laps:
+                race.clear()
+                race.printer(race.print_ranking(True))
+            if end_lap == len(race.agents):
+                race.clear()
+                end_lap = 0
+                race.printer(race.print_ranking(False))
             agent = heappop(h)
             remove_agents = []
             if len(race.agents) == 1:
@@ -24,10 +34,10 @@ class Simulator:
                     remove_agents.append(race.agents[0])
             else:
                 i = 0
-                for agent_1 in race.agents:
-                    if agent_1 == agent:
+                for j in range(len(race.agents)):
+                    if race.agents[j] == agent:
+                        i = j
                         break
-                    i += 1
                 if i == 0:
                     if not race.agents[i].overcome_an_obstacle(race, None, race.agents[i + 1]):
                         if race.agents[i].shot_down_behind:
@@ -36,12 +46,11 @@ class Simulator:
                     else:
                         if race.agents[i].sections == len(race.environment.track.sections) - 1:
                             race.flag_laps = True
-                            race.rank.append(race.agents[i])
-                            race.print_ranking()
                             race.agents[i].change_section(race.environment.track.sections[0], True)
+                            race.printer(race.print_agent(race.agents[i], i+1))
+                            end_lap += 1
                         else:
-                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1],
-                                                          False)
+                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1], False)
                 elif i == len(race.agents) - 1:
                     if not race.agents[i].overcome_an_obstacle(race, race.agents[i - 1], None):
                         if race.agents[i].shot_down_forward:
@@ -50,12 +59,11 @@ class Simulator:
                     else:
                         if race.agents[i].sections == len(race.environment.track.sections) - 1:
                             race.flag_laps = True
-                            race.rank.append(race.agents[i])
-                            race.print_ranking()
                             race.agents[i].change_section(race.environment.track.sections[0], True)
+                            race.printer(race.print_agent(race.agents[i], i+1))
+                            end_lap += 1
                         else:
-                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1],
-                                                          False)
+                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1], False)
                 else:
                     if not race.agents[i].overcome_an_obstacle(race, race.agents[i - 1],
                                                                race.agents[i + 1]):
@@ -67,12 +75,11 @@ class Simulator:
                     else:
                         if race.agents[i].sections == len(race.environment.track.sections) - 1:
                             race.flag_laps = True
-                            race.rank.append(race.agents[i])
-                            race.print_ranking()
                             race.agents[i].change_section(race.environment.track.sections[0], True)
+                            race.printer(race.print_agent(race.agents[i], i+1))
+                            end_lap += 1
                         else:
-                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1],
-                                                          False)
+                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1], False)
             if len(remove_agents) != 0:
                 for remove in remove_agents:
                     if remove != agent:

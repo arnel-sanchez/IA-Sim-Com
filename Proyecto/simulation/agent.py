@@ -694,8 +694,8 @@ class Agent:
                 if prob < 1 / 6:
                     print(
                         Fore.RED + "El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
-                        format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down_forward = True
+                        format(behind_agent.rider.name, self.rider.name))
+                    self.shot_down_behind = True
                 elif prob < 2 / 6:
                     print(
                         Fore.RED + "El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
@@ -714,11 +714,12 @@ class Agent:
                         print(
                             Fore.RED + "El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
                             format(forward_agent.rider.name, self.rider.name))
+                        self.shot_down_forward = True    
                     else:
                         print(
                             Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
-                            format(forward_agent.rider.name))
-                    self.shot_down_forward = True
+                            format(behind_agent.rider.name))
+                        self.shot_down_behind = True
                     return True
                 return False
             else:
