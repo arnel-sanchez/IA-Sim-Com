@@ -597,6 +597,8 @@ class Agent:
 
     def overcome_an_obstacle(self, race):
         action = self.select_action(race)
+        if not self.overtake(race, action):
+            return False
         self.select_acceleration(race, action)
         self.calc_final_speed()
         if not self.status_analysis(race, action):
@@ -633,6 +635,121 @@ class Agent:
                 return AgentActions(11)
             else:
                 return AgentActions(evaluation)
+
+    def overtake(self, race, action):
+        if action is None:
+            return True
+        if self.section.type == SectionType.Straight:
+            expertise = self.rider.step_by_line / 1000
+        else:
+            expertise = self.rider.cornering / 1000
+        expertise += self.rider.expertise
+        prob = continuous_variable_generator()
+        if action.name.__contains__("Attack"):
+            if expertise > 1 - prob:
+                forward_agent = race.agents[self.ranking - 1]
+                prob = continuous_variable_generator()
+                if prob < 1 / 3:
+                    print(
+                        Fore.RED + "El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
+                        format(forward_agent.rider.name, self.rider.name))
+                    self.shot_down = forward_agent
+                    return False
+                elif prob < 2 / 3:
+                    print(
+                        Fore.RED + "El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
+                        format(self.rider.name))
+                    return False
+                else:
+                    print(
+                        Fore.RED + "El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
+                        format(forward_agent.rider.name, self.rider.name))
+                    self.shot_down = forward_agent
+            else:
+                self.attack(race)
+        elif action.name.__contains__("Defend"):
+            if expertise > 1 - prob:
+                behind_agent = race.agents[self.ranking + 1]
+                prob = continuous_variable_generator()
+                if prob < 1 / 3:
+                    print(
+                        Fore.RED + "El piloto {} ha sido bloqueado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
+                        format(behind_agent.rider.name, self.rider.name))
+                    self.shot_down = behind_agent
+                    return False
+                elif prob < 2 / 3:
+                    print(
+                        Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
+                        format(self.rider.name))
+                    return False
+                else:
+                    print(
+                        Fore.RED + "El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
+                        format(behind_agent.rider.name, self.rider.name))
+                    self.shot_down = behind_agent
+            else:
+                self.defend(race)
+        else:
+            self.review(race)
+        return True
+
+    def attack(self, race):
+        self.bike.probability_of_the_bike_breaking_down += 0.0001
+        self.bike.probability_of_exploding_tires += 0.0001
+        forward_agent = race.agents[self.ranking - 1]
+        prob = continuous_variable_generator()
+        t = continuous_variable_generator()
+        if prob - self.rider.expertise < 1 / 3:
+            print(Fore.GREEN + "El piloto {} ha adelantado al piloto {}.".format(self.rider.name,
+                                                                                 forward_agent.rider.name))
+            forward_agent.time_track = self.time_track + t
+            forward_agent.time_lap = self.time_lap + t
+            self.ranking -= 1
+            race.agents[self.ranking] = self
+            forward_agent.ranking += 1
+            race.agents[forward_agent.ranking] = forward_agent
+            forward_agent.review(race)
+        else:
+            print(Fore.YELLOW + "El piloto {} ha defendido su posicion frente al piloto {}.".
+                  format(forward_agent.rider.name, self.rider.name))
+            self.time_track = forward_agent.time_track + t
+            self.time_lap = forward_agent.time_lap + t
+        self.review(race)
+
+    def review(self, race):
+        if self.ranking > 0:
+            forward_agent = race.agents[self.ranking - 1]
+            forward_time = forward_agent.time_track
+            if self.section == forward_agent.section and forward_time > 0 and self.time_track < forward_time:
+                self.attack(race)
+        if self.ranking < len(race.agents) - 1:
+            behind_agent = race.agents[self.ranking + 1]
+            behind_time = behind_agent.time_track
+            if self.section == behind_agent.section and self.time_track > behind_time > 0:
+                self.defend(race)
+
+    def defend(self, race):
+        self.bike.probability_of_the_bike_breaking_down += 0.0001
+        self.bike.probability_of_exploding_tires += 0.0001
+        behind_agent = race.agents[self.ranking + 1]
+        prob = continuous_variable_generator()
+        t = continuous_variable_generator()
+        if prob - self.rider.expertise < 2 / 3:
+            print(Fore.YELLOW + "El piloto {} ha defendido su posicion frente al piloto {}.".
+                  format(self.rider.name, behind_agent.rider.name))
+            behind_agent.time_track = self.time_track + t
+            behind_agent.time_lap = self.time_lap + t
+            behind_agent.review(race)
+        else:
+            print(Fore.GREEN + "El piloto {} ha adelantado al piloto {}.".format(behind_agent.rider.name,
+                                                                                 self.rider.name))
+            self.time_track = behind_agent.time_track + t
+            self.time_lap = behind_agent.time_lap + t
+            behind_agent.ranking -= 1
+            race.agents[behind_agent.ranking] = behind_agent
+            self.ranking += 1
+            race.agents[self.ranking] = self
+            self.review(race)
 
     def select_acceleration(self, race, action):
         prob = continuous_variable_generator()
@@ -678,13 +795,11 @@ class Agent:
             if action.name.__contains__("Turn"):
                 print(Fore.RED + "El piloto {} ha doblado en plena recta y se ha ido al suelo.".format(self.rider.name))
                 return False
-            expertise = self.rider.step_by_line / 1000
         else:
             if not action.name.__contains__("Turn"):
                 print(Fore.RED + "El piloto {} ha seguido de largo y no ha doblado. Ha roto la moto en la grava.".
                       format(self.rider.name))
                 return False
-            expertise = self.rider.cornering / 1000
         prob = continuous_variable_generator()
         if self.speed > self.section.max_speed or self.rider.probability_of_falling_off_the_bike > prob:
             print(Fore.RED + "El piloto {} ha perdido el control de su moto y se ha ido al suelo.".format(
@@ -700,114 +815,7 @@ class Agent:
             print(Fore.RED + "El piloto {} ha sobrepasado la velocidad maxima de su moto y ha explotado el motor.".
                   format(self.rider.name))
             return False
-        expertise += self.rider.expertise
-        if action.name.__contains__("Attack"):
-            if expertise > 1 - prob:
-                forward_agent = race.agents[self.ranking - 1]
-                prob = continuous_variable_generator()
-                if prob < 1 / 3:
-                    print(
-                        Fore.RED + "El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
-                        format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down = forward_agent
-                    return False
-                elif prob < 2 / 3:
-                    print(
-                        Fore.RED + "El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
-                        format(self.rider.name))
-                    return False
-                else:
-                    print(
-                        Fore.RED + "El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
-                        format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down = forward_agent
-                    return True
-            else:
-                self.attack(race)
-                return True
-        elif action.name.__contains__("Defend"):
-            if expertise > 1 - prob:
-                behind_agent = race.agents[self.ranking + 1]
-                prob = continuous_variable_generator()
-                if prob < 1 / 3:
-                    print(
-                        Fore.RED + "El piloto {} ha sido bloqueado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
-                        format(behind_agent.rider.name, self.rider.name))
-                    self.shot_down = behind_agent
-                    return False
-                elif prob < 2 / 3:
-                    print(
-                        Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
-                        format(self.rider.name))
-                    return False
-                else:
-                    print(
-                        Fore.RED + "El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
-                        format(behind_agent.rider.name, self.rider.name))
-                    self.shot_down = behind_agent
-                    return True
-            else:
-                self.defend(race)
-                return True
-        else:
-            self.review(race)
         return True
-    
-    def attack(self, race):
-        self.bike.probability_of_the_bike_breaking_down += 0.0001
-        self.bike.probability_of_exploding_tires += 0.0001
-        forward_agent = race.agents[self.ranking - 1]
-        prob = continuous_variable_generator()
-        t = continuous_variable_generator()
-        if prob - self.rider.expertise < 1 / 3:
-            print(Fore.GREEN + "El piloto {} ha adelantado al piloto {}.".format(self.rider.name,
-                                                                                 forward_agent.rider.name))
-            forward_agent.time_track = self.time_track + t
-            forward_agent.time_lap = self.time_lap + t
-            self.ranking -= 1
-            race.agents[self.ranking] = self
-            forward_agent.ranking += 1
-            race.agents[forward_agent.ranking] = forward_agent
-            forward_agent.review(race)
-        else:
-            print(Fore.YELLOW + "El piloto {} ha defendido su posicion frente al piloto {}.".
-                  format(forward_agent.rider.name, self.rider.name))
-            self.time_track = forward_agent.time_track + t
-            self.time_lap = forward_agent.time_lap + t
-        self.review(race)
-
-    def review(self, race):
-        if self.ranking > 0:
-            forward_time = race.agents[self.ranking - 1].time_track
-            if forward_time > 0 and self.time_track < forward_time:
-                self.attack(race)
-        if self.ranking < len(race.agents) - 1:
-            behind_time = race.agents[self.ranking - 1].time_track
-            if self.time_track > behind_time > 0:
-                self.defend(race)
-
-    def defend(self, race):
-        self.bike.probability_of_the_bike_breaking_down += 0.0001
-        self.bike.probability_of_exploding_tires += 0.0001
-        behind_agent = race.agents[self.ranking + 1]
-        prob = continuous_variable_generator()
-        t = continuous_variable_generator()
-        if prob - self.rider.expertise < 2 / 3:
-            print(Fore.YELLOW + "El piloto {} ha defendido su posicion frente al piloto {}.".
-                  format(self.rider.name, behind_agent.rider.name))
-            behind_agent.time_track = self.time_track + t
-            behind_agent.time_lap = self.time_lap + t
-            behind_agent.review(race)
-        else:
-            print(Fore.GREEN + "El piloto {} ha adelantado al piloto {}.".format(behind_agent.rider.name,
-                                                                                 self.rider.name))
-            self.time_track = behind_agent.time_track + t
-            self.time_lap = behind_agent.time_lap + t
-            behind_agent.ranking -= 1
-            race.agents[behind_agent.ranking] = behind_agent
-            self.ranking += 1
-            race.agents[self.ranking] = self
-            self.review(race)
 
     def add_time_for_pits(self):
         self.time_lap += uniform(8, 3)

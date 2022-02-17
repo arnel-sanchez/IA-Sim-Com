@@ -14,10 +14,10 @@ class Simulator:
             print(Fore.CYAN + "{} - {} con la {}".format(i + 1, race.ranking[i].rider.name,
                                                          race.ranking[i].bike.brand + " " + race.ranking[i].bike.model))
         print(Fore.BLUE + "\nInicio de la carrera\n")
-        h = []
+        heap = []
         for i in range(len(race.agents)):
             race.agents[i].ranking = i
-            heappush(h, race.agents[i])
+            heappush(heap, race.agents[i])
         race.printer(race.print_ranking(False))
         end_lap = 0
         while True:
@@ -28,7 +28,7 @@ class Simulator:
                 race.clear()
                 end_lap = 0
                 race.printer(race.print_ranking(False))
-            agent = heappop(h)
+            agent = heappop(heap)
             remove_agents = []
             if not agent.overcome_an_obstacle(race):
                 remove_agents.append(agent)
@@ -44,13 +44,13 @@ class Simulator:
                 remove_agents.append(agent.shot_down)
                 agent.shot_down = None
             if not remove_agents.__contains__(agent):
-                heappush(h, agent)
+                heappush(heap, agent)
             if len(remove_agents) > 0:
                 for ra in remove_agents:
                     if ra != agent:
-                        h.remove(ra)
+                        heap.remove(ra)
                     race.agents.remove(ra)
-                if len(h) < 1:
+                if len(heap) < 1:
                     print(Fore.BLUE + "\nNingun piloto ha terminado la carrera.\n")
                     break
                 for i in range(len(race.agents)):
@@ -65,7 +65,7 @@ class Simulator:
                     agent.update_agent_parameter(old_weather, new_weather)
                 self.print_race(race)
             if len(remove_agents) > 0:
-                heapify(h)
+                heapify(heap)
 
     def print_race(self, race: Race):
         weather = race.environment.weather
