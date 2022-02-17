@@ -1,4 +1,5 @@
 from colorama import Fore
+from sys import path
 
 from simulation.environment import Environment
 
@@ -71,11 +72,11 @@ class Race:
         return True
 
     def clear(self):
-        with open('output.log', 'r+') as f:
+        with open(path[0] + "/output.log", 'r+') as f:
             f.truncate(0)
 
     def printer(self, res):
-        with open('output.log', 'a') as f:
+        with open(path[0] + "/output.log", 'a') as f:
             f.write(res)
 
     def print_ranking(self, ended):

@@ -80,8 +80,7 @@ class Agent:
         self.flag_to_pits = False
         self.distance_to_nearest_forward = 0
         self.distance_to_nearest_behind = 0
-        self.shot_down_forward = False
-        self.shot_down_behind = False
+        self.shot_down = None
         self.node = node
         self.time_lap = 0
         self.section = section
@@ -706,37 +705,23 @@ class Agent:
             if expertise > 1 - prob:
                 forward_agent = race.agents[self.rank - 1]
                 prob = continuous_variable_generator()
-                if prob < 1 / 6:
+                if prob < 1 / 3:
                     print(
                         Fore.RED + "El piloto {} ha sido atacado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
                         format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down_behind = True
-                elif prob < 2 / 6:
-                    print(
-                        Fore.RED + "El piloto {} ha defendido de una forma muy agresiva contra el piloto {}. Los 2 se han ido al suelo.".
-                        format(forward_agent.rider.name, self.rider.name))
-                    self.shot_down_forward = True
-                elif prob < 3 / 6:
+                    self.shot_down = forward_agent
+                    return False
+                elif prob < 2 / 3:
                     print(
                         Fore.RED + "El piloto {} ha intentado adelantar de una forma muy agresiva y se ha ido al suelo.".
                         format(self.rider.name))
-                elif prob < 4 / 6:
-                    print(
-                        Fore.RED + "El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
-                        format(self.rider.name, forward_agent.rider.name))
+                    return False
                 else:
-                    if prob < 5 / 6:
-                        print(
-                            Fore.RED + "El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
-                            format(forward_agent.rider.name, self.rider.name))
-                        self.shot_down_forward = True    
-                    else:
-                        print(
-                            Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
-                            format(forward_agent.rider.name))
-                        self.shot_down_behind = True
+                    print(
+                        Fore.RED + "El piloto {} se ha ido al suelo, atacado por el piloto {} de una forma muy agresiva.".
+                        format(forward_agent.rider.name, self.rider.name))
+                    self.shot_down = forward_agent
                     return True
-                return False
             else:
                 self.attack(race)
                 return True
@@ -748,18 +733,19 @@ class Agent:
                     print(
                         Fore.RED + "El piloto {} ha sido bloqueado por el piloto {} de una forma muy agresiva. Los 2 se han ido al suelo.".
                         format(behind_agent.rider.name, self.rider.name))
-                    self.shot_down_behind = True
+                    self.shot_down = behind_agent
+                    return False
                 elif prob < 2 / 3:
                     print(
                         Fore.RED + "El piloto {} ha intentado bloquear de una forma muy agresiva y se ha ido al suelo.".
                         format(self.rider.name))
+                    return False
                 else:
                     print(
                         Fore.RED + "El piloto {} se ha ido al suelo, bloqueado por el piloto {} de una forma muy agresiva.".
                         format(behind_agent.rider.name, self.rider.name))
-                    self.shot_down_behind = True
+                    self.shot_down = behind_agent
                     return True
-                return False
             else:
                 self.defend(race)
                 return True

@@ -15,8 +15,9 @@ class Simulator:
                                                          race.rank[i].bike.brand + " " + race.rank[i].bike.model))
         print(Fore.BLUE + "\nInicio de la carrera\n")
         h = []
-        for x in race.agents:
-            heappush(h, x)
+        for i in range(len(race.agents)):
+            race.agents[i].rank = i
+            heappush(h, race.agents[i])
         race.printer(race.print_ranking(False))
         end_lap = 0
         while True:
@@ -29,60 +30,11 @@ class Simulator:
                 race.printer(race.print_ranking(False))
             agent = heappop(h)
             remove_agents = []
-            if len(race.agents) == 1:
-                if not race.agents[0].overcome_an_obstacle(race, None, None):
-                    remove_agents.append(race.agents[0])
-            else:
-                i = 0
-                for j in range(len(race.agents)):
-                    if race.agents[j] == agent:
-                        i = j
-                        break
-                if i == 0:
-                    if not race.agents[i].overcome_an_obstacle(race, None, race.agents[i + 1]):
-                        if race.agents[i].shot_down_behind:
-                            remove_agents.append(race.agents[i + 1])
-                        remove_agents.append(race.agents[i])
-                    else:
-                        if race.agents[i].sections == len(race.environment.track.sections) - 1:
-                            race.flag_laps = True
-                            race.agents[i].change_section(race.environment.track.sections[0], True)
-                            race.printer(race.print_agent(race.agents[i], i+1))
-                            end_lap += 1
-                        else:
-                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1],
-                                                          False)
-                elif i == len(race.agents) - 1:
-                    if not race.agents[i].overcome_an_obstacle(race, race.agents[i - 1], None):
-                        if race.agents[i].shot_down_forward:
-                            remove_agents.append(race.agents[i - 1])
-                        remove_agents.append(race.agents[i])
-                    else:
-                        if race.agents[i].sections == len(race.environment.track.sections) - 1:
-                            race.flag_laps = True
-                            race.agents[i].change_section(race.environment.track.sections[0], True)
-                            race.printer(race.print_agent(race.agents[i], i+1))
-                            end_lap += 1
-                        else:
-                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1],
-                                                          False)
-                else:
-                    if not race.agents[i].overcome_an_obstacle(race, race.agents[i - 1],
-                                                               race.agents[i + 1]):
-                        if race.agents[i].shot_down_forward:
-                            remove_agents.append(race.agents[i - 1])
-                        if race.agents[i].shot_down_behind:
-                            remove_agents.append(race.agents[i + 1])
-                        remove_agents.append(race.agents[i])
-                    else:
-                        if race.agents[i].sections == len(race.environment.track.sections) - 1:
-                            race.flag_laps = True
-                            race.agents[i].change_section(race.environment.track.sections[0], True)
-                            race.printer(race.print_agent(race.agents[i], i+1))
-                            end_lap += 1
-                        else:
-                            race.agents[i].change_section(race.environment.track.sections[race.agents[i].sections + 1],
-                                                          False)
+            if not agent.overcome_an_obstacle(race):
+                remove_agents.append(agent)
+            if agent.shot_down is not None:
+                remove_agents.append(agent.shot_down)
+                agent.shot_down = None
             if not remove_agents.__contains__(agent):
                 heappush(h, agent)
             for ra in remove_agents:
