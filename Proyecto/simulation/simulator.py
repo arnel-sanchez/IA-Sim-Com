@@ -7,7 +7,7 @@ from simulation.race import Race
 class Simulator:
     def start(self, race: Race):
         race.clear()
-        print(Fore.MAGENTA + "\nPista: " + Fore.CYAN + " {}\n".format(race.environment.track.name))
+        print(Fore.MAGENTA + "\nPista: " + Fore.CYAN + " {}".format(race.environment.track.name))
         self.print_race(race)
         print(Fore.MAGENTA + "Pilotos:")
         for i in range(len(race.ranking)):
@@ -71,7 +71,7 @@ class Simulator:
         weather = race.environment.weather
         translate_weather = ["Soleado", "Nublado", "Lluvioso"]
         translate_direction = ["Norte", "Noreste", "Este", "Sureste", "Sur", "Suroeste", "Oeste", "Noroeste"]
-        print(Fore.MAGENTA + "Clima:")
+        print(Fore.MAGENTA + "\nClima:")
         print(Fore.CYAN + "Estado: {}".format(translate_weather[weather.weather_status.value]))
         print(Fore.CYAN + "Humedad: {}".format(self.ranking(weather.humidity)))
         print(Fore.CYAN + "Temperatura: {}".format(self.ranking(weather.temperature)))

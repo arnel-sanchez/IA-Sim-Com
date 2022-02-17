@@ -360,6 +360,7 @@ class Agent:
     def change_section(self, section, last):
         self.section = section
         if last:
+            self.time_lap = 0
             self.sections = 0
             self.current_lap += 1
         else:
@@ -666,6 +667,8 @@ class Agent:
                         format(forward_agent.rider.name, self.rider.name))
                     self.shot_down = forward_agent
             else:
+                self.bike.probability_of_the_bike_breaking_down += 0.0001
+                self.bike.probability_of_exploding_tires += 0.0001
                 self.attack(race)
         elif action.name.__contains__("Defend"):
             if expertise > 1 - prob:
@@ -688,14 +691,14 @@ class Agent:
                         format(behind_agent.rider.name, self.rider.name))
                     self.shot_down = behind_agent
             else:
+                self.bike.probability_of_the_bike_breaking_down += 0.0001
+                self.bike.probability_of_exploding_tires += 0.0001
                 self.defend(race)
         else:
             self.review(race)
         return True
 
     def attack(self, race):
-        self.bike.probability_of_the_bike_breaking_down += 0.0001
-        self.bike.probability_of_exploding_tires += 0.0001
         forward_agent = race.agents[self.ranking - 1]
         prob = continuous_variable_generator()
         t = continuous_variable_generator()
@@ -729,8 +732,6 @@ class Agent:
                 self.defend(race)
 
     def defend(self, race):
-        self.bike.probability_of_the_bike_breaking_down += 0.0001
-        self.bike.probability_of_exploding_tires += 0.0001
         behind_agent = race.agents[self.ranking + 1]
         prob = continuous_variable_generator()
         t = continuous_variable_generator()
@@ -773,9 +774,9 @@ class Agent:
             v0 = self.speed / 3.6
             vf = sqrt(pow(v0, 2) + 2 * self.acceleration * self.section.length)
             t = (vf - v0) / self.acceleration
+            self.speed = vf * 3.6
             self.time_lap += t
             self.time_track += t
-            self.speed = vf * 3.6
         else:
             t = self.section.length / self.speed
             self.time_lap += t
