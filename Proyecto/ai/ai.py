@@ -115,7 +115,7 @@ def nearest(race, agent):
 
 
 def how_close(agent_1, agent_2):
-    if agent_1.time_track == 0 or agent_2.time_track == 0:
+    if agent_1.time_track == 0 or agent_2.time_track == 0 or agent_1.section != agent_2.section:
         return 60
     return abs(agent_1.time_track - agent_2.time_track)
 
