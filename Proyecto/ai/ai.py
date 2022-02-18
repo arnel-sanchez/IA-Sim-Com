@@ -105,14 +105,16 @@ def edit_action(race, agent):
 def nearest(race, agent):
     nearest_forward = 60
     if agent.ranking > 0:
-        nearest_forward = how_close(agent, race.agents[agent.ranking - 1])
-        if nearest_forward < 0:
+        forward_agent = race.agents[agent.ranking - 1]
+        nearest_forward = how_close(agent, forward_agent)
+        if forward_agent.on_pits or forward_agent.off_road or nearest_forward < 0:
             nearest_forward = 60
-    nearest_behind = 60
+    nearest_behind = -60
     if agent.ranking < len(race.agents) - 1:
-        nearest_behind = how_close(agent, race.agents[agent.ranking + 1])
-        if nearest_behind > 0:
-            nearest_behind = 60
+        behind_agent = race.agents[agent.ranking + 1]
+        nearest_behind = how_close(agent, behind_agent)
+        if behind_agent.on_pits or behind_agent.off_road or nearest_behind > 0:
+            nearest_behind = -60
     return nearest_forward, nearest_behind
 
 

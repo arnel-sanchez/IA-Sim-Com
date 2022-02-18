@@ -87,6 +87,8 @@ class Agent:
         self.sections = 0
         self.current_lap = 0
         self.ranking = 0
+        self.on_pits = False
+        self.off_road = False
 
     def update_agent_initial_parameters(self, weather):
         if self.bike.chassis_stiffness > 5:
@@ -596,6 +598,7 @@ class Agent:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * weather.wind_intensity / 4
 
     def overcome_an_obstacle(self, race):
+        return False
         action = self.select_action(race)
         if not self.overtake(race, action):
             return False
@@ -703,7 +706,7 @@ class Agent:
         forward_agent = race.agents[self.ranking - 1]
         prob = continuous_variable_generator()
         t = continuous_variable_generator()
-        if prob - self.rider.expertise < 1 / 3:
+        if forward_agent.on_pits or forward_agent.off_road or prob - self.rider.expertise < 1 / 3:
             print(Fore.GREEN + "El piloto {} ha adelantado al piloto {}.".format(self.rider.name,
                                                                                  forward_agent.rider.name))
             forward_agent.time_track = self.time_track + t
@@ -733,9 +736,9 @@ class Agent:
                 self.defend(race)
 
     def defend(self, race):
-        if self.ranking + 1 == len(race.agents):
-            return
         behind_agent = race.agents[self.ranking + 1]
+        if behind_agent.on_pits or behind_agent.off_road:
+            return
         prob = continuous_variable_generator()
         t = continuous_variable_generator()
         if prob - self.rider.expertise < 2 / 3:

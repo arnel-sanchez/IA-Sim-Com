@@ -1,5 +1,4 @@
 from colorama import Fore
-from heapq import heappush, heappop, heapify
 
 from simulation.race import Race
 
@@ -40,21 +39,21 @@ class Simulator:
                         race.printer(race.print_agent(race.agents[k]))
                         end_lap += 1
                     else:
-                        race.agents[k].change_section(race.environment.track.sections[race.agents[k].sections + 1], False)
+                        race.agents[k].change_section(race.environment.track.sections[race.agents[k].sections + 1],
+                                                      False)
                 if race.agents[k].shot_down is not None:
                     remove_agents.append(race.agents[k].shot_down)
                     race.agents[k].shot_down = None
                 if len(remove_agents) > 0:
                     for ra in remove_agents:
-                        k-=1
+                        k -= 1
                         race.agents.remove(ra)
-                    remove_agents = []
                     if len(race.agents) < 1:
                         print(Fore.BLUE + "\nNingun piloto ha terminado la carrera.\n")
                         return
                     for i in range(len(race.agents)):
                         race.agents[i].ranking = i
-                k+=1
+                k += 1
             if race.end_lap():
                 if race.change_lap():
                     break
@@ -71,11 +70,11 @@ class Simulator:
         translate_direction = ["Norte", "Noreste", "Este", "Sureste", "Sur", "Suroeste", "Oeste", "Noroeste"]
         print(Fore.MAGENTA + "\nClima:")
         print(Fore.CYAN + "Estado: {}".format(translate_weather[weather.weather_status.value]))
-        print(Fore.CYAN + "Humedad: {}".format(self.ranking(weather.humidity)))
-        print(Fore.CYAN + "Temperatura: {}".format(self.ranking(weather.temperature)))
-        print(Fore.CYAN + "Visibilidad: {}".format(self.ranking(weather.visibility)))
+        print(Fore.CYAN + "Humedad: {}".format(self.measure(weather.humidity)))
+        print(Fore.CYAN + "Temperatura: {}".format(self.measure(weather.temperature)))
+        print(Fore.CYAN + "Visibilidad: {}".format(self.measure(weather.visibility)))
         print(Fore.CYAN + "Viento: {}, Intensidad {}\n".format(translate_direction[weather.wind.value],
-                                                               self.ranking(weather.wind_intensity)))
+                                                               self.measure(weather.wind_intensity)))
 
-    def ranking(self, number):
+    def measure(self, number):
         return "Alta" if number > 6 else "Baja" if number < 4 else "Media"
