@@ -21,14 +21,12 @@ class Simulator:
             k = 0
             while True:
                 remove_agents = []
-                if k == len(race.agents):
-                    for x in range(len(race.agents)):
-                        if race.agents[x].turn_done == False:
-                            k = x;
-                            break
-                    if k == len(race.agents):
+                while k < len(race.agents):
+                    if not race.agents[k].turn_done:
                         break
-
+                    k += 1
+                if k == len(race.agents):
+                    break
                 if race.current_lap == race.laps:
                     race.clear()
                     race.printer(race.print_ranking(True))
@@ -61,7 +59,8 @@ class Simulator:
                         return
                     for i in range(len(race.agents)):
                         race.agents[i].ranking = i
-                k += 1
+            for a in race.agents:
+                a.turn_done = False
             if race.end_lap():
                 if race.change_lap():
                     break
