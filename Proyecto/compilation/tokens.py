@@ -83,6 +83,7 @@ class TokenType(Enum):
     T_CARRIAGE = 59  # \r
     T_NEWLINE = 60  # \n
 
+    T_ENVIRONMENT = 64  # environment
     T_RIDER = 62  # rider
     T_BIKE = 63  # bike
 
