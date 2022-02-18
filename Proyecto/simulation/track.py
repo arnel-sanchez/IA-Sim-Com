@@ -11,13 +11,14 @@ class SectionType(Enum):
 
 class Section:
     def __init__(self, name: str, length: float, max_speed: float, orientation: CardinalsPoints,
-                 section_type: SectionType, pit_line: bool):
+                 section_type: SectionType, pit_line: bool, pit_line_length: float ):
         self.name = name
         self.length = length
         self.max_speed = max_speed
         self.orientation = orientation
         self.type = section_type
         self.pit_line = pit_line
+        self.pit_line_length = pit_line_length
 
     def __repr__(self):
         return "{} {} {} {} {} {}".format(self.name, self.length, self.max_speed, self.orientation, self.type,
