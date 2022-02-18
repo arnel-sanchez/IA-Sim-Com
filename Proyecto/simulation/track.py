@@ -82,7 +82,7 @@ def track_generator():
                     max_speed *= 2
             section_type = SectionType.Straight
             pit_line = False  ###
-        sections.append(Section(name, length, max_speed, orientation, section_type, pit_line))
+        sections.append(Section(name, length, max_speed, orientation, section_type, pit_line, 0))
         i += 1
         total_length += length
         curve = not curve
@@ -105,7 +105,7 @@ def track_generator():
         if orientation > 7:
             orientation -= 8
         inverted_sections.append(Section(name + str(len(sections) + len(inverted_sections) + 1), section.length, section.max_speed,
-                                         section.orientation, section.type, False))
+                                         section.orientation, section.type, False, 0))
     return Track("Random Track", length, sections + inverted_sections)
 
 
