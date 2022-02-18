@@ -22,7 +22,13 @@ class Simulator:
             while True:
                 remove_agents = []
                 if k == len(race.agents):
-                    break
+                    for x in range(len(race.agents)):
+                        if race.agents[x].turn_done == False:
+                            k = x;
+                            break
+                    if k == len(race.agents):
+                        break
+
                 if race.current_lap == race.laps:
                     race.clear()
                     race.printer(race.print_ranking(True))
@@ -30,6 +36,8 @@ class Simulator:
                     race.clear()
                     end_lap = 0
                     race.printer(race.print_ranking(False))
+                if not race.agents[k].turn_done:
+                    race.agents[k].turn_done = True
                 if not race.agents[k].overcome_an_obstacle(race):
                     remove_agents.append(race.agents[k])
                 else:

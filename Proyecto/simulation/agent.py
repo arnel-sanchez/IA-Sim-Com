@@ -89,6 +89,7 @@ class Agent:
         self.ranking = 0
         self.on_pits = False
         self.off_road = False
+        self.turn_done = False
 
     def update_agent_initial_parameters(self, weather):
         if self.bike.chassis_stiffness > 5:
@@ -598,7 +599,6 @@ class Agent:
                 self.rider.probability_of_falling_off_the_bike += 0.0001 * weather.wind_intensity / 4
 
     def overcome_an_obstacle(self, race):
-        return False
         action = self.select_action(race)
         if not self.overtake(race, action):
             return False
