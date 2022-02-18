@@ -811,6 +811,10 @@ class Agent:
                       format(self.rider.name))
                 return False
         prob = continuous_variable_generator()
+        if action.name.__contains__("Pits") and self.speed > 60:
+            print(Fore.RED + "El piloto {} ha seguido descalificado por exceder la velocidad máxima en los Pits".
+                    format(self.rider.name))
+            return False
         if self.speed > self.section.max_speed or self.rider.probability_of_falling_off_the_bike > prob:
             print(Fore.RED + "El piloto {} ha perdido el control de su moto y se ha ido al suelo.".format(
                 self.rider.name))
