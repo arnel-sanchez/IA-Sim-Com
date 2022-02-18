@@ -104,8 +104,8 @@ def track_generator():
         orientation = section.orientation.value + 4
         if orientation > 7:
             orientation -= 8
-        inverted_sections.append(Section(name + str(len(sections) + len(inverted_sections) + 1), section.length, section.max_speed,
-                                         section.orientation, section.type, False, 0))
+        inverted_sections.append(Section(name + str(len(sections) + len(inverted_sections) + 1), section.length,
+                                         section.max_speed, section.orientation, section.type, False, 0))
     return Track("Random Track", length, sections + inverted_sections)
 
 

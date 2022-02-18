@@ -48,6 +48,7 @@ class Race:
             if agent.flag_to_pits:
                 agent.add_time_for_pits()
                 agent.bike.select_configuration(self.environment)
+                agent.flag_to_pits = False
             agent.update_agent_parameter(weather, self.environment.weather)
         if self.current_lap == self.laps - 1:
             print(Fore.BLUE + "\nUltima vuelta")
