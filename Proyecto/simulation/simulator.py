@@ -16,7 +16,7 @@ class Simulator:
         for i in range(len(race.agents)):
             race.agents[i].ranking = i
         race.clear()
-        race.printer(race.print_ranking(False))
+        race.printer(race.print_ranking())
         end_lap = 0
         heap = [a for a in race.agents]
         while True:
@@ -25,7 +25,7 @@ class Simulator:
                 agent = heappop(heap)
                 if not agent.off_road:
                     break
-                if race.current_lap == race.laps - 1:
+                if agent.current_lap == race.laps:
                     race.printer(race.print_agent(agent))
                 agent = None
             if agent is None:
@@ -33,11 +33,9 @@ class Simulator:
             if agent.current_lap > 0 and agent.sections == 0:
                 race.printer(race.print_agent(agent))
                 end_lap += 1
-                if agent.current_lap == race.laps:
-                    race.agents.remove(agent)
             if end_lap == len(race.agents):
                 end_lap = 0
-                race.printer(race.print_ranking(race.current_lap == race.laps - 1))
+                race.printer(race.print_ranking())
             remove_agents = []
             if not agent.overcome_section(race):
                 remove_agents.append(agent)
@@ -62,7 +60,7 @@ class Simulator:
                     return
                 for i in range(len(race.agents)):
                     race.agents[i].ranking = i
-            if not agent.off_road:
+            if not agent.off_road or agent.current_lap == race.laps:
                 agent.review(race)
                 heap.append(agent)
             heapify(heap)
@@ -74,8 +72,7 @@ class Simulator:
             for agent in race.agents:
                 agent.update_agent_parameter(old_weather, new_weather)
             self.print_race(race)
-        for agent in race.agents:
-            race.printer(race.print_agent(agent))
+        race.printer(race.print_end_ranking())
         race.printer("\n")
 
     def print_race(self, race: Race):

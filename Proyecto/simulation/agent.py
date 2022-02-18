@@ -707,7 +707,7 @@ class Agent:
         forward_agent = race.agents[self.ranking - 1]
         prob = continuous_variable_generator()
         t = continuous_variable_generator()
-        if self.sections != 0 and forward_agent.on_pits or forward_agent.off_road or prob - self.rider.expertise < 1 / 3:
+        if forward_agent.on_pits or forward_agent.off_road or prob - self.rider.expertise < 1 / 3:
             print(Fore.GREEN + "El piloto {} ha adelantado al piloto {}.".format(self.rider.name,
                                                                                  forward_agent.rider.name))
             forward_agent.time_track = self.time_track + t
@@ -725,6 +725,8 @@ class Agent:
         self.review(race)
 
     def review(self, race):
+        if self.sections == 0:
+            return
         if self.ranking > 0:
             forward_agent = race.agents[self.ranking - 1]
             forward_time = forward_agent.time_track
@@ -742,7 +744,7 @@ class Agent:
             return
         prob = continuous_variable_generator()
         t = continuous_variable_generator()
-        if self.sections == 0 or not self.on_pits or prob - self.rider.expertise < 2 / 3:
+        if not self.on_pits or prob - self.rider.expertise < 2 / 3:
             print(Fore.YELLOW + "El piloto {} ha defendido su posicion frente al piloto {}.".
                   format(self.rider.name, behind_agent.rider.name))
             behind_agent.time_track = self.time_track + t

@@ -1,5 +1,5 @@
 from enum import Enum
-from random import uniform, randint
+from random import uniform, normalvariate, randint
 
 from simulation.weather import CardinalsPoints
 
@@ -48,6 +48,8 @@ class Track:
 
 
 def track_generator():
+    ranges = [(90, 140), (140, 180), (180, 220), (220, 250), (250, 280), (280, 300), (300, 320), (320, 335),
+              (335, 350)]
     curve = False
     i = 1
     start_orientation = orientation_generator()
@@ -56,16 +58,7 @@ def track_generator():
     total_length = 0
     opposite = False
     while True:
-        if not curve:
-            name = "recta{}".format(i)
-            length = value_generator(100, 1000)
-            if i < 1 and length >= 500:
-                length /= 2
-            #max_speed = value_generator(90, 350)
-            max_speed = 90 + (length - 100) / 3.4
-            section_type = SectionType.Straight
-            pit_line = False  ###
-        else:
+        if curve:
             name = "curva{}".format(i)
             length = value_generator(50, 210)
             max_speed = value_generator(70, 240)
@@ -74,6 +67,19 @@ def track_generator():
                 if opposite == (abs(start_orientation.value - orientation.value) == 4):
                     break
             section_type = SectionType.Curve
+            pit_line = False  ###
+        else:
+            name = "recta{}".format(i)
+            if opposite:
+                length = sections[0].length
+                max_speed = sections[0].max_speed
+            else:
+                length = value_generator(100, 999)
+                x = ranges[int(length / 100) - 1]
+                max_speed = normalvariate((x[0] + x[1]) / 2, 10)
+                if i == 1:
+                    max_speed *= 2
+            section_type = SectionType.Straight
             pit_line = False  ###
         sections.append(Section(name, length, max_speed, orientation, section_type, pit_line))
         i += 1
@@ -88,10 +94,18 @@ def track_generator():
                 sections = [sections[0]]
                 total_length = sections[0].length
                 opposite = False
-            elif section_type == SectionType.Straight and abs(start_orientation.value - orientation.value) == 4 and \
+            elif section_type == SectionType.Curve and abs(start_orientation.value - orientation.value) == 4 and \
                     uniform(0, 1) < 0.3:
                 break
-    return Track("Random Track", length, sections)
+    inverted_sections = []
+    for section in sections:
+        name = "recta" if section.type == SectionType.Straight else "curva"
+        orientation = section.orientation.value + 4
+        if orientation > 7:
+            orientation -= 8
+        inverted_sections.append(Section(name + str(len(sections) + len(inverted_sections) + 1), section.length, section.max_speed,
+                                         section.orientation, section.type, False))
+    return Track("Random Track", length, sections + inverted_sections)
 
 
 def value_generator(min_length, max_length):
