@@ -74,6 +74,8 @@ class Simulator:
             for agent in race.agents:
                 agent.update_agent_parameter(old_weather, new_weather)
             self.print_race(race)
+        for agent in race.agents:
+            race.printer(race.print_agent(agent))
         race.printer("\n")
 
     def print_race(self, race: Race):
