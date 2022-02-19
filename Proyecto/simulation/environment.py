@@ -5,19 +5,34 @@ from simulation.weather import Weather, CardinalsPoints, WeatherStatus
 
 
 class Environment:
-    def __init__(self, track: Track):
+    def __init__(self, track: Track,litsAtribEnviroment):
         self.track = track
-        temperature = int(normalvariate(5, 2))
-        visibility = int(normalvariate(5, 2))
-        humidity = int(normalvariate(5, 2))
-        wind_intensity = int(normalvariate(5, 2))
-        wind = randint(0, 7)
-        weather_status_random = normalvariate(1, 0.4)
-        weather_status = 1
-        if weather_status_random < 0.5:
+        if litsAtribEnviroment is None:
+         temperature = int(normalvariate(5, 2))
+         visibility = int(normalvariate(5, 2))
+         humidity = int(normalvariate(5, 2))
+         wind_intensity = int(normalvariate(5, 2))
+         wind = randint(0, 7)
+         weather_status_random = normalvariate(1, 0.4)
+         weather_status = 1
+         if weather_status_random < 0.5:
             weather_status = 0
-        elif weather_status_random > 1.5:
+         elif weather_status_random > 1.5:
             weather_status = 2
+        else:
+           for var in litsAtribEnviroment:
+               if var[0]=="temperature":
+                   temperature=var[2]
+               elif var[0]=="visibility":
+                   visibility=var[2]
+               elif var[0]=="wind_intensity":
+                   wind_intensity=var[2]
+               elif var[0]=="humidity":
+                    humidity=var[2]
+               elif var[0]=="wind":
+                   wind=var[2]
+               elif var[0]=="weather_status":
+                   weather_status=var[2]
         self.weather = Weather(temperature, visibility, wind_intensity, humidity, CardinalsPoints(wind),
                                WeatherStatus(weather_status))
 

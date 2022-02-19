@@ -6,7 +6,8 @@ class Tokenizer:
     def __init__(self):
         self.keywords = dict([("bike", TokenType.T_BIKE), ("bool", TokenType.T_BOOL), ("break", TokenType.T_BREAK),
                               ("continue", TokenType.T_CONTINUE), ("double", TokenType.T_DOUBLE),
-                              ("elif", TokenType.T_ELIF), ("else", TokenType.T_ELSE), ("false", TokenType.T_FALSE),
+                              ("elif", TokenType.T_ELIF), ("else", TokenType.T_ELSE),
+                              ("environment", TokenType.T_ENVIRONMENT), ("false", TokenType.T_FALSE),
                               ("if", TokenType.T_IF), ("include", TokenType.T_INCLUDE), ("int", TokenType.T_INT),
                               ("method", TokenType.T_METHOD), ("null", TokenType.T_NULL),
                               ("return", TokenType.T_RETURN), ("rider", TokenType.T_RIDER),
