@@ -509,100 +509,13 @@
 	El resultado del DSL si se hacen los 3 recorridos del AST sin error, son dos listas, una con todos los pilotos que fueron creados y otra con todas las motos . A partir de estas listas se crean los pilotos y las motos en la simulación .En la simulación los pilotos que no fueron creados en el código ejecutan sus métodos normalmente. En el caso de un piloto que fue creado desde el DSL se ejecuta la función definida en el DSL, pero antes de ejecutarla se actualiza el contexto de la función para que esta pueda apoyarse en la situación actual. Luego de la ejecución de la función dependiendo que función se ejecutó se importa a la simulación la variable que se quiere desde el contexto del método.  
 			
 \section{Simulación}\cite{conferenciasS}\cite{garcia}
-	Nos propusimos simular una carrera de MotoGP contrareloj, compuesta por los agentes( tuplas moto-piloto) y el ambiente( tupla clima-pista). Una vez estos son generados, se simula cada sección de la pista, calculando la influencia que ejerce el ambiente sobre el agente y las propias interacciones del mismo, el tiempo que le demora en circular dicha sección conjunto a la aceleración y la acción que escogerá en ese tramo, ya sea mediante una función redefinida desde el DSL o por una Inteligencia Artificial.
+	Nos propusimos simular una carrera de MotoGP, para comenzar, decidimos implentar una estructura agente que está conformado por un piloto y por una moto y una estructura ambiente que está formado por el clima y la pista. Implementamos un sistema multiagente en el que 2 agentes puenden interactuar entre sí, ya sea en modo ofensivo o en modo defensivo.
 	
-	\subsection{Clima}
-	En cada sección de la pista se hacen pequeñas variaciones a los parámetros del clima, pero no al estado de este. Para darle un poco más de complejidad al sistema, luego de cada vuelta sí se modifica completamente el estado del clima y sus parámetros. Estas simulaciones se realizan mediante la distribución normal, que nos permite generar una variable aleatoria pero sin cambios tan bruscos en el promedio de sus casos.
+	\subsection{Agentes}
+		Los agentes parten con un ranking desde el inicio, asumimos que ese ranking se alcanzó el día anterior en las clasificaciones y comenzamos a simular la carrera, se utiliza un cola con propiedad de manera que siempre se analice el que menos tiempo tiempo tiene, eso nos permite avanzar de secciones siempre al más rápido primero, ahí podemos tener varios agentes en diferentes secciones. A la hora de pasar por meta, se va pasando 1 a 1, y se van mostrando en el ranking según van completando su vuelta, así hasta que se completa la carrera. Un agente sólo puede atacar a su agente más próximo con un margen de 1 segundo en recta y de 2 segundos en recta, este ataque puede salir satisfactorio y se intercambian las posiciones en el ranking, en caso contrario [Samuel habla aquí de las probabilidades de los ataques] se puede caer uno, o el otro o los 2. Algo similar sucede con la defensa de una agente sobre otro que está atacando. Además un agente puede ser descalificado si dobla en una recta o si no dobla en la curva, si su velocidad llega a cero, asumimos que el motor se le rompió, si su velocidad sobrepasa el mínimo entre las velocidades de la sección en que está y el de su moto se va al suelo también.
 	
-	\subsection{Interacciones}
-	Como habíamos mencionado anteriormente, existen varias interacciones entre un agente y el ambiente, y dentro de un propio agente:
-	\begin{itemize}
-		\item Si la temperatura baja, se enfrían los neumáticos y se pierde adherencia al pavimento
-		\begin{itemize}
-			\item Disminuye el paso por curva
-			\item Disminuye el paso por recta
-			\item Aumenta la probabilidad de caerse de la moto
-		\end{itemize} 
-		\item Si la temperatura aumenta, se calientan los neumáticos y se gana adherencia al pavimento, se desgastan más rápido
-		\begin{itemize}
-			\item Aumenta el paso por curva
-			\item Aumenta el paso por recta
-			\item Disminuye la probabilidad de caerse de la moto
-			\item Aumenta la probabilidad de romper el motor de la moto
-			\item Aumenta la probabilidad de reventar los neumáticos de la moto
-		\end{itemize}
-		\item Si la visibilidad baja
-		\begin{itemize}
-			\item Disminuye el paso por curva
-			\item Disminuye el paso por recta
-			\item Aumenta la probabilidad de caerse de la moto
-		\end{itemize}
-		\item Si la visibilidad aumenta
-		\begin{itemize}
-			\item Aumenta el paso por curva
-			\item Aumenta el paso por recta
-			\item Disminuye la probabilidad de caerse de la moto
-		\end{itemize}
-		\item Si la humedad aumenta, se pierde adherencia al pavimento
-		\begin{itemize}
-			\item Disminuye el paso por curva
-			\item Disminuye el paso por recta
-			\item Aumenta la probabilidad de caerse de la moto
-		\end{itemize}
-		\item Si la humedad baja, se gana adherencia al pavimento
-		\begin{itemize}
-			\item Aumenta el paso por curva
-			\item Aumenta el paso por recta
-			\item Disminuye la probabilidad de caerse de la moto
-		\end{itemize}
-		
-		\item Si el viento es de frente
-		\begin{itemize}
-			\item Disminuye el paso por curva
-			\item Disminuye el paso por recta
-			\item Aumenta la probabilidad de reventar los neumáticos de la moto
-		\end{itemize}
-		\item Si el viento es de espaldas
-		\begin{itemize}
-			\item Aumenta el paso por curva
-			\item Aumenta el paso por recta
-			\item Aumenta la probabilidad de caerse de la moto
-			\item Aumenta la probabilidad de romper el motor de la moto
-		\end{itemize}
-		\item Si el viento se de lado
-		\begin{itemize}
-			\item Aumenta el paso por curva
-			\item Aumenta el paso por recta
-			\item Aumenta la probabilidad de caerse de la moto
-		\end{itemize}
-		
-		\item Si el estado del clima es soleado, aumenta la temperatura
-		\item Si el estado del clima es lluvioso, aumenta la humedad
-		\item Si el estado del clima es nublado, condiciones perfectas para correr
-		
-		\item Si disminuye la rigidez del chasis, tiene más torsión
-		\begin{itemize}
-			\item Aumenta el paso por curva
-			\item Disminuye el paso por recta
-		\end{itemize}
-		\item Si aumenta la rigidez del chasis, tiene menos torsión
-		\begin{itemize}
-			\item Disminuye el paso por curva
-			\item Aumenta el paso por recta
-		\end{itemize}
-		
-		\item Si disminuye la frenada, se frena en más distancia
-		\begin{itemize}
-			\item Aumenta el paso por curva
-			\item Disminuye el paso por recta
-		\end{itemize}
-		\item Si aumenta la frenada, se frena en menos distancia
-		\begin{itemize}
-			\item Disminuye el paso por curva
-			\item Aumenta el paso por recta
-		\end{itemize}
-	\end{itemize}
-	De acuerdo a las interacciones anteriores se debe escoger el neumático lo más preciso posible y este provocará una combinación entre estos factores.
+	\subsection{Ambiente}
+		El ambiente es simulado de acuerdo a 
 
 \section{Inteligencia Artificial}\cite{conferenciasIA}\cite{russell}
 	Como nuestro proyecto se basa en simular una carrera de MotoGP donde hay $n$ corredores, aquellos que no hayan sido diseñados mediante DSL son controlados por IA, el comportamiento de la cual varía a partir de las condiciones del ambiente que lo rodea, las características de su moto y la experiencia del propio piloto.
