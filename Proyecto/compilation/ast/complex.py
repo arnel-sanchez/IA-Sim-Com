@@ -1,6 +1,6 @@
 from compilation.ast.nodes import Node, normaliza, Statement
 from compilation.context import Context
-from compilation.ast.specials import RiderNode, BikeNode, D_Assign
+from compilation.ast.specials import RiderNode, BikeNode, D_Assign, EnvironmentNode
 from compilation.errors import IncorrectCallError, CheckTypesError
 from compilation.ast.auxiliary import Expression
 
