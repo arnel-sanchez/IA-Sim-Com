@@ -34,7 +34,7 @@ def compilation(case: str):
     tokenizer = Tokenizer()
     file = "console"
     if case is None:
-        text = open(path[0] + "/codes/Prueba19.pys").read()
+        text = open(path[0] + "/codes/Prueba14,Tipos.pys").read()
     else:
         text = open(path[0] + "/codes/" + case).read()
     tokens, error = tokenizer.tokenize(file, text)
@@ -89,10 +89,10 @@ def simulation(agents_lists):
             if len(agents_lists[0][i].funciones) == 0:
                 flag_acceleration = False
                 flag_action = False
-            elif len(agents_lists[0][i].funciones) == 1 and agents_lists[0][i].funciones[0] == "select_action":
+            elif len(agents_lists[0][i].funciones) == 1 and agents_lists[0][i].funciones[0].idfun == "select_action":
                 flag_acceleration = False
                 flag_action = True
-            elif len(agents_lists[0][i].funciones) == 1 and agents_lists[0][i].funciones[0] == "select_acceleration":
+            elif len(agents_lists[0][i].funciones) == 1 and agents_lists[0][i].funciones[0].idfun == "select_acceleration":
                 flag_acceleration = True
                 flag_action = False
             else:
@@ -119,10 +119,10 @@ def simulation(agents_lists):
             if len(agents_lists[0][0].funciones) == 0:
                 flag_acceleration = False
                 flag_action = False
-            elif len(agents_lists[0][0].funciones) == 1 and agents_lists[0][0].funciones[0] == "select_action":
+            elif len(agents_lists[0][0].funciones) == 1 and agents_lists[0][0].funciones[0].idfun == "select_action":
                 flag_acceleration = False
                 flag_action = True
-            elif len(agents_lists[0][0].funciones) == 1 and agents_lists[0][0].funciones[0] == "select_acceleration":
+            elif len(agents_lists[0][0].funciones) == 1 and agents_lists[0][0].funciones[0].idfun == "select_acceleration":
                 flag_acceleration = True
                 flag_action = False
             else:
