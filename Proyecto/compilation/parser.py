@@ -933,8 +933,10 @@ class Parser:
                 for var in statement.varsforRiders:
                    varesult=statement.nuevocontext.variables.get(var[0],"NoEsta")
                    if varesult != "NoEsta":
+                       if var[0]=="step_by_line" or var[0]=="probability_of_falling_off_the_bike" or var[0]=="independence" or var[0]=="expertise" or var[0]=="aggressiveness"or var[0]=="cornering":
+                          if varesult.value>10:
+                              varesult.value=10
                        var[2]=varesult.value
-
                 self.Riders.append(statement)
             elif isinstance(statement, BikeNode):
                 functs=list(statement.nuevocontext.funciones.keys())
@@ -947,6 +949,12 @@ class Parser:
                 for var in statement.varsforBikes:
                    varesult=statement.nuevocontext.variables.get(var[0],"NoEsta")
                    if varesult != "NoEsta":
+                       if var[0] == "chassis_stiffness" or var[0] == "brakes":
+                        if varesult.value > 10:
+                             varesult.value=10
+                       elif var[0] == "tires":
+                             if varesult.value>4:
+                                 varesult.value=4
                        var[2]=varesult.value
                 self.Bikes.append(statement)
 
@@ -954,6 +962,11 @@ class Parser:
                 for var in statement.varsforEnvironment:
                    varesult=statement.nuevocontext.variables.get(var[0],"NoEsta")
                    if varesult != "NoEsta":
+                       if var[0]=="weather_status":
+                         if varesult.value > 2 : 
+                            varesult.value=2
+                       elif varesult.value>10:
+                              varesult.value=10
                        var[2]=varesult.value
                 self.Environment=statement.varsforEnvironment 
 
