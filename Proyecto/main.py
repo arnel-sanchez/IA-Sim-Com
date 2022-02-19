@@ -68,7 +68,7 @@ def compilation(case: str):
 def simulation(agents_lists):
     print(Fore.MAGENTA + "\n\nSIMULACION:")
     track = Misano()
-    environment = Environment(Track(track.name, track.length, track.sections))
+    environment = Environment(Track(track.name, track.length, track.sections),agents_lists[2])
     agents = []
     if len(agents_lists[0]) >= 2:
         for i in range(len(agents_lists[0])):
