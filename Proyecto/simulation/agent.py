@@ -623,7 +623,7 @@ class Agent:
                     action = 35
             return AgentActions(action)
         else:
-            self.node.refreshContext(self.__dict__)
+            self.node.refreshContext(self.__dict__,self.rider.__dict__,self.section.__dict__,race.environment.weather.__dict__)
             function = None
             if self.node.funciones[0].idfun == "select_action":
                 function = self.node.funciones[0]
@@ -765,7 +765,7 @@ class Agent:
             max_acceleration = self.calc_max_acceleration(min(self.bike.max_speed, self.section.max_speed))
             self.acceleration = acceleration(race, self, action, max_acceleration)
         else:
-            self.node.refreshContext(self.__dict__)
+            self.node.refreshContext(self.__dict__,self.rider.__dict__,self.section.__dict__,race.environment.weather.__dict__)
             if self.node.funciones[0].idfun == "select_acceleration":
                 function = self.node.funciones[0]
             else:
