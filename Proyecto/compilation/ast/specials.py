@@ -274,7 +274,7 @@ class BikeNode(TypeSpecial):
                              ["brakes", VariableType.INT, 5], ["chassis_stiffness", VariableType.INT, 8]]
         self.functionsOfBikes = ["select_configuration"]
 
-        def refreshContext(self, dict_bike,dict_weather ):
+    def refreshContext(self, dict_bike,dict_weather):
          keys_dict_bike = list(dict_bike.keys())
          for key in keys_dict_bike:
             if list(self.nuevocontext.variables.keys()).count(key) == 1:
@@ -306,7 +306,7 @@ class RiderNode(TypeSpecial):
                               
         self.functionsOfRiders = ["select_acceleration", "select_action"]
 
-        def refreshContext(self,dict_agent,dict_rider,dict_section,dict_weather):      
+    def refreshContext(self,dict_agent,dict_rider,dict_section,dict_weather):      
           
           keys_dict_agent = list(dict_agent.keys())
           for key in keys_dict_agent:
