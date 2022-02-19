@@ -57,7 +57,7 @@ class Simulator:
                         heap.remove(ra)
                 if len(race.agents) < 1:
                     print(Fore.BLUE + "\nNingun piloto ha terminado la carrera.\n")
-                    return
+                    break
                 for i in range(len(race.agents)):
                     race.agents[i].ranking = i
             if not agent.off_road or agent.current_lap == race.laps:

@@ -132,7 +132,8 @@ def call_action():
             actions.append(int(ans["select"]))
     action = 0
     for a in actions:
-        if a > 11 and (action > 11 or random(1) < 0.5):
+        r = random(1)
+        if (action > 23 and (a > 11 or r > 0.3)) or (action > 11 and (a > 11 or r > 0.5)):
             continue
         action += a
     print(action)
