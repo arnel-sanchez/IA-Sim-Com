@@ -97,7 +97,7 @@ class Program(Node):
                     return IncorrectCallError(" Not all code paths return a value	", "", self.token.line,
                                               self.token.column)
         else:
-            if self.padre is None:
+            if self.padre is None or isinstance(self.padre,RiderNode) or isinstance(self.padre,BikeNode) or isinstance(self.padre,EnvironmentNode):
                 for statement in self.statements:
 
                     if isinstance(statement, ReturnNode):
@@ -159,7 +159,8 @@ class Program(Node):
                             return "Nothing"
         if self.padre is not None:
             if isinstance(self.padre, Def_Fun):
-                if not isinstance(self.padre.padre, RiderNode) and not isinstance(self.padre.padre, BikeNode):
+                if self.padre.padre.padre is None:
+                #if not isinstance(self.padre.padre, RiderNode) and not isinstance(self.padre.padre, BikeNode):
                     context.clear()
 
     @staticmethod
@@ -271,10 +272,23 @@ class Def_Fun(Statement):
         self.token = None
 
     def validate(self, context: Context) -> bool:
-        if not isinstance(self.padre, RiderNode) and not isinstance(self.padre, BikeNode):
+          
+        if self.padre.padre is None:
             self.nuevocontext = context.crearnuevocontexto()
         else:
             self.nuevocontext = context
+            if self.idfun=="select_action" or self.idfun=="select_acceleration" or self.idfun=="select_configuration": 
+                if len(self.args)>0:
+                      return IncorrectCallError("this function cannot have input parameters", "", self.token.line,
+                                      self.token.column)
+                elif self.idfun=="select_acceleration" or self.idfun=="select_configuration":
+                      if normaliza(self.typefun)!="void":
+                        return IncorrectCallError("This function must be of the void type", "", self.token.line,
+                                      self.token.column)
+                elif normaliza(self.typefun)!="int":
+                    return IncorrectCallError("This function must be of type int", "", self.token.line,
+                                      self.token.column)
+            
 
         validationfun = context.define_fun(self.idfun, self, self.token)
         if not isinstance(validationfun, bool):
@@ -303,11 +317,16 @@ class Def_Fun(Statement):
         # Chequear contexto y si hay variables con valores implica que el contexto esta evaluado y hay recursividad y creamos un nuevo contexto
         keys = list(self.nuevocontext.variables.keys())
 
-        if isinstance(self.padre,Program):
-            for key in keys:
-                if self.nuevocontext.variables[key].value is not None:
-                    hayrecursividad = True
-                    break
+
+        if context==self.nuevocontext:
+           if self.padre.padre is None:
+            hayrecursividad=True
+
+        #if isinstance(self.padre,Program):
+         #   for key in keys:
+          #      if self.nuevocontext.variables[key].value is not None:
+           #         hayrecursividad = True
+            #        break
 
         if hayrecursividad:
             contextopararecursividad = Context()

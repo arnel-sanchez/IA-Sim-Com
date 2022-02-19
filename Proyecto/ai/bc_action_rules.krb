@@ -46,7 +46,7 @@ attack_1
     when
         action_facts.section("Curve")
         action_facts.nearest_forward($ans)
-        check $ans < 1
+        check $ans <= 0.5
 
 
 attack_2
@@ -54,7 +54,7 @@ attack_2
     when
         action_facts.section("Straight")
         action_facts.nearest_forward($ans)
-        check $ans < 2
+        check $ans <= 1
 
 
 defend_1
@@ -62,7 +62,7 @@ defend_1
     when
         action_facts.section("Curve")
         action_facts.nearest_behind($ans)
-        check $ans > -1
+        check $ans >= -0.5
 
 
 defend_2
@@ -70,4 +70,4 @@ defend_2
     when
         action_facts.section("Straight")
         action_facts.nearest_behind($ans)
-        check $ans > -2
+        check $ans >= -1

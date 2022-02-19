@@ -3,7 +3,7 @@ from compilation.enums import EstadoDAST, Region, VariableType, MethodType
 from compilation.tokens import TokenType, Token
 from compilation.ast.complex import Program, ReturnNode, Def_Fun, IfCond, WhileCond, Redefinition, Condition
 from compilation.errors import UnexpectedCharacterError, UnbalancedBracketsError
-from compilation.ast.specials import D_Assign, RiderNode, BikeNode
+from compilation.ast.specials import D_Assign, RiderNode, BikeNode,EnvironmentNode
 from compilation.ast.auxiliary import Expression, FunCall, NodeE, NodeB, NodeM, NodeX, NodeY, Nodepsilon, NodeQ, Val, Variable
 from compilation.ast.assignments import Assign, AddAs, SubAs, MulAs, DivAs, ModAs, ExpAs, AndAs, OrAs, XorAs
 from compilation.ast.relations import EqRel, NeqRel, LessRel, LeqRel, GreatRel, GreqRel
@@ -20,6 +20,7 @@ class Parser:
         self.dentroDType = False
         self.Riders = []
         self.Bikes = []
+        self.Environment=None
         self.estadoDAST = EstadoDAST.EnProgram
         self.nodoactual = Program()  # Este sera el nodo en el que estoy parado cuando estoy construyendo el AST
         self.nodopararecorrerast = self.nodoactual
@@ -46,7 +47,7 @@ class Parser:
                                    [TokenType.T_ELIF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE], ["e"]],
                              "W": [[TokenType.T_CONTINUE], [TokenType.T_BREAK], [TokenType.T_RETURN, "V"]],
-                             "F": [[TokenType.T_RIDER], [TokenType.T_BIKE]],
+                             "F": [[TokenType.T_RIDER], [TokenType.T_BIKE],[TokenType.T_ENVIRONMENT]],
                              "A": [[TokenType.T_OPEN_PAREN, "Z"
                                        , TokenType.T_CLOSE_PAREN], ["e"]],
                              "Z": [["e"], ["E", "U"]],
@@ -91,7 +92,7 @@ class Parser:
                            TokenType.T_CARRIAGE, TokenType.T_NEWLINE, TokenType.T_INVALID, TokenType.T_S_VALUE,
                            TokenType.T_I_VALUE, TokenType.T_D_VALUE, TokenType.T_ARRAY, TokenType.T_VOID,
                            TokenType.T_CONTINUE, TokenType.T_BREAK, TokenType.T_RETURN, TokenType.T_RIDER,
-                           TokenType.T_BIKE]
+                           TokenType.T_BIKE,TokenType.T_ENVIRONMENT]
         self.no_terminales = ["L", "D", "I", "E", "M", "Y", "J", "U", "N", "@", "R", "K", "T", "P", "W", "S", "F",
                               "A", "Z", "Q", "C", "B", "G", "X", "~", "^", "H", "O", "V"]
         self.first = dict()  # Guardamos los terminales que pertenecen al First de cada produccion posible de nuestra gramatica
@@ -129,7 +130,7 @@ class Parser:
                                    ["N", TokenType.T_ELIF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE], ["N", "e"], ["W", TokenType.T_CONTINUE],
                                    ["W", TokenType.T_BREAK], ["W", TokenType.T_RETURN, "V"], ["F", TokenType.T_RIDER],
-                                   ["F", TokenType.T_BIKE],
+                                   ["F", TokenType.T_BIKE],["F", TokenType.T_ENVIRONMENT],
                                    ["A", TokenType.T_OPEN_PAREN, "Z", TokenType.T_CLOSE_PAREN], ["A", "e"],
                                    ["Z", "e"], ["Z", "E", "U"], ["I", TokenType.T_ASSIGN],
                                    ["I", TokenType.T_ADD_AS], ["I", TokenType.T_SUB_AS], ["I", TokenType.T_DIV_AS],
@@ -294,21 +295,19 @@ class Parser:
                     if len(self.estados) != 0:
                         estado = self.estados[- 1]
                         if estado == Region.R_TYPE:
-                            if line[self.i].token_type != TokenType.T_METHOD and line[
-                                self.i].token_type != TokenType.T_CLOSE_BRACE and line[
-                                self.i].token_type != TokenType.T_ID:
+                            if line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_CONTINUE or line[self.i].token_type == TokenType.T_BREAK or line[self.i].token_type == TokenType.T_RETURN or line[self.i].token_type == TokenType.T_ENVIRONMENT:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "",
                                                                       line[self.i].line, line[self.i].column)  #
                                 return False
                         elif estado == Region.R_IF or estado == Region.R_ELIF or estado == Region.R_ELSE:
                             if line[self.i].token_type == TokenType.T_METHOD or line[
-                                self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_RIDER:
+                                self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_ENVIRONMENT:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "",
                                                                       line[self.i].line, line[self.i].column)  #
                                 return False
                         elif estado == Region.R_WHILE:
                             if line[self.i].token_type == TokenType.T_METHOD or line[
-                                self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_RIDER:
+                                self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_ENVIRONMENT:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "",
                                                                       line[self.i].line, line[self.i].column)  #
                                 return False
@@ -317,7 +316,7 @@ class Parser:
                                 self.i].token_type == TokenType.T_BIKE or line[
                                 self.i].token_type == TokenType.T_RIDER or line[
                                 self.i].token_type == TokenType.T_CONTINUE or line[
-                                self.i].token_type == TokenType.T_BREAK:
+                                self.i].token_type == TokenType.T_BREAK or line[self.i].token_type == TokenType.T_ENVIRONMENT:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "",
                                                                       line[self.i].line, line[self.i].column)  #
                                 return False
@@ -330,7 +329,7 @@ class Parser:
                             return False
 
                 if termino == line[self.i].token_type:
-                    if line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_BIKE:
+                    if line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_ENVIRONMENT:
                         self.estados.append(Region.R_TYPE)
                     elif line[self.i].token_type == TokenType.T_METHOD:
                         self.estados.append(Region.R_METHOD)
@@ -432,14 +431,18 @@ class Parser:
             nuevonodo.padre = self.nodoactual
             self.nodoactual = nuevonodo
             self.estadoDAST = EstadoDAST.EnFuncion
-        elif termino == TokenType.T_RIDER or termino == TokenType.T_BIKE:
+        elif termino == TokenType.T_RIDER or termino == TokenType.T_BIKE or termino == TokenType.T_ENVIRONMENT :
             if termino == TokenType.T_RIDER:
                 nuevonodo = RiderNode()
                 nuevonodo.token = token
-            else:
+            elif termino==TokenType.T_BIKE:
 
                 nuevonodo = BikeNode()
                 nuevonodo.token = token
+            else:
+                nuevonodo = EnvironmentNode()
+                nuevonodo.token = token
+
             nuevonodo.padre = self.nodoactual
             self.nodoactual.statements.append(nuevonodo)
             self.nodoactual = nuevonodo
@@ -506,16 +509,22 @@ class Parser:
                     self.estadoDAST = EstadoDAST.EnProgram
                 else:
                     self.estadoDAST = EstadoDAST.EnCondicionIf
-            if isinstance(self.nodoactual, WhileCond):
+            elif isinstance(self.nodoactual, WhileCond):
                 self.nodoactual = self.nodoactual.padre
                 self.estadoDAST = EstadoDAST.EnProgram
 
-            if isinstance(self.nodoactual, Def_Fun):
+            elif isinstance(self.nodoactual, Def_Fun):
                 if isinstance(self.nodoactual.padre, Program):
                     self.estadoDAST = EstadoDAST.EnProgram
                 else:
                     self.estadoDAST = EstadoDAST.EnTipoEspecial
                 self.nodoactual = self.nodoactual.padre
+            elif isinstance(self.nodoactual, RiderNode) or isinstance(self.nodoactual,BikeNode):
+                if isinstance(self.nodoactual.padre, Program):
+                    self.estadoDAST = EstadoDAST.EnProgram
+                    self.nodoactual = self.nodoactual.padre
+
+                 
 
     def EligeTipoDdeclaracion(self, termino, token: Token, line):
         if self.estadoDAST == EstadoDAST.EnAsignacion:
@@ -543,30 +552,36 @@ class Parser:
 
     def CreanodoTipoEspecial(self, termino, token):
         if termino == TokenType.T_ID:
-            if self.dentroDType == False:
+            #if self.dentroDType == False:
                 self.nodoactual.id = token.value
                 return
-            else:
-                nuevonodo = Redefinition()
-                nuevonodo.token = token
-                self.nodoactual.variables.append(nuevonodo)
-                nuevonodo.padre = self.nodoactual
-                self.nodoactual = nuevonodo
-                self.nodoactual.id = token.value
-                self.estadoDAST = EstadoDAST.EnRedefinition
-        elif termino == TokenType.T_METHOD:
-            self.estadoDAST = EstadoDAST.EnFuncion
-            nuevonodo = Def_Fun()
-            nuevonodo.token = token
-            self.nodoactual.funciones.append(nuevonodo)
-            nuevonodo.padre = self.nodoactual
-            self.nodoactual = nuevonodo
-        elif termino == TokenType.T_CLOSE_BRACE:
-            self.dentroDType = False
-            self.nodoactual = self.nodoactual.padre
-            self.estadoDAST = EstadoDAST.EnProgram
+            #else:
+             #   nuevonodo = Redefinition()
+              #  nuevonodo.token = token
+               # self.nodoactual.variables.append(nuevonodo)
+                #nuevonodo.padre = self.nodoactual
+               # self.nodoactual = nuevonodo
+               # self.nodoactual.id = token.value
+               # self.estadoDAST = EstadoDAST.EnRedefinition
+       # elif termino == TokenType.T_METHOD:
+        #    self.estadoDAST = EstadoDAST.EnFuncion
+         #   nuevonodo = Def_Fun()
+         #   nuevonodo.token = token
+         #   self.nodoactual.funciones.append(nuevonodo)
+         #   nuevonodo.padre = self.nodoactual
+         #   self.nodoactual = nuevonodo
+       # elif termino == TokenType.T_CLOSE_BRACE:
+        #    self.dentroDType = False
+         #   self.nodoactual = self.nodoactual.padre
+          #  self.estadoDAST = EstadoDAST.EnProgram
         elif termino == TokenType.T_OPEN_BRACE:
-            self.dentroDType = True
+            nodonuevo = Program()
+            nodonuevo.token = token
+            nodonuevo.padre = self.nodoactual
+            self.nodoactual.body = nodonuevo
+            self.nodoactual = nodonuevo
+            self.estadoDAST = EstadoDAST.EnProgram
+            #self.dentroDType = True
 
     def CreaNododAsignacion(self, termino, token: Token):
         if termino == TokenType.T_INT:
@@ -910,6 +925,50 @@ class Parser:
     def LoadRidersAndBikes(self):
         for statement in self.nodopararecorrerast.statements:
             if isinstance(statement, RiderNode):
+                functs=list(statement.nuevocontext.funciones.keys())
+                for fun in functs:
+                   function=statement.nuevocontext.funciones[fun]
+                   if function.idfun=="select_acceleration" or function.idfun=="select_action":
+                        statement.funciones.append(function)
+                for var in statement.varsforRiders:
+                   varesult=statement.nuevocontext.variables.get(var[0],"NoEsta")
+                   if varesult != "NoEsta":
+                       if var[0]=="step_by_line" or var[0]=="probability_of_falling_off_the_bike" or var[0]=="independence" or var[0]=="expertise" or var[0]=="aggressiveness"or var[0]=="cornering":
+                          if varesult.value>10:
+                              varesult.value=10
+                       var[2]=varesult.value
                 self.Riders.append(statement)
             elif isinstance(statement, BikeNode):
+                functs=list(statement.nuevocontext.funciones.keys())
+                for fun in functs:
+                   function=statement.nuevocontext.funciones[fun]
+                   if function.idfun=="select_configuration":
+                        statement.funciones.append(function)
+                
+                
+                for var in statement.varsforBikes:
+                   varesult=statement.nuevocontext.variables.get(var[0],"NoEsta")
+                   if varesult != "NoEsta":
+                       if var[0] == "chassis_stiffness" or var[0] == "brakes":
+                        if varesult.value > 10:
+                             varesult.value=10
+                       elif var[0] == "tires":
+                             if varesult.value>4:
+                                 varesult.value=4
+                       var[2]=varesult.value
                 self.Bikes.append(statement)
+
+            elif isinstance(statement, EnvironmentNode):
+                for var in statement.varsforEnvironment:
+                   varesult=statement.nuevocontext.variables.get(var[0],"NoEsta")
+                   if varesult != "NoEsta":
+                       if var[0]=="weather_status":
+                         if varesult.value > 2 : 
+                            varesult.value=2
+                       elif varesult.value>10:
+                              varesult.value=10
+                       var[2]=varesult.value
+                self.Environment=statement.varsforEnvironment 
+
+            
+            
