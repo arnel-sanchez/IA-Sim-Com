@@ -53,7 +53,7 @@ def compilation(case: str):
                     print(exe.__repr__())
                 else:
                     parser.LoadRidersAndBikes()
-                    return parser.Riders, parser.Bikes
+                    return parser.Riders, parser.Bikes , parser.Environment
             else:
                 print(checktype.__repr__())
                 return False
