@@ -102,3 +102,15 @@ bike Palmiche{
                       }
 
           }
+
+environment ambienteactual 
+{
+  if (c>260)
+  {
+      humidity=7+2;
+      visibility= 7;
+  }
+ 
+
+
+} 
