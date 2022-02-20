@@ -296,8 +296,8 @@ class RiderNode(TypeSpecial):
                               ["independence", VariableType.INT, 5], ["expertise", VariableType.INT, 5],
                               ["aggressiveness", VariableType.INT, 5], ["length", VariableType.DOUBLE, 0.0],
                               ["max_speed", VariableType.DOUBLE, 0.0], ["orientation", VariableType.INT, 0],
-                              ["type", VariableType.INT, 0], ["pit_line", VariableType.BOOL, False],
-                              ["pit_line_length", VariableType.DOUBLE, 0.0]]
+                              ["type", VariableType.INT, 0], ["pit_line", VariableType.INT,0],
+                              ["pit_length", VariableType.DOUBLE, 0.0]]
 
         self.functionsOfRiders = ["select_acceleration", "select_action"]
 
