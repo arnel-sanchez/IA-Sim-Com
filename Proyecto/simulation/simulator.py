@@ -27,9 +27,8 @@ class Simulation:
         while True:
             
             if not self.race.environment.flag_change_weather:
-             prob = uniform(0, 1)
+                prob = uniform(0, 1)
             else:
-               
                prob=self.race.environment.environments[self.race.environment.i].funciones[0].eval()
                if not (prob<=1 and prob>=0):
                    prob= uniform(0, 1)
