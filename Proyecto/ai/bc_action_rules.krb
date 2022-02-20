@@ -2,31 +2,31 @@
 
 
 speed_up
-    use select_action(0)
+    use select_action(SpeedUp)
     when
-        action_facts.speed(3)
+        action_facts.speed("Smaller")
 
 
 keep_speed
-    use select_action(1)
+    use select_action(KeepSpeed)
     when
-        action_facts.speed(2)
+        action_facts.speed("Same")
 
 
 brake
-    use select_action(2)
+    use select_action(Brake)
     when
-        action_facts.speed(1)
+        action_facts.speed("Higher")
 
 
 turn
-    use select_action(3)
+    use select_action(Turn)
     when
         action_facts.section("Curve")
 
 
 pits_1
-    use select_action(6)
+    use select_action(Pits)
     when
         action_facts.slick_tires($ans_1)
         action_facts.rainy($ans_2)
@@ -34,15 +34,17 @@ pits_1
 
 
 pits_2
-    use select_action(6)
+    use select_action(Pits)
     when
         action_facts.slick_tires($ans_1)
-        action_facts.high_humidity($ans_2)
-        check $ans_1 == $ans_2
+        action_facts.rainy($ans_2)
+        check $ans_1 != $ans_2
+        action_facts.high_humidity($ans_3)
+        check $ans_1 == $ans_3
 
 
 attack_1
-    use select_action(12)
+    use select_action(Attack)
     when
         action_facts.section("Curve")
         action_facts.nearest_forward($ans)
@@ -50,7 +52,7 @@ attack_1
 
 
 attack_2
-    use select_action(12)
+    use select_action(Attack)
     when
         action_facts.section("Straight")
         action_facts.nearest_forward($ans)
@@ -58,7 +60,7 @@ attack_2
 
 
 defend_1
-    use select_action(24)
+    use select_action(Defend)
     when
         action_facts.section("Curve")
         action_facts.nearest_behind($ans)
@@ -66,7 +68,7 @@ defend_1
 
 
 defend_2
-    use select_action(24)
+    use select_action(Defend)
     when
         action_facts.section("Straight")
         action_facts.nearest_behind($ans)

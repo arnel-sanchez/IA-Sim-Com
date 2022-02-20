@@ -8,13 +8,15 @@ def split_lines(tokens: [Token]) -> [[TokenType]]:
     current_line = []
     lines = []
     while t_pointer < len(tokens):
-        if tokens[t_pointer].token_type in [TokenType.T_IF, TokenType.T_ELIF, TokenType.T_ELSE, TokenType.T_WHILE, TokenType.T_METHOD, TokenType.T_RIDER, TokenType.T_BIKE,TokenType.T_ENVIRONMENT]:
+        if tokens[t_pointer].token_type in [TokenType.T_IF, TokenType.T_ELIF, TokenType.T_ELSE, TokenType.T_WHILE,
+                                            TokenType.T_METHOD, TokenType.T_RIDER, TokenType.T_BIKE,
+                                            TokenType.T_ENVIRONMENT]:
             t_pointer = loop(tokens, t_pointer, current_line, TokenType.T_OPEN_BRACE)
         elif tokens[t_pointer].token_type == TokenType.T_CLOSE_BRACE:
             current_line = [tokens[t_pointer]]
-            #lines.append(current_line)
             t_pointer += 1
-            if t_pointer < len(tokens) and (tokens[t_pointer].token_type == TokenType.T_ELIF or tokens[t_pointer].token_type == TokenType.T_ELSE):
+            if t_pointer < len(tokens) and (tokens[t_pointer].token_type == TokenType.T_ELIF or
+                                            tokens[t_pointer].token_type == TokenType.T_ELSE):
                 t_pointer = loop(tokens, t_pointer, current_line, TokenType.T_OPEN_BRACE)
         else:
             t_pointer = loop(tokens, t_pointer, current_line, TokenType.T_SEMICOLON)

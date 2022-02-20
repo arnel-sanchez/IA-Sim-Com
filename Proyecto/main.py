@@ -12,7 +12,7 @@ from simulation.rider import Rider
 from simulation.bike import Bike
 from simulation.agent import Agent
 from simulation.race import Race
-from simulation.simulator import Simulator
+from simulation.simulator import Simulation
 
 from simulation.set_off_classes.tracks.misano import Misano
 from simulation.set_off_classes.bikes.ducati import Ducati
@@ -53,7 +53,7 @@ def compilation(case: str):
                     print(exe.__repr__())
                 else:
                     parser.LoadRidersAndBikes()
-                    return parser.Riders, parser.Bikes , parser.Environment
+                    return parser.Riders, parser.Bikes, parser.Environment
             else:
                 print(checktype.__repr__())
                 return False
@@ -68,7 +68,7 @@ def compilation(case: str):
 def simulation(agents_lists):
     print(Fore.MAGENTA + "\n\nSIMULACION:")
     track = Misano()
-    environment = Environment(Track(track.name, track.length, track.sections),agents_lists[2])
+    environment = Environment(Track(track.name, track.length, track.sections), agents_lists[2])
     agents = []
     if len(agents_lists[0]) >= 2:
         for i in range(len(agents_lists[0])):
@@ -92,7 +92,8 @@ def simulation(agents_lists):
             elif len(agents_lists[0][i].funciones) == 1 and agents_lists[0][i].funciones[0].idfun == "select_action":
                 flag_acceleration = False
                 flag_action = True
-            elif len(agents_lists[0][i].funciones) == 1 and agents_lists[0][i].funciones[0].idfun == "select_acceleration":
+            elif len(agents_lists[0][i].funciones) == 1 and \
+                    agents_lists[0][i].funciones[0].idfun == "select_acceleration":
                 flag_acceleration = True
                 flag_action = False
             else:
@@ -122,7 +123,8 @@ def simulation(agents_lists):
             elif len(agents_lists[0][0].funciones) == 1 and agents_lists[0][0].funciones[0].idfun == "select_action":
                 flag_acceleration = False
                 flag_action = True
-            elif len(agents_lists[0][0].funciones) == 1 and agents_lists[0][0].funciones[0].idfun == "select_acceleration":
+            elif len(agents_lists[0][0].funciones) == 1 and \
+                    agents_lists[0][0].funciones[0].idfun == "select_acceleration":
                 flag_acceleration = True
                 flag_action = False
             else:
@@ -130,19 +132,19 @@ def simulation(agents_lists):
                 flag_action = True
             agents.append(Agent(rider, bike, flag_configuration, flag_action, flag_acceleration, track.sections[0],
                                 agents_lists[0][0]))
-        
+
         b = Bagnaia()
         d = Ducati()
         rider = Rider(b.name, b.cornering, b.step_by_line)
         bike = Bike(d.brand, d.model, d.max_speed, d.weight, None)
         agents.append(Agent(rider, bike, False, False, False, track.sections[0]))
-        
+
         m = Mir()
         s = Suzuki()
         rider = Rider(m.name, m.cornering, m.step_by_line)
         bike = Bike(s.brand, s.model, s.max_speed, s.weight, None)
         agents.append(Agent(rider, bike, False, False, False, track.sections[0]))
-        
+
         e = Espargaro()
         a = Aprilia()
         rider = Rider(e.name, e.cornering, e.step_by_line)
@@ -169,8 +171,8 @@ def simulation(agents_lists):
 
     shuffle(agents)
     race = Race(environment, agents, 5)
-    s = Simulator()
-    s.start(race)
+    sim = Simulation(race)
+    sim.start()
 
 
 def main(case: str = None):

@@ -21,7 +21,7 @@ def call_subprocess(python: str, script: str):
         raise Exception
     ans = ans.stdout.decode("utf-8")
     ans = ans.replace("\n", "").replace("\r", "").split(".py")
-    return int(ans[-1])
+    return ans[-1]
 
 
 def edit_moto(environment):
@@ -62,8 +62,7 @@ def call_moto():
             tires[1].append(ans["select"])
     for i in range(len(tires[0])):
         for j in range(len(tires[1])):
-            comb = tires[0][i] + tires[1][j]
-            print(comb if comb < 5 else 4)
+            print(tires[0][i] + "_" + tires[1][j])
 
 
 def restart(rules: str):
@@ -80,13 +79,13 @@ def restart(rules: str):
 def edit_action(race, agent):
     speed = agent.speed
     bike = agent.bike
-    section_max_speed = agent.section.max_speed
-    if speed > bike.max_speed or speed > section_max_speed:
-        speed_cmp = 1
-    elif speed < bike.max_speed and speed < section_max_speed:
-        speed_cmp = 3
+    max_speed = min(bike.max_speed, 60 if agent.on_pits else agent.section.max_speed)
+    if speed > max_speed:
+        speed_cmp = "Higher"
+    elif speed < max_speed:
+        speed_cmp = "Smaller"
     else:
-        speed_cmp = 2
+        speed_cmp = "Same"
     section_type = agent.section.type.name
     weather = race.environment.weather
     nearest_forward, nearest_behind = nearest(race, agent)
@@ -104,23 +103,19 @@ def edit_action(race, agent):
 
 def nearest(race, agent):
     nearest_forward = 60
+    nearest_behind = -60
     if agent.ranking > 0:
         forward_agent = race.agents[agent.ranking - 1]
-        nearest_forward = how_close(agent, forward_agent)
-        if forward_agent.on_pits or forward_agent.off_road or nearest_forward < 0:
-            nearest_forward = 60
-    nearest_behind = -60
+        if agent.section == forward_agent.section:
+            nearest_forward = how_close(agent, forward_agent)
     if agent.ranking < len(race.agents) - 1:
         behind_agent = race.agents[agent.ranking + 1]
-        nearest_behind = how_close(agent, behind_agent)
-        if behind_agent.on_pits or behind_agent.off_road or nearest_behind > 0:
-            nearest_behind = -60
+        if agent.section == behind_agent.section:
+            nearest_behind = how_close(agent, behind_agent)
     return nearest_forward, nearest_behind
 
 
 def how_close(agent_1, agent_2):
-    if agent_1.section != agent_2.section or agent_1.sections == agent_2.sections == 0:
-        return 60
     return agent_1.time_track - agent_2.time_track
 
 
@@ -129,14 +124,19 @@ def call_action():
     actions = []
     with engine.prove_goal("bc_action_rules.select_action($select)") as gen:
         for ans, plan in gen:
-            actions.append(int(ans["select"]))
-    action = 0
+            actions.append(ans["select"])
+    action = ""
     for a in actions:
         r = random(1)
-        if (action > 23 and (a > 11 or r > 0.3)) or (action > 11 and (a > 11 or r > 0.5)):
-            continue
-        action += a
-    print(action)
+        if a.__contains__("Defend"):
+            if action.__contains__("Attack") or r > 0.3:
+                continue
+        elif a.__contains__("Attack"):
+            if r > 0.5:
+                continue
+            action.replace("Defend", "")
+        action += a + "_"
+    print(action[0:len(action)-1])
 
 
 def acceleration(race, agent, action, max_acceleration):
@@ -178,8 +178,8 @@ def acceleration(race, agent, action, max_acceleration):
     if action.name.__contains__("Attack") or action.name.__contains__("Defend"):
         aggressiveness += random(0.1)
     if max_acceleration < 0 and action.name.__contains__("SpeedUp"):
-        max_acceleration = (- max_acceleration) / 10
-    if len(race.agents) > 1 and aggressiveness > random(1):
+        max_acceleration = (- max_acceleration) / 1000
+    if len(race.agents) > 1 and not agent.on_pits and aggressiveness > random(1):
         max_acceleration += random(0.01)
     return max_acceleration
 
