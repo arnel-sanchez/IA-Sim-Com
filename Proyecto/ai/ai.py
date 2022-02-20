@@ -62,7 +62,10 @@ def call_moto():
             tires[1].append(ans["select"])
     for i in range(len(tires[0])):
         for j in range(len(tires[1])):
-            print(tires[0][i] + "_" + tires[1][j])
+            comb = tires[0][i] + "_" + tires[1][j]
+            if comb == "Rain_Hard":
+                comb = "Rain_Medium"
+            print(comb)
 
 
 def restart(rules: str):

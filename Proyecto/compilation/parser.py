@@ -973,9 +973,14 @@ class Parser:
                             if varesult.value not in ["Misano", "shuffle", "random"]:
                                 varesult.value = "Misano"
                         elif var[0] == "weather_status":
+                            if varesult.value < 0:
+                                varesult.value = 0
                             if varesult.value > 2:
                                 varesult.value = 2
-                        elif varesult.value > 10:
-                            varesult.value = 10
+                        else:
+                            if varesult.value < 1:
+                                varesult.value = 1
+                            if varesult.value > 10:
+                                varesult.value = 10
                         var[2] = varesult.value
                 self.Environment = statement.varsforEnvironment
