@@ -26,7 +26,7 @@ class Simulation:
         heap = [a for a in self.race.agents]
         while True:
             prob = uniform(0, 1)
-            if prob < 0.001:
+            if prob < 0.0005:
                 self.race.environment.change_weather_status()
             agent = None
             while len(heap) > 0:
