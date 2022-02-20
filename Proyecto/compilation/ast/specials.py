@@ -331,3 +331,10 @@ class EnvironmentNode(TypeSpecial):
                                    ["wind", VariableType.INT, 5], ["temperature", VariableType.INT, 5],
                                    ["visibility", VariableType.INT, 5], ["humidity", VariableType.INT, 5],
                                    ["wind_intensity", VariableType.INT, 5]]
+
+    def refreshContext(self,dict_weather):
+        
+        keys_dict_weather = list(dict_weather.keys())
+        for key in keys_dict_weather:
+            if list(self.nuevocontext.variables.keys()).count(key) == 1:
+                self.nuevocontext.variables[key].value = dict_weather[key]

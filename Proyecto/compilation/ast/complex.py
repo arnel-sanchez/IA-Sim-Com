@@ -278,7 +278,7 @@ class Def_Fun(Statement):
             self.nuevocontext = context.crearnuevocontexto()
         else:
             self.nuevocontext = context
-            if self.idfun == "select_action" or self.idfun == "select_acceleration" or self.idfun == "select_configuration":
+            if self.idfun == "select_action" or self.idfun == "select_acceleration" or self.idfun == "select_configuration" or self.idfun == "probability_change_weather":
                 if len(self.args) > 0:
                     return IncorrectCallError("this function cannot have input parameters", "", self.token.line,
                                               self.token.column)
@@ -286,8 +286,13 @@ class Def_Fun(Statement):
                     if normaliza(self.typefun) != "void":
                         return IncorrectCallError("This function must be of the void type", "", self.token.line,
                                                   self.token.column)
-                elif normaliza(self.typefun) != "int":
+                elif self.idfun == "select_action":
+                  if normaliza(self.typefun) != "int":
                     return IncorrectCallError("This function must be of type int", "", self.token.line,
+                                              self.token.column)
+                else:
+                    if normaliza(self.typefun) != "double":
+                     return IncorrectCallError("This function must be of type double", "", self.token.line,
                                               self.token.column)
 
         validationfun = context.define_fun(self.idfun, self, self.token)
