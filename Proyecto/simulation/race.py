@@ -31,9 +31,9 @@ class Race:
         if self.current_lap == self.laps and self.end_lap():
             return True
         self.flag_laps = False
-        old_weather = self.race.environment.weather
-        self.race.environment.change_weather_params()
-        new_weather = self.race.environment.weather
+        old_weather = self.environment.weather
+        self.environment.change_weather_params()
+        new_weather = self.environment.weather
         weather = self.environment.weather
         for agent in self.agents:
             agent.update_agent_parameter(weather, self.environment.weather)
