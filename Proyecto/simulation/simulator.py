@@ -33,7 +33,7 @@ class Simulation:
                if not (prob<=1 and prob>=0):
                    prob= uniform(0, 1)
                    
-            if prob < 0.0005:
+            if prob < 0.001:
                self.race.environment.change_weather_status()
 
             agent = None

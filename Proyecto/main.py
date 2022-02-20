@@ -73,7 +73,7 @@ def simulation(agents_lists):
             rider = Rider(agents_lists[0][i].id, agents_lists[0][i].varsforRiders[3][2],
                           agents_lists[0][i].varsforRiders[4][2])
             if len(agents_lists[1]) > i:
-                bike = Bike(agents_lists[1][i].varsforBikes[0][2], "test", agents_lists[1][i].varsforBikes[1][2],
+                bike = Bike(agents_lists[1][i].varsforBikes[0][2], "Test", agents_lists[1][i].varsforBikes[1][2],
                             agents_lists[1][i].varsforBikes[2][2], agents_lists[1][i],
                             agents_lists[1][i].varsforBikes[4][2], agents_lists[1][i].varsforBikes[5][2])
                 if len(agents_lists[1][i].funciones) == 0:
@@ -104,7 +104,7 @@ def simulation(agents_lists):
             rider = Rider(agents_lists[0][0].id, agents_lists[0][0].varsforRiders[3][2],
                           agents_lists[0][0].varsforRiders[4][2])
             if len(agents_lists[1]) >= 1:
-                bike = Bike(agents_lists[1][0].id, "test", agents_lists[1][0].varsforBikes[1][2],
+                bike = Bike(agents_lists[1][0].id, "Test", agents_lists[1][0].varsforBikes[1][2],
                             agents_lists[1][0].varsforBikes[2][2], agents_lists[1][0],
                             agents_lists[1][0].varsforBikes[4][2], agents_lists[1][0].varsforBikes[5][2])
                 if len(agents_lists[1][0].funciones) == 0:
