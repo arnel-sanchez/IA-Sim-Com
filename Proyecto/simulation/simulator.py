@@ -73,11 +73,6 @@ class Simulation:
             heapify(heap)
             if not self.race.end_lap() or self.race.change_lap():
                 continue
-            old_weather = self.race.environment.weather
-            self.race.environment.change_weather_params()
-            new_weather = self.race.environment.weather
-            for agent in self.race.agents:
-                agent.update_agent_parameter(old_weather, new_weather)
             self.race.environment.weather.print("Clima")
         print(Fore.BLUE + "\nCarrera terminada\n")
         printer(self.race.print_end())
