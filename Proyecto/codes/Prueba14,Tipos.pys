@@ -105,6 +105,7 @@ bike Palmiche{
 
 environment ambienteactual 
 {
+  track = "random";
   if (c>260)
   {
       humidity=7+2;

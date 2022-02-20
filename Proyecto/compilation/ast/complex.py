@@ -231,7 +231,7 @@ class Redefinition(Statement):
         self.expr = None
         self.token = None
 
-    def validate(self, context: Context) -> bool:
+    def validate(self, context: Context):
         validationexpr = self.expr.validate(context)
         if not isinstance(validationexpr, bool):
             validationexpr.line = self.token.line
@@ -272,7 +272,7 @@ class Def_Fun(Statement):
         self.nuevocontext = None
         self.token = None
 
-    def validate(self, context: Context) -> bool:
+    def validate(self, context: Context):
 
         if self.padre.padre is None:
             self.nuevocontext = context.crearnuevocontexto()

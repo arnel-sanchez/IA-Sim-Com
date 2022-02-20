@@ -3,8 +3,9 @@ from compilation.enums import EstadoDAST, Region, VariableType, MethodType
 from compilation.tokens import TokenType, Token
 from compilation.ast.complex import Program, ReturnNode, Def_Fun, IfCond, WhileCond, Redefinition, Condition
 from compilation.errors import UnexpectedCharacterError, UnbalancedBracketsError
-from compilation.ast.specials import D_Assign, RiderNode, BikeNode,EnvironmentNode
-from compilation.ast.auxiliary import Expression, FunCall, NodeE, NodeB, NodeM, NodeX, NodeY, Nodepsilon, NodeQ, Val, Variable
+from compilation.ast.specials import D_Assign, RiderNode, BikeNode, EnvironmentNode
+from compilation.ast.auxiliary import Expression, FunCall, NodeE, NodeB, NodeM, NodeX, NodeY, Nodepsilon, NodeQ, Val, \
+    Variable
 from compilation.ast.assignments import Assign, AddAs, SubAs, MulAs, DivAs, ModAs, ExpAs, AndAs, OrAs, XorAs
 from compilation.ast.relations import EqRel, NeqRel, LessRel, LeqRel, GreatRel, GreqRel
 from compilation.ast.operations import OrOp, AndOp, XorOp, AddOp, SubOp, MulOp, DivOp, ModOp, ExpOp
@@ -15,12 +16,12 @@ class Parser:
     def __init__(self):
         self.estados = []  # Aqui guardamos los estados en forma de string , de forma que si el ultimo estado de la lista es el estado en el que estoy y si no hay estados en la lista ent estamos fuera de cualquier ambito del programa
         self.context = Context()
-        self.gramaticaAmbigua=None
+        self.gramaticaAmbigua = None
         self.i = 0
         self.dentroDType = False
         self.Riders = []
         self.Bikes = []
-        self.Environment=None
+        self.Environment = None
         self.estadoDAST = EstadoDAST.EnProgram
         self.nodoactual = Program()  # Este sera el nodo en el que estoy parado cuando estoy construyendo el AST
         self.nodopararecorrerast = self.nodoactual
@@ -47,7 +48,7 @@ class Parser:
                                    [TokenType.T_ELIF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE], ["e"]],
                              "W": [[TokenType.T_CONTINUE], [TokenType.T_BREAK], [TokenType.T_RETURN, "V"]],
-                             "F": [[TokenType.T_RIDER], [TokenType.T_BIKE],[TokenType.T_ENVIRONMENT]],
+                             "F": [[TokenType.T_RIDER], [TokenType.T_BIKE], [TokenType.T_ENVIRONMENT]],
                              "A": [[TokenType.T_OPEN_PAREN, "Z"
                                        , TokenType.T_CLOSE_PAREN], ["e"]],
                              "Z": [["e"], ["E", "U"]],
@@ -92,7 +93,7 @@ class Parser:
                            TokenType.T_CARRIAGE, TokenType.T_NEWLINE, TokenType.T_INVALID, TokenType.T_S_VALUE,
                            TokenType.T_I_VALUE, TokenType.T_D_VALUE, TokenType.T_ARRAY, TokenType.T_VOID,
                            TokenType.T_CONTINUE, TokenType.T_BREAK, TokenType.T_RETURN, TokenType.T_RIDER,
-                           TokenType.T_BIKE,TokenType.T_ENVIRONMENT]
+                           TokenType.T_BIKE, TokenType.T_ENVIRONMENT]
         self.no_terminales = ["L", "D", "I", "E", "M", "Y", "J", "U", "N", "@", "R", "K", "T", "P", "W", "S", "F",
                               "A", "Z", "Q", "C", "B", "G", "X", "~", "^", "H", "O", "V"]
         self.first = dict()  # Guardamos los terminales que pertenecen al First de cada produccion posible de nuestra gramatica
@@ -130,7 +131,7 @@ class Parser:
                                    ["N", TokenType.T_ELIF, TokenType.T_OPEN_PAREN, "G", TokenType.T_CLOSE_PAREN,
                                     TokenType.T_OPEN_BRACE], ["N", "e"], ["W", TokenType.T_CONTINUE],
                                    ["W", TokenType.T_BREAK], ["W", TokenType.T_RETURN, "V"], ["F", TokenType.T_RIDER],
-                                   ["F", TokenType.T_BIKE],["F", TokenType.T_ENVIRONMENT],
+                                   ["F", TokenType.T_BIKE], ["F", TokenType.T_ENVIRONMENT],
                                    ["A", TokenType.T_OPEN_PAREN, "Z", TokenType.T_CLOSE_PAREN], ["A", "e"],
                                    ["Z", "e"], ["Z", "E", "U"], ["I", TokenType.T_ASSIGN],
                                    ["I", TokenType.T_ADD_AS], ["I", TokenType.T_SUB_AS], ["I", TokenType.T_DIV_AS],
@@ -159,7 +160,7 @@ class Parser:
         self.calcular_first_restantes()
         self.hacer_follow()
         self.completar_follows()
-        self.gramaticaAmbigua= self.construir_tabla_LL()
+        self.gramaticaAmbigua = self.construir_tabla_LL()
         self.error = None
         # self.variables = dict()  # Scope de variables
 
@@ -275,14 +276,14 @@ class Parser:
                         esta = self.first.get(self.key(self.producciones[nt][i]), "NoEsta")
                         if esta != "NoEsta" and self.first[self.key(self.producciones[nt][i])].count(t) > 0:
                             if self.matriz[fila][columna] is not None:
-                               return False
+                                return False
                             self.matriz[fila][columna] = self.producciones[nt][i]
                             break
                 if self.follow[nt].count(t) > 0 and self.se_va_en_epsilon(nt) and self.matriz[fila][columna] is None:
                     if self.matriz[fila][columna] is not None:
-                               return False
+                        return False
                     self.matriz[fila][columna] = "e"
-                    
+
                 columna += 1
             fila += 1
 
@@ -295,19 +296,28 @@ class Parser:
                     if len(self.estados) != 0:
                         estado = self.estados[- 1]
                         if estado == Region.R_TYPE:
-                            if line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_CONTINUE or line[self.i].token_type == TokenType.T_BREAK or line[self.i].token_type == TokenType.T_RETURN or line[self.i].token_type == TokenType.T_ENVIRONMENT:
+                            if line[self.i].token_type == TokenType.T_RIDER or line[
+                                self.i].token_type == TokenType.T_BIKE or line[
+                                self.i].token_type == TokenType.T_CONTINUE or line[
+                                self.i].token_type == TokenType.T_BREAK or line[
+                                self.i].token_type == TokenType.T_RETURN or line[
+                                self.i].token_type == TokenType.T_ENVIRONMENT:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "",
                                                                       line[self.i].line, line[self.i].column)  #
                                 return False
                         elif estado == Region.R_IF or estado == Region.R_ELIF or estado == Region.R_ELSE:
                             if line[self.i].token_type == TokenType.T_METHOD or line[
-                                self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_ENVIRONMENT:
+                                self.i].token_type == TokenType.T_BIKE or line[
+                                self.i].token_type == TokenType.T_RIDER or line[
+                                self.i].token_type == TokenType.T_ENVIRONMENT:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "",
                                                                       line[self.i].line, line[self.i].column)  #
                                 return False
                         elif estado == Region.R_WHILE:
                             if line[self.i].token_type == TokenType.T_METHOD or line[
-                                self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_ENVIRONMENT:
+                                self.i].token_type == TokenType.T_BIKE or line[
+                                self.i].token_type == TokenType.T_RIDER or line[
+                                self.i].token_type == TokenType.T_ENVIRONMENT:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "",
                                                                       line[self.i].line, line[self.i].column)  #
                                 return False
@@ -316,7 +326,8 @@ class Parser:
                                 self.i].token_type == TokenType.T_BIKE or line[
                                 self.i].token_type == TokenType.T_RIDER or line[
                                 self.i].token_type == TokenType.T_CONTINUE or line[
-                                self.i].token_type == TokenType.T_BREAK or line[self.i].token_type == TokenType.T_ENVIRONMENT:
+                                self.i].token_type == TokenType.T_BREAK or line[
+                                self.i].token_type == TokenType.T_ENVIRONMENT:
                                 self.error = UnexpectedCharacterError("Wrong token in this scope", "",
                                                                       line[self.i].line, line[self.i].column)  #
                                 return False
@@ -329,7 +340,8 @@ class Parser:
                             return False
 
                 if termino == line[self.i].token_type:
-                    if line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_BIKE or line[self.i].token_type == TokenType.T_ENVIRONMENT:
+                    if line[self.i].token_type == TokenType.T_RIDER or line[self.i].token_type == TokenType.T_BIKE or \
+                            line[self.i].token_type == TokenType.T_ENVIRONMENT:
                         self.estados.append(Region.R_TYPE)
                     elif line[self.i].token_type == TokenType.T_METHOD:
                         self.estados.append(Region.R_METHOD)
@@ -377,8 +389,8 @@ class Parser:
                 self.EligeTipoDdeclaracion(termino, line[self.i], line)
                 if self.matriz[indice_nt][indice_t] is not None:
                     if self.matriz[indice_nt][indice_t] != "e":
-                           result=self.parsear(line, self.matriz[indice_nt][indice_t])
-                           if result==False: 
+                        result = self.parsear(line, self.matriz[indice_nt][indice_t])
+                        if result == False:
                             return False
                     if self.estadoDAST == EstadoDAST.EnExpresionAssign and termino != "A" and termino != "U" and termino != "Z" and termino != "H":
                         self.nodoactual.nododreconocimiento.refreshAST()
@@ -395,18 +407,14 @@ class Parser:
                         self.i].column)  ##Aqui debemos agregar el error , con ello la linea y la columna que fue para posteriormente comunicarselo al usuario
                     return False
             else:
-                if self.estadoDAST==EstadoDAST.EnExpresionAssign:
-                      self.error=UnexpectedCharacterError("The line is incomplete", "", line[self.i-1].line, line[
-                      self.i-1].column)
-                      return False
+                if self.estadoDAST == EstadoDAST.EnExpresionAssign:
+                    self.error = UnexpectedCharacterError("The line is incomplete", "", line[self.i - 1].line, line[
+                        self.i - 1].column)
+                    return False
                 elif not self.se_va_en_epsilon(termino):
-                      self.error=UnexpectedCharacterError("The line is incomplete", "", line[self.i-1].line, line[
-                      self.i-1].column)
-                      return False
-
-
-                  
-                 
+                    self.error = UnexpectedCharacterError("The line is incomplete", "", line[self.i - 1].line, line[
+                        self.i - 1].column)
+                    return False
 
     def parse(self, lines: [[Token]]):
         for line in lines:
@@ -431,11 +439,11 @@ class Parser:
             nuevonodo.padre = self.nodoactual
             self.nodoactual = nuevonodo
             self.estadoDAST = EstadoDAST.EnFuncion
-        elif termino == TokenType.T_RIDER or termino == TokenType.T_BIKE or termino == TokenType.T_ENVIRONMENT :
+        elif termino == TokenType.T_RIDER or termino == TokenType.T_BIKE or termino == TokenType.T_ENVIRONMENT:
             if termino == TokenType.T_RIDER:
                 nuevonodo = RiderNode()
                 nuevonodo.token = token
-            elif termino==TokenType.T_BIKE:
+            elif termino == TokenType.T_BIKE:
 
                 nuevonodo = BikeNode()
                 nuevonodo.token = token
@@ -467,7 +475,7 @@ class Parser:
 
             if termino == TokenType.T_RETURN:
                 nuevonodo.type = "return"
-                
+
                 if self.i + 1 < len(line):
                     if line[self.i + 1].token_type != TokenType.T_SEMICOLON:
                         self.estadoDAST = EstadoDAST.EnExpresionAssign
@@ -519,12 +527,10 @@ class Parser:
                 else:
                     self.estadoDAST = EstadoDAST.EnTipoEspecial
                 self.nodoactual = self.nodoactual.padre
-            elif isinstance(self.nodoactual, RiderNode) or isinstance(self.nodoactual,BikeNode):
+            elif isinstance(self.nodoactual, RiderNode) or isinstance(self.nodoactual, BikeNode):
                 if isinstance(self.nodoactual.padre, Program):
                     self.estadoDAST = EstadoDAST.EnProgram
                     self.nodoactual = self.nodoactual.padre
-
-                 
 
     def EligeTipoDdeclaracion(self, termino, token: Token, line):
         if self.estadoDAST == EstadoDAST.EnAsignacion:
@@ -552,28 +558,28 @@ class Parser:
 
     def CreanodoTipoEspecial(self, termino, token):
         if termino == TokenType.T_ID:
-            #if self.dentroDType == False:
-                self.nodoactual.id = token.value
-                return
-            #else:
-             #   nuevonodo = Redefinition()
-              #  nuevonodo.token = token
-               # self.nodoactual.variables.append(nuevonodo)
-                #nuevonodo.padre = self.nodoactual
-               # self.nodoactual = nuevonodo
-               # self.nodoactual.id = token.value
-               # self.estadoDAST = EstadoDAST.EnRedefinition
-       # elif termino == TokenType.T_METHOD:
+            # if self.dentroDType == False:
+            self.nodoactual.id = token.value
+            return
+        # else:
+        #   nuevonodo = Redefinition()
+        #  nuevonodo.token = token
+        # self.nodoactual.variables.append(nuevonodo)
+        # nuevonodo.padre = self.nodoactual
+        # self.nodoactual = nuevonodo
+        # self.nodoactual.id = token.value
+        # self.estadoDAST = EstadoDAST.EnRedefinition
+        # elif termino == TokenType.T_METHOD:
         #    self.estadoDAST = EstadoDAST.EnFuncion
-         #   nuevonodo = Def_Fun()
-         #   nuevonodo.token = token
-         #   self.nodoactual.funciones.append(nuevonodo)
-         #   nuevonodo.padre = self.nodoactual
-         #   self.nodoactual = nuevonodo
-       # elif termino == TokenType.T_CLOSE_BRACE:
+        #   nuevonodo = Def_Fun()
+        #   nuevonodo.token = token
+        #   self.nodoactual.funciones.append(nuevonodo)
+        #   nuevonodo.padre = self.nodoactual
+        #   self.nodoactual = nuevonodo
+        # elif termino == TokenType.T_CLOSE_BRACE:
         #    self.dentroDType = False
-         #   self.nodoactual = self.nodoactual.padre
-          #  self.estadoDAST = EstadoDAST.EnProgram
+        #   self.nodoactual = self.nodoactual.padre
+        #  self.estadoDAST = EstadoDAST.EnProgram
         elif termino == TokenType.T_OPEN_BRACE:
             nodonuevo = Program()
             nodonuevo.token = token
@@ -581,7 +587,7 @@ class Parser:
             self.nodoactual.body = nodonuevo
             self.nodoactual = nodonuevo
             self.estadoDAST = EstadoDAST.EnProgram
-            #self.dentroDType = True
+            # self.dentroDType = True
 
     def CreaNododAsignacion(self, termino, token: Token):
         if termino == TokenType.T_INT:
@@ -920,55 +926,61 @@ class Parser:
         return True
 
     def execute(self):
-       return self.nodopararecorrerast.eval(self.context)
+        return self.nodopararecorrerast.eval(self.context)
 
     def LoadRidersAndBikes(self):
         for statement in self.nodopararecorrerast.statements:
             if isinstance(statement, RiderNode):
-                functs=list(statement.nuevocontext.funciones.keys())
+                functs = list(statement.nuevocontext.funciones.keys())
                 for fun in functs:
-                   function=statement.nuevocontext.funciones[fun]
-                   if function.idfun=="select_acceleration" or function.idfun=="select_action":
+                    function = statement.nuevocontext.funciones[fun]
+                    if function.idfun == "select_acceleration" or function.idfun == "select_action":
                         statement.funciones.append(function)
                 for var in statement.varsforRiders:
-                   varesult=statement.nuevocontext.variables.get(var[0],"NoEsta")
-                   if varesult != "NoEsta":
-                       if var[0]=="step_by_line" or var[0]=="probability_of_falling_off_the_bike" or var[0]=="independence" or var[0]=="expertise" or var[0]=="aggressiveness"or var[0]=="cornering":
-                          if varesult.value>10:
-                              varesult.value=10
-                       var[2]=varesult.value
+                    varesult = statement.nuevocontext.variables.get(var[0], "NoEsta")
+                    if varesult != "NoEsta":
+                        if var[0] == "step_by_line" or var[0] == "probability_of_falling_off_the_bike" or var[
+                            0] == "independence" or var[0] == "expertise" or var[0] == "aggressiveness" or var[
+                            0] == "cornering":
+                            if varesult.value > 10:
+                                varesult.value = 10
+                        var[2] = varesult.value
                 self.Riders.append(statement)
             elif isinstance(statement, BikeNode):
-                functs=list(statement.nuevocontext.funciones.keys())
+                functs = list(statement.nuevocontext.funciones.keys())
                 for fun in functs:
-                   function=statement.nuevocontext.funciones[fun]
-                   if function.idfun=="select_configuration":
+                    function = statement.nuevocontext.funciones[fun]
+                    if function.idfun == "select_configuration":
                         statement.funciones.append(function)
-                
-                
+
                 for var in statement.varsforBikes:
-                   varesult=statement.nuevocontext.variables.get(var[0],"NoEsta")
-                   if varesult != "NoEsta":
-                       if var[0] == "chassis_stiffness" or var[0] == "brakes":
-                        if varesult.value > 10:
-                             varesult.value=10
-                       elif var[0] == "tires":
-                             if varesult.value>4:
-                                 varesult.value=4
-                       var[2]=varesult.value
+                    varesult = statement.nuevocontext.variables.get(var[0], "NoEsta")
+                    if varesult != "NoEsta":
+                        if var[0] == "chassis_stiffness" or var[0] == "brakes":
+                            if varesult.value > 10:
+                                varesult.value = 10
+                        elif var[0] == "tires":
+                            if varesult.value > 4:
+                                varesult.value = 4
+                        var[2] = varesult.value
                 self.Bikes.append(statement)
 
             elif isinstance(statement, EnvironmentNode):
                 for var in statement.varsforEnvironment:
-                   varesult=statement.nuevocontext.variables.get(var[0],"NoEsta")
-                   if varesult != "NoEsta":
-                       if var[0]=="weather_status":
-                         if varesult.value > 2 : 
-                            varesult.value=2
-                       elif varesult.value>10:
-                              varesult.value=10
-                       var[2]=varesult.value
-                self.Environment=statement.varsforEnvironment 
-
-            
-            
+                    varesult = statement.nuevocontext.variables.get(var[0], "NoEsta")
+                    if varesult != "NoEsta":
+                        if var[0] == "track":
+                            if varesult.value not in ["Misano", "shuffle", "random"]:
+                                varesult.value = "Misano"
+                        elif var[0] == "weather_status":
+                            if varesult.value < 0:
+                                varesult.value = 0
+                            if varesult.value > 2:
+                                varesult.value = 2
+                        else:
+                            if varesult.value < 1:
+                                varesult.value = 1
+                            if varesult.value > 10:
+                                varesult.value = 10
+                        var[2] = varesult.value
+                self.Environment = statement.varsforEnvironment
