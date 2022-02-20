@@ -970,7 +970,7 @@ class Parser:
                     varesult = statement.nuevocontext.variables.get(var[0], "NoEsta")
                     if varesult != "NoEsta":
                         if var[0] == "track":
-                            if not varesult.value in ["Misano", "shuffle", "random"]:
+                            if varesult.value not in ["Misano", "shuffle", "random"]:
                                 varesult.value = "Misano"
                         elif var[0] == "weather_status":
                             if varesult.value > 2:
