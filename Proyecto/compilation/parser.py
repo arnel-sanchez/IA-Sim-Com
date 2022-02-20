@@ -21,7 +21,7 @@ class Parser:
         self.dentroDType = False
         self.Riders = []
         self.Bikes = []
-        self.Environment = None
+        self.Environment = []
         self.estadoDAST = EstadoDAST.EnProgram
         self.nodoactual = Program()  # Este sera el nodo en el que estoy parado cuando estoy construyendo el AST
         self.nodopararecorrerast = self.nodoactual
@@ -989,4 +989,10 @@ class Parser:
                             if varesult.value > 10:
                                 varesult.value = 10
                         var[2] = varesult.value
-                self.Environment = statement.varsforEnvironment
+                functs = list(statement.nuevocontext.funciones.keys())
+                for fun in functs:
+                    function = statement.nuevocontext.funciones[fun]
+                    if function.idfun == "probability_change_weather":
+                        statement.funciones.append(function)
+
+                self.Environment.append(statement)

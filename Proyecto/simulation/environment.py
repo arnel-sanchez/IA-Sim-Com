@@ -21,8 +21,8 @@ class Environment:
             weather_status = 2
         else:
             weather_status = 1
-        if litsAtribEnviroment is not None:
-            for var in litsAtribEnviroment:
+        if len(litsAtribEnviroment)>0 :
+            for var in litsAtribEnviroment[0].varsforEnvironment:
                 if var[0] == "track":
                     if var[2] == "shuffle":
                         track = track.shuffle()
