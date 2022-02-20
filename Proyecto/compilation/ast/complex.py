@@ -97,7 +97,9 @@ class Program(Node):
                     return IncorrectCallError(" Not all code paths return a value	", "", self.token.line,
                                               self.token.column)
         else:
-            if self.padre is None or isinstance(self.padre,RiderNode) or isinstance(self.padre,BikeNode) or isinstance(self.padre,EnvironmentNode):
+            if self.padre is None or isinstance(self.padre, RiderNode) or isinstance(self.padre,
+                                                                                     BikeNode) or isinstance(self.padre,
+                                                                                                             EnvironmentNode):
                 for statement in self.statements:
 
                     if isinstance(statement, ReturnNode):
@@ -160,7 +162,7 @@ class Program(Node):
         if self.padre is not None:
             if isinstance(self.padre, Def_Fun):
                 if self.padre.padre.padre is None:
-                #if not isinstance(self.padre.padre, RiderNode) and not isinstance(self.padre.padre, BikeNode):
+                    # if not isinstance(self.padre.padre, RiderNode) and not isinstance(self.padre.padre, BikeNode):
                     context.clear()
 
     @staticmethod
@@ -242,7 +244,6 @@ class Redefinition(Statement):
         else:
             return CheckTypesError("This variable cannot be modified from this context", "",
                                    self.token.line, self.token.column)
-        
 
     def checktype(self, context: Context):
         return self.op.checktype(context)
@@ -253,7 +254,7 @@ class Redefinition(Statement):
             return evaloper
         if context.variables[self.id].value is None:
             return RuntimeError("Local variable {} referenced before assignment".format(self.id), "", self.token.line,
-                                    self.token.column)
+                                self.token.column)
         context.variables[self.id].value = evaloper
 
     @staticmethod
@@ -272,23 +273,22 @@ class Def_Fun(Statement):
         self.token = None
 
     def validate(self, context: Context) -> bool:
-          
+
         if self.padre.padre is None:
             self.nuevocontext = context.crearnuevocontexto()
         else:
             self.nuevocontext = context
-            if self.idfun=="select_action" or self.idfun=="select_acceleration" or self.idfun=="select_configuration": 
-                if len(self.args)>0:
-                      return IncorrectCallError("this function cannot have input parameters", "", self.token.line,
-                                      self.token.column)
-                elif self.idfun=="select_acceleration" or self.idfun=="select_configuration":
-                      if normaliza(self.typefun)!="void":
+            if self.idfun == "select_action" or self.idfun == "select_acceleration" or self.idfun == "select_configuration":
+                if len(self.args) > 0:
+                    return IncorrectCallError("this function cannot have input parameters", "", self.token.line,
+                                              self.token.column)
+                elif self.idfun == "select_acceleration" or self.idfun == "select_configuration":
+                    if normaliza(self.typefun) != "void":
                         return IncorrectCallError("This function must be of the void type", "", self.token.line,
-                                      self.token.column)
-                elif normaliza(self.typefun)!="int":
+                                                  self.token.column)
+                elif normaliza(self.typefun) != "int":
                     return IncorrectCallError("This function must be of type int", "", self.token.line,
-                                      self.token.column)
-            
+                                              self.token.column)
 
         validationfun = context.define_fun(self.idfun, self, self.token)
         if not isinstance(validationfun, bool):
@@ -317,16 +317,15 @@ class Def_Fun(Statement):
         # Chequear contexto y si hay variables con valores implica que el contexto esta evaluado y hay recursividad y creamos un nuevo contexto
         keys = list(self.nuevocontext.variables.keys())
 
+        if context == self.nuevocontext:
+            if self.padre.padre is None:
+                hayrecursividad = True
 
-        if context==self.nuevocontext:
-           if self.padre.padre is None:
-            hayrecursividad=True
-
-        #if isinstance(self.padre,Program):
-         #   for key in keys:
-          #      if self.nuevocontext.variables[key].value is not None:
-           #         hayrecursividad = True
-            #        break
+        # if isinstance(self.padre,Program):
+        #   for key in keys:
+        #      if self.nuevocontext.variables[key].value is not None:
+        #         hayrecursividad = True
+        #        break
 
         if hayrecursividad:
             contextopararecursividad = Context()
@@ -391,11 +390,11 @@ class Condition(Node):
             if isinstance(checkExpr1, CheckTypesError):
                 return checkExpr1
             else:
-                if checkExpr1=="bool":                 
-                  return True
+                if checkExpr1 == "bool":
+                    return True
                 else:
                     return CheckTypesError("There is a condition that is not of the Boolean type", "",
-                                   self.token.line, self.token.column)
+                                           self.token.line, self.token.column)
         else:
             checktypecomp = self.comparador.checktype(context)
             if isinstance(checktypecomp, CheckTypesError):
@@ -415,7 +414,7 @@ class Condition(Node):
 
     def eval(self, context: Context):
         if self.comparador is not None:
-         return self.comparador.eval(context)
+            return self.comparador.eval(context)
         else:
             return self.expression1.eval(context)
 

@@ -9,9 +9,16 @@ class SectionType(Enum):
     Straight = 1
 
 
+class PitSection(Enum):
+    No = 0
+    Start = 1
+    Middle = 2
+    End = 3
+
+
 class Section:
     def __init__(self, name: str, length: float, max_speed: float, orientation: CardinalsPoints,
-                 section_type: SectionType, pit_line: bool, pit_length: float):
+                 section_type: SectionType, pit_line: PitSection, pit_length: float):
         self.name = name
         self.length = length
         self.max_speed = max_speed
@@ -62,7 +69,8 @@ def track_generator():
         if curve:
             name = "curva{}".format(i)
             length = value_generator(50, 210)
-            max_speed = value_generator(70, 240)
+            max_value = min(240.0, sections[-1].max_speed)
+            max_speed = value_generator(70, max_value)
             while True:
                 orientation = orientation_generator(orientation)
                 if opposite == (abs(start_orientation.value - orientation.value) == 4):
@@ -81,7 +89,15 @@ def track_generator():
                 max_speed = normalvariate((x[0] + x[1]) / 2, 10)
             section_type = SectionType.Straight
             pit_length = length
-        sections.append(Section(name, length, max_speed, orientation, section_type, len(sections) < 5, pit_length))
+        if len(sections) == 4:
+            pit_section = PitSection.End
+        elif len(sections) < 5:
+            pit_section = PitSection.Middle
+        else:
+            pit_section = PitSection.No
+            pit_length = 0
+        sections.append(Section(name, round(length, 2), round(max_speed, 2), orientation, section_type, pit_section,
+                                round(pit_length, 2)))
         total_length += length
         curve = not curve
         if 2000 < total_length:
@@ -108,15 +124,19 @@ def track_generator():
         orientation = section.orientation.value + 4
         if orientation > 7:
             orientation -= 8
-        sections.append(Section(name, section.length, section.max_speed, section.orientation, section.type, False, 0))
-    sections[0].length /= 2
-    sections[0].max_speed /= 2
-    sections[-1].length /= 2
-    sections[-1].max_speed /= 2
-    if sections[-2].type == SectionType.Curve:
-        sections[-2].pit_length = sections[-2].length / 2
-    else:
-        pass
+        if i == count - 2:
+            pit_section = PitSection.Start
+            pit_length = round(length / 2, 2)
+        elif i == count - 1:
+            pit_section = PitSection.Middle
+            pit_length = length
+        else:
+            pit_section = PitSection.No
+            pit_length = 0
+        sections.append(Section(name, section.length, section.max_speed, CardinalsPoints(orientation), section.type,
+                                pit_section, pit_length))
+    sections[0].length = round(sections[0].length / 2, 2)
+    sections[-1].length = round(sections[-1].length / 2, 2)
     return Track("Random Track", length, sections)
 
 
@@ -124,26 +144,26 @@ def value_generator(min_length, max_length):
     step = (max_length - min_length) / 10
     prob = uniform(0, 1)
     if prob < 0.50:
-        length = uniform(min_length, min_length + step)
+        value = uniform(min_length, min_length + step)
     elif prob < 0.60:
-        length = uniform(min_length + step, min_length + 2 * step)
+        value = uniform(min_length + step, min_length + 2 * step)
     elif prob < 0.70:
-        length = uniform(min_length + 2 * step, min_length + 3 * step)
+        value = uniform(min_length + 2 * step, min_length + 3 * step)
     elif prob < 0.80:
-        length = uniform(min_length + 3 * step, min_length + 4 * step)
+        value = uniform(min_length + 3 * step, min_length + 4 * step)
     elif prob < 0.85:
-        length = uniform(min_length + step, min_length + 2 * step)
+        value = uniform(min_length + step, min_length + 2 * step)
     elif prob < 0.90:
-        length = uniform(min_length + 2 * step, min_length + 3 * step)
+        value = uniform(min_length + 2 * step, min_length + 3 * step)
     elif prob < 0.94:
-        length = uniform(min_length + 3 * step, min_length + 4 * step)
+        value = uniform(min_length + 3 * step, min_length + 4 * step)
     elif prob < 0.97:
-        length = uniform(min_length + 2 * step, min_length + 3 * step)
+        value = uniform(min_length + 2 * step, min_length + 3 * step)
     elif prob < 0.99:
-        length = uniform(min_length + 3 * step, min_length + 4 * step)
+        value = uniform(min_length + 3 * step, min_length + 4 * step)
     else:
-        length = uniform(min_length + 4 * step, max_length)
-    return round(length, 5)
+        value = uniform(min_length + 4 * step, max_length)
+    return value
 
 
 def orientation_generator(orientation: CardinalsPoints = None):
@@ -164,6 +184,3 @@ def orientation_generator(orientation: CardinalsPoints = None):
     elif value > 7:
         value -= 8
     return CardinalsPoints(value)
-
-
-track_generator()

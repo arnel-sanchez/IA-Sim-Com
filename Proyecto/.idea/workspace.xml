@@ -5,18 +5,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f6df1ae7-b934-4f30-a0fa-9569583274a1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/compilation/ast/auxiliary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/assignments.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/ast/assignments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/initializations.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/ast/initializations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/nodes.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/ast/nodes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/nodes_yy.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/ast/complex.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/nodes_zz.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/operations.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/ast/operations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/ast/parser_xx.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/enums.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilation/variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/variables.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/action_facts.kfb" beforeDir="false" afterPath="$PROJECT_DIR$/ai/action_facts.kfb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/ai.py" beforeDir="false" afterPath="$PROJECT_DIR$/ai/ai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/bc_action_rules.krb" beforeDir="false" afterPath="$PROJECT_DIR$/ai/bc_action_rules.krb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/bc_moto_rules.krb" beforeDir="false" afterPath="$PROJECT_DIR$/ai/bc_moto_rules.krb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/moto_facts.kfb" beforeDir="false" afterPath="$PROJECT_DIR$/ai/moto_facts.kfb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compilation/ast/complex.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/ast/complex.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compilation/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/agent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/bike.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/bike.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/environment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/race.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/race.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/set_off_classes/tracks/misano.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/set_off_classes/tracks/misano.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/simulator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/track.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/track.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test1.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test10.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test10.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test11.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test11.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test12.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test12.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test13.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test13.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test14.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test14.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test15.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test15.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test16.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test16.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test17.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test17.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test18.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test18.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test2.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test3.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test3.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test4.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test4.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test5.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test5.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test6.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test6.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test7.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test7.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test8.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test8.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tester/test9.py" beforeDir="false" afterPath="$PROJECT_DIR$/tester/test9.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,11 +153,14 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Proyecto$visual.coverage" NAME="visual Coverage Results" MODIFIED="1645044148532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Proyecto$test_nodes.coverage" NAME="test_nodes Coverage Results" MODIFIED="1639959578342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/compilation/ast" />
     <SUITE FILE_PATH="coverage/Proyecto$misano.coverage" NAME="misano Coverage Results" MODIFIED="1642353701852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Downloads/Telegram Desktop" />
     <SUITE FILE_PATH="coverage/Proyecto$assignments.coverage" NAME="assignments Coverage Results" MODIFIED="1639698156044" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/compilation" />
     <SUITE FILE_PATH="coverage/Proyecto$start.coverage" NAME="start Coverage Results" MODIFIED="1639701394053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Proyecto$main.coverage" NAME="main Coverage Results" MODIFIED="1642468471116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Proyecto$main.coverage" NAME="main Coverage Results" MODIFIED="1645337112912" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Proyecto$track.coverage" NAME="track Coverage Results" MODIFIED="1645333161128" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/simulation" />
+    <SUITE FILE_PATH="coverage/Proyecto$action.coverage" NAME="action Coverage Results" MODIFIED="1644861306680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ai" />
     <SUITE FILE_PATH="coverage/Proyecto$.coverage" NAME=" Coverage Results" MODIFIED="1639159054883" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tester" />
   </component>
 </project>
