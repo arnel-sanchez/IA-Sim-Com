@@ -25,9 +25,18 @@ class Simulation:
         end_lap = 0
         heap = [a for a in self.race.agents]
         while True:
-            prob = uniform(0, 1)
+            
+            if not self.race.environment.flag_change_weather:
+             prob = uniform(0, 1)
+            else:
+               
+               prob=self.race.environment.environments[self.race.environment.i].funciones[0].eval()
+               if not (prob<=1 and prob>=0):
+                   prob= uniform(0, 1)
+                   
             if prob < 0.0005:
-                self.race.environment.change_weather_status()
+               self.race.environment.change_weather_status()
+
             agent = None
             while len(heap) > 0:
                 agent = heappop(heap)
