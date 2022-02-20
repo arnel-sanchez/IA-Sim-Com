@@ -64,27 +64,27 @@ class Environment:
             if weather_status_random < 0.5:
                 weather_status = 0
                 self.weather.change_weather_status(WeatherStatus(weather_status))
-                self.weather.print("El Clima ha cambiado, ahora tiene una nueva configuracion")
+                self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
             elif weather_status_random > 1.5:
                 weather_status = 2
                 self.weather.change_weather_status(WeatherStatus(weather_status))
-                self.weather.print("El Clima ha cambiado, ahora tiene una nueva configuracion")
+                self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
         elif weather_status == 0:
             if weather_status_random < 0.5:
                 weather_status = 1
                 self.weather.change_weather_status(WeatherStatus(weather_status))
-                self.weather.print("El Clima ha cambiado, ahora tiene una nueva configuracion")
+                self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
             elif weather_status_random > 1.5:
                 weather_status = 2
                 self.weather.change_weather_status(WeatherStatus(weather_status))
-                self.weather.print("El Clima ha cambiado, ahora tiene una nueva configuracion")
+                self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
         else:
             if weather_status_random < 0.5:
                 weather_status = 0
                 self.weather.change_weather_status(WeatherStatus(weather_status))
-                self.weather.print("El Clima ha cambiado, ahora tiene una nueva configuracion")
+                self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
             elif weather_status_random > 1.5:
                 weather_status = 1
                 self.weather.change_weather_status(WeatherStatus(weather_status))
-                self.weather.print("El Clima ha cambiado, ahora tiene una nueva configuracion")
+                self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
         self.weather.change_wind(CardinalsPoints(wind))

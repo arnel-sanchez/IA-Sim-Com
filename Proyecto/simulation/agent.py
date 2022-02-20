@@ -627,7 +627,8 @@ class Agent:
 
     def overcome_section(self, race):
         action = self.select_action(race)
-        if action.name.__contains__("Pits") and self.section.pit_line == PitSection.Start and race.current_lap != race.laps-1:
+        if action.name.__contains__("Pits") and self.section.pit_line == PitSection.Start and \
+                race.current_lap != race.laps - 1:
             self.on_pits = True
             print(Fore.WHITE + "El piloto {} ha entrado a boxes.".format(self.rider.name))
         if not self.overtake(race, action):

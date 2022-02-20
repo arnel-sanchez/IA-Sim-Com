@@ -1,6 +1,7 @@
 from enum import Enum
 from colorama import Fore
 
+
 class WeatherStatus(Enum):
     Sunny = 0
     Cloudy = 1
@@ -41,8 +42,10 @@ def opposite_direction(direction_1, direction_2):
         return True
     return False
 
+
 def measure(number):
     return "Alta" if number > 6 else "Baja" if number < 4 else "Media"
+
 
 class Weather:
     def __init__(self, temperature, visibility, wind_intensity, humidity, wind: CardinalsPoints,

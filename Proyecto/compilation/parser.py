@@ -942,6 +942,8 @@ class Parser:
                         if var[0] == "step_by_line" or var[0] == "probability_of_falling_off_the_bike" or var[
                             0] == "independence" or var[0] == "expertise" or var[0] == "aggressiveness" or var[
                             0] == "cornering":
+                            if varesult.value < 1:
+                                varesult.value = 1
                             if varesult.value > 10:
                                 varesult.value = 10
                         var[2] = varesult.value
@@ -957,9 +959,13 @@ class Parser:
                     varesult = statement.nuevocontext.variables.get(var[0], "NoEsta")
                     if varesult != "NoEsta":
                         if var[0] == "chassis_stiffness" or var[0] == "brakes":
+                            if varesult.value < 1:
+                                varesult.value = 1
                             if varesult.value > 10:
                                 varesult.value = 10
                         elif var[0] == "tires":
+                            if varesult.value < 0:
+                                varesult.value = 0
                             if varesult.value > 4:
                                 varesult.value = 4
                         var[2] = varesult.value
