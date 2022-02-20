@@ -839,7 +839,7 @@ class Agent:
             print(Fore.RED + "El piloto {} ha sobrepasado la velocidad maxima de su moto y ha explotado el motor.".
                   format(self.rider.name))
             return False
-        if self.on_pits and self.speed > 60:
+        if self.on_pits and self.speed > 40:
             print(Fore.RED + "El piloto {} ha seguido descalificado por exceder la velocidad maxima en el Pit Line".
                   format(self.rider.name))
             return False
