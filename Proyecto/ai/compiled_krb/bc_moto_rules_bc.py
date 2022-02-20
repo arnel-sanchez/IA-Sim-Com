@@ -216,47 +216,47 @@ def populate(engine):
   
   bc_rule.bc_rule('slick', This_rule_base, 'select_type',
                   slick, None,
-                  (pattern.pattern_literal(0),),
+                  (pattern.pattern_literal('Slick'),),
                   (),
                   (contexts.variable('ans_1'),
                    contexts.variable('ans_2'),))
   
   bc_rule.bc_rule('rain_1', This_rule_base, 'select_type',
                   rain_1, None,
-                  (pattern.pattern_literal(3),),
+                  (pattern.pattern_literal('Rain'),),
                   (),
                   (pattern.pattern_literal("Rainy"),))
   
   bc_rule.bc_rule('rain_2', This_rule_base, 'select_type',
                   rain_2, None,
-                  (pattern.pattern_literal(3),),
+                  (pattern.pattern_literal('Rain'),),
                   (),
                   (contexts.variable('ans_1'),
                    contexts.variable('ans_2'),))
   
   bc_rule.bc_rule('soft', This_rule_base, 'select_tires',
                   soft, None,
-                  (pattern.pattern_literal(0),),
+                  (pattern.pattern_literal('Soft'),),
                   (),
                   (contexts.variable('ans_1'),
                    pattern.pattern_literal(3),))
   
   bc_rule.bc_rule('medium_1', This_rule_base, 'select_tires',
                   medium_1, None,
-                  (pattern.pattern_literal(1),),
+                  (pattern.pattern_literal('Medium'),),
                   (),
                   (contexts.variable('ans_1'),))
   
   bc_rule.bc_rule('medium_2', This_rule_base, 'select_tires',
                   medium_2, None,
-                  (pattern.pattern_literal(1),),
+                  (pattern.pattern_literal('Medium'),),
                   (),
                   (contexts.variable('ans_1'),
                    pattern.pattern_literal(2),))
   
   bc_rule.bc_rule('hard', This_rule_base, 'select_tires',
                   hard, None,
-                  (pattern.pattern_literal(2),),
+                  (pattern.pattern_literal('Hard'),),
                   (),
                   (contexts.variable('ans_1'),
                    pattern.pattern_literal(1),))

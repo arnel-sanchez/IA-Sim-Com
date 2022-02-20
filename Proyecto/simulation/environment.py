@@ -1,12 +1,14 @@
 from random import normalvariate, randint
 
-from simulation.track import Track
+from simulation.track import track_generator
 from simulation.weather import Weather, CardinalsPoints, WeatherStatus
+
+from simulation.set_off_classes.tracks.misano import Misano
 
 
 class Environment:
-    def __init__(self, track: Track, litsAtribEnviroment):
-        self.track = track
+    def __init__(self, litsAtribEnviroment):
+        track = Misano()
         temperature = int(normalvariate(5, 2))
         visibility = int(normalvariate(5, 2))
         humidity = int(normalvariate(5, 2))
@@ -21,7 +23,12 @@ class Environment:
             weather_status = 1
         if litsAtribEnviroment is not None:
             for var in litsAtribEnviroment:
-                if var[0] == "temperature":
+                if var[0] == "track":
+                    if var[2] == "shuffle":
+                        track = track.shuffle()
+                    elif var[2] == "random":
+                        track = track_generator()
+                elif var[0] == "temperature":
                     temperature = var[2]
                 elif var[0] == "visibility":
                     visibility = var[2]
@@ -33,6 +40,7 @@ class Environment:
                     wind = var[2]
                 elif var[0] == "weather_status":
                     weather_status = var[2]
+        self.track = track
         self.weather = Weather(temperature, visibility, wind_intensity, humidity, CardinalsPoints(wind),
                                WeatherStatus(weather_status))
 

@@ -38,7 +38,8 @@ class Track:
         self.length = length
         self.sections = sections
 
-    def reorder(self):
+    def shuffle(self):
+        self.name = "Shuffled " + self.name
         for i in range(len(self.sections)):
             for j in range(i, len(self.sections)):
                 if self.sections[i].orientation != self.sections[j].orientation or \
@@ -135,9 +136,10 @@ def track_generator():
             pit_length = 0
         sections.append(Section(name, section.length, section.max_speed, CardinalsPoints(orientation), section.type,
                                 pit_section, pit_length))
+        total_length += length
     sections[0].length = round(sections[0].length / 2, 2)
     sections[-1].length = round(sections[-1].length / 2, 2)
-    return Track("Random Track", length, sections)
+    return Track("Random Track", round(total_length, 2), sections)
 
 
 def value_generator(min_length, max_length):
