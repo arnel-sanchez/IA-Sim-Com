@@ -8,6 +8,7 @@ from simulation.set_off_classes.tracks.misano import Misano
 
 class Environment:
     def __init__(self, litsAtribEnviroment):
+        self.flagchangeweather=False
         track = Misano()
         temperature = int(normalvariate(5, 2))
         visibility = int(normalvariate(5, 2))
@@ -40,6 +41,9 @@ class Environment:
                     wind = var[2]
                 elif var[0] == "weather_status":
                     weather_status = var[2]
+            if len(litsAtribEnviroment[0].funciones)>0:
+                self.flagchangeweather=True
+
         self.track = track
         self.weather = Weather(temperature, visibility, wind_intensity, humidity, CardinalsPoints(wind),
                                WeatherStatus(weather_status))
