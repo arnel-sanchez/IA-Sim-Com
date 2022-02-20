@@ -34,7 +34,7 @@ def compilation(case: str):
     tokenizer = Tokenizer()
     file = "console"
     if case is None:
-        text = open(path[0] + "/codes/Prueba14,Tipos.pys").read()
+        text = open(path[0] + "/codes/Prueba19.pys").read()
     else:
         text = open(path[0] + "/codes/" + case).read()
     tokens, error = tokenizer.tokenize(file, text)
@@ -106,7 +106,7 @@ def simulation(agents_lists):
             rider = Rider(agents_lists[0][0].id, agents_lists[0][0].varsforRiders[3][2],
                           agents_lists[0][0].varsforRiders[4][2])
             if len(agents_lists[1]) >= 1:
-                bike = Bike(agents_lists[1][0].varsforBikes[0][2], "test", agents_lists[1][0].varsforBikes[1][2],
+                bike = Bike(agents_lists[1][0].id, "test", agents_lists[1][0].varsforBikes[1][2],
                             agents_lists[1][0].varsforBikes[2][2], agents_lists[1][0],
                             agents_lists[1][0].varsforBikes[4][2], agents_lists[1][0].varsforBikes[5][2])
                 if len(agents_lists[1][0].funciones) == 0:
@@ -138,7 +138,7 @@ def simulation(agents_lists):
         rider = Rider(b.name, b.cornering, b.step_by_line)
         bike = Bike(d.brand, d.model, d.max_speed, d.weight, None)
         agents.append(Agent(rider, bike, False, False, False, track.sections[0]))
-
+        
         m = Mir()
         s = Suzuki()
         rider = Rider(m.name, m.cornering, m.step_by_line)
@@ -168,7 +168,7 @@ def simulation(agents_lists):
         rider = Rider(bi.name, bi.cornering, bi.step_by_line)
         bike = Bike(k.brand, k.model, k.max_speed, k.weight, None)
         agents.append(Agent(rider, bike, False, False, False, track.sections[0]))
-
+        
     shuffle(agents)
     race = Race(environment, agents, 5)
     sim = Simulation(race)

@@ -1,5 +1,5 @@
 from enum import Enum
-
+from colorama import Fore
 
 class WeatherStatus(Enum):
     Sunny = 0
@@ -41,6 +41,8 @@ def opposite_direction(direction_1, direction_2):
         return True
     return False
 
+def measure(number):
+    return "Alta" if number > 6 else "Baja" if number < 4 else "Media"
 
 class Weather:
     def __init__(self, temperature, visibility, wind_intensity, humidity, wind: CardinalsPoints,
@@ -51,6 +53,8 @@ class Weather:
         self.visibility = visibility
         self.humidity = humidity
         self.wind_intensity = wind_intensity
+        self.translate_weather = ["Soleado", "Nublado", "Lluvioso"]
+        self.translate_direction = ["Norte", "Noreste", "Este", "Sureste", "Sur", "Suroeste", "Oeste", "Noroeste"]
 
     def increase_temperature(self, increase_temperature):
         if self.temperature + increase_temperature >= 10:
@@ -113,13 +117,14 @@ class Weather:
         self.wind_intensity = wind_intensity
 
     def change_weather_status(self, new_weather_status: WeatherStatus):
-        if new_weather_status == 0:
+
+        if new_weather_status.value == 0:
             self.decrease_humidity(2)
             self.increase_visibility(2)
             self.increase_temperature(2)
             self.weather_status = WeatherStatus(new_weather_status)
-        elif new_weather_status == 1:
-            if self.weather_status == 2:
+        elif new_weather_status.value == 1:
+            if self.weather_status.value == 2:
                 self.weather_status = WeatherStatus(new_weather_status)
                 self.decrease_humidity(2)
                 self.increase_visibility(2)
@@ -128,7 +133,7 @@ class Weather:
                 self.decrease_visibility(2)
                 self.decrease_temperature(2)
                 self.weather_status = WeatherStatus(new_weather_status)
-        elif new_weather_status == 2:
+        elif new_weather_status.value == 2:
             self.increase_humidity(2)
             self.decrease_visibility(2)
             self.decrease_temperature(2)
@@ -142,3 +147,12 @@ class Weather:
 
     def is_back_wind(self, wind: CardinalsPoints):
         return self.wind == wind
+
+    def print(self, log):
+        print(Fore.MAGENTA + "\n"+log+":")
+        print(Fore.CYAN + "Estado: {}".format(self.translate_weather[self.weather_status.value]))
+        print(Fore.CYAN + "Humedad: {}".format(measure(self.humidity)))
+        print(Fore.CYAN + "Temperatura: {}".format(measure(self.temperature)))
+        print(Fore.CYAN + "Visibilidad: {}".format(measure(self.visibility)))
+        print(Fore.CYAN + "Viento: {}, Intensidad {}\n".format(self.translate_direction[self.wind.value],
+                                                               measure(self.wind_intensity)))

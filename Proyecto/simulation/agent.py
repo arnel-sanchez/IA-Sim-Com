@@ -174,14 +174,17 @@ class Agent:
                 self.rider.cornering = 0
             else:
                 self.rider.cornering -= (weather.temperature - 5) / 3
+            
             if self.bike.probability_of_exploding_tires - 0.0001 * (weather.temperature - 5) / 3 <= 0:
                 self.bike.probability_of_exploding_tires = 0
             else:
                 self.bike.probability_of_exploding_tires -= 0.0001 * (weather.temperature - 5) / 3
+            
             if self.bike.probability_of_the_bike_breaking_down - 0.0001 * (weather.temperature - 5) / 3 <= 0:
                 self.bike.probability_of_the_bike_breaking_down = 0
             else:
                 self.bike.probability_of_the_bike_breaking_down -= 0.0001 * (weather.temperature - 5) / 3
+            
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * (weather.temperature - 5) / 2 >= 10:
                 self.rider.probability_of_falling_off_the_bike = 10
             else:
@@ -204,10 +207,12 @@ class Agent:
                 self.rider.step_by_line = 0
             else:
                 self.rider.step_by_line -= (weather.temperature - 5) / 3
+            
             if self.rider.cornering - (weather.temperature - 5) / 3 <= 0:
                 self.rider.cornering = 0
             else:
                 self.rider.cornering -= (weather.temperature - 5) / 3
+            
             if self.rider.probability_of_falling_off_the_bike + 0.0001 * (weather.temperature - 5) / 2 >= 1:
                 self.rider.probability_of_falling_off_the_bike = 1
             else:
@@ -622,7 +627,7 @@ class Agent:
 
     def overcome_section(self, race):
         action = self.select_action(race)
-        if action.name.__contains__("Pits") and self.section.pit_line == PitSection.Start:
+        if action.name.__contains__("Pits") and self.section.pit_line == PitSection.Start and race.current_lap != race.laps-1:
             self.on_pits = True
             print(Fore.WHITE + "El piloto {} ha entrado a boxes.".format(self.rider.name))
         if not self.overtake(race, action):
@@ -634,6 +639,7 @@ class Agent:
             return False
         if self.on_pits and self.section.pit_line == PitSection.End:
             self.on_pits = False
+            self.bike.select_configuration(race.environment)
             print(Fore.WHITE + "El piloto {} ha salido de boxes.".format(self.rider.name))
         return True
 
