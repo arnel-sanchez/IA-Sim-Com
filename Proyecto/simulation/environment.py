@@ -66,7 +66,7 @@ class Environment:
     def change_weather_status(self):
         if len(self.environments) > self.i + 1:
             self.i += 1
-            if len(self.environments[self.i].funciones == 0):
+            if len(self.environments[self.i].funciones) == 0:
                 self.flag_change_weather = False
             self.environments[self.i].refreshContext(self.weather.__dict__)
             self.environments[self.i].eval(self.environments[self.i].nuevocontext)
