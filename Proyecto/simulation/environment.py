@@ -70,7 +70,8 @@ class Environment:
                 self.flag_change_weather = False
             self.environments[self.i].refreshContext(self.weather.__dict__)
             self.environments[self.i].eval(self.environments[self.i].nuevocontext)
-            for var in self.environments[self.i].nuevocontext.variables:
+            for variableid in list(self.environments[self.i].nuevocontext.variables.keys()):
+                var=self.environments[self.i].nuevocontext.variables[variableid]
                 if var == "humidity":
                     if var.value <= 10:
                         self.weather.humidity = var.value
