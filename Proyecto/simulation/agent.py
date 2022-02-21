@@ -106,7 +106,7 @@ class Agent:
         self.ranking = 0
         self.on_pits = False
         self.off_road = False
-        self.translate_tire = ["Slick Suave", "Slick Medio", "Slick Duro", "De Lluvia Suave", "De Lluvia Medio"]
+        self.translate_tire = ["lisos suaves", "lisos medios", "lisos duros", "de lluvia suaves", "de lluvia medios"]
 
     def update_agent_initial_parameters(self, weather):
         if self.bike.chassis_stiffness > 5:
@@ -389,7 +389,8 @@ class Agent:
             self.current_lap += 1
             if self.on_pits:
                 self.bike.select_configuration(race.environment)
-                print(Fore.CYAN + "El piloto {} ha cambiado de moto ".format(self.rider.name)+"y ha montado neumaticos {}.".format(self.translate_tire[self.bike.tires.value]))
+                print(Fore.CYAN + "El piloto {} ha cambiado de moto y ha montado neumaticos {}.".
+                      format(self.rider.name, self.translate_tire[self.bike.tires.value]))
             return True
         else:
             self.sections += 1
