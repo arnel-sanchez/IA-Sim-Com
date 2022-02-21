@@ -527,7 +527,7 @@ class Parser:
                 else:
                     self.estadoDAST = EstadoDAST.EnTipoEspecial
                 self.nodoactual = self.nodoactual.padre
-            elif isinstance(self.nodoactual, RiderNode) or isinstance(self.nodoactual, BikeNode):
+            elif isinstance(self.nodoactual, RiderNode) or isinstance(self.nodoactual, BikeNode) or isinstance(self.nodoactual,EnvironmentNode) :
                 if isinstance(self.nodoactual.padre, Program):
                     self.estadoDAST = EstadoDAST.EnProgram
                     self.nodoactual = self.nodoactual.padre
