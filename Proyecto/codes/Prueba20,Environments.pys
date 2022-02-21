@@ -124,11 +124,11 @@ environment ambienteDtarde
 
    method double probability_change_weather()
    {
-      if (temperature==6 and weather_status==1)
+      if (temperature==6 && weather_status==1)
       {
         return 0.40;
       }
-      elif (visibility<4 and temperature<5)
+      elif (visibility<4 && temperature<5)
       {
         return 0.60; 
       } 
