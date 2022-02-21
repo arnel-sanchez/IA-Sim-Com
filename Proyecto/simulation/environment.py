@@ -99,10 +99,10 @@ class Environment:
                     else:
                         self.weather.temperature = 10
                 if var.id == "weather_status":
-                    if var.value.value <= 3:
+                    if var.value.value <= 2:
                         self.weather.weather_status = var.value
                     else:
-                        self.weather.weather_status = 3
+                        self.weather.weather_status = 2
         else:
             self.flag_change_weather = False
             wind = randint(0, 7)

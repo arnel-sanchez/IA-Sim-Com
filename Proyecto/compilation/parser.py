@@ -984,6 +984,11 @@ class Parser:
                                 varesult.value = 0
                             if varesult.value > 2:
                                 varesult.value = 2
+                        elif var[0] == "wind":
+                            if varesult.value < 0:
+                                varesult.value = 0
+                            if varesult.value > 7:
+                                varesult.value = 7
                         else:
                             if varesult.value < 1:
                                 varesult.value = 1
