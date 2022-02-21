@@ -106,6 +106,7 @@ class Agent:
         self.ranking = 0
         self.on_pits = False
         self.off_road = False
+        self.translate_tire = ["Slick Suave", "Slick Medio", "Slick Duro", "De Lluvia Suave", "De Lluvia Medio"]
 
     def update_agent_initial_parameters(self, weather):
         if self.bike.chassis_stiffness > 5:
@@ -388,7 +389,7 @@ class Agent:
             self.current_lap += 1
             if self.on_pits:
                 self.bike.select_configuration(race.environment)
-                print(Fore.CYAN + "El piloto {} ha cambiado de moto.".format(self.rider.name))
+                print(Fore.CYAN + "El piloto {} ha cambiado de moto ".format(self.rider.name)+"y ha montado neumaticos {}.".format(self.translate_tire[self.bike.tires.value]))
             return True
         else:
             self.sections += 1
@@ -839,7 +840,7 @@ class Agent:
             print(Fore.RED + "El piloto {} ha sobrepasado la velocidad maxima de su moto y ha explotado el motor.".
                   format(self.rider.name))
             return False
-        if self.on_pits and self.speed > 40:
+        if self.on_pits and self.speed > 60:
             print(Fore.RED + "El piloto {} ha seguido descalificado por exceder la velocidad maxima en el Pit Line".
                   format(self.rider.name))
             return False
