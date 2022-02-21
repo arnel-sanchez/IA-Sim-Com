@@ -83,6 +83,10 @@ class Environment:
                     else:
                         self.weather.visibility = 10
                 if var.id == "wind":
+                    if var.value.value <= 7:
+                        self.weather.wind = var.value
+                    else:
+                        self.weather.wind = 7
                     self.weather.wind = var.value
                 if var.id == "wind_intensity":
                     if var.value <= 10:
@@ -95,7 +99,10 @@ class Environment:
                     else:
                         self.weather.temperature = 10
                 if var.id == "weather_status":
-                    self.weather.weather_status = var.value
+                    if var.value.value <= 3:
+                        self.weather.weather_status = var.value
+                    else:
+                        self.weather.weather_status = 3
         else:
             self.flag_change_weather = False
             wind = randint(0, 7)
