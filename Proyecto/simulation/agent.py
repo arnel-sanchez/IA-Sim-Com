@@ -627,8 +627,8 @@ class Agent:
 
     def overcome_section(self, race):
         action = self.select_action(race)
-        if action.name.__contains__("Pits") and self.section.pit_line == PitSection.Start and \
-                race.current_lap != race.laps - 1:
+        if self.section.pit_line == PitSection.Start and race.current_lap != race.laps - 1 and \
+                action.name.__contains__("Pits"):
             self.on_pits = True
             print(Fore.WHITE + "El piloto {} ha entrado a boxes.".format(self.rider.name))
         if not self.overtake(race, action):
@@ -694,7 +694,7 @@ class Agent:
 
     def attack(self, race, expertise, forward_agent):
         prob = continuous_variable_generator()
-        if self.on_pits == forward_agent.on_pits and expertise > 1 - prob:
+        if not self.on_pits and expertise > 1 - prob:
             prob = continuous_variable_generator()
             if prob < 1 / 3:
                 print(Fore.RED +
@@ -722,13 +722,13 @@ class Agent:
             prob = continuous_variable_generator()
             diff = (self.time_track - forward_agent.time_track) / 2
             t = continuous_variable_generator()
-            if (not self.on_pits and forward_agent.on_pits) or forward_agent.off_road or \
-                    prob - self.rider.expertise < 1 / 3:
+            if not self.on_pits and (forward_agent.on_pits or forward_agent.off_road or
+                                     prob - self.rider.expertise < 1 / 3):
                 print(Fore.GREEN + "El piloto {} ha adelantado al piloto {}.".format(self.rider.name,
                                                                                      forward_agent.rider.name))
                 swap(race, self, forward_agent, diff, t)
             else:
-                if not forward_agent.on_pits:
+                if not self.on_pits:
                     print(Fore.YELLOW + "El piloto {} ha defendido su posicion frente al piloto {}.".
                           format(forward_agent.rider.name, self.rider.name))
                 penalize(self, diff, t)
@@ -736,8 +736,10 @@ class Agent:
         return True
 
     def defend(self, race, expertise, behind_agent):
+        if self.on_pits:
+            return True
         prob = continuous_variable_generator()
-        if self.on_pits == behind_agent.on_pits and expertise > 1 - prob:
+        if expertise > 1 - prob:
             prob = continuous_variable_generator()
             if prob < 1 / 3:
                 print(Fore.RED +
@@ -765,8 +767,8 @@ class Agent:
             prob = continuous_variable_generator()
             diff = (behind_agent.time_track - self.time_track) / 2
             t = continuous_variable_generator()
-            if not behind_agent.off_road and prob - self.rider.expertise < 2 / 3:
-                if not self.on_pits:
+            if behind_agent.on_pits or behind_agent.off_road or prob - self.rider.expertise < 2 / 3:
+                if not behind_agent.on_pits and not behind_agent.off_road:
                     print(Fore.YELLOW + "El piloto {} ha defendido su posicion frente al piloto {}.".
                           format(self.rider.name, behind_agent.rider.name))
                 penalize(behind_agent, diff, t)

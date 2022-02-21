@@ -120,7 +120,6 @@ class Weather:
         self.wind_intensity = wind_intensity
 
     def change_weather_status(self, new_weather_status: WeatherStatus):
-
         if new_weather_status.value == 0:
             self.decrease_humidity(2)
             self.increase_visibility(2)

@@ -8,9 +8,9 @@ from simulation.set_off_classes.tracks.misano import Misano
 
 class Environment:
     def __init__(self, litsAtribEnviroment):
-        self.flag_change_weather=False
-        self.environments=litsAtribEnviroment
-        self.i=0
+        self.flag_change_weather = False
+        self.environments = litsAtribEnviroment
+        self.i = 0
         track = Misano()
         temperature = int(normalvariate(5, 2))
         visibility = int(normalvariate(5, 2))
@@ -24,7 +24,7 @@ class Environment:
             weather_status = 2
         else:
             weather_status = 1
-        if len(litsAtribEnviroment)>0 :
+        if len(litsAtribEnviroment) > 0:
 
             for var in litsAtribEnviroment[0].varsforEnvironment:
                 if var[0] == "track":
@@ -44,9 +44,8 @@ class Environment:
                     wind = var[2]
                 elif var[0] == "weather_status":
                     weather_status = var[2]
-            if len(litsAtribEnviroment[0].funciones)>0:
-                self.flag_change_weather=True
-            
+            if len(litsAtribEnviroment[0].funciones) > 0:
+                self.flag_change_weather = True
 
         self.track = track
         self.weather = Weather(temperature, visibility, wind_intensity, humidity, CardinalsPoints(wind),
@@ -65,47 +64,45 @@ class Environment:
         self.weather.change_wind_intensity(wind_intensity)
 
     def change_weather_status(self):
-        if len(self.environments)>self.i+1:
-            
-            self.i+=1
-            if len(self.environments[self.i].funciones==0):
-                self.flag_change_weather=False
-
+        if len(self.environments) > self.i + 1:
+            self.i += 1
+            if len(self.environments[self.i].funciones == 0):
+                self.flag_change_weather = False
             self.environments[self.i].refreshContext(self.weather.__dict__)
             self.environments[self.i].eval(self.environments[self.i].nuevocontext)
             for var in self.environments[self.i].nuevocontext.variables:
-                if var.id=="humidity":
-                    if var.value<=10:     
-                        self.weather.humidity=var.value
+                if var.id == "humidity":
+                    if var.value <= 10:
+                        self.weather.humidity = var.value
                     else:
-                        self.weather.humidity=10
-                if var.id=="visibility":
-                    if var.value<=10:   
-                        self.weather.visibility=var.value
+                        self.weather.humidity = 10
+                if var.id == "visibility":
+                    if var.value <= 10:
+                        self.weather.visibility = var.value
                     else:
-                        self.weather.visibility=10
-                if var.id=="wind":
-                    if var.value<=10:
-                        self.weather.wind=var.value
+                        self.weather.visibility = 10
+                if var.id == "wind":
+                    if var.value <= 10:
+                        self.weather.wind = var.value
                     else:
-                        self.weather.wind=10
-                if var.id=="wind_intensity":
-                    if var.value<=10:
-                        self.weather.wind_intensity=var.value
+                        self.weather.wind = 10
+                if var.id == "wind_intensity":
+                    if var.value <= 10:
+                        self.weather.wind_intensity = var.value
                     else:
-                        self.weather.wind_intensity=10
-                if var.id=="temperature":
-                    if var.value<=10:
-                        self.weather.temperature=var.value
+                        self.weather.wind_intensity = 10
+                if var.id == "temperature":
+                    if var.value <= 10:
+                        self.weather.temperature = var.value
                     else:
-                        self.weather.temperature=10  
-                if var.id=="weather_status":
-                    if var.value<=10:
-                        self.weather.weather_status=var.value
+                        self.weather.temperature = 10
+                if var.id == "weather_status":
+                    if var.value <= 10:
+                        self.weather.weather_status = var.value
                     else:
-                        self.weather.weather_status=10    
+                        self.weather.weather_status = 10
         else:
-            self.flag_change_weather=False
+            self.flag_change_weather = False
             wind = randint(0, 7)
             weather_status_random = normalvariate(1, 0.4)
             weather_status = self.weather.weather_status.value
@@ -113,27 +110,27 @@ class Environment:
                 if weather_status_random < 0.5:
                     weather_status = 0
                     self.weather.change_weather_status(WeatherStatus(weather_status))
-                    self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
+                    self.weather.print("El clima ha cambiado")
                 elif weather_status_random > 1.5:
                     weather_status = 2
                     self.weather.change_weather_status(WeatherStatus(weather_status))
-                    self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
+                    self.weather.print("El clima ha cambiado")
             elif weather_status == 0:
                 if weather_status_random < 0.5:
                     weather_status = 1
                     self.weather.change_weather_status(WeatherStatus(weather_status))
-                    self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
+                    self.weather.print("El clima ha cambiado")
                 elif weather_status_random > 1.5:
                     weather_status = 2
                     self.weather.change_weather_status(WeatherStatus(weather_status))
-                    self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
+                    self.weather.print("El clima ha cambiado")
             else:
                 if weather_status_random < 0.5:
                     weather_status = 0
                     self.weather.change_weather_status(WeatherStatus(weather_status))
-                    self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
+                    self.weather.print("El clima ha cambiado")
                 elif weather_status_random > 1.5:
                     weather_status = 1
                     self.weather.change_weather_status(WeatherStatus(weather_status))
-                    self.weather.print("El clima ha cambiado, ahora tiene una nueva configuracion")
+                    self.weather.print("El clima ha cambiado")
             self.weather.change_wind(CardinalsPoints(wind))
