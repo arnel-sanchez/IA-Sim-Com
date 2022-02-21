@@ -72,36 +72,30 @@ class Environment:
             self.environments[self.i].eval(self.environments[self.i].nuevocontext)
             for variableid in list(self.environments[self.i].nuevocontext.variables.keys()):
                 var=self.environments[self.i].nuevocontext.variables[variableid]
-                if var == "humidity":
+                if var.id == "humidity":
                     if var.value <= 10:
                         self.weather.humidity = var.value
                     else:
                         self.weather.humidity = 10
-                if var == "visibility":
+                if var.id == "visibility":
                     if var.value <= 10:
                         self.weather.visibility = var.value
                     else:
                         self.weather.visibility = 10
-                if var == "wind":
-                    if var.value <= 10:
-                        self.weather.wind = var.value
-                    else:
-                        self.weather.wind = 10
-                if var == "wind_intensity":
+                if var.id == "wind":
+                    self.weather.wind = var.value
+                if var.id == "wind_intensity":
                     if var.value <= 10:
                         self.weather.wind_intensity = var.value
                     else:
                         self.weather.wind_intensity = 10
-                if var == "temperature":
+                if var.id == "temperature":
                     if var.value <= 10:
                         self.weather.temperature = var.value
                     else:
                         self.weather.temperature = 10
-                if var == "weather_status":
-                    if var.value <= 10:
-                        self.weather.weather_status = var.value
-                    else:
-                        self.weather.weather_status = 10
+                if var.id == "weather_status":
+                    self.weather.weather_status = var.value
         else:
             self.flag_change_weather = False
             wind = randint(0, 7)
