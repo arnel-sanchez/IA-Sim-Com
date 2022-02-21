@@ -46,7 +46,6 @@ class Environment:
                     weather_status = var[2]
             if len(litsAtribEnviroment[0].funciones) > 0:
                 self.flag_change_weather = True
-
         self.track = track
         self.weather = Weather(temperature, visibility, wind_intensity, humidity, CardinalsPoints(wind),
                                WeatherStatus(weather_status))

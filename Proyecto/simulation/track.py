@@ -74,8 +74,7 @@ def track_generator():
             max_speed = value_generator(70, max_value)
             while True:
                 orientation = orientation_generator(orientation)
-                if (opposite and abs(start_orientation.value - orientation.value) == 4) or \
-                        (not opposite and not opposite_direction(start_orientation, orientation.value)):
+                if opposite == opposite_direction(start_orientation, orientation):
                     break
             section_type = SectionType.Curve
             pit_length = length / 2
