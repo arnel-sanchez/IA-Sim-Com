@@ -71,32 +71,32 @@ class Environment:
             self.environments[self.i].refreshContext(self.weather.__dict__)
             self.environments[self.i].eval(self.environments[self.i].nuevocontext)
             for var in self.environments[self.i].nuevocontext.variables:
-                if var.id == "humidity":
+                if var == "humidity":
                     if var.value <= 10:
                         self.weather.humidity = var.value
                     else:
                         self.weather.humidity = 10
-                if var.id == "visibility":
+                if var == "visibility":
                     if var.value <= 10:
                         self.weather.visibility = var.value
                     else:
                         self.weather.visibility = 10
-                if var.id == "wind":
+                if var == "wind":
                     if var.value <= 10:
                         self.weather.wind = var.value
                     else:
                         self.weather.wind = 10
-                if var.id == "wind_intensity":
+                if var == "wind_intensity":
                     if var.value <= 10:
                         self.weather.wind_intensity = var.value
                     else:
                         self.weather.wind_intensity = 10
-                if var.id == "temperature":
+                if var == "temperature":
                     if var.value <= 10:
                         self.weather.temperature = var.value
                     else:
                         self.weather.temperature = 10
-                if var.id == "weather_status":
+                if var == "weather_status":
                     if var.value <= 10:
                         self.weather.weather_status = var.value
                     else:
