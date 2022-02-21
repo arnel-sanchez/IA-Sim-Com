@@ -1,7 +1,7 @@
 from enum import Enum
 from random import uniform, normalvariate, randint
 
-from simulation.weather import CardinalsPoints
+from simulation.weather import CardinalsPoints, opposite_direction
 
 
 class SectionType(Enum):
@@ -74,7 +74,8 @@ def track_generator():
             max_speed = value_generator(70, max_value)
             while True:
                 orientation = orientation_generator(orientation)
-                if opposite == (abs(start_orientation.value - orientation.value) == 4):
+                if (opposite and abs(start_orientation.value - orientation.value) == 4) or \
+                        (not opposite and not opposite_direction(start_orientation, orientation.value)):
                     break
             section_type = SectionType.Curve
             pit_length = length / 2

@@ -124,16 +124,16 @@
 \tableofcontents
 \pagebreak
 \section{Motociclismo de Velocidad}
-	El motociclismo de velocidad es una modalidad deportiva del motociclismo disputada en circuitos de carreras pavimentados. Las motocicletas que se usan pueden ser prototipos, es decir desarrolladas específicamente para competición, o derivadas de modelos de serie (en general motocicletas deportivas) con modificaciones para aumentar las prestaciones. En el primer grupo entran las que participan en el Campeonato Mundial de Motociclismo, y en el segundo las Superbikes, las Supersport y las Superstock.
+	El motociclismo de velocidad es una modalidad deportiva del motociclismo disputada en circuitos de carreras pavimentados. Las motocicletas que se usan pueden ser prototipos, es decir, desarrolladas específicamente para competición, o derivadas de modelos de serie (en general motocicletas deportivas), con modificaciones para aumentar las prestaciones. En el primer grupo entran las que participan en el Campeonato Mundial de Motociclismo, y en el segundo las \emph{Superbikes}, las \emph{Supersport} y las \emph{Superstock}.
 	
-	Las motocicletas deben presentar una serie de características como son estabilidad, alta velocidad (tanto en recta como en paso por curva), gran aceleración, gran frenada, fácil maniobrabilidad y bajo peso.
+	Estas deben presentar una serie de características como: estabilidad, alta velocidad (tanto en recta como en paso por curva), gran aceleración, gran frenada, fácil maniobrabilidad y bajo peso.
 	
 	\begin{center}
 		\includegraphics[width = 12cm]{imagen1} 
 	\end{center}	
 	
 \section{Estructura del Paddock}
-	El \textbf{Jefe Técnico} de cada estructura se configura como una personalidad de bastante importancia dentro de un box, pues es quién se encarga de dirigir y controlar que todo funcióne como un excelente engranaje que gane carreras. De igual importancia es la telemetría dentro de un box en MotoGP. Al fin y al cabo, los \textbf{Ingenieros Telemétricos} son las personas que se encargan de analizar, leer y comprender todos los datos proporcionados por el piloto, así como transmitírselos en boca al protagonista. Se trata de una figura de la que depende mucha de la información acerca de cualquier cambio realizado en la moto o asumir los puntos más fuertes de sus pilotos. Los \textbf{Mecánicos} también desempeñan un papel fundamental a la hora de construir la máquina perfecta.
+	 En MotoGP, el \textbf{Jefe Técnico} de cada estructura se configura como una personalidad de bastante importancia dentro de un box, pues es quien se encarga de dirigir y controlar que todo funcione como un excelente engranaje que gane carreras. De igual importancia son los \textbf{Ingenieros Telemétricos}, pues son las personas que se encargan de analizar, leer y comprender todos los datos proporcionados por el piloto, así como transmitírselos al protagonista. Se trata de una figura de la que depende mucha de la información acerca de cualquier cambio realizado en la moto o asumir los puntos más fuertes de sus pilotos. Los \textbf{Mecánicos} también desempeñan un papel fundamental a la hora de construir la máquina perfecta.
 
 \section{Pista}
 	Se utilizará como referencia el circuito de Misano, Misano World Circuit Marco Simoncelli, autódromo localizado en la fracción de Santa Mónica, comuna de Misano Adriático (provincia de Rímini), región de Emilia-Romaña, Italia. 
@@ -141,13 +141,178 @@
 	\begin{center}
 		\includegraphics[width = 12cm]{circuito} 
 	\end{center}
-	
+
 \section{Definición del Problema}
-	Existirán varios pilotos con sus respectivas motos, las cuáles difieren entre sí en cuanto a sus prestaciones. Cada piloto posee su propio método de manejo, siendo algunos más cuidadosos y otros más agresivos. La pista se encuentra influenciada por el accionar del clima, puesto que no es lo mismo el manejo durante un día soleado que bajo la lluvia. Por tanto, el resultado de un piloto se verá condicionado por su moto, su modo de conducción y el clima.\par
-	Sin embargo, durante la carrera las condiciones pueden variar y es necesario realizar los ajustes necesarios para que el piloto mejore su rendimiento, los cuales se harán al pasar de una sección a otra de la pista o al finalizar cada vuelta. Esto podrá hacerse utilizando un lenguaje imperativo, mediante el uso de palabras claves para que el piloto no necesite analizar situaciones complejas y pueda concentrarse en pilotar de la forma mas eficiente posible.\par
+	Se tienen varios pilotos con sus respectivas motos, las cuáles difieren entre sí en cuanto a sus prestaciones. Cada uno posee su propio método de manejo, siendo algunos más cuidadosos y otros más agresivos. La pista se encuentra influenciada por el accionar del clima, puesto que no es lo mismo el manejo durante un día soleado que bajo la lluvia. Por tanto, el resultado de un piloto se verá condicionado por la combinación de su moto, su modo de conducción, la pista y el clima.\par
+	Sin embargo, durante la carrera las condiciones pueden variar y es necesario realizar los ajustes necesarios para que el piloto mejore su rendimiento, los cuales se harán al pasar de una sección a otra de la pista o al finalizar cada vuelta. Esto podrá hacerse utilizando un lenguaje imperativo, mediante el uso de palabras claves, para que el piloto no necesite analizar situaciones complejas y pueda concentrarse en pilotar de la forma más eficiente posible.\par
 	De esta manera, la simulación de la carrera será dinámica, puesto que entre las vueltas podrán existir variaciones provocadas por los ajustes propuestos por el Jefe Técnico, el cuál podrá ser una persona o una IA.\par
+
+
+\newpage
+			
+\section{Simulación {\footnotesize \cite{conferenciasS}\cite{garcia}}}
+	Se desea simular una carrera de MotoGP. Con tal fin, se utiliza una estructura agente conformada por un piloto y una moto, y una estructura ambiente formada por el clima y la pista. Se trata de un sistema multiagentes en el que dos de estos pueden interactuar entre sí, ya sea en modo ofensivo o en modo defensivo. Las variables de las distintas entidades se manipulan utilizando una escala del 1 al 10, donde sus valores se clasifican como: bajos (menores que 4), medios (entre 4 y 6), y altos (mayores que 6); excepto en los casos en los que se utilizan estructuras \emph{Enums} para definir los datos.
 	
-\section{Definición del Lenguaje}\cite{conferenciasC}\cite{ullman}
+	\subsection{Ambiente}
+		El ambiente es simulado utilizando variables aleatorias con distribución normal, que responden al estado del clima, la humedad, la temperatura, la visibilidad y la dirección e intensidad del viento. Del mismo modo, la pista contiene su nombre, la longitud que tiene una vuelta completa y una lista de secciones, donde cada sección está formada por el nombre, la longitud de esta, la velocidad máxima posible de alcanzar, hacia qué punto cardinal está orientada, el tipo de sección que es, si tiene un equivalente en boxes y en caso de tenerlo su longitud.
+		
+		Una función probabilística es la encargada de lanzar un evento de cambio de clima, generando nuevo estado de este. Además, cada vez que termina una vuelta de la carrera se varían los parámetros del ambiente.
+
+		El circuito de Misano es el escogido por defecto para la competición. Sin embargo, es posible reestructurar la pista para crear una experiencia diferente o, incluso, generar una nueva pista de manera automática aleatoriamente. Mas debemos asegurarnos de que estas nuevas creaciones sean estructuras válidas.
+
+		El método de reestructuración intercambia las curvas o rectas con otras secciones de su mismo tipo y su misma orientación cardinal. De este modo, se asegura de que la nueva estructura solo varíe el orden y no se pierdan las propiedades que la hacen cerrada.
+
+		Por otro lado, generar una nueva pista de manera completamente aleatoria y automática es una problemática topológica de un mayor nivel de complejidad. Como solución factible se genera una línea poligonal que parte de un punto y se dirige en sentido opuesto variando su orientación. Dicha línea es abierta, pero su punto final está orientado cardinalmente en sentido inverso al punto inicial. Luego, tomando una copia exacta de esta y rotándola $180^0$, se puede crear una  figura poligonal cerrada con simetría central, la cual responde a las condiciones necesarias de una pista.
+
+	\subsection{Agentes}
+		Un agente está compuesto por: una moto, la cual posee la marca, el modelo, la velocidad máxima alcanzable, el peso, el tipo de neumáticos, los frenos, la rigidez del chasis, la probabilidad de romperse, y la probabilidad de que exploten los neumáticos por desgaste; además, por un piloto, conformado por el nombre, por la habilidad de pasar por la curva y por la recta, la probabilidad de caerse de la moto, la independencia, la agresividad y la pericia. 
+
+		Los agentes parten con un ranking desde el inicio, asumiendo que este se alcanzó el día anterior en las clasificaciones. El inicio de la carrera se hace desde la primera sección de la pista, y tomando un piloto a la vez se calculan sus interacciones, haciendo que avance a la próxima sección. Para simular la carrera, se utiliza una cola con prioridad de manera que siempre se analice al piloto que menor tiempo tiene, lo cual permite darle el turno al más rápido primero, de modo que puede haber varios agentes en diferentes secciones. A la hora de pasar por meta, se muestra el ranking según van completando las vueltas, hasta que se completa la carrera.
+
+		 Las acciones que el agente puede ejecutar en un instante determinado dependen de las variables del ambiente, las del propio agente, y las de sus rivales inmediatos hacia adelante y hacia atrás. Analizando las consecuencias de la acción escogida, se considera si fue correcta y sobrepasó la sección o no, en caso contrario. De efectuar ataque o defensa, se provoca una interacción con otros agentes. Si un ataque es satisfactorio, se intercambian las posiciones en el ranking; sino el tiempo de la carrera sufre una penalización. Existen variables probabilísticas que calculan si el piloto comete un error y debe abandonar la carrera o provoca un accidente que saque de la carrera a otro piloto, o a ambos.
+	
+	\subsection{Interacciones entre los parámetros}
+		Los parámetros de las distintas entidades pueden interactuar entre ellos, lo que trae determinadas consecuencias, algunas positivas y otras negativas. Dado que dichas interacciones se producen en mayor o menor medida, luego de varias pruebas se obtuvo una escala que se puede considerar funcional, puesto que se acerca a los resultados de una carrera real. Para lograr un mejor realismo, se hace una primera variación de parámetros para adaptar a las entidades a las condiciones climatológicas del momento; luego, en cada cambio de vuelta se modifica el clima y se reajustan los parámetros de acuerdo las nuevas condiciones climatológicas.
+
+
+\newpage
+
+\section{Inteligencia Artificial  {\footnotesize \cite{conferenciasIA}\cite{russell}}}
+	Como nuestro proyecto se basa en simular una carrera de MotoGP donde hay $n$ corredores, aquellos que no hayan sido diseñados mediante DSL son controlados por IA, el comportamiento de la cual varía a partir de las condiciones del ambiente que lo rodea, las características de su moto y la experiencia del propio piloto.
+	
+	Para la implementación de la IA se utilizan Sistemas Expertos generados mediante el uso de un procedimiento declarativo/imperativo, apoyándonos en la biblioteca PyKE\cite{pyke} de Python.
+	
+	Se emplea como base de conocimiento el conjunto de variables que forman parte de la simulación y que influyen en su desempeño, como:
+	\begin{itemize}
+		\item las características de la moto (velocidad, frenos, chasis)
+		\item el estado del clima (soleado, nublado o lluvioso)
+		\item la intensidad y el sentido del viento
+		\item la humedad y la temperatura del ambiente
+		\item la sección de pista que se está corriendo (curva o recta)
+		\item la velocidad máxima alcanzable en la sección
+		\item las habilidades del piloto (en rectas y curvas)
+		\item entre otros
+	\end{itemize}
+	
+	\subsection{Configuración de la moto}
+	La primera heurística es la encargada de escoger la mejor configuración de la moto. De este modo, atendiendo a las condiciones iniciales de la carrera (que serán los hechos), la IA podrá tomar decisiones atendiendo a las reglas definidas. Al ser declarativas, las determinaciones tomadas se obtendrán mediante match hechos-reglas.
+	Los hechos del sistema se presentan mediante una lógica difusa y son procesados para ser analizados:
+	\begin{lstlisting}[language={PySharp}, label={Script}]
+		rainy(True)
+		humidity(False)
+		windy(False)
+		wind_direction(2)
+	\end{lstlisting}
+	
+	Las reglas del sistema se formulan del modo:
+	\begin{lstlisting}[language={PySharp}, label={Script}]
+		soft
+		use select_tires(0)
+		when
+		moto_facts.windy(True)
+		moto_facts.wind_direction(3)
+		
+		medium_1
+		use select_tires(1)
+		when
+		moto_facts.windy(False)
+		
+		medium_2
+		use select_tires(1)
+		when
+		moto_facts.windy(True)
+		moto_facts.wind_direction(2)
+		
+		hard
+		use select_tires(2)
+		when
+		moto_facts.windy(True)
+		moto_facts.wind_direction(1)
+	\end{lstlisting}
+	
+	Luego, consultando los resultados obtenidos por las librerías de PyKE\cite{pyke}, mediante Python de manera imperativa será posible la interacción de la estructura antes expuesta con la simulación de la carrera.
+	Atendiendo al ejemplo mostrado de selección de gomas, el sistema declarativo de PyKE\cite{pyke} devuelve el cálculo de una ecuación:
+	$$valor\_tipo\_goma + valor\_goma = selección$$
+	
+	El resultado obtenido se utiliza para generar el tipo de las gomas seleccionadas, mediante el uso de un Enum en Python:
+	\begin{lstlisting}[language={Python}, label={Script}]
+		class Tires(Enum):
+		Slick_Soft = 0
+		Slick_Medium = 1
+		Slick_Hard = 2
+		Rain_Soft = 3
+		Rain_Medium = 4
+	\end{lstlisting}
+	
+	\subsection{Selección de acciones}
+	Una segunda heurística será la encargada de escoger la acción que debe ejecutar el piloto, atendiendo a las condiciones de la carrera:
+	\begin{itemize}
+		\item aumentar/disminuir/mantener velocidad
+		\item doblar
+		\item ir a los pits
+		\item combinaciones de todas las anteriores
+	\end{itemize}
+	(Ejemplo: aumentar velocidad + doblar + ir a los pits)
+	
+	En este caso, se utiliza el mismo método expuesto en la configuración de la moto: declarativo/imperativo con el uso de PyKE.
+	Se analizan los parámetros de velocidad, sección de la pista y estado del clima:
+	\begin{lstlisting}[language={PySharp}, label={Script}]
+		speed(3)
+		curve(False)
+		tires(False)
+		rainy(True)
+		humidity(False)
+	\end{lstlisting}
+	
+	Y se decide tomándolos en cuenta:
+	\begin{lstlisting}[language={PySharp}, label={Script}]
+		speed_up
+		use select_action(0)
+		when
+		action_facts.speed(3)
+		
+		keep_speed
+		use select_action(1)
+		when
+		action_facts.speed(2)
+		
+		brake
+		use select_action(2)
+		when
+		action_facts.speed(1)
+		
+	\end{lstlisting}
+	
+	Asimismo, se calcula mediante una ecuación el valor de la decisión tomada:
+	$acción\_velocidad + doblar + pits = acción$
+	
+	\begin{lstlisting}[language={Python}, label={Script}]
+		class AgentActions(Enum):
+		SpeedUp = 0
+		KeepSpeed = 1
+		Brake = 2
+		SpeedUp_Turn = 3
+		KeepSpeed_Turn = 4
+		Brake_Turn = 5
+		SpeedUp_Pits = 6
+		KeepSpeed_Pits = 7
+		Brake_Pits = 8
+		SpeedUp_Turn_Pits = 9
+		KeepSpeed_Turn_Pits = 10
+		Brake_Turn_Pits = 11
+	\end{lstlisting}
+	
+	\subsection{Selección de la aceleración}
+	Una tercera heurística es la encargada de escoger la mejor aceleración en una sección dada de la pista, con el objetivo de alcanzar la mayor velocidad posible sin causar un accidente que obligue a abandonar la carrera. 
+	Primeramente, se calcula la aceleración máxima alcanzable, tomando en cuenta que no se exceda la velocidad máxima admitida por la moto y la sección que se recorre.
+	$a_{max}=(V_{max}^{2}-V^{2})/(2*X)$
+	Luego, se establece un sistema de penalizaciones que disminuyen dicha aceleración si no se poseen las condiciones óptimas del ambiente (clima, humedad, temperatura) y del piloto (destreza en curvas y rectas).
+	El resultado obtenido es incorporado a la simulación para continuar la carrera. De su valor depende mucho si el piloto obtiene un buen tiempo o sufre un accidente que lo saque de la competencia.
+
+
+\newpage
+
+\section{Definición del Lenguaje {\footnotesize \cite{conferenciasC}\cite{ullman}}}
 	\subsection{Introducción a PySharp (P\#)}
 	\subsubsection{Hello world!}
 	
@@ -500,166 +665,14 @@
 
         Volviendo al AST, hacemos una segunda pasada, en esta pasada verificamos los tipos,en los nodos en que hay expresiones inducimos el tipo. Decir que una expresión para nosotros puede ser una expresión aritmética, un bool, o un string, podemos incluir variables y llamado a función en una expresión. La tercera pasada la hacemos para evaluar nuestros nodos. Si encontramos un nodo Def\_Fun no lo evaluamos, una definición de función se evalúa cuando se llama a la función.
 
-        Cuando se crea un tipo se importan las variables que puede tener ese tipo en la simulación y las que podría utilizar. Estas variables están predefinidas, por lo tanto se pueden redefinir, pero una definición de otra variable con un nombre igual al de alguna de estas variables predefinidas arrojaría un error, ya que existe una variable en ese contexto con ese nombre dentro del tipo. Dentro de cada tipo se pueden definir las funciones que el jefe técnico decida pero hay algunas funciones con nombres claves como son la función "select\_configuration" en un tipo Bike , las funciones "select\_acceleration" y "select\_action" en un tipo rider y la función probability_change_weather en un tipo environment. El objetivo de select\_configuration es seleccionar el tipo de gomas dadas las características de la moto y por tanto modificar la variable "tires" del contexto del tipo, la cual utilizará el simulador, esta función debe ser void, "select\_action" debe retornar un valor entero y es la encargada de elegir que acción realizara el piloto. La función "select\_acceleration" debe ser void y su objetivo es actualizar la aceleración de un agente. Las variables dentro de los tipos se actualizan justo antes de que la simulación utilice las funciones claves, para eso cada tipo tiene un método refreshContext que es quien se encarga de actualizar las variabes. Las variables que se pueden utilizar dentro de un tipo Bike son los atributos de dicha moto y las características del clima, dentro del tipo Rider podemos utilizar las características del piloto, algunas características del agente como son speed, acceleration
+        Cuando se crea un tipo se importan las variables que puede tener ese tipo en la simulación y las que podría utilizar. Estas variables están predefinidas, por lo tanto se pueden redefinir, pero una definición de otra variable con un nombre igual al de alguna de estas variables predefinidas arrojaría un error, ya que existe una variable en ese contexto con ese nombre dentro del tipo. Dentro de cada tipo se pueden definir las funciones que el jefe técnico decida pero hay algunas funciones con nombres claves como son la función "select\_configuration" en un tipo Bike , las funciones "select\_acceleration" y "select\_action" en un tipo rider y la función probability\_change\_weather en un tipo environment. El objetivo de select\_configuration es seleccionar el tipo de gomas dadas las características de la moto y por tanto modificar la variable "tires" del contexto del tipo, la cual utilizará el simulador, esta función debe ser void, "select\_action" debe retornar un valor entero y es la encargada de elegir que acción realizara el piloto. La función "select\_acceleration" debe ser void y su objetivo es actualizar la aceleración de un agente. Las variables dentro de los tipos se actualizan justo antes de que la simulación utilice las funciones claves, para eso cada tipo tiene un método refreshContext que es quien se encarga de actualizar las variabes. Las variables que se pueden utilizar dentro de un tipo Bike son los atributos de dicha moto y las características del clima, dentro del tipo Rider podemos utilizar las características del piloto, algunas características del agente como son speed, acceleration
         y time\_lap, los atributos del clima y de la sección en la que esta el piloto en ese momento.Dentro de un tipo environment podemos utilizar solo las variables propias del clima y la variable track que es de tipo string y se utiliza si dicho tipo environment es a partir del cual se crea el clima al principio de la simulación , la variable track sirve para crear la pista de diferentes formas.      
 
 
 	\subsection{Conexión Simulación - Compilación}
 		El resultado del DSL si se hacen los 3 recorridos del AST sin error, son 3 listas, la primera lista con todos los pilotos que fueron
         creados, la segunda con todas las motos y la tercera con diferentes ambientes .A partir de estas listas se crean los pilotos, las motos y el ambiente en la simulación, puede definirse un ambiente o no en el DSL. 
-        Los pilotos que no fueron creados en el DSL ejecutan sus métodos normalmente. En el caso de un piloto que fue creado desde el DSL se ejecuta la función definida en el DSL ,antes de ejecutarla se actualiza el contexto de la función para que esta pueda apoyarse en la situación actual. Luego de la ejecución de la función dependiendo que función se ejecutó se importa a la simulación la variable que se quiere desde el contexto del método.    
-			
-\section{Simulación}\cite{conferenciasS}\cite{garcia}
-	Nos propusimos simular una carrera de MotoGP, para comenzar, decidimos implentar una estructura agente que está conformado por un piloto y por una moto y una estructura ambiente que está formado por el clima y la pista. Implementamos un sistema multiagente en el que 2 agentes puenden interactuar entre sí, ya sea en modo ofensivo o en modo defensivo. Utilizando una escala del 0 al 10, donde si es menor que 4 entonces la variable es baja, si es de 4 a 6 la variable es media y si es mayor que 6 entonces es alta manipulamos las variables de las distintas entidades, excepto en los casos que se utilizan enums que ya queda definido que significa cada valor.
-	
-	\subsection{Agentes}
-		Un agente está compuesto por una moto, la cuál tiene la marca, el modelo, la velocidad máxima alcanzable, el peso, el tipo de neumático, los frenos, la rigidez del chasis, la probabilidad de romper la moto, y la probabilidad de que exploten los neumáticos por desgaste, además tenemos a los pilotos formados por el nombre, por la habilidad de pasar por la curva y por la recta, respectivamente, la probabilidad de caerse de la moto, la independencia, la agresividad y la pericia.
-		
-		Los agentes parten con un ranking desde el inicio, asumimos que ese ranking se alcanzó el día anterior en las clasificaciones y comenzamos a simular la carrera, se utiliza un cola con prioridad de manera que siempre se analice el que menos tiempo tiene, eso nos permite avanzar de secciones siempre al más rápido primero, ahí podemos tener varios agentes en diferentes secciones. A la hora de pasar por meta, se va pasando 1 a 1, y se van mostrando en el ranking según van completando su vuelta, así hasta que se completa la carrera. Se definieron un grupo de acciones que el agente puede ejecutar en un instante determinado, tomando las variables del ambiente, las del propio agente, y las de sus rivales más próximos por delante y por detrás se analizan y se escoge una acción específica a realizar, tomando esa acción y las variables, se escoge una aceleración que será la máxima que el piloto alcanzará en la sección, luego se le analiza el estado y se considera si sobrepasó la sección o no y si se efectúa ataque o defensa. 
-		
-		Un agente sólo puede atacar a su agente más próximo con un margen de 1 segundo en una sección tipo recta y de 2 segundos en una sección tipo curva, este ataque puede salir satisfactorio y se intercambian las posiciones en el ranking, en caso contrario [Samuel habla aquí de las probabilidades de los ataques] se puede caer uno, o el otro o los 2. Algo similar sucede con la defensa de una agente sobre otro que está atacando.
-	
-	\subsection{Ambiente}
-		El ambiente es simulado utilizando variables aleatorias con distribución normal utilizando la escala del 0 al 10 tales como, la humedad, la temperatura, la visibilidad y la intensidad del viento, además de eso tenemos el estado del clima y el viento que se simulan con variables aleatorias con distrbución normal también pero tienen una escala diferente ya que son enums, y cada valor representa una  opción diferente a otras. Además tenemos la pista, que contiene su nombre, la longitud que tiene una vuelta completa y una lista de secciones, donde cada sección está formada por el nombre de la sección, la longitud de esta, la velocidad máxima posible de alcanzar, hacia que punto cardinal está orientada, el tipo de sección que es, si tiene un equivalente en los pits y en caso de tenerlo su longitud.
-		
-		Tenemos una función probabilística que lanza un evento de cambio de clima, y se genera un nuevo estado del clima, además cada vez que termina una vuelta se varían los parámetros del clima, de acuerdo al estado actual.
-		
-		[Samuel Explica el generador de pistas]
-	
-	\subsection{Interacciones entre los parámetros}
-		Los parámetros de las distintas entidades pueden interactuar entre ellos, lo que trae determinadas consecuencias, algunas positivas y otras negativas. Como las interacciones entre estos se producen en mayor o menos medida y luego de varias pruebas llegamos a una escala que consideramos funcional. Para lograr un mejor realismo hacemos una primera variación de parámetros que sería para adaptar los parámetros de las entidades a las condiciones climatológicas del momento, luego, en cada cambio de vuelta se modifica el clima y se se reajustan los parámetros de acuerdo las nuevas condiciones climatológicas.
-
-\section{Inteligencia Artificial}\cite{conferenciasIA}\cite{russell}
-	Como nuestro proyecto se basa en simular una carrera de MotoGP donde hay $n$ corredores, aquellos que no hayan sido diseñados mediante DSL son controlados por IA, el comportamiento de la cual varía a partir de las condiciones del ambiente que lo rodea, las características de su moto y la experiencia del propio piloto.
-	
-	Para la implementación de la IA se utilizan Sistemas Expertos generados mediante el uso de un procedimiento declarativo/imperativo, apoyándonos en la biblioteca PyKE\cite{pyke} de Python.
-	
-	Se emplea como base de conocimiento el conjunto de variables que forman parte de la simulación y que influyen en su desempeño, como:
-	\begin{itemize}
-		\item las características de la moto (velocidad, frenos, chasis)
-		\item el estado del clima (soleado, nublado o lluvioso)
-		\item la intensidad y el sentido del viento
-		\item la humedad y la temperatura del ambiente
-		\item la sección de pista que se está corriendo (curva o recta)
-		\item la velocidad máxima alcanzable en la sección
-		\item las habilidades del piloto (en rectas y curvas)
-		\item entre otros
-	\end{itemize}
-	
-	\subsection{Configuración de la moto}
-	La primera heurística es la encargada de escoger la mejor configuración de la moto. De este modo, atendiendo a las condiciones iniciales de la carrera (que serán los hechos), la IA podrá tomar decisiones atendiendo a las reglas definidas. Al ser declarativas, las determinaciones tomadas se obtendrán mediante match hechos-reglas.
-	Los hechos del sistema se presentan mediante una lógica difusa y son procesados para ser analizados:
-	\begin{lstlisting}[language={PySharp}, label={Script}]
-		rainy(True)
-		humidity(False)
-		windy(False)
-		wind_direction(2)
-	\end{lstlisting}
-	
-	Las reglas del sistema se formulan del modo:
-	\begin{lstlisting}[language={PySharp}, label={Script}]
-		soft
-		use select_tires(0)
-		when
-		moto_facts.windy(True)
-		moto_facts.wind_direction(3)
-		
-		medium_1
-		use select_tires(1)
-		when
-		moto_facts.windy(False)
-		
-		medium_2
-		use select_tires(1)
-		when
-		moto_facts.windy(True)
-		moto_facts.wind_direction(2)
-		
-		hard
-		use select_tires(2)
-		when
-		moto_facts.windy(True)
-		moto_facts.wind_direction(1)
-	\end{lstlisting}
-	
-	Luego, consultando los resultados obtenidos por las librerías de PyKE\cite{pyke}, mediante Python de manera imperativa será posible la interacción de la estructura antes expuesta con la simulación de la carrera.
-	Atendiendo al ejemplo mostrado de selección de gomas, el sistema declarativo de PyKE\cite{pyke} devuelve el cálculo de una ecuación:
-	$$valor\_tipo\_goma + valor\_goma = selección$$
-	
-	El resultado obtenido se utiliza para generar el tipo de las gomas seleccionadas, mediante el uso de un Enum en Python:
-	\begin{lstlisting}[language={Python}, label={Script}]
-		class Tires(Enum):
-		Slick_Soft = 0
-		Slick_Medium = 1
-		Slick_Hard = 2
-		Rain_Soft = 3
-		Rain_Medium = 4
-	\end{lstlisting}
-	
-	\subsection{Selección de acciones}
-	Una segunda heurística será la encargada de escoger la acción que debe ejecutar el piloto, atendiendo a las condiciones de la carrera:
-	\begin{itemize}
-		\item aumentar/disminuir/mantener velocidad
-		\item doblar
-		\item ir a los pits
-		\item combinaciones de todas las anteriores
-	\end{itemize}
-	(Ejemplo: aumentar velocidad + doblar + ir a los pits)
-	
-	En este caso, se utiliza el mismo método expuesto en la configuración de la moto: declarativo/imperativo con el uso de PyKE.
-	Se analizan los parámetros de velocidad, sección de la pista y estado del clima:
-	\begin{lstlisting}[language={PySharp}, label={Script}]
-		speed(3)
-		curve(False)
-		tires(False)
-		rainy(True)
-		humidity(False)
-	\end{lstlisting}
-	
-	Y se decide tomándolos en cuenta:
-	\begin{lstlisting}[language={PySharp}, label={Script}]
-		speed_up
-		use select_action(0)
-		when
-		action_facts.speed(3)
-		
-		keep_speed
-		use select_action(1)
-		when
-		action_facts.speed(2)
-		
-		brake
-		use select_action(2)
-		when
-		action_facts.speed(1)
-		
-	\end{lstlisting}
-	
-	Asimismo, se calcula mediante una ecuación el valor de la decisión tomada:
-	$acción\_velocidad + doblar + pits = acción$
-	
-	\begin{lstlisting}[language={Python}, label={Script}]
-		class AgentActions(Enum):
-		SpeedUp = 0
-		KeepSpeed = 1
-		Brake = 2
-		SpeedUp_Turn = 3
-		KeepSpeed_Turn = 4
-		Brake_Turn = 5
-		SpeedUp_Pits = 6
-		KeepSpeed_Pits = 7
-		Brake_Pits = 8
-		SpeedUp_Turn_Pits = 9
-		KeepSpeed_Turn_Pits = 10
-		Brake_Turn_Pits = 11
-	\end{lstlisting}
-	
-	\subsection{Selección de la aceleración}
-	Una tercera heurística es la encargada de escoger la mejor aceleración en una sección dada de la pista, con el objetivo de alcanzar la mayor velocidad posible sin causar un accidente que obligue a abandonar la carrera. 
-	Primeramente, se calcula la aceleración máxima alcanzable, tomando en cuenta que no se exceda la velocidad máxima admitida por la moto y la sección que se recorre.
-	$a_{max}=(V_{max}^{2}-V^{2})/(2*X)$
-	Luego, se establece un sistema de penalizaciones que disminuyen dicha aceleración si no se poseen las condiciones óptimas del ambiente (clima, humedad, temperatura) y del piloto (destreza en curvas y rectas).
-	El resultado obtenido es incorporado a la simulación para continuar la carrera. De su valor depende mucho si el piloto obtiene un buen tiempo o sufre un accidente que lo saque de la competencia.
+        Los pilotos que no fueron creados en el DSL ejecutan sus métodos normalmente. En el caso de un piloto que fue creado desde el DSL se ejecuta la función definida en el DSL ,antes de ejecutarla se actualiza el contexto de la función para que esta pueda apoyarse en la situación actual. Luego de la ejecución de la función dependiendo que función se ejecutó se importa a la simulación la variable que se quiere desde el contexto del método.
 	
 \pagebreak
 \bibliographystyle{unsrt}

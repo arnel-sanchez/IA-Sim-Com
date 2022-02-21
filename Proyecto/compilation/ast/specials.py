@@ -266,7 +266,8 @@ class BikeNode(TypeSpecial):
 
         self.varsforBikes = [["brand", VariableType.STRING, "Ducati"], ["max_speed", VariableType.DOUBLE, 362.4],
                              ["weight", VariableType.INT, 157], ["tires", VariableType.INT, 3],
-                             ["brakes", VariableType.INT, 5], ["chassis_stiffness", VariableType.INT, 8],["model", VariableType.STRING, "RS-GP 2021"]]
+                             ["brakes", VariableType.INT, 5], ["chassis_stiffness", VariableType.INT, 8],
+                             ["model", VariableType.STRING, "RS-GP 2021"]]
         self.functionsOfBikes = ["select_configuration"]
 
     def refreshContext(self, dict_bike, dict_weather):
@@ -332,8 +333,8 @@ class EnvironmentNode(TypeSpecial):
                                    ["visibility", VariableType.INT, 5], ["humidity", VariableType.INT, 5],
                                    ["wind_intensity", VariableType.INT, 5]]
 
-    def refreshContext(self,dict_weather):
-        
+    def refreshContext(self, dict_weather):
+
         keys_dict_weather = list(dict_weather.keys())
         for key in keys_dict_weather:
             if list(self.nuevocontext.variables.keys()).count(key) == 1:

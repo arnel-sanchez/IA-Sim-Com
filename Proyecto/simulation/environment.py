@@ -71,7 +71,7 @@ class Environment:
             self.environments[self.i].refreshContext(self.weather.__dict__)
             self.environments[self.i].eval(self.environments[self.i].nuevocontext)
             for variableid in list(self.environments[self.i].nuevocontext.variables.keys()):
-                var=self.environments[self.i].nuevocontext.variables[variableid]
+                var = self.environments[self.i].nuevocontext.variables[variableid]
                 if var.id == "humidity":
                     if var.value <= 10:
                         self.weather.humidity = var.value

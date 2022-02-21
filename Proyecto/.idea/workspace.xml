@@ -5,9 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f6df1ae7-b934-4f30-a0fa-9569583274a1" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/compilation/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/compilation/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/agent.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/simulator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Informe/Informe.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../Informe/Informe.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Informe/Informe.tex" beforeDir="false" afterPath="$PROJECT_DIR$/../Informe/Informe.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Informe/_static/bib.bib" beforeDir="false" afterPath="$PROJECT_DIR$/../Informe/_static/bib.bib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/environment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/track.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/track.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
