@@ -86,7 +86,7 @@ def edit_action(race, agent):
     if speed > max_speed:
         speed_cmp = "Higher"
     elif speed < max_speed:
-        speed_cmp = "Smaller"
+        speed_cmp = "Lower"
     else:
         speed_cmp = "Same"
     section_type = agent.section.type.name

@@ -300,7 +300,7 @@ def populate(engine):
                   speed_up, None,
                   (pattern.pattern_literal('SpeedUp'),),
                   (),
-                  (pattern.pattern_literal("Smaller"),))
+                  (pattern.pattern_literal("Lower"),))
   
   bc_rule.bc_rule('keep_speed', This_rule_base, 'select_action',
                   keep_speed, None,

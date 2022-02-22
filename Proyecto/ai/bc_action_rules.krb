@@ -4,7 +4,7 @@
 speed_up
     use select_action(SpeedUp)
     when
-        action_facts.speed("Smaller")
+        action_facts.speed("Lower")
 
 
 keep_speed
