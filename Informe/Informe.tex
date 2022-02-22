@@ -195,9 +195,13 @@
 
 		El método de reestructuración intercambia las curvas o rectas con otras secciones de su mismo tipo y su misma orientación cardinal. De este modo, se asegura de que solo se varíe el orden de estas y no se pierdan las propiedades que hacen al circuito cerrado.
 
-		Por otro lado, generar una nueva pista de manera aleatoria automáticamente es una problemática topológica de un mayor nivel de complejidad. Como solución factible simplificada, se genera una línea poligonal de secciones, que parte de un punto y se expande variando su orientación. Cuando su longitud excede el mínimo necesario, se redirige la orientación de las nuevas secciones en sentido cardinal opuesto al inicial.
+		Por otro lado, generar una nueva pista de manera aleatoria automáticamente es una problemática topológica de un mayor nivel de complejidad. Como solución factible simplificada, se genera una línea poligonal de secciones, que parte de un punto y se expande variando su orientación. 
 
-		Dicha línea es abierta, pero su punto final está orientado en sentido inverso al punto inicial. Luego, tomando una copia exacta de esta y rotándola $180^0$, se puede crear una figura poligonal cerrada con simetría central, la cual responde a las condiciones necesarias de una pista.
+		La longitud de cada sección es generada utilizando una variable aleatoria, donde los mayores valores tienen una menor probabilidad. Luego, atentiendo a dicha longitud, la velocidad máxima alcanzable se calcula por rangos, agregando incertidumbre mediante probabilística con distribución uniforme.
+
+		Cuando la longitud total excede el mínimo necesario, se redirige la orientación de las nuevas secciones en sentido cardinal opuesto al inicial. Esta línea es abierta, pero su punto final está orientado en sentido inverso al punto inicial. Luego, tomando una copia exacta de esta y rotándola $180^0$, se puede crear una figura poligonal cerrada con simetría central, la cual responde a las condiciones necesarias de una pista.
+
+		
 
 		\subsubsection{Agentes}
 		Un agente está compuesto por un piloto y su moto. \\
@@ -252,7 +256,7 @@
 
 		Sin embargo, es necesario decidir la forma más acertada de otorgarle el turno al próximo piloto. Para ello se utiliza una cola con prioridad, donde los agentes están ordenados por sus tiempos en la carrera. Esto se debe a que, al pasar su turno, el tiempo que poseen es el que demorarán en llegar a la nueva sección. Por tanto, esto permite darle el turno al más rápido primero, pues se supone que debe avanzar más veloz que los que demoran más.
 
-		Dicho sistema (cola con prioridad por tiempo) permite tener varios agentes en diferentes secciones, corriendo a distintas velocidades. Cada vez que un piloto tiene su turno y logra avanzar, se actualizan las variables que lo componen. En caso de que no esté solo en su sección y su tiempo teórico sea menor que quien le antecede, se reajustan las posiciones utilizando ataque/defensa. Al pasar por la meta, se muestra el \emph{ranking} según van completando las vueltas, hasta que se completa la carrera.
+		Dicho sistema (cola con prioridad por tiempo) permite tener varios agentes en diferentes secciones, corriendo a distintas velocidades. Cada vez que un piloto tiene su turno y logra continuar, se actualizan las variables que lo componen. En caso de que no esté solo en su sección y su tiempo teórico sea menor que quien le antecede, se reajustan las posiciones utilizando ataque/defensa. Al pasar por la meta, se muestra el \emph{ranking} según van completando las vueltas, hasta que se completa la carrera.
 
 		Los parámetros de las distintas entidades pueden interactuar entre ellos, lo que trae determinadas consecuencias, algunas positivas y otras negativas. Dado que dichas interacciones se producen en mayor o menor medida, después de varias pruebas se obtuvo una escala que se puede considerar funcional, puesto que se acerca a los resultados de una carrera verdadera. 
 
