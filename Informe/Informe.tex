@@ -398,15 +398,54 @@
 		    Brake_Turn_Pits_Defend = 35
 		\end{lstlisting}
 
-		[Explicar como se toman las decisiones (valores de las variables)]
+		Las condiciones del ambiente y del agente en cuestión determinan sus acciones:
+		\begin{itemize}
+			\item Debe doblar en caso de que la sección sea curva
+			\item Debe acelerar si su velocidad no supera a la máxima permitida (sin sufrir un accidente), o viceversa
+			\item Debe ir a boxes en caso de que el clima le obligue a cambiar los neumáticos
+			\item Puede atacar o defender en caso de que su rival más cercano esté lo suficientemente cerca (menos de $1$ segundo de distancia), o en caso de reacción
+		\end{itemize}
 
+		Sin embargo, en función inversa a la pericia del piloto, existe una probabilidad de que este se equivoque y deba abandonar la carrera.
+		
 	
 		\subsubsection{Selección de la aceleración}
-		Una tercera heurística es la encargada de escoger la mejor aceleración en una sección dada de la pista, con el objetivo de alcanzar la mayor velocidad posible sin causar un accidente que obligue a abandonar la carrera. 
-		Primeramente, se calcula la aceleración máxima alcanzable, tomando en cuenta que no se exceda la velocidad máxima admitida por la moto y la sección que se recorre.
-		$a_{max}=(V_{max}^{2}-V^{2})/(2*X)$
-		Luego, se establece un sistema de penalizaciones que disminuyen dicha aceleración si no se poseen las condiciones óptimas del ambiente (clima, humedad, temperatura) y del piloto (destreza en curvas y rectas).
-		El resultado obtenido es incorporado a la simulación para continuar la carrera. De su valor depende mucho si el piloto obtiene un buen tiempo o sufre un accidente que lo saque de la competencia.
+		Una heurística, apoyada en fórmulas de Física y probabilidades, es la encargada de escoger la mejor aceleración en una sección dada de la pista, con el objetivo de alcanzar la mayor velocidad posible sin accidentarse. 
+
+		Primeramente, se calcula la aceleración máxima alcanzable:
+		\begin{equation}\label{eq:a_max}
+		a_{max}=\frac{v_{max}^{2} - v^{2}}{2 \cdot x}
+		\end{equation}
+
+		Donde $v$ es la velocidad actual del piloto, $v_{max}$ es el mínimo entre la velocidad máxima alcanzable por la moto y en la sección, y $x$ es la longitud de dicha sección.
+
+		Mas no siempre es posible alcanzar esta aceleración teórica, pues influyen las condiciones del clima y de la moto, así como también las habilidades del piloto. Entonces, se establece un sistema de penalizaciones que disminuyen el valor obtenido, en caso de que las circunstancias no sean óptimas:
+		\begin{itemize}
+			\item El clima no es el mejor (humedad y temperatura muy altas o muy bajas, baja visibilidad, viento intenso)
+			\item Los frenos y la rigidez del chasis no son apropiados
+			\item La habilidades del piloto en las rectas y las curvas no son buenas
+		\end{itemize}
+
+		Sin embargo, un piloto más agresivo puede tomar mayores riesgos e ignorar ciertas penalizaciones con el fin de acercarse a la aceleración máxima. Esta probabilidad se ve influida por las características del piloto, aumentando también en el caso de encontrarse en una pugna de posición (ataque o defensa). Por tanto, el valor hallado es no determinista.
+
+		Luego, se calcula la nueva velocidad del agente:
+		\begin{equation}\label{eq:v}
+		v=\sqrt{v_{0}^{2} + 2 \cdot a \cdot x}
+		\end{equation}
+
+		Y con esta, el tiempo demorado en superar la sección:
+		\begin{equation}\label{eq:t_1}
+		t=\frac{v - v_{0}}{a}
+		\end{equation}
+
+		En caso de que la aceleración fuera $0$, la velocidad no varía y se utiliza solamente:
+		\begin{equation}\label{eq:t_2}
+		t=\frac{x}{v}
+		\end{equation}
+
+		La diferenciación entre ambas fórmulas es importante, pues no es lo mismo el Movimiento Rectilíneo Uniforme (MRU) [\ref{eq:t_2}] que el Movimiento Rectilíneo Uniformemente Acelerado (MRUA), o Desacelerado [\ref{eq:v}, \ref{eq:t_1}].
+
+		De esta manera, se actualizan los parámetros del agente; siendo los más importantes el tiempo de la vuelta y de la carrera, que se nutren del tiempo recién calculado. Los resultados obtenidos son incorporados a la simulación para continuar con esta, de ellos depende si el piloto triunfa o sufre un accidente que lo saque de la competencia.
 
 \newpage
 
