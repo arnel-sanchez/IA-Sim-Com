@@ -195,7 +195,7 @@
 
 		El método de reestructuración intercambia las curvas o rectas con otras secciones de su mismo tipo y su misma orientación cardinal. De este modo, se asegura de que solo se varíe el orden de estas y no se pierdan las propiedades que hacen al circuito cerrado.
 
-		Por otro lado, generar una nueva pista de manera aleatoria automáticamente es una problemática topológica de un mayor nivel de complejidad. Como solución factible simplificada, se genera una línea poligonal de secciones, que parte de un punto y se expande variando su orientación. 
+		Por otro lado, generar una nueva pista de manera aleatoria automáticamente es una problemática topográfica de un mayor nivel de complejidad. Como solución factible simplificada, se genera una línea poligonal de secciones, que parte de un punto y se expande variando su orientación. 
 
 		La longitud de cada sección es generada utilizando una variable aleatoria, donde los mayores valores tienen una menor probabilidad. Luego, atentiendo a dicha longitud, la velocidad máxima alcanzable se calcula por rangos, agregando incertidumbre mediante probabilística con distribución uniforme.
 
@@ -801,24 +801,33 @@
 	
 \newpage
 
-\section{Resultados obtenidos}
-Realizando repetidas simulaciones, es posible apreciar la influencia de los distintos parámetros presentes.
+\section{Conclusiones}
 
-Un clima con condiciones menos extremas (temperatura y humedad medias, buena visibilidad y viento de poca intensidad) permite un mejor desempeño de los pilotos. Por el contrario, cuando ocurren variaciones en el estado del clima (de soleado a lluvioso, o viceversa) el tiempo de carrera muestra un aumento significativo debido a las entradas a boxes.
+	\subsection{Resultados obtenidos}
+	Realizando repetidas simulaciones, es posible apreciar la influencia de los distintos parámetros presentes.
 
-Las motos también influyen de manera considerable, pues unos frenos bajos le quitan mucha aceleración a los agentes, sobre todo en las curvas donde sufren mayores cambios de velocidad y los hace propensos a ser superados por sus rivales.
+	Un clima con condiciones menos extremas (temperatura y humedad medias, buena visibilidad y viento de poca intensidad) permite un mejor desempeño de los pilotos. Por el contrario, cuando ocurren variaciones en el estado del clima (de soleado a lluvioso, o viceversa) el tiempo de carrera muestra un aumento significativo debido a las entradas a boxes y el número de caídas aumenta en más del doble.
 
-Los pilotos con mejores habilidades obtienen mejores resultados. Es notable el aumento de la capacidad de vencer en un ataque/defensa para aquellos cuya pericia es muy elevada. En el lado opuesto, son muy propensos a accidentes los que su poca destreza los lleva a cometer errores. El paso por curva y por recta con valores altos les da mayor seguridad y los hace más rápidos.
+	Las motos también influyen de manera considerable, pues unos frenos bajos le quitan mucha aceleración a los agentes, sobre todo en las curvas donde sufren mayores cambios de velocidad y los hace propensos a ser superados con facilidad por sus rivales.
 
-Del mismo modo, una independencia elevada de estos ha demostrado obtener muy buenos resultados cuando las órdenes brindadas por el DSL no son las más acertadas, pues el análisis de la IA es certero. Sin embargo, en algunos casos un piloto con poca pericia puede abandonar la carrera al tomar malas decisiones por su cuenta.
+	Los pilotos con mejores habilidades obtienen mejores resultados. Es notable el aumento en más del $50\%$ de la capacidad de vencer en un ataque/defensa para aquellos cuya pericia es muy elevada. En el lado opuesto, son $5$ veces más propensos a accidentes los que su poca destreza los lleva a cometer errores. El paso por curva y por recta con valores altos les da mayor seguridad y los hace varios segundos más rápidos.
 
-Cuando las condiciones del ambiente son las óptimas, una actitud agresiva ha demostrado ser muy eficiente para lograr la victoria, aunque provoca un mayor desgaste de la maquinaria y da como resultado un aumento en la cantidad de accidentes (por desperfectos técnicos causados por sobreexplotación). También genera un incremento en la cantidad de pugnas por posición.
+	Del mismo modo, una independencia elevada de estos ha demostrado obtener muy buenos resultados cuando las órdenes brindadas por el DSL no son las más acertadas, pues el análisis de la IA es certero. Sin embargo, en un mínimo de casos un piloto con poca pericia puede abandonar la carrera al tomar malas decisiones por su cuenta.
 
-Una estrategia conservadora solo ofrece buenos dividendos cuando el clima fluctua mucho, aunque en los casos que la suerte la acompaña y se suceden accidentes entre los otros competidores, es posible conseguir una victoria sin necesidad de tomar muchos riesgos. 
+	Cuando las condiciones del ambiente son las óptimas, una actitud agresiva ha demostrado ser muy eficiente para lograr la victoria, alcanzando el podio en casi el $80\%$ de los casos. También genera un incremento en la cantidad de pugnas por posición y, por tanto, provoca un mayor desgaste de la maquinaria que dan como resultado un aumento del triple en la cantidad de accidentes (por caídas o desperfectos técnicos causados por sobreexplotación). 
 
-En resumen, a pesar de las limitaciones que posee el sistema, logra tener resultados muy cercanos a los vistos en la realidad. Los tiempos alcanzados en el circuito de Misano son increíblemente cercanos a los de pilotos auténticos. El porciento de accidentes también se acerca mucho a los valores que no son virtuales. 
+	Una estrategia conservadora solo ofrece buenos dividendos cuando el clima fluctua mucho, aunque en los casos que la suerte la acompaña y se suceden accidentes entre los otros competidores, es posible conseguir una victoria sin necesidad de tomar muchos riesgos (menos del $5\%$).
 
-Esto se logra gracias al uso apropiado de las variables, cuyos valores de incertidumbre logran representar certeramente la problemática presentada. Así como también el correcto empleo de las fórmulas físicas en cuestión. 
+	En resumen, a pesar de las limitaciones que posee el sistema, logra tener resultados muy cercanos a los vistos en la realidad. Los tiempos alcanzados en el circuito de Misano son increíblemente cercanos a los de pilotos auténticos, pues el tiempo promedio de vuelta oscila entre $1$:$34$ y $1$:$58$, cuando el récord actual es de $1$:$32$, alcanzado en el $2021$. El porciento de accidentes también se acerca mucho a los valores que no son virtuales. 
+
+	Todo lo antes expuesto se logra gracias al uso apropiado de las variables, cuyos valores de incertidumbre logran representar certeramente la problemática presentada. Así como también el correcto empleo de las fórmulas físicas en cuestión. 
+
+	\subsection{Recomendaciones}
+	Analizando el problema propuesto a resolver, las herramientas empleadas con tal fin y los resultados obtenidos; es posible plantear algunas modificaciones con el objetivo de lograr mejoras en el sistema que lo acerquen aún más a la realidad.
+
+	En el caso del ambiente, se podría utilizar la posición geográfica de las pistas para definir sus climas de una manera diferenciada. Así como también mejorar la generacion automática de pistas de manera aleatoria, utilizando conocimientos topográficos avanzados. Por otro lado, los pilotos pudieran poseer más características que los acercaran a personajes reales, tratando de comprobar si fuera posible replicar sus resultados en la realidad.
+
+	Por último, incrementaría la complejidad de los agentes agregarles conocimientos sobre las características de las pistas y sus condiciones, así como de sus contrincantes. Esto ayudaría a formar una estrategia más acorde a las condiciones específicas de cada carrera. El uso de \emph{Machine Learning}, en su rama de aprendizaje supervisado, constituiría una vía excelente para lograrlo. 
 
 \pagebreak
 \bibliographystyle{unsrt}
