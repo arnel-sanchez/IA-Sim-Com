@@ -201,8 +201,6 @@
 
 		Cuando la longitud total excede el mínimo necesario, se redirige la orientación de las nuevas secciones en sentido cardinal opuesto al inicial. Esta línea es abierta, pero su punto final está orientado en sentido inverso al punto inicial. Luego, tomando una copia exacta de esta y rotándola $180^0$, se puede crear una figura poligonal cerrada con simetría central, la cual responde a las condiciones necesarias de una pista.
 
-		
-
 		\subsubsection{Agentes}
 		Un agente está compuesto por un piloto y su moto. \\
 
@@ -263,7 +261,6 @@
 		Para lograr un mayor realismo, se hace una primera variación de parámetros para adaptar a las entidades a las condiciones climatológicas del momento; luego, en cada cambio de vuelta se modifica el clima y se reajustan los parámetros de acuerdo las nuevas condiciones climatológicas.
 
 		Los agentes reciben cada variación del ambiente y analizan qué modificaciones realizar para adaptarse. Asimismo, las interacciones entre dos de estos provocan cambios en sus condiciones. Nótese que en un momento dado, una interacción puede generar una reacción en cadena que provoque una serie de cambios en varios agentes que compiten directamente entre sí. Una variable probabilística, influida por las habilidades de los pilotos en cuestión, sirve para obtener el resultado de un ataque o una defensa.
-
 
 	\newpage
 
@@ -451,17 +448,9 @@
 
 \section{Definición del Lenguaje {\footnotesize \cite{conferenciasC}\cite{ullman}}}
 	\subsection{Introducción a PySharp (P\#)}
-	\subsubsection{Hello world!}
-	
-	\begin{lstlisting}[language={PySharp}]
-		method int main() {
-			return 0;
-		}
-	\end{lstlisting}	
-	Los archivos de P\# suelen tener la extensión de archivo .pys.\par
-	
-	\subsubsection{Estructura del Programa}
-	Los conceptos organizativos clave en P\# son programas, tipos y miembros. Los programas P\# constan de un archivo fuente. Los programas declaran tipos y miembros. Las motocicletas y los motociclistas son ejemplos de tipos. Los métodos y propiedades son ejemplos de miembros.
+
+		\subsubsection{Estructura del Programa}
+		Los archivos de \textbf{P\#} suelen tener la extensión de \textbf{.pys}. Sus conceptos organizativos clave son programas, tipos y miembros. Los programas constan de un archivo fuente y declaran tipos y miembros. Las motocicletas y los motociclistas son ejemplos de tipos. Los métodos y propiedades son ejemplos de miembros.
 	
 	\subsubsection{Tipos y Variables}
 	En P\# solo existen tipos de valor, no hay de referencia. Por tanto, todas las variables contienen directamente sus datos, cada una tiene su propia copia y no es posible que las operaciones en una afecten a otra.\par
@@ -483,21 +472,21 @@
 			\hline
 			Categoría & Expresión & Descripción \\ \hline
 			\multirow{2}{*}{Primaria} & x(...) & Invocación de método \\ \cline{2-3}		
-			\multirow{4}{*}{Multiplicativa} & x * y & Multiplicación \\ \cline{2-3}
+			\multirow{4}{*}{Multiplicativa} & x $\ast$ y & Multiplicación \\ \cline{2-3}
 			& x / y & División \\ \cline{2-3}
 			& x \% y & Resto \\ \cline{2-3} 
-			& x ** y & Exponenciación \\ \hline
+			& x $\ast\ast$ y & Exponenciación \\ \hline
 			\multirow{2}{*}{Aditiva} & x + y & Adición y concatenación de strings \\ \cline{2-3}
 			& x - y & Substracción \\ \hline
-			\multirow{4}{*}{Relacionales} & x < y & Menor que \\ \cline{2-3} 
-			& x > y & Mayor que \\ \cline{2-3}
+			\multirow{4}{*}{Relacionales} & x <\;y & Menor que \\ \cline{2-3} 
+			& x >\;y & Mayor que \\ \cline{2-3}
 			& x <= y & Menor o igual que \\ \cline{2-3} 
 			& x >= y & Mayor o igual que \\ \hline
 			\multirow{2}{*}{Igualdad} & x == y & Igual \\ \cline{2-3} 
 			& x != y & Distinto \\ \hline 
 			Condicionales AND & x \&\& y & Evalúa y si y sólo si x es verdadera \\ \hline
 			Condicionales OR & x || y & Evalúa y si y sólo si x es falsa \\ \hline
-			Condicionales XOR & x \textasciicircum{} y & \\ \hline
+			Condicionales XOR & x $\wedge$ y & \\ \hline
 			\multirow{2}{*}{Asignación} & x = y & Asignación \\ \cline{2-3}
 			& x op= y & Asignación compuesta; los operadores admitidos son *= /= \%= **= += -= \&\&= ||= \textasciicircum{}= \\ \hline
 		\end{tabular}
@@ -790,9 +779,9 @@
         Para crear nuestra gramática nos apoyamos en los lenguajes Python y CSharp, de ahi el nombre de nuestro DSL PSharp. Luego de tener los tokens resultantes del tokenizer, acordamos quée tendríamos como una línea e implementamos el metodo split\_lines , el cual
         recibe los tokens y los convierte en líneas, estas líneas son pasadas al parser.
 
-        El parser que decidimos desarrolar fue el parser LL, lo primero que hicimos fueron las producciones, donde decidimos como serían correctas sintácticamente nuestras líneas.Las producciones generan todas las posibles cadenas válidas para nuestro lenguaje y no existen cadenas que son generadas por nuestra grámatica que no pertenezcan a nuestro lenguaje.De esta forma con una gramática válida empezamos al proceso de parsing. Nuestro parser necesitó un método "hacer\_first" primeramente para hacer los first de cada cadena posible de nuestra gramatica, luego llamamos un método auxiliar "calcular\_first\_restantes" el cual tiene la función de calcular los first de los no terminales que aún no lo tienen calculado .Nos hace falta guardar los first de los no terminales porque los necesitamos para hallar los follows en el método "hacer\_follow". Luego de invocar a "hacer\_follow" debemos invocar un método auxiliar "completar\_follows" el cual se encarga de satisfacer la regla de los follows que dice que el follow de la cabeza de la produccion es subconjunto del follow del ultimo no terminal, si el último no terminal puede ser el último elemento de la producción.
+        El parser que decidimos desarrolar fue el parser LL, lo primero que hicimos fueron las producciones, donde decidimos como serían correctas sintácticamente nuestras líneas.Las producciones generan todas las posibles cadenas válidas para nuestro lenguaje y no existen cadenas que son generadas por nuestra grámatica que no pertenezcan a nuestro lenguaje.De esta forma con una gramática válida empezamos al proceso de parsing. Nuestro parser necesitó un método hacer\_first primeramente para hacer los first de cada cadena posible de nuestra gramatica, luego llamamos un método auxiliar calcular\_first\_restantes el cual tiene la función de calcular los first de los no terminales que aún no lo tienen calculado .Nos hace falta guardar los first de los no terminales porque los necesitamos para hallar los follows en el método hacer\_follow. Luego de invocar a hacer\_follow debemos invocar un método auxiliar completar\_follows el cual se encarga de satisfacer la regla de los follows que dice que el follow de la cabeza de la produccion es subconjunto del follow del ultimo no terminal, si el último no terminal puede ser el último elemento de la producción.
 
-        Teniendo los first y los follows construimos la tabla LL(1) mediante el método "construir\_tabla\_LL". Al tener la tabla ya podemos comprobar que nuestra gramática no es ambigua, siempre existe solo una producción que aplicar. Luego creamos el método parsear al que hay que pasarle todas las líneas de nuestro código una por una , este realiza la comprobación sintáctica y en este mismo método vamos a ir creando nuestro AST para luego hacer el chequeo semántico. Para crear el AST utilizamos métodos como "CreaNododExpresion",  "CreaNodoCondicion", "CreaNododFuncion", "EligeTipoDdeclaracion", entre muchos otros declarados en la clase Parser. 
+        Teniendo los first y los follows construimos la tabla LL(1) mediante el método construir\_tabla\_LL. Al tener la tabla ya podemos comprobar que nuestra gramática no es ambigua, siempre existe solo una producción que aplicar. Luego creamos el método parsear al que hay que pasarle todas las líneas de nuestro código una por una , este realiza la comprobación sintáctica y en este mismo método vamos a ir creando nuestro AST para luego hacer el chequeo semántico. Para crear el AST utilizamos métodos como CreaNododExpresion,  CreaNodoCondicion, CreaNododFuncion, EligeTipoDdeclaracion, entre muchos otros declarados en la clase Parser. 
 
         Nuestro AST tiene un nodo por cada declaración que se puede realizar en el código. Tiene un nodo para una definición de función, una 
         definición de variables, redefinición de variables, If, WHile, Rider, Bike, Return. En cada uno de estos nodos si existe un ámbito como es el caso del nodo If, el While, los tipos rider, bike, environment y la definición de función cada uno de estos nodos tienen como atributo un tipo de nodo Program, el cual posee una lista de declaraciones y por lo tanto en él se pueden guardar la lista de declaraciones que se haga en el ámbito.
@@ -802,15 +791,35 @@
 
         Volviendo al AST, hacemos una segunda pasada, en esta pasada verificamos los tipos,en los nodos en que hay expresiones inducimos el tipo. Decir que una expresión para nosotros puede ser una expresión aritmética, un bool, o un string, podemos incluir variables y llamado a función en una expresión. La tercera pasada la hacemos para evaluar nuestros nodos. Si encontramos un nodo Def\_Fun no lo evaluamos, una definición de función se evalúa cuando se llama a la función.
 
-        Cuando se crea un tipo se importan las variables que puede tener ese tipo en la simulación y las que podría utilizar. Estas variables están predefinidas, por lo tanto se pueden redefinir, pero una definición de otra variable con un nombre igual al de alguna de estas variables predefinidas arrojaría un error, ya que existe una variable en ese contexto con ese nombre dentro del tipo. Dentro de cada tipo se pueden definir las funciones que el jefe técnico decida pero hay algunas funciones con nombres claves como son la función "select\_configuration" en un tipo Bike , las funciones "select\_acceleration" y "select\_action" en un tipo rider y la función probability\_change\_weather en un tipo environment. El objetivo de select\_configuration es seleccionar el tipo de gomas dadas las características de la moto y por tanto modificar la variable "tires" del contexto del tipo, la cual utilizará el simulador, esta función debe ser void, "select\_action" debe retornar un valor entero y es la encargada de elegir que acción realizara el piloto. La función "select\_acceleration" debe ser void y su objetivo es actualizar la aceleración de un agente. Las variables dentro de los tipos se actualizan justo antes de que la simulación utilice las funciones claves, para eso cada tipo tiene un método refreshContext que es quien se encarga de actualizar las variabes. Las variables que se pueden utilizar dentro de un tipo Bike son los atributos de dicha moto y las características del clima, dentro del tipo Rider podemos utilizar las características del piloto, algunas características del agente como son speed, acceleration
+        Cuando se crea un tipo se importan las variables que puede tener ese tipo en la simulación y las que podría utilizar. Estas variables están predefinidas, por lo tanto se pueden redefinir, pero una definición de otra variable con un nombre igual al de alguna de estas variables predefinidas arrojaría un error, ya que existe una variable en ese contexto con ese nombre dentro del tipo. Dentro de cada tipo se pueden definir las funciones que el jefe técnico decida pero hay algunas funciones con nombres claves como son la función select\_configuration en un tipo Bike, las funciones select\_acceleration y select\_action en un tipo rider y la función probability\_change\_weather en un tipo environment. El objetivo de select\_configuration es seleccionar el tipo de gomas dadas las características de la moto y por tanto modificar la variable tires del contexto del tipo, la cual utilizará el simulador, esta función debe ser void, select\_action debe retornar un valor entero y es la encargada de elegir que acción realizara el piloto. La función select\_acceleration debe ser void y su objetivo es actualizar la aceleración de un agente. Las variables dentro de los tipos se actualizan justo antes de que la simulación utilice las funciones claves, para eso cada tipo tiene un método refreshContext que es quien se encarga de actualizar las variabes. Las variables que se pueden utilizar dentro de un tipo Bike son los atributos de dicha moto y las características del clima, dentro del tipo Rider podemos utilizar las características del piloto, algunas características del agente como son speed, acceleration
         y time\_lap, los atributos del clima y de la sección en la que esta el piloto en ese momento.Dentro de un tipo environment podemos utilizar solo las variables propias del clima y la variable track que es de tipo string y se utiliza si dicho tipo environment es a partir del cual se crea el clima al principio de la simulación , la variable track sirve para crear la pista de diferentes formas.      
 
 
 	\subsection{Conexión Simulación - Compilación}
-		El resultado del DSL si se hacen los 3 recorridos del AST sin error, son 3 listas, la primera lista con todos los pilotos que fueron
-        creados, la segunda con todas las motos y la tercera con diferentes ambientes .A partir de estas listas se crean los pilotos, las motos y el ambiente en la simulación, puede definirse un ambiente o no en el DSL. 
+	El resultado del DSL si se hacen los 3 recorridos del AST sin error, son 3 listas, la primera lista con todos los pilotos que fueron creados, la segunda con todas las motos y la tercera con diferentes ambientes .A partir de estas listas se crean los pilotos, las motos y el ambiente en la simulación, puede definirse un ambiente o no en el DSL. 
         Los pilotos que no fueron creados en el DSL ejecutan sus métodos normalmente. En el caso de un piloto que fue creado desde el DSL se ejecuta la función definida en el DSL ,antes de ejecutarla se actualiza el contexto de la función para que esta pueda apoyarse en la situación actual. Luego de la ejecución de la función dependiendo que función se ejecutó se importa a la simulación la variable que se quiere desde el contexto del método.
 	
+\newpage
+
+\section{Resultados obtenidos}
+Realizando repetidas simulaciones, es posible apreciar la influencia de los distintos parámetros presentes.
+
+Un clima con condiciones menos extremas (temperatura y humedad medias, buena visibilidad y viento de poca intensidad) permite un mejor desempeño de los pilotos. Por el contrario, cuando ocurren variaciones en el estado del clima (de soleado a lluvioso, o viceversa) el tiempo de carrera muestra un aumento significativo debido a las entradas a boxes.
+
+Las motos también influyen de manera considerable, pues unos frenos bajos le quitan mucha aceleración a los agentes, sobre todo en las curvas donde sufren mayores cambios de velocidad y los hace propensos a ser superados por sus rivales.
+
+Los pilotos con mejores habilidades obtienen mejores resultados. Es notable el aumento de la capacidad de vencer en un ataque/defensa para aquellos cuya pericia es muy elevada. En el lado opuesto, son muy propensos a accidentes los que su poca destreza los lleva a cometer errores. El paso por curva y por recta con valores altos les da mayor seguridad y los hace más rápidos.
+
+Del mismo modo, una independencia elevada de estos ha demostrado obtener muy buenos resultados cuando las órdenes brindadas por el DSL no son las más acertadas, pues el análisis de la IA es certero. Sin embargo, en algunos casos un piloto con poca pericia puede abandonar la carrera al tomar malas decisiones por su cuenta.
+
+Cuando las condiciones del ambiente son las óptimas, una actitud agresiva ha demostrado ser muy eficiente para lograr la victoria, aunque provoca un mayor desgaste de la maquinaria y da como resultado un aumento en la cantidad de accidentes (por desperfectos técnicos causados por sobreexplotación). También genera un incremento en la cantidad de pugnas por posición.
+
+Una estrategia conservadora solo ofrece buenos dividendos cuando el clima fluctua mucho, aunque en los casos que la suerte la acompaña y se suceden accidentes entre los otros competidores, es posible conseguir una victoria sin necesidad de tomar muchos riesgos. 
+
+En resumen, a pesar de las limitaciones que posee el sistema, logra tener resultados muy cercanos a los vistos en la realidad. Los tiempos alcanzados en el circuito de Misano son increíblemente cercanos a los de pilotos auténticos. El porciento de accidentes también se acerca mucho a los valores que no son virtuales. 
+
+Esto se logra gracias al uso apropiado de las variables, cuyos valores de incertidumbre logran representar certeramente la problemática presentada. Así como también el correcto empleo de las fórmulas físicas en cuestión. 
+
 \pagebreak
 \bibliographystyle{unsrt}
 \bibliography{./_static/bib}
