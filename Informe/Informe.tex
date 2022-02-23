@@ -489,7 +489,7 @@
 			& x != y & Distinto \\ \hline 
 			Condicionales AND & x \&\& y & Evalúa y si y sólo si x es verdadera \\ \hline
 			Condicionales OR & x || y & Evalúa y si y sólo si x es falsa \\ \hline
-			Condicionales XOR & x $\wedge$ y & \\ \hline
+			Condicionales XOR & x \textasciicircum{} y & \\ \hline
 			\multirow{2}{*}{Asignación} & x = y & Asignación \\ \cline{2-3}
 			& x op= y & Asignación compuesta; los operadores admitidos son *= /= \%= **= += -= \&\&= ||= \textasciicircum{}= \\ \hline
 		\end{tabular}
@@ -711,16 +711,16 @@
 	
 	\underline{\textbf{Literales flotantes}}\par
 	\textbf{double\_literal}\par
-	: decimal\_digit+ '.' decimal\_digit+\par
+	: decimal\_digit* + '.' + decimal\_digit*\par
 	; \\ \\
 	
 	\underline{\textbf{Literales de Cadenas}}\par
 	\textbf{string\_literal}\par
-	: '\"' string\_literal\_character* '\"'\par
+	: string\_literal\_character*\par
 	; \\
 	
 	\textbf{string\_literal\_character}\par
-	: '<Cualquier caracter, excepto " (U+0022)'\par
+	: '<Cualquier caracter, excepto (U+0022)>'\par
 	; \\ \\
 	
 	\underline{\textbf{Literales Nulos}}\par
@@ -796,7 +796,7 @@
 	\subsection{Resultados obtenidos}
 	Realizando repetidas simulaciones, es posible apreciar la influencia de los distintos parámetros presentes.
 
-	Un clima con condiciones menos extremas (temperatura y humedad medias, buena visibilidad y viento de poca intensidad) permite un mejor desempeño de los pilotos. Por el contrario, cuando ocurren variaciones en el estado del clima (de soleado a lluvioso, o viceversa) el tiempo de carrera muestra un aumento significativo debido a las entradas a boxes y el número de caídas aumenta en más del doble.
+	Un clima con condiciones menos extremas (temperatura y humedad medias, buena visibilidad y viento de poca intensidad) permite un mejor desempeño de los pilotos. Por el contrario, cuando ocurren variaciones en el estado del clima (de soleado a lluvioso, o viceversa) el tiempo de carrera muestra un aumento significativo debido a las entradas a boxes, pues obliga a limitar la velocidad máxima; y el número de caídas aumenta en más del doble.
 
 	Las motos también influyen de manera considerable, pues unos frenos bajos le quitan mucha aceleración a los agentes, sobre todo en las curvas donde sufren mayores cambios de velocidad y los hace propensos a ser superados con facilidad por sus rivales.
 
