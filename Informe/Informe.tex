@@ -388,7 +388,7 @@
 		    KeepSpeed_Attack = 13
 		    Brake_Attack = 14
 		
-		    (...)
+		    ...
 		
 		    SpeedUp_Turn_Pits_Defend = 33
 		    KeepSpeed_Turn_Pits_Defend = 34
@@ -453,7 +453,8 @@
 		Los archivos de \textbf{P\#} suelen tener la extensión de \textbf{.pys}. Sus conceptos organizativos clave son programas, tipos y miembros. Los programas constan de un archivo fuente y declaran tipos y miembros. Las motocicletas y los motociclistas son ejemplos de tipos. Los métodos y propiedades son ejemplos de miembros.
 	
 	\subsubsection{Tipos y Variables}
-	En P\# solo existen tipos de valor, no hay de referencia. Por tanto, todas las variables contienen directamente sus datos, cada una tiene su propia copia y no es posible que las operaciones en una afecten a otra.\par
+	En P\# solo existen tipos de valor, no hay de referencia. Por tanto, todas las variables contienen directamente sus datos, cada una tiene su propia copia y no es posible que las operaciones en una afecten a otra.
+
 	\begin{center}
 		\begin{tabular}{| c | c | m{5cm} | }
 			\hline
@@ -465,8 +466,10 @@
 			& Tipos que aceptan valores NULL & Extensiones de todos los demás tipos de valor con un valor nulo \\ \hline
 		\end{tabular}
 	\end{center}
+
 	\subsubsection{Expresiones}
-	Las expresiones se construyen a partir de operandos y operadores. Los operadores de una expresión indican qué operaciones aplicar a los operandos. Los ejemplos de operadores incluyen +, -, * y /. Los ejemplos de operandos incluyen literales, variables y expresiones.\par
+	Las expresiones se construyen a partir de operandos y operadores. Los operadores de una expresión indican qué operaciones aplicar a los operandos. Los ejemplos de operadores incluyen: +, -, * y /. Ejemplos de operandos son: literales, variables y expresiones.
+
 	\begin{center}
 		\begin{tabular}{| c | c | m{5cm} | }
 			\hline
@@ -491,10 +494,11 @@
 			& x op= y & Asignación compuesta; los operadores admitidos son *= /= \%= **= += -= \&\&= ||= \textasciicircum{}= \\ \hline
 		\end{tabular}
 	\end{center}
+
 	\subsubsection{Declaraciones}
 	Las acciones de un programa se expresan mediante declaraciones. P\# admite varios tipos diferentes de declaraciones, algunas de las cuales se definen en términos de declaraciones integradas.
 	
-	Un \textbf{bloque} permite escribir múltiples declaraciones en contextos donde se permite una sola declaración. Un bloque consta de una lista de declaraciones escritas entre los delimitadores\{y\}.
+	Un \textbf{bloque} permite escribir múltiples declaraciones en contextos donde se permite una sola declaración. Un bloque consta de una lista de declaraciones escritas entre los delimitadores \textbf{\{} y \textbf{\}}.
 	
 	Las sentencias de \textbf{declaración} se utilizan para declarar variables, valga la redundancia.
 	
@@ -504,7 +508,7 @@
 		}
 	\end{lstlisting}
 	
-	Las \textbf{declaraciones de expresión} se utilizan para evaluar expresiones. Las expresiones que se pueden usar como declaraciones incluyen invocaciones de métodos, asignaciones que usan = y los operadores de asignación compuesta.
+	Las \textbf{declaraciones de expresión} se utilizan para evaluar expresiones. Aquellas que se pueden usar como declaraciones incluyen invocaciones de métodos, asignaciones que usan \textbf{=} y los operadores de asignación compuesta.
 	
 	\begin{lstlisting}[language={PySharp}]
 		method int example() {
@@ -513,7 +517,7 @@
 		}
 	\end{lstlisting}
 	
-	La \textbf{instrucción de selección} se utiliza para seleccionar una de varias declaraciones posibles para su ejecución en función del valor de alguna expresión. Este es el caso de la sentencia \textbf{if}.
+	La \textbf{instrucción de selección} se utiliza para elegir una de varias declaraciones posibles para su ejecución, en función del valor de alguna expresión. Este es el caso de la sentencia \textbf{if}-\textbf{else}.
 	
 	\begin{lstlisting}[language={PySharp}]
 		method int example(int a) {
@@ -526,7 +530,7 @@
 		}
 	\end{lstlisting}
 	
-	La \textbf{instrucción de iteración} se utiliza para ejecutar repetidamente una instrucción incorporada. Este es el caso de la instrucción \textbf{while}.
+	La \textbf{instrucción de iteración} se utiliza para ejecutar repetidamente una instrucción incorporada. Este es el caso de \textbf{while}.
 	
 	\begin{lstlisting}[language={PySharp}]
 		method int example(int a) {
@@ -556,64 +560,64 @@
 	\end{lstlisting}
 	
 	\subsubsection{Tipos especiales}
-	Los \textbf{tipos especiales} son los elementos más importantes de P\#, constituyen estructuras de bloques compuestas por acciones (métodos). Un tipo proporciona una definición para casos de, por ejemplo, motociclistas o motocicletas. Su declaración comienza con un encabezado que especifica qué tipo se va a crear y el nombre que se le dará a esta instancia. El encabezado va seguido del cuerpo del tipo, que consiste en una lista de declaraciones de miembros escritas entre los delimitadores\{y\}.
+	Los \textbf{tipos especiales} son los elementos más importantes de P\# y constituyen estructuras de bloques compuestas por acciones (métodos). Estos proporcionan definiciones para casos de, por ejemplo, motociclistas o motocicletas. Su declaración comienza con un encabezado que especifica qué tipo se va a crear y el nombre que se le dará a esta instancia. Luego aparece cuerpo, que consiste en una lista de declaraciones de miembros escritas entre los delimitadores \textbf{\{} y \textbf{\}}.
 	
 	\begin{lstlisting}[language={PySharp}]
 		rider Rossi() {
 			method int select_action() {    
 				return 0;
 			}
-			method void select_acceleration(){
+			method int select_acceleration(){
 				...
 			}
 			...
 		}
 	\end{lstlisting}
 	\subsubsection{Métodos}
-	Un \textbf{método} es un miembro que implementa un cálculo o acción que se puede realizar por tipo. Los métodos tienen una lista de \textbf{parámetros}, que representan valores de variables pasadas al método, y un tipo de retorno, que especifica el tipo de valor calculado y devuelto por el método. El tipo de retorno de un método es nulo si no devuelve un valor.
-	
+	Un \textbf{método} es un miembro que implementa un cálculo o acción que se puede realizar por un tipo especial. Posee una lista de \textbf{parámetros}, que representan valores de variables pasadas a este, y un tipo de retorno, que especifica el tipo de valor calculado y devuelto, el cual es nulo si no devuelve ninguno.
+
 	\subsubsection{Parámetros}
-	Los \textbf{parámetros} se utilizan para pasar valores de variables a métodos. Los parámetros de un método obtienen sus valores reales de los \textbf{argumentos} que se especifican cuando se invoca el método. Las modificaciones de un valor de parámetro no afectan el argumento que se pasó para el parámetro.
+	Los \textbf{parámetros} se utilizan para pasar valores de variables a métodos. Estos obtienen sus valores reales de los \textbf{argumentos} que se especifican cuando se invoca al método en el que se encuentran. Las modificaciones de un valor de parámetro no afectan el argumento que se pasó a través d este.
 	
 	\subsubsection{Cuerpo del método y variables locales}
-	El cuerpo de un método especifica las declaraciones que se ejecutarán cuando se invoca el método. El cuerpo de un método puede declarar variables que son específicas de la invocación del método. Estas variables se denominan variables locales. Una declaración de variable local especifica un nombre de tipo, un nombre de variable y un valor inicial.
+	El cuerpo de un método especifica las declaraciones que se ejecutarán cuando se invoca al método. Este puede declarar variables que son específicas de dicha invocación, las cuales se denominan variables locales. Una declaración de variable local especifica un nombre de tipo, un nombre de variable y un valor inicial.
 	
 	\subsubsection{Operadores}
 	Un \textbf{operador} es un miembro que define el significado de aplicar un operador de expresión particular. Se pueden definir solamente operadores binarios.\par
 	
 	\textbf{Operadores Binarios:}
 	\begin{lstlisting}[language={PySharp}]
-		3+5;
-		true && false;
+		3+5
+		true && false
 	\end{lstlisting}
 	
 	\subsubsection{Análisis Léxico}
 	\textbf{input}\par
 	: input\_element* new\_line\par
 	| directive\par
-	;\par
+	; \\
 	
 	\textbf{input\_element}\par
 	: whitespace\par
 	| comment\par
 	| token\par
-	;\par
+	; \\ \\
 	
-	\underline{\textbf{Terminadores de línea}}\par
+	\underline{\textbf{Fin de línea}}\par
 	\textbf{new\_line}\par
 	: '<Caracter de retorno (U+000D)>'\par
 	| '<Caracter de avance de línea (U+000A)>'\par
-	;\par
+	; \\
 	
 	\textbf{whitespace}\par
 	: '<Cualquier personaje con clase Unicode Zs>'\par
 	| '<Caracter de tabulación horizontal (U+0009)>'\par
-	;\par
+	; \\ \\
 	
 	\underline{\textbf{Comentarios}}\par
 	\textbf{comment}\par
 	: '\#' comment\_section '\#'\par
-	;\par
+	; \\ \\
 	
 	\underline{\textbf{Tokens}}\par
 	\textbf{token}\par
@@ -621,78 +625,69 @@
 	| keyword\par
 	| literal\par
 	| operator\_or\_punctuator\par
-	;\par
+	; \\ \\
 	
 	\underline{\textbf{Identificadores}}\par
 	\textbf{identifier}\par
 	: '<Un identificador que no es una palabra clave>'\par
 	| identifier\_start\_character identifier\_part\_character*\par
-	;\par
+	; \\
 	
 	\textbf{identifier\_start\_character}\par
 	: letter\_character\par
 	| '<Caracter guión bajo (U+005F)>'\par
-	;\par
+	; \\
 	
 	\textbf{identifier\_part\_character}\par
 	: letter\_character\par
 	| decimal\_digit\par
 	| '<Caracter guión bajo (U+005F)>'\par
-	;\par
+	; \\
 	
 	\textbf{letter\_character}\par
 	: uppercase\_letter\_character\par
 	| lowercase\_letter\_character\par
-	;\par
+	; \\
 	
 	\textbf{uppercase\_letter\_character}\par
 	: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H'\par 
 	| 'I' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q'\par 
 	| 'R' | 'S' | 'T' | 'V' | 'X' | 'Y' | 'Z'\par    
-	;\par
+	; \\
 	
 	\textbf{lowercase\_letter\_character}\par
 	: 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h'\par 
 	| 'i' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q'\par
 	| 'r' | 's' | 't' | 'v' | 'x' | 'y' | 'z'\par
-	;\par
+	; \\
 	
 	\textbf{decimal\_digit}\par
 	: '0' | '1' | '2' | '3' | '4'\par 
 	| '5' | '6' | '7' | '8' | '9'\par
-	;\par
+	; \\ \\
 	
 	\underline{\textbf{Palabras Claves}}\par
-	\textbf{keyword}\par             
-	: 'bool'\par
+	\textbf{keyword}\par        
+	: 'bike'\par     
+	| 'bool'\par
 	| 'break'\par
 	| 'continue'\par 
 	| 'double'\par
 	| 'elif'\par
 	| 'else'\par
+	| 'environment'\par
 	| 'false'\par
 	| 'if'\par
 	| 'int'\par
 	| 'method'\par
 	| 'null'\par
 	| 'return'\par
+	| 'rider'\par
 	| 'string'\par
 	| 'true'\par
 	| 'void'\par
 	| 'while'\par
-	
-	| 'bike'\par
-	| 'rider'\par
-	
-	| 'brakes'\par
-	| 'max\_speed'\par
-	| 'weight'\par
-	| 'chassis\_stiffness'\par
-	| 'speed'\par
-	| 'tyres'\par
-	| 'cornering'\par
-	| 'step\_by\_line'\par		
-	;\par
+	; \\ \\
 	
 	\underline{\textbf{Literales}}\par
 	\textbf{literal}\par
@@ -701,37 +696,37 @@
 	| double\_literal\par
 	| string\_literal\par
 	| null\_literal\par
-	;\par
+	; \\ \\
 	
 	\underline{\textbf{Literales Booleanos}}\par
 	\textbf{boolean\_literal}\par
 	: 'true'\par
 	| 'false'\par
-	;\par
+	; \\ \\
 	
 	\underline{\textbf{Literales Enteros}}\par
 	\textbf{integer\_literal}\par
 	: decimal\_digit\par
-	;\par
+	; \\ \\
 	
 	\underline{\textbf{Literales flotantes}}\par
 	\textbf{double\_literal}\par
 	: decimal\_digit+ '.' decimal\_digit+\par
-	;\par
+	; \\ \\
 	
 	\underline{\textbf{Literales de Cadenas}}\par
 	\textbf{string\_literal}\par
 	: '\"' string\_literal\_character* '\"'\par
-	;\par
+	; \\
 	
 	\textbf{string\_literal\_character}\par
 	: '<Cualquier caracter, excepto " (U+0022)'\par
-	;\par
+	; \\ \\
 	
 	\underline{\textbf{Literales Nulos}}\par
 	\textbf{null\_literal}\par
 	: 'null'\par
-	;\par
+	; \\ \\
 	
 	\underline{\textbf{Operadores y signos de puntuación}}\par		
 	\textbf{operator\_or\_punctuator}\par
@@ -769,11 +764,6 @@
 	| '\&\&=' \par
 	| '||=' \par
 	| '\textasciicircum{}=' \par
-	;\par
-	\underline{\textbf{Directivas}}\par
-	\textbf{directive}\par
-	: 'include' '<Nombre\_del\_archivo.pys>' ';'\par
-	;\par
 	
 	\subsection{Explicación de la Implementación}
         Para crear nuestra gramática nos apoyamos en los lenguajes Python y CSharp, de ahi el nombre de nuestro DSL PSharp. Luego de tener los tokens resultantes del tokenizer, acordamos quée tendríamos como una línea e implementamos el metodo split\_lines , el cual
