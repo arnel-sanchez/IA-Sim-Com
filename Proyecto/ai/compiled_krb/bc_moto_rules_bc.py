@@ -118,8 +118,20 @@ def soft(rule, arg_patterns, arg_context):
                 for x_3 in gen_3:
                   assert x_3 is None, \
                     "bc_moto_rules.soft: got unexpected plan from when clause 3"
-                  rule.rule_base.num_bc_rule_successes += 1
-                  yield
+                  with engine.prove(rule.rule_base.root_name, 'select_type', context,
+                                    (rule.pattern(2),)) \
+                    as gen_4:
+                    for x_4 in gen_4:
+                      assert x_4 is None, \
+                        "bc_moto_rules.soft: got unexpected plan from when clause 4"
+                      mark5 = context.mark(True)
+                      if rule.pattern(3).match_data(context, context,
+                              context.lookup_data('ans') + "_Soft"):
+                        context.end_save_all_undo()
+                        rule.rule_base.num_bc_rule_successes += 1
+                        yield
+                      else: context.end_save_all_undo()
+                      context.undo_to_mark(mark5)
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -143,8 +155,20 @@ def medium_1(rule, arg_patterns, arg_context):
             assert x_1 is None, \
               "bc_moto_rules.medium_1: got unexpected plan from when clause 1"
             if context.lookup_data('ans_1') <= 6:
-              rule.rule_base.num_bc_rule_successes += 1
-              yield
+              with engine.prove(rule.rule_base.root_name, 'select_type', context,
+                                (rule.pattern(1),)) \
+                as gen_3:
+                for x_3 in gen_3:
+                  assert x_3 is None, \
+                    "bc_moto_rules.medium_1: got unexpected plan from when clause 3"
+                  mark4 = context.mark(True)
+                  if rule.pattern(2).match_data(context, context,
+                          context.lookup_data('ans') + "_Medium"):
+                    context.end_save_all_undo()
+                    rule.rule_base.num_bc_rule_successes += 1
+                    yield
+                  else: context.end_save_all_undo()
+                  context.undo_to_mark(mark4)
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -174,8 +198,20 @@ def medium_2(rule, arg_patterns, arg_context):
                 for x_3 in gen_3:
                   assert x_3 is None, \
                     "bc_moto_rules.medium_2: got unexpected plan from when clause 3"
-                  rule.rule_base.num_bc_rule_successes += 1
-                  yield
+                  with engine.prove(rule.rule_base.root_name, 'select_type', context,
+                                    (rule.pattern(2),)) \
+                    as gen_4:
+                    for x_4 in gen_4:
+                      assert x_4 is None, \
+                        "bc_moto_rules.medium_2: got unexpected plan from when clause 4"
+                      mark5 = context.mark(True)
+                      if rule.pattern(3).match_data(context, context,
+                              context.lookup_data('ans') + "_Medium"):
+                        context.end_save_all_undo()
+                        rule.rule_base.num_bc_rule_successes += 1
+                        yield
+                      else: context.end_save_all_undo()
+                      context.undo_to_mark(mark5)
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -205,8 +241,20 @@ def hard(rule, arg_patterns, arg_context):
                 for x_3 in gen_3:
                   assert x_3 is None, \
                     "bc_moto_rules.hard: got unexpected plan from when clause 3"
-                  rule.rule_base.num_bc_rule_successes += 1
-                  yield
+                  with engine.prove(rule.rule_base.root_name, 'select_type', context,
+                                    (rule.pattern(2),)) \
+                    as gen_4:
+                    for x_4 in gen_4:
+                      assert x_4 is None, \
+                        "bc_moto_rules.hard: got unexpected plan from when clause 4"
+                      mark5 = context.mark(True)
+                      if rule.pattern(3).match_data(context, context,
+                              context.lookup_data('ans') + "_Hard"):
+                        context.end_save_all_undo()
+                        rule.rule_base.num_bc_rule_successes += 1
+                        yield
+                      else: context.end_save_all_undo()
+                      context.undo_to_mark(mark5)
         rule.rule_base.num_bc_rule_failures += 1
     finally:
       context.done()
@@ -236,30 +284,38 @@ def populate(engine):
   
   bc_rule.bc_rule('soft', This_rule_base, 'select_tires',
                   soft, None,
-                  (pattern.pattern_literal('Soft'),),
+                  (contexts.variable('res'),),
                   (),
                   (contexts.variable('ans_1'),
-                   pattern.pattern_literal(3),))
+                   pattern.pattern_literal("Back"),
+                   contexts.variable('ans'),
+                   contexts.variable('res'),))
   
   bc_rule.bc_rule('medium_1', This_rule_base, 'select_tires',
                   medium_1, None,
-                  (pattern.pattern_literal('Medium'),),
+                  (contexts.variable('res'),),
                   (),
-                  (contexts.variable('ans_1'),))
+                  (contexts.variable('ans_1'),
+                   contexts.variable('ans'),
+                   contexts.variable('res'),))
   
   bc_rule.bc_rule('medium_2', This_rule_base, 'select_tires',
                   medium_2, None,
-                  (pattern.pattern_literal('Medium'),),
+                  (contexts.variable('res'),),
                   (),
                   (contexts.variable('ans_1'),
-                   pattern.pattern_literal(2),))
+                   pattern.pattern_literal("Side"),
+                   contexts.variable('ans'),
+                   contexts.variable('res'),))
   
   bc_rule.bc_rule('hard', This_rule_base, 'select_tires',
                   hard, None,
-                  (pattern.pattern_literal('Hard'),),
+                  (contexts.variable('res'),),
                   (),
                   (contexts.variable('ans_1'),
-                   pattern.pattern_literal(1),))
+                   pattern.pattern_literal("Front"),
+                   contexts.variable('ans'),
+                   contexts.variable('res'),))
 
 
 Krb_filename = '..\\bc_moto_rules.krb'
@@ -280,15 +336,23 @@ Krb_lineno_map = (
     ((108, 113), (31, 31)),
     ((114, 114), (32, 32)),
     ((115, 120), (33, 33)),
-    ((133, 137), (37, 37)),
-    ((139, 144), (39, 39)),
-    ((145, 145), (40, 40)),
-    ((158, 162), (44, 44)),
-    ((164, 169), (46, 46)),
-    ((170, 170), (47, 47)),
-    ((171, 176), (48, 48)),
-    ((189, 193), (52, 52)),
-    ((195, 200), (54, 54)),
-    ((201, 201), (55, 55)),
-    ((202, 207), (56, 56)),
+    ((121, 126), (34, 34)),
+    ((129, 129), (35, 35)),
+    ((145, 149), (39, 39)),
+    ((151, 156), (41, 41)),
+    ((157, 157), (42, 42)),
+    ((158, 163), (43, 43)),
+    ((166, 166), (44, 44)),
+    ((182, 186), (48, 48)),
+    ((188, 193), (50, 50)),
+    ((194, 194), (51, 51)),
+    ((195, 200), (52, 52)),
+    ((201, 206), (53, 53)),
+    ((209, 209), (54, 54)),
+    ((225, 229), (58, 58)),
+    ((231, 236), (60, 60)),
+    ((237, 237), (61, 61)),
+    ((238, 243), (62, 62)),
+    ((244, 249), (63, 63)),
+    ((252, 252), (64, 64)),
 )

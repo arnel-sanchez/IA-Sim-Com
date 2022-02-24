@@ -26,31 +26,39 @@ rain_2
 
 
 soft
-    use select_tires(Soft)
+    use select_tires($res)
     when
         moto_facts.wind_intensity($ans_1)
         check $ans_1 > 6
-        moto_facts.wind_direction(3)
+        moto_facts.wind_direction("Back")
+        select_type($ans)
+        $res = $ans + "_Soft"
 
 
 medium_1
-    use select_tires(Medium)
+    use select_tires($res)
     when
         moto_facts.wind_intensity($ans_1)
         check $ans_1 <= 6
+        select_type($ans)
+        $res = $ans + "_Medium"
 
 
 medium_2
-    use select_tires(Medium)
+    use select_tires($res)
     when
         moto_facts.wind_intensity($ans_1)
         check $ans_1 > 6
-        moto_facts.wind_direction(2)
+        moto_facts.wind_direction("Side")
+        select_type($ans)
+        $res = $ans + "_Medium"
 
 
 hard
-    use select_tires(Hard)
+    use select_tires($res)
     when
         moto_facts.wind_intensity($ans_1)
         check $ans_1 > 6
-        moto_facts.wind_direction(1)
+        moto_facts.wind_direction("Front")
+        select_type($ans)
+        $res = $ans + "_Hard"

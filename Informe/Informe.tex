@@ -172,7 +172,7 @@
 
 		El uso de la distribución normal se debe a que son menos comunes los climas extremos. Nótese que la escala utilizada permite esta configuración.
 
-		Una función probabilística es la encargada de lanzar un evento de cambio de clima, generando nuevo estado de este. Además, sus parámetros se varían cada vez que termina una vuelta de la carrera. Es importante señalar que estas variables se encuentran enlazadas bajo ciertas circustancias, como es el caso de un aumento de la humedad cuando comienza a llover. \\ \\
+		Una función probabilística es la encargada de lanzar un evento de cambio de clima, generando nuevo estado de este. Además, sus parámetros se varían cada vez que termina una vuelta de la carrera. Es importante señalar que estas variables se encuentran enlazadas bajo ciertas circunstancias, como es el caso de un aumento de la humedad cuando comienza a llover. \\ \\
 
 		\textbf{La pista} posee:
 		\begin{itemize}
@@ -197,9 +197,9 @@
 
 		Por otro lado, generar una nueva pista de manera aleatoria automáticamente es una problemática topográfica de un mayor nivel de complejidad. Como solución factible simplificada, se genera una línea poligonal de secciones, que parte de un punto y se expande variando su orientación. 
 
-		La longitud de cada sección es generada utilizando una variable aleatoria, donde los mayores valores tienen una menor probabilidad. Luego, atentiendo a dicha longitud, la velocidad máxima alcanzable se calcula por rangos, agregando incertidumbre mediante probabilística con distribución uniforme.
+		La longitud de cada sección es generada utilizando una variable aleatoria, donde los mayores valores tienen una menor probabilidad. Luego, atendiendo a dicha longitud, la velocidad máxima alcanzable se calcula por rangos, agregando incertidumbre mediante probabilística con distribución uniforme.
 
-		Cuando la longitud total excede el mínimo necesario, se redirige la orientación de las nuevas secciones en sentido cardinal opuesto al inicial. Esta línea es abierta, pero su punto final está orientado en sentido inverso al punto inicial. Luego, tomando una copia exacta de esta y rotándola $180^0$, se puede crear una figura poligonal cerrada con simetría central, la cual responde a las condiciones necesarias de una pista.
+		Cuando la longitud total excede el mínimo necesario, se redirige la orientación de las nuevas secciones en sentido cardinal opuesto a la inicial. Esta línea es abierta, pero su punto final está orientado en sentido inverso al punto inicial. Luego, tomando una copia exacta de esta y rotándola $180^0$, se puede crear una figura poligonal cerrada con simetría central, la cual responde a las condiciones necesarias de una pista.
 
 		\subsubsection{Agentes}
 		Un agente está compuesto por un piloto y su moto. \\
@@ -260,12 +260,12 @@
 
 		Para lograr un mayor realismo, se hace una primera variación de parámetros para adaptar a las entidades a las condiciones climatológicas del momento; luego, en cada cambio de vuelta se modifica el clima y se reajustan los parámetros de acuerdo las nuevas condiciones climatológicas.
 
-		Los agentes reciben cada variación del ambiente y analizan qué modificaciones realizar para adaptarse. Asimismo, las interacciones entre dos de estos provocan cambios en sus condiciones. Nótese que en un momento dado, una interacción puede generar una reacción en cadena que provoque una serie de cambios en varios agentes que compiten directamente entre sí. Una variable probabilística, influida por las habilidades de los pilotos en cuestión, sirve para obtener el resultado de un ataque o una defensa.
+		Los agentes reciben cada variación del ambiente y analizan qué modificaciones realizar para adaptarse. Asimismo, las interacciones entre dos de estos provocan cambios en sus condiciones. Nótese que, en un momento dado, una interacción puede generar una reacción en cadena que provoque una serie de cambios en varios agentes que compiten directamente entre sí. Una variable probabilística, influida por las habilidades de los pilotos en cuestión, sirve para obtener el resultado de un ataque o una defensa.
 
 	\newpage
 
 	\subsection{Inteligencia Artificial  {\footnotesize \cite{conferenciasIA}\cite{russell}}}
-	Una inteligencia artifical es la encargada de elegir las acciones a realizar por cada agente, con el fin de tomar las mejores decisiones para alcanzar el máximo rendimiento. Para su implementación se utilizan: \textbf{Sistemas Expertos} generados mediante el uso de un procedimiento declarativo/imperativo, utilizando la biblioteca \textbf{PyKE}{\footnotesize \cite{pyke}} de \textbf{Python}; y \textbf{heurísticas}. También se emplean variables probabilísticas para crear incertidumbre, es decir, la respuesta de la IA ante la misma situación puede variar: es \textbf{no determinista}.
+	Una inteligencia artificial es la encargada de elegir las acciones a realizar por cada agente, con el fin de tomar las mejores decisiones para alcanzar el máximo rendimiento. Para su implementación se utilizan: \textbf{Sistemas Expertos} generados mediante el uso de un procedimiento declarativo/imperativo, utilizando la biblioteca \textbf{PyKE}{\footnotesize \cite{pyke}} de \textbf{Python}; y \textbf{heurísticas}. También se emplean variables probabilísticas para crear incertidumbre, es decir, la respuesta de la IA ante la misma situación puede variar: es \textbf{no determinista}.
 	
 	Se emplea como base de conocimiento el conjunto de variables, antes expuestas, que forman parte de la simulación y que influyen en el desempeño:
 	\begin{itemize}
@@ -284,7 +284,7 @@
 		weather(Sunny)
 		humidity(2)
 		wind_intensity(7)
-		wind_direction(3)
+		wind_direction("Back")
 		\end{lstlisting}
 	
 		\textbf{Las reglas} se formulan del modo:
@@ -298,11 +298,13 @@
 		        check $ans_2 <= 6
 		
 		soft
-		    use select_tires(Soft)
+		    use select_tires($res)
 		    when
 		        moto_facts.wind_intensity($ans_1)
 		        check $ans_1 > 6
-		        moto_facts.wind_direction(3)
+		        moto_facts.wind_direction("Back")
+		        select_type($ans)
+		        $res = $ans + "_Soft"
 		\end{lstlisting}
 
 		Tomando este ejemplo, el sistema analiza los hechos y las reglas permitiendo llegar a la decisión de tomar neumáticos \emph{Slick\_Soft} (lisos suaves). Luego, consultando los resultados obtenidos por PyKE, mediante Python de manera imperativa será posible la interacción con la simulación de la carrera. En este caso, se utiliza para generar la selección un \emph{Enum}:
@@ -420,7 +422,7 @@
 		\begin{itemize}
 			\item El clima no es el mejor (humedad y temperatura muy altas o muy bajas, baja visibilidad, viento intenso)
 			\item Los frenos y la rigidez del chasis no son apropiados
-			\item La habilidades del piloto en las rectas y las curvas no son buenas
+			\item Las habilidades del piloto en las rectas y las curvas no son buenas
 		\end{itemize}
 
 		Sin embargo, un piloto más agresivo puede tomar mayores riesgos e ignorar ciertas penalizaciones con el fin de acercarse a la aceleración máxima. Esta probabilidad se ve influida por las características del piloto, aumentando también en el caso de encontrarse en una pugna de posición (ataque o defensa). Por tanto, el valor hallado es no determinista.
@@ -788,17 +790,17 @@
 
 	En cada uno de estos nodos, si existe un ámbito (como es el caso las condicionales, ciclos y tipos especiales), la definición de función cada uno de estos nodos tiene como atributo un tipo de nodo \emph{Program}; el cual posee una lista de declaraciones y, por lo tanto, en él se pueden guardar la lista de declaraciones que se hagan en su ámbito.
 
-        Conformada la estructura del AST, se pasa a su chequeo semántico. Se hacen tres recorridos sobre este, el primero para la validación. Un nodo es válido si todo lo que tiene guardado en sus atributos que es dependiente del contexto, puede ser tomado de este y de la forma que se desea. Esto se señala porque, por ejemplo, las variables solo se pueden redefinir en el contexto en que fueron definidas. Cada vez que se crea una función o un tipo especial, se genera un contexto que responde a dicho nodo. Todo lo que se defina en este ámbito pertenece a su contexto específicamnete, independientemente de dónde se defina. 
+        Conformada la estructura del AST, se pasa a su chequeo semántico. Se hacen tres recorridos sobre este, el primero para la validación. Un nodo es válido si todo lo que tiene guardado en sus atributos que es dependiente del contexto, puede ser tomado de este y de la forma que se desea. Esto se señala porque, por ejemplo, las variables solo se pueden redefinir en el contexto en que fueron definidas. Cada vez que se crea una función o un tipo especial, se genera un contexto que responde a dicho nodo. Todo lo que se defina en este ámbito pertenece a su contexto específicamente, independientemente de dónde se defina. 
 
 	En resumen, en este lenguaje los contextos funcionan similar a Python, con la particularidad de que no existen las variables globales. Es importante destacar que las funciones definidas dentro de los tipos especiales no crean un contexto específico para ellas, sino que es el mismo que el de dicho tipo al que pertenecen y no se le pueden pasar parámetros a aquellas que son utilizadas luego en la simulación.
 
-       Regresando al AST, se hace una segunda pasada en la cual se verifican los tipos, los cuales se inducen en los nodos en que hay expresiones. Una expresión puede ser una expresión aritmética, un \emph{bool}, un \emph{string}, variables, o llamados a funciones. El tercer y último recorrido se efectúa para evaluar las nodos, excepto en el caso de una definición de función, que solo se evalúa cuando se hace un llamado a esta.
+       Regresando al AST, se hace una segunda pasada en la cual se verifican los tipos, los cuales se inducen en los nodos en que hay expresiones. Una expresión puede ser una expresión aritmética, un \emph{bool}, un \emph{string}, variables, o llamados a funciones. El tercer y último recorrido se efectúa para evaluar los nodos, excepto en el caso de una definición de función, que solo se evalúa cuando se hace un llamado a esta.
 
-        Cuando se crea un tipo, se importan las variables que este puede tener en la simulación y las que podría utilizar. Dichas variables están predefinidas, por lo tanto se pueden redefinir, pero una definición de otra variable con el mismo nombre que alguna de estas arrojaría un error. Dentro de cada tipo se pueden utilizar las funciones que el jefe técnico decida, mas hay algunas con nombres clave (como son: \emph{select\_configuration} en un tipo \emph{bike}, \emph{select\_acceleration} y \emph{select\_action} en un tipo \emph{rider}, y \emph{probability\_change\_weather} en un tipo \emph{environment}. 
+        Cuando se crea un tipo, se importan las variables que este puede tener en la simulación y las que podría utilizar. Dichas variables están predefinidas, por lo tanto, se pueden redefinir; pero una definición de otra variable con el mismo nombre que alguna de estas arrojaría un error. Dentro de cada tipo se pueden utilizar las funciones que el jefe técnico decida, mas hay algunas con nombres clave (como son: \emph{select\_configuration} en un tipo \emph{bike}, \emph{select\_acceleration} y \emph{select\_action} en un tipo \emph{rider}, y \emph{probability\_change\_weather} en un tipo \emph{environment}. 
 
 	El objetivo de la función \emph{void select\_configuration} es seleccionar el tipo de gomas dadas las características del clima y, por tanto, modificar la variable \emph{tires} del contexto del piloto, la cual utilizará el simulador. Del mismo modo, \emph{select\_action} debe retornar un valor entero y es la encargada de elegir qué acción se realizará. La función \emph{select\_acceleration} debe ser \emph{int} y su objetivo es actualizar la aceleración del agente.
 
-	Las variables dentro de los tipos se actualizan justo antes de que la simulación utilice las funciones clave, para ello cada tipo tiene un método que se encarga de esto. Las que se pueden utilizar dentro de un tipo \emph{bike} son los atributos de la moto y los parámetros del clima; dentro del tipo \emph{rider}, las características del piloto, los atributos del clima y de la sección en la que se encuentra dicho piloto; y en el interior de un tipo \emph{environment}, las propiedades que se utilizan para configurar al clima y la variable \emph{track}, de tipo \emph{string}, que se utiliza para elegir distintos formatos de pistas.      
+	Las variables dentro de los tipos se actualizan justo antes de que la simulación utilice las funciones clave, para ello cada tipo tiene un método que se encarga de esto. Las que se pueden utilizar dentro de un tipo \emph{bike} son los atributos de la moto y los parámetros del clima; dentro del tipo \emph{rider}, las características del piloto, los atributos del clima y de la sección en la que se encuentra dicho piloto; y en el interior de un tipo \emph{environment}, las propiedades que se utilizan para configurar al clima y la variable \emph{track}, de tipo \emph{string}, que se utiliza para elegir distintos formatos de pistas.
 
 	\subsection{Conexión Simulación - Compilación}
 	El resultado del DSL, en caso de completarse los 3 recorridos del AST sin error alguno, son tres listas: la primera lista, con todos los pilotos que fueron creados; la segunda, con todas las motos; y la tercera, con los diferentes ambientes generados. A partir de estas listas se crean las estructuras en cuestión en la simulación.
@@ -822,7 +824,7 @@
 
 	Cuando las condiciones del ambiente son las óptimas, una actitud agresiva ha demostrado ser muy eficiente para lograr la victoria, alcanzando el podio en casi el $80\%$ de los casos. También genera un incremento en la cantidad de pugnas por posición y, por tanto, provoca un mayor desgaste de la maquinaria que dan como resultado un aumento del triple en la cantidad de accidentes (por caídas o desperfectos técnicos causados por sobreexplotación). 
 
-	Una estrategia conservadora solo ofrece buenos dividendos cuando el clima fluctua mucho, aunque en los casos que la suerte la acompaña y se suceden accidentes entre los otros competidores, es posible conseguir una victoria sin necesidad de tomar muchos riesgos (menos del $5\%$).
+	Una estrategia conservadora solo ofrece buenos dividendos cuando el clima fluctúa mucho, aunque en los casos que la suerte la acompaña y se suceden accidentes entre los otros competidores, es posible conseguir una victoria sin necesidad de tomar muchos riesgos (menos del $5\%$).
 
 	En resumen, a pesar de las limitaciones que posee el sistema, logra tener resultados muy cercanos a los vistos en la realidad. Los tiempos alcanzados en el circuito de Misano son increíblemente cercanos a los de pilotos auténticos, pues el tiempo promedio de vuelta oscila entre $1$:$34$ y $1$:$58$, cuando el récord actual es de $1$:$32$, alcanzado en el $2021$. El porciento de accidentes también se acerca mucho a los valores que no son virtuales. 
 
@@ -831,7 +833,7 @@
 	\subsection{Recomendaciones}
 	Analizando el problema propuesto a resolver, las herramientas empleadas con tal fin y los resultados obtenidos; es posible plantear algunas modificaciones con el objetivo de lograr mejoras en el sistema que lo acerquen aún más a la realidad.
 
-	En el caso del ambiente, se podría utilizar la posición geográfica de las pistas para definir sus climas de una manera diferenciada. Así como también mejorar la generacion automática de pistas de manera aleatoria, utilizando conocimientos topográficos avanzados. Por otro lado, los pilotos pudieran poseer más características que los acercaran a personajes reales, tratando de comprobar si fuera posible replicar sus resultados en la realidad.
+	En el caso del ambiente, se podría utilizar la posición geográfica de las pistas para definir sus climas de una manera diferenciada. Así como también mejorar la generación automática de pistas de manera aleatoria, utilizando conocimientos topográficos avanzados. Por otro lado, los pilotos pudieran poseer más características que los acercaran a personajes reales, tratando de comprobar si fuera posible replicar sus resultados en la realidad.
 
 	Por último, incrementaría la complejidad de los agentes agregarles conocimientos sobre las características de las pistas y sus condiciones, así como de sus contrincantes. Esto ayudaría a formar una estrategia más acorde a las condiciones específicas de cada carrera. El uso de \emph{Machine Learning}, en su rama de aprendizaje supervisado, constituiría una vía excelente para lograrlo. 
 

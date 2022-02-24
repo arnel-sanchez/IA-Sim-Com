@@ -37,11 +37,11 @@ def edit_moto(environment):
         else:
             side += 1
     if front > back and front > side:
-        direction = 1
+        direction = "Front"
     elif back > front and back > side:
-        direction = 3
+        direction = "Back"
     else:
-        direction = 2
+        direction = "Side"
     facts = open(path[0] + "/ai/moto_facts.kfb", "w+")
     facts.write("# moto_facts.kfb\n\n")
     facts.write("weather({})\n".format(weather.weather_status.name))
@@ -53,19 +53,14 @@ def edit_moto(environment):
 
 def call_moto():
     engine = restart("bc_moto_rules")
-    tires = [[], []]
-    with engine.prove_goal("bc_moto_rules.select_type($select)") as gen:
-        for ans, plan in gen:
-            tires[0].append(ans["select"])
+    tires = []
     with engine.prove_goal("bc_moto_rules.select_tires($select)") as gen:
         for ans, plan in gen:
-            tires[1].append(ans["select"])
-    for i in range(len(tires[0])):
-        for j in range(len(tires[1])):
-            comb = tires[0][i] + "_" + tires[1][j]
-            if comb == "Rain_Hard":
-                comb = "Rain_Medium"
-            print(comb)
+            tires.append(ans["select"])
+    for t in tires:
+        if t == "Rain_Hard":
+            t = "Rain_Medium"
+        print(t)
 
 
 def restart(rules: str):

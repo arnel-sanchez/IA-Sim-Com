@@ -6,6 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="f6df1ae7-b934-4f30-a0fa-9569583274a1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/action_facts.kfb" beforeDir="false" afterPath="$PROJECT_DIR$/ai/action_facts.kfb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/ai.py" beforeDir="false" afterPath="$PROJECT_DIR$/ai/ai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/bc_moto_rules.krb" beforeDir="false" afterPath="$PROJECT_DIR$/ai/bc_moto_rules.krb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/compiled_krb/action_facts.fbc" beforeDir="false" afterPath="$PROJECT_DIR$/ai/compiled_krb/action_facts.fbc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/compiled_krb/bc_moto_rules_bc.py" beforeDir="false" afterPath="$PROJECT_DIR$/ai/compiled_krb/bc_moto_rules_bc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/compiled_krb/compiled_pyke_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/ai/compiled_krb/compiled_pyke_files.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/compiled_krb/moto_facts.fbc" beforeDir="false" afterPath="$PROJECT_DIR$/ai/compiled_krb/moto_facts.fbc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/moto_facts.kfb" beforeDir="false" afterPath="$PROJECT_DIR$/ai/moto_facts.kfb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +52,7 @@
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.general" />
   </component>
-  <component name="RunManager" selected="Python.track">
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Proyecto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -106,8 +114,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.track" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.track" />
         <item itemvalue="Python tests.Python tests for test_tokenizer.Test_tokenizer.test_C" />
       </list>
     </recent_temporary>
@@ -127,6 +135,7 @@
       <workItem from="1642617932196" duration="37000" />
       <workItem from="1643126169808" duration="2427000" />
       <workItem from="1645552720760" duration="9932000" />
+      <workItem from="1645718562471" duration="5861000" />
     </task>
     <servers />
   </component>
@@ -150,7 +159,7 @@
     <SUITE FILE_PATH="coverage/Proyecto$misano.coverage" NAME="misano Coverage Results" MODIFIED="1642353701852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Downloads/Telegram Desktop" />
     <SUITE FILE_PATH="coverage/Proyecto$assignments.coverage" NAME="assignments Coverage Results" MODIFIED="1639698156044" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/compilation" />
     <SUITE FILE_PATH="coverage/Proyecto$start.coverage" NAME="start Coverage Results" MODIFIED="1639701394053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Proyecto$main.coverage" NAME="main Coverage Results" MODIFIED="1645463549494" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Proyecto$main.coverage" NAME="main Coverage Results" MODIFIED="1645726232601" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Proyecto$track.coverage" NAME="track Coverage Results" MODIFIED="1645463655492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/simulation" />
     <SUITE FILE_PATH="coverage/Proyecto$action.coverage" NAME="action Coverage Results" MODIFIED="1644861306680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ai" />
     <SUITE FILE_PATH="coverage/Proyecto$.coverage" NAME=" Coverage Results" MODIFIED="1639159054883" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tester" />
